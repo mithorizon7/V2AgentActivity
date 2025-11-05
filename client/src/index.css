@@ -32,9 +32,9 @@
 
   --sidebar-border: 210 5% 87%;
 
-  --sidebar-primary: 210 85% 38%;
+  --sidebar-primary: 220 90% 50%;
 
-  --sidebar-primary-foreground: 210 20% 98%;
+  --sidebar-primary-foreground: 0 0% 100%;
 
   --sidebar-accent: 210 12% 88%;
 
@@ -48,9 +48,9 @@
 
   --popover-border: 210 4% 85%;
 
-  --primary: 210 85% 38%;
+  --primary: 220 90% 50%;
 
-  --primary-foreground: 210 20% 98%;
+  --primary-foreground: 0 0% 100%;
 
   --secondary: 210 10% 86%;
 
@@ -75,10 +75,23 @@
   --chart-3: 30 85% 38%;
   --chart-4: 280 70% 35%;
   --chart-5: 150 65% 30%;
+  
+  --process-learning: 260 60% 55%;
+  --process-learning-foreground: 0 0% 100%;
+  --process-interaction: 200 70% 50%;
+  --process-interaction-foreground: 0 0% 100%;
+  --process-perception: 150 60% 45%;
+  --process-perception-foreground: 0 0% 100%;
+  --process-reasoning: 30 80% 55%;
+  --process-reasoning-foreground: 0 0% 100%;
+  --process-planning: 340 65% 50%;
+  --process-planning-foreground: 0 0% 100%;
+  --process-execution: 20 70% 50%;
+  --process-execution-foreground: 0 0% 100%;
 
-  --font-sans: Open Sans, sans-serif;
+  --font-sans: Inter, system-ui, -apple-system, sans-serif;
   --font-serif: Georgia, serif;
-  --font-mono: Menlo, monospace;
+  --font-mono: ui-monospace, 'Courier New', monospace;
   --radius: .5rem; /* 8px */
   --shadow-2xs: 0px 2px 0px 0px hsl(210 10% 50% / 0.00);
   --shadow-xs: 0px 2px 0px 0px hsl(210 10% 50% / 0.00);

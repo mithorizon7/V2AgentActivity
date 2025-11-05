@@ -59,6 +59,32 @@ export default {
           "4": "hsl(var(--chart-4) / <alpha-value>)",
           "5": "hsl(var(--chart-5) / <alpha-value>)",
         },
+        process: {
+          learning: {
+            DEFAULT: "hsl(var(--process-learning) / <alpha-value>)",
+            foreground: "hsl(var(--process-learning-foreground) / <alpha-value>)",
+          },
+          interaction: {
+            DEFAULT: "hsl(var(--process-interaction) / <alpha-value>)",
+            foreground: "hsl(var(--process-interaction-foreground) / <alpha-value>)",
+          },
+          perception: {
+            DEFAULT: "hsl(var(--process-perception) / <alpha-value>)",
+            foreground: "hsl(var(--process-perception-foreground) / <alpha-value>)",
+          },
+          reasoning: {
+            DEFAULT: "hsl(var(--process-reasoning) / <alpha-value>)",
+            foreground: "hsl(var(--process-reasoning-foreground) / <alpha-value>)",
+          },
+          planning: {
+            DEFAULT: "hsl(var(--process-planning) / <alpha-value>)",
+            foreground: "hsl(var(--process-planning-foreground) / <alpha-value>)",
+          },
+          execution: {
+            DEFAULT: "hsl(var(--process-execution) / <alpha-value>)",
+            foreground: "hsl(var(--process-execution-foreground) / <alpha-value>)",
+          },
+        },
         sidebar: {
           ring: "hsl(var(--sidebar-ring) / <alpha-value>)",
           DEFAULT: "hsl(var(--sidebar) / <alpha-value>)",

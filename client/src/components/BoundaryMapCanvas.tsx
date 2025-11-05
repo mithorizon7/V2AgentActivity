@@ -1,0 +1,256 @@
+import { useState, useCallback, useRef } from "react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { BoundaryElement, BoundaryConnection, AgentProcess } from "@shared/schema";
+import { getProcessColor } from "@/lib/processColors";
+import { Database, Wifi, Activity, Monitor, FileText, Trash2 } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+const ELEMENT_ICONS = {
+  api: Wifi,
+  memory: Database,
+  sensor: Activity,
+  ui: Monitor,
+  log: FileText,
+};
+
+type DraggableElement = {
+  id: string;
+  label: string;
+  type: "api" | "memory" | "sensor" | "ui" | "log";
+};
+
+const AVAILABLE_ELEMENTS: DraggableElement[] = [
+  { id: "wearable-api", label: "Wearable API", type: "sensor" },
+  { id: "calendar-api", label: "Calendar API", type: "api" },
+  { id: "user-memory", label: "User Memory", type: "memory" },
+  { id: "notification-ui", label: "Notification UI", type: "ui" },
+  { id: "activity-log", label: "Activity Log", type: "log" },
+  { id: "health-db", label: "Health Database", type: "memory" },
+  { id: "sensor-stream", label: "Sensor Stream", type: "sensor" },
+  { id: "chat-interface", label: "Chat Interface", type: "ui" },
+];
+
+type BoundaryMapCanvasProps = {
+  onSave: (elements: BoundaryElement[], connections: BoundaryConnection[]) => void;
+  initialElements?: BoundaryElement[];
+  initialConnections?: BoundaryConnection[];
+};
+
+export function BoundaryMapCanvas({
+  onSave,
+  initialElements = [],
+  initialConnections = [],
+}: BoundaryMapCanvasProps) {
+  const [placedElements, setPlacedElements] = useState<BoundaryElement[]>(initialElements);
+  const [connections, setConnections] = useState<BoundaryConnection[]>(initialConnections);
+  const [selectedElement, setSelectedElement] = useState<string | null>(null);
+  const [selectedProcess, setSelectedProcess] = useState<AgentProcess | null>(null);
+  const canvasRef = useRef<HTMLDivElement>(null);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    const elementData = e.dataTransfer.getData("element");
+    if (!elementData || !canvasRef.current) return;
+
+    const element: DraggableElement = JSON.parse(elementData);
+    const rect = canvasRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const newElement: BoundaryElement = {
+      id: `${element.id}-${Date.now()}`,
+      label: element.label,
+      type: element.type,
+      x,
+      y,
+    };
+
+    setPlacedElements((prev) => [...prev, newElement]);
+  }, []);
+
+  const handleElementClick = useCallback((elementId: string) => {
+    setSelectedElement(elementId);
+  }, []);
+
+  const handleProcessClick = useCallback((process: AgentProcess) => {
+    if (!selectedElement) return;
+
+    const existingConnection = connections.find(
+      (c) => c.elementId === selectedElement && c.process === process
+    );
+
+    if (existingConnection) {
+      setConnections((prev) => prev.filter((c) => c.id !== existingConnection.id));
+    } else {
+      const newConnection: BoundaryConnection = {
+        id: `${selectedElement}-${process}-${Date.now()}`,
+        elementId: selectedElement,
+        process,
+      };
+      setConnections((prev) => [...prev, newConnection]);
+    }
+  }, [selectedElement, connections]);
+
+  const handleRemoveElement = useCallback((elementId: string) => {
+    setPlacedElements((prev) => prev.filter((e) => e.id !== elementId));
+    setConnections((prev) => prev.filter((c) => c.elementId !== elementId));
+    if (selectedElement === elementId) {
+      setSelectedElement(null);
+    }
+  }, [selectedElement]);
+
+  const handleSave = () => {
+    onSave(placedElements, connections);
+  };
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <Card className="p-6 space-y-4">
+        <h3 className="font-semibold text-lg">Available Elements</h3>
+        <p className="text-sm text-muted-foreground">
+          Drag elements onto the canvas
+        </p>
+        <div className="space-y-2">
+          {AVAILABLE_ELEMENTS.map((element) => {
+            const Icon = ELEMENT_ICONS[element.type];
+            return (
+              <div
+                key={element.id}
+                draggable
+                onDragStart={(e) => {
+                  e.dataTransfer.setData("element", JSON.stringify(element));
+                }}
+                className="flex items-center gap-3 p-3 bg-card border-2 rounded-md cursor-move hover-elevate active-elevate-2 transition-all"
+                data-testid={`boundary-element-${element.id}`}
+              >
+                <Icon className="w-5 h-5 text-muted-foreground" />
+                <span className="text-sm font-medium">{element.label}</span>
+              </div>
+            );
+          })}
+        </div>
+      </Card>
+
+      <Card className="lg:col-span-2 p-6">
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="font-semibold text-lg">Boundary Map Canvas</h3>
+            <Button onClick={handleSave} data-testid="button-save-boundary">
+              Save Map
+            </Button>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Place elements and connect them to processes by clicking an element, then clicking a
+            process
+          </p>
+          <div
+            ref={canvasRef}
+            onDrop={handleDrop}
+            onDragOver={(e) => e.preventDefault()}
+            className="relative h-96 border-2 border-dashed rounded-md bg-muted/20"
+            data-testid="boundary-canvas"
+          >
+            <div className="absolute inset-0 grid grid-cols-12 grid-rows-12 opacity-10">
+              {Array.from({ length: 144 }).map((_, i) => (
+                <div key={i} className="border border-muted" />
+              ))}
+            </div>
+
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-primary/10 border-2 border-primary rounded-md flex items-center justify-center">
+              <span className="font-bold text-sm text-primary">AI AGENT</span>
+            </div>
+
+            {placedElements.map((element) => {
+              const Icon = ELEMENT_ICONS[element.type];
+              const isSelected = selectedElement === element.id;
+              const elementConnections = connections.filter((c) => c.elementId === element.id);
+
+              return (
+                <div
+                  key={element.id}
+                  onClick={() => handleElementClick(element.id)}
+                  className={cn(
+                    "absolute w-48 p-3 bg-card border-2 rounded-md cursor-pointer transition-all hover-elevate",
+                    isSelected && "ring-2 ring-primary border-primary"
+                  )}
+                  style={{ left: element.x, top: element.y }}
+                  data-testid={`placed-element-${element.id}`}
+                >
+                  <div className="flex items-center gap-2">
+                    <Icon className="w-4 h-4" />
+                    <span className="text-sm font-medium flex-1">{element.label}</span>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="h-6 w-6"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRemoveElement(element.id);
+                      }}
+                      data-testid={`remove-element-${element.id}`}
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </Button>
+                  </div>
+                  {elementConnections.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      {elementConnections.map((conn) => {
+                        const colors = getProcessColor(conn.process);
+                        return (
+                          <Badge
+                            key={conn.id}
+                            className={`${colors.bg} ${colors.text} text-xs`}
+                          >
+                            {conn.process}
+                          </Badge>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </Card>
+
+      <Card className="p-6 space-y-4">
+        <h3 className="font-semibold text-lg">Connect to Process</h3>
+        <p className="text-sm text-muted-foreground">
+          {selectedElement
+            ? "Click a process to connect the selected element"
+            : "Select an element on the canvas first"}
+        </p>
+        <div className="space-y-2">
+          {(["learning", "interaction", "perception", "reasoning", "planning", "execution"] as AgentProcess[]).map(
+            (process) => {
+              const colors = getProcessColor(process);
+              const isConnected =
+                selectedElement &&
+                connections.some((c) => c.elementId === selectedElement && c.process === process);
+
+              return (
+                <Button
+                  key={process}
+                  variant={isConnected ? "default" : "outline"}
+                  className={cn(
+                    "w-full justify-start gap-2",
+                    isConnected && `${colors.bg} ${colors.text}`
+                  )}
+                  onClick={() => handleProcessClick(process)}
+                  disabled={!selectedElement}
+                  data-testid={`connect-process-${process}`}
+                >
+                  <div className={cn("w-3 h-3 rounded-full", colors.bg)} />
+                  {process.charAt(0).toUpperCase() + process.slice(1)}
+                </Button>
+              );
+            }
+          )}
+        </div>
+      </Card>
+    </div>
+  );
+}

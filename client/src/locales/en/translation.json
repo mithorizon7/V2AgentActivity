@@ -1,0 +1,138 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "continue": "Continue",
+    "submit": "Submit",
+    "reset": "Reset",
+    "close": "Close",
+    "loading": "Loading...",
+    "error": "An error occurred"
+  },
+  "home": {
+    "title": "AI Agents Learning Platform",
+    "subtitle": "Master AI agents from core concepts to building your own—through interactive, pedagogically-designed activities",
+    "understand": {
+      "title": "Understand",
+      "description": "Learn the six core processes that make AI agents work: Learning, Interaction, Perception, Reasoning, Planning, and Execution"
+    },
+    "practice": {
+      "title": "Practice",
+      "description": "Map agent boundaries, build circuits, run simulations, and debug failures through hands-on activities"
+    },
+    "build": {
+      "title": "Build",
+      "description": "Design and construct your own agents, evaluate their performance, and iterate based on real feedback"
+    },
+    "startButton": "Start Learning"
+  },
+  "phases": {
+    "phase1": "Classification & Explanation",
+    "phase2": "Boundary Mapping",
+    "phase3": "Circuit Building",
+    "phase4": "Simulation & Testing",
+    "phase5": "Assessment & Review"
+  },
+  "classification": {
+    "title": "Phase 1: Classification & Explanation",
+    "description": "Classify agent capabilities into the six core processes and explain your reasoning",
+    "dragInstruction": "Drag items to the correct process category and explain your reasoning",
+    "scramble": "Scramble",
+    "submitCheck": "Submit & Check",
+    "explainPlaceholder": "Explain why you placed this item here...",
+    "explanationRequired": "Please provide explanations for all items before submitting",
+    "phaseComplete": "Phase Complete!",
+    "continueDescription": "Review your feedback and continue to the next phase"
+  },
+  "confidence": {
+    "title": "Confidence Level",
+    "question": "How confident are you in your classifications?",
+    "notConfident": "Not confident",
+    "somewhatConfident": "Somewhat confident",
+    "veryConfident": "Very confident"
+  },
+  "feedback": {
+    "title": "Feedback & Results",
+    "accuracy": "Classification Accuracy",
+    "explanationQuality": "Explanation Quality",
+    "calibration": "Calibration",
+    "calibrationDescription": "How well your confidence matched your actual performance",
+    "detailedFeedback": "Detailed Feedback",
+    "noFeedback": "No feedback available"
+  },
+  "boundaryMap": {
+    "title": "Phase 2: Boundary Mapping",
+    "description": "Map the agent's environment, tools, and data flows to understand system boundaries",
+    "availableElements": "Available Elements",
+    "dragInstruction": "Drag elements onto the canvas",
+    "canvasTitle": "Boundary Map Canvas",
+    "connectToProcess": "Connect to Process",
+    "selectFirst": "Select an element on the canvas first",
+    "clickToConnect": "Click a process to connect the selected element",
+    "saveMap": "Save Map"
+  },
+  "circuit": {
+    "title": "Phase 3: Circuit Building",
+    "description": "Assemble agent blocks to create a functional workflow",
+    "blockPalette": "Block Palette",
+    "dragInstruction": "Drag blocks onto the canvas to build your agent",
+    "canvasTitle": "Agent Circuit Canvas",
+    "clear": "Clear",
+    "saveCircuit": "Save Circuit",
+    "connectInstructions": "Connect blocks by dragging from one block's edge to another. Click and drag blocks to reposition them."
+  },
+  "simulation": {
+    "title": "Phase 4: Simulation & Testing",
+    "description": "Run your agent, observe execution traces, and inject failures to test resilience",
+    "execution": "Simulation Execution",
+    "run": "Run",
+    "pause": "Pause",
+    "reset": "Reset",
+    "executionLog": "Execution Log",
+    "noLogs": "No logs yet",
+    "buildCircuitFirst": "Build a circuit to run a simulation"
+  },
+  "failures": {
+    "title": "Failure Injection",
+    "description": "Toggle faults to observe how the agent handles errors and edge cases",
+    "activeFailures": "{{count}} failure(s) active. Run the simulation to observe the effects."
+  },
+  "assessment": {
+    "title": "Phase 5: Assessment & Review",
+    "description": "Review your performance across all phases and identify areas for growth",
+    "overallProgress": "Overall Progress",
+    "phasesCompleted": "{{completed}} of {{total}} phases completed",
+    "insights": "Learning Insights",
+    "excellentCalibration": "Excellent Calibration",
+    "excellentCalibrationDesc": "Your confidence levels closely match your actual performance. This indicates strong metacognitive awareness.",
+    "strongClassification": "Strong Classification Skills",
+    "strongClassificationDesc": "You've demonstrated solid understanding of the six agent processes.",
+    "improveExplanations": "Improve Explanations",
+    "improveExplanationsDesc": "Try to provide more detailed reasoning that connects the item to the process's core function."
+  },
+  "processes": {
+    "learning": "Learning",
+    "interaction": "Interaction",
+    "perception": "Perception",
+    "reasoning": "Reasoning",
+    "planning": "Planning",
+    "execution": "Execution"
+  },
+  "glossary": {
+    "feedbackLoops": {
+      "term": "Feedback Loops",
+      "definition": "Mechanisms that allow the agent to learn from outcomes and adjust future behavior",
+      "example": "After a failed action, the agent updates its strategy for similar situations"
+    },
+    "adaptation": {
+      "term": "Adaptation",
+      "definition": "The agent's ability to modify its behavior based on new information or changing conditions",
+      "example": "Adjusting recommendations when user preferences change"
+    },
+    "memory": {
+      "term": "Memory",
+      "definition": "Storage and retrieval of past interactions, decisions, and learned patterns",
+      "example": "Remembering user preferences across sessions"
+    }
+  }
+}

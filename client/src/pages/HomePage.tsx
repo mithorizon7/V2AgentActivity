@@ -1,0 +1,92 @@
+import { useLocation } from "wouter";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Brain, ArrowRight, BookOpen, Target, Code } from "lucide-react";
+
+export default function HomePage() {
+  const [, setLocation] = useLocation();
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
+      <div className="max-w-7xl mx-auto px-6 py-12">
+        <div className="text-center mb-12">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <Brain className="w-12 h-12 text-primary" />
+            <h1 className="text-4xl font-bold">AI Agents Learning Platform</h1>
+          </div>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            Master AI agents from core concepts to building your own—through interactive,
+            pedagogically-designed activities
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          <Card className="p-6 space-y-3 hover-elevate transition-all">
+            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+              <BookOpen className="w-6 h-6 text-primary" />
+            </div>
+            <h3 className="font-semibold text-lg">Understand</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Learn the six core processes that make AI agents work: Learning, Interaction,
+              Perception, Reasoning, Planning, and Execution
+            </p>
+          </Card>
+
+          <Card className="p-6 space-y-3 hover-elevate transition-all">
+            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+              <Target className="w-6 h-6 text-primary" />
+            </div>
+            <h3 className="font-semibold text-lg">Practice</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Map agent boundaries, build circuits, run simulations, and debug failures through
+              hands-on activities
+            </p>
+          </Card>
+
+          <Card className="p-6 space-y-3 hover-elevate transition-all">
+            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+              <Code className="w-6 h-6 text-primary" />
+            </div>
+            <h3 className="font-semibold text-lg">Build</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Design and construct your own agents, evaluate their performance, and iterate based
+              on real feedback
+            </p>
+          </Card>
+        </div>
+
+        <Card className="p-8">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="space-y-2 flex-1">
+              <div className="flex items-center gap-2">
+                <h2 className="text-2xl font-bold">Ready to Begin?</h2>
+                <Badge variant="secondary">5 Interactive Phases</Badge>
+              </div>
+              <p className="text-muted-foreground">
+                Complete all five phases to progress from understanding to building AI agents.
+                Each phase builds on the last, with immediate feedback and assessment.
+              </p>
+            </div>
+            <Button
+              size="lg"
+              onClick={() => setLocation("/learn")}
+              className="px-8"
+              data-testid="button-start-learning"
+            >
+              Start Learning
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+          </div>
+        </Card>
+
+        <div className="mt-12 text-center text-sm text-muted-foreground">
+          <p>
+            Designed with cognitive apprenticeship, retrieval practice, and metacognitive
+            calibration to maximize learning outcomes
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
