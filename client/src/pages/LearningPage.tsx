@@ -242,6 +242,28 @@ export default function LearningPage() {
       // Run the pipeline
       const result = await runPipeline(pipeline, ctx);
 
+      // Helper function to translate log entry data
+      const translateLogData = (data: any) => {
+        const translatedData = { ...data };
+        
+        // Translate action field if it's a translation key
+        if (typeof data.action === 'string' && data.action.startsWith('healthCoach.')) {
+          translatedData.action = t(data.action);
+        }
+        
+        // Translate message field if it's a translation key
+        if (typeof data.message === 'string' && data.message.startsWith('healthCoach.')) {
+          translatedData.message = t(data.message);
+        }
+        
+        // Translate error field if it's a translation key
+        if (typeof data.error === 'string' && data.error.startsWith('healthCoach.')) {
+          translatedData.error = t(data.error);
+        }
+        
+        return translatedData;
+      };
+
       // Convert runtime log to simulation steps
       const steps: SimulationStep[] = result.log.map((logEntry, index) => ({
         id: `step-${index}`,
@@ -250,7 +272,7 @@ export default function LearningPage() {
         input: index > 0 ? result.log[index - 1]?.data : fixture.input,
         output: logEntry.data,
         status: logEntry.step.startsWith("ERROR") ? "error" : "success",
-        message: JSON.stringify(logEntry.data, null, 2),
+        message: JSON.stringify(translateLogData(logEntry.data), null, 2),
       }));
 
       setSimulationSteps(steps);

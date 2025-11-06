@@ -136,10 +136,10 @@ export function FixedPipelineBuilder({
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
                           <Icon className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                          <span className="font-medium text-sm">{selectedBlock.label}</span>
+                          <span className="font-medium text-sm">{t(selectedBlock.label)}</span>
                         </div>
                         <p className="text-xs text-muted-foreground line-clamp-2">
-                          {selectedBlock.description}
+                          {t(selectedBlock.description)}
                         </p>
                       </div>
                     ) : (
@@ -193,7 +193,7 @@ export function FixedPipelineBuilder({
                       </div>
                       <div className="flex-1 space-y-1">
                         <div className="flex items-center gap-2">
-                          <span className="font-semibold">{block.label}</span>
+                          <span className="font-semibold">{t(block.label)}</span>
                           {isSelected && (
                             <Badge variant="default" className="text-xs">
                               {t("circuit.selected")}
@@ -201,7 +201,7 @@ export function FixedPipelineBuilder({
                           )}
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          {block.description}
+                          {t(block.description)}
                         </p>
                       </div>
                     </div>

@@ -266,6 +266,55 @@
           "description": "Book check-in reminder for tomorrow"
         }
       }
+    },
+    "runtime": {
+      "perception": {
+        "parse": {
+          "action": "Parsed wearable data"
+        },
+        "smooth": {
+          "action": "Smoothed sensor data"
+        }
+      },
+      "reasoning": {
+        "threshold": {
+          "action": "Applied threshold rules"
+        },
+        "classify": {
+          "action": "Classified activity level"
+        }
+      },
+      "planning": {
+        "daily": {
+          "action": "Created daily plan",
+          "message": {
+            "excellent": "Amazing work! You exceeded your goals!",
+            "active": "Great job hitting your step goal!",
+            "nudge": "You can do it! Just a few more steps to reach your goal."
+          }
+        },
+        "safety": {
+          "action": "Checked safety constraints",
+          "message": {
+            "rest": "Your heart rate is elevated. Please rest and consult a doctor if this continues.",
+            "lightActivity": "Your heart rate is slightly elevated. Consider light activity only.",
+            "congratulate": "Great job! Your metrics look healthy.",
+            "encourage": "Your health metrics are good - you can safely increase activity!"
+          }
+        }
+      },
+      "execution": {
+        "notify": {
+          "action": "Sent notification",
+          "defaultMessage": "Keep up the good work!",
+          "error": "Failed to send notification",
+          "errorDetails": "sendNotification tool not available"
+        },
+        "streak": {
+          "actionIncremented": "Streak incremented",
+          "actionReset": "Streak reset"
+        }
+      }
     }
   }
 }

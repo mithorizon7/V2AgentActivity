@@ -60,7 +60,8 @@ Each with distinct color coding for visual learning:
 - ✅ Prefilled defaults and guided coach panel
 - ✅ Deterministic failure injection for reproducible learning
 - ✅ Backend API with server-side classification validation
-- ⏳ Full i18n integration and accessibility enhancements pending
+- ✅ Complete i18n integration with translation-key architecture
+- ⏳ Accessibility enhancements (keyboard navigation, ARIA) pending
 
 ## Recent Changes (November 2024)
 **Phase 1: Runtime Core & Executable Blocks**
@@ -77,6 +78,14 @@ Each with distinct color coding for visual learning:
 - Updated primary CTA to "Run Demo" for progressive disclosure
 - Enhanced fixture descriptions and outcome summary chips (Result • Steps • Tool Calls)
 - Improved Phase 3 and Phase 4 layouts with coach panel in side column
+
+**Phase 3: Complete i18n Integration**
+- Implemented translation-key architecture: blocks store keys (e.g., `healthCoach.blocks.perception.parse.name`), UI translates via t()
+- Expanded translation.json to 260+ keys covering all beginner flow strings
+- All components use useTranslation(): GuidedCoachPanel, FixedPipelineBuilder, LearningPage, SimulationTracer
+- Health Coach blocks fully localizable: labels, descriptions, dual labels, failure modes
+- Zero hardcoded English in critical learner path (Phases 3-4)
+- Production-ready for multi-language deployment
 
 **Earlier Work**
 - Classification activity with drag-and-drop and explanation textareas

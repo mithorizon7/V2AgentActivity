@@ -7,8 +7,8 @@ import { Block, RuntimeCtx } from '@/runtime/types';
 export const parseWearables: Block = {
   id: 'perception.parse',
   kind: 'perception',
-  label: 'Parse Wearables',
-  description: 'Extract raw sensor data from wearable device',
+  label: 'healthCoach.blocks.perception.parse.name',
+  description: 'healthCoach.blocks.perception.parse.description',
   run: (ctx: RuntimeCtx): RuntimeCtx => {
     const steps = ctx.input.steps || 0;
     const heartRate = ctx.input.heartRate || [];
@@ -19,7 +19,7 @@ export const parseWearables: Block = {
     ctx.log.push({
       step: 'PERCEPTION_PARSE',
       data: { 
-        action: 'Parsed wearable data',
+        action: 'healthCoach.runtime.perception.parse.action',
         rawSteps: steps,
         rawHeartRateSamples: heartRate.length,
       },
@@ -33,8 +33,8 @@ export const parseWearables: Block = {
 export const smoothWearables: Block = {
   id: 'perception.smooth',
   kind: 'perception',
-  label: 'Smooth Wearables',
-  description: 'Apply noise reduction to sensor readings',
+  label: 'healthCoach.blocks.perception.smooth.name',
+  description: 'healthCoach.blocks.perception.smooth.description',
   run: (ctx: RuntimeCtx): RuntimeCtx => {
     const steps = ctx.input.steps || 0;
     const heartRate = ctx.input.heartRate || [];
@@ -52,7 +52,7 @@ export const smoothWearables: Block = {
     ctx.log.push({
       step: 'PERCEPTION_SMOOTH',
       data: { 
-        action: 'Smoothed sensor data',
+        action: 'healthCoach.runtime.perception.smooth.action',
         steps,
         heartRateAvg: smoothedHR,
         originalSamples: heartRate.length,
@@ -71,8 +71,8 @@ export const smoothWearables: Block = {
 export const thresholdCheck: Block = {
   id: 'reasoning.threshold',
   kind: 'reasoning',
-  label: 'Threshold Reasoner',
-  description: 'Simple rule-based activity classification',
+  label: 'healthCoach.blocks.reasoning.threshold.name',
+  description: 'healthCoach.blocks.reasoning.threshold.description',
   run: (ctx: RuntimeCtx): RuntimeCtx => {
     const steps = ctx.state.steps ?? ctx.input.steps ?? 0;
     const hrAvg = ctx.state.heartRateAvg ?? 0;
@@ -87,7 +87,7 @@ export const thresholdCheck: Block = {
     ctx.log.push({
       step: 'REASONING_THRESHOLD',
       data: { 
-        action: 'Applied threshold rules',
+        action: 'healthCoach.runtime.reasoning.threshold.action',
         steps,
         hrAvg,
         activeToday,
@@ -104,8 +104,8 @@ export const thresholdCheck: Block = {
 export const ruleClassifier: Block = {
   id: 'reasoning.classifier',
   kind: 'reasoning',
-  label: 'Rule-Based Classifier',
-  description: 'Multi-factor activity classification',
+  label: 'healthCoach.blocks.reasoning.ruleBased.name',
+  description: 'healthCoach.blocks.reasoning.ruleBased.description',
   run: (ctx: RuntimeCtx): RuntimeCtx => {
     const steps = ctx.state.steps ?? ctx.input.steps ?? 0;
     const hrAvg = ctx.state.heartRateAvg ?? 0;
@@ -135,7 +135,7 @@ export const ruleClassifier: Block = {
     ctx.log.push({
       step: 'REASONING_CLASSIFY',
       data: { 
-        action: 'Classified activity level',
+        action: 'healthCoach.runtime.reasoning.classify.action',
         steps,
         hrAvg,
         activityLevel,
@@ -155,8 +155,8 @@ export const ruleClassifier: Block = {
 export const dailyPlanner: Block = {
   id: 'planning.daily',
   kind: 'planning',
-  label: 'Daily Goal Planner',
-  description: 'Create action plan based on activity',
+  label: 'healthCoach.blocks.planning.daily.name',
+  description: 'healthCoach.blocks.planning.daily.description',
   run: (ctx: RuntimeCtx): RuntimeCtx => {
     const activeToday = ctx.state.activeToday ?? false;
     const activityLevel = ctx.state.activityLevel ?? 'low';
@@ -166,13 +166,13 @@ export const dailyPlanner: Block = {
     
     if (activityLevel === 'excellent') {
       plan = 'congratulate';
-      message = 'Amazing work! You exceeded your goals!';
+      message = 'healthCoach.runtime.planning.daily.message.excellent';
     } else if (activeToday) {
       plan = 'congratulate';
-      message = 'Great job hitting your step goal!';
+      message = 'healthCoach.runtime.planning.daily.message.active';
     } else {
       plan = 'nudge';
-      message = 'You can do it! Just a few more steps to reach your goal.';
+      message = 'healthCoach.runtime.planning.daily.message.nudge';
     }
     
     ctx.state.plan = plan;
@@ -181,7 +181,7 @@ export const dailyPlanner: Block = {
     ctx.log.push({
       step: 'PLANNING_DAILY',
       data: { 
-        action: 'Created daily plan',
+        action: 'healthCoach.runtime.planning.daily.action',
         activeToday,
         activityLevel,
         plan,
@@ -197,8 +197,8 @@ export const dailyPlanner: Block = {
 export const safetyPlanner: Block = {
   id: 'planning.safety',
   kind: 'planning',
-  label: 'Safety Planner',
-  description: 'Check health metrics before suggesting activity',
+  label: 'healthCoach.blocks.planning.weekly.name',
+  description: 'healthCoach.blocks.planning.weekly.description',
   run: (ctx: RuntimeCtx): RuntimeCtx => {
     const elevatedHR = ctx.state.elevatedHR ?? false;
     const hrAvg = ctx.state.heartRateAvg ?? 0;
@@ -210,17 +210,17 @@ export const safetyPlanner: Block = {
     
     if (elevatedHR && hrAvg > 160) {
       plan = 'rest';
-      message = 'Your heart rate is elevated. Please rest and consult a doctor if this continues.';
+      message = 'healthCoach.runtime.planning.safety.message.rest';
       safetyWarning = true;
     } else if (elevatedHR) {
       plan = 'light_activity';
-      message = 'Your heart rate is slightly elevated. Consider light activity only.';
+      message = 'healthCoach.runtime.planning.safety.message.lightActivity';
     } else if (activeToday) {
       plan = 'congratulate';
-      message = 'Great job! Your metrics look healthy.';
+      message = 'healthCoach.runtime.planning.safety.message.congratulate';
     } else {
       plan = 'encourage';
-      message = 'Your health metrics are good - you can safely increase activity!';
+      message = 'healthCoach.runtime.planning.safety.message.encourage';
     }
     
     ctx.state.plan = plan;
@@ -230,7 +230,7 @@ export const safetyPlanner: Block = {
     ctx.log.push({
       step: 'PLANNING_SAFETY',
       data: { 
-        action: 'Checked safety constraints',
+        action: 'healthCoach.runtime.planning.safety.action',
         elevatedHR,
         hrAvg,
         plan,
@@ -251,18 +251,18 @@ export const safetyPlanner: Block = {
 export const sendNotification: Block = {
   id: 'execution.notify',
   kind: 'execution',
-  label: 'Send Notification',
-  description: 'Deliver message to user',
+  label: 'healthCoach.blocks.execution.notify.name',
+  description: 'healthCoach.blocks.execution.notify.description',
   run: (ctx: RuntimeCtx): RuntimeCtx => {
     const plan = ctx.state.plan;
-    const message = ctx.state.message ?? 'Keep up the good work!';
+    const message = ctx.state.message ?? 'healthCoach.runtime.execution.notify.defaultMessage';
     
     if (!ctx.tools.sendNotification) {
       ctx.log.push({
         step: 'EXECUTION_ERROR',
         data: { 
-          action: 'Failed to send notification',
-          error: 'sendNotification tool not available',
+          action: 'healthCoach.runtime.execution.notify.error',
+          error: 'healthCoach.runtime.execution.notify.errorDetails',
         },
         timestamp: Date.now(),
       });
@@ -279,7 +279,7 @@ export const sendNotification: Block = {
     ctx.log.push({
       step: 'EXECUTION_NOTIFY',
       data: { 
-        action: 'Sent notification',
+        action: 'healthCoach.runtime.execution.notify.action',
         type: plan,
         message,
         result,
@@ -294,8 +294,8 @@ export const sendNotification: Block = {
 export const updateStreak: Block = {
   id: 'execution.streak',
   kind: 'execution',
-  label: 'Update Streak',
-  description: 'Update user progress and streak counter',
+  label: 'healthCoach.blocks.execution.followup.name',
+  description: 'healthCoach.blocks.execution.followup.description',
   run: (ctx: RuntimeCtx): RuntimeCtx => {
     const activeToday = ctx.state.activeToday ?? false;
     const currentStreak = ctx.state.currentStreak ?? 0;
@@ -305,10 +305,10 @@ export const updateStreak: Block = {
     
     if (activeToday) {
       newStreak = currentStreak + 1;
-      streakAction = 'incremented';
+      streakAction = 'healthCoach.runtime.execution.streak.actionIncremented';
     } else {
       newStreak = 0;
-      streakAction = 'reset';
+      streakAction = 'healthCoach.runtime.execution.streak.actionReset';
     }
     
     ctx.state.streak = newStreak;
@@ -318,7 +318,7 @@ export const updateStreak: Block = {
     ctx.log.push({
       step: 'EXECUTION_STREAK',
       data: { 
-        action: `Streak ${streakAction}`,
+        action: streakAction,
         activeToday,
         previousStreak: currentStreak,
         newStreak,
