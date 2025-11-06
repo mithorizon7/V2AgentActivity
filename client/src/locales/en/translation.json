@@ -11,75 +11,75 @@
   },
   "primer": {
     "title": "How AI Agents Work",
-    "subtitle": "Learn the 4+2 model before you build",
+    "subtitle": "Learn the 4+2 model — the fundamental pattern behind every AI agent",
     "continueToDemo": "See It In Action",
-    "continueToChecks": "Quick Understanding Check",
+    "continueToChecks": "Test Your Understanding",
     "intro": {
       "heading": "The 4+2 Model",
-      "description": "Every agent follows a 4-step run loop, supported by 2 cross-cutting systems"
+      "description": "Think of an AI agent like a smart assistant that follows the same basic cycle over and over: it reads information, figures out what it means, decides what to do, then does it. Plus, it has a notebook (memory) and a toolbox (tools) it can use at any time."
     },
     "runLoop": {
-      "title": "The 4-Step Run Loop",
+      "title": "The 4-Step Run Loop (happens in order, every time)",
       "perception": {
         "label": "1. Read the Data",
-        "description": "Transform raw inputs into structured information"
+        "description": "Like reading an email — turning messy input into something organized the agent can work with"
       },
       "reasoning": {
         "label": "2. Decide What It Means",
-        "description": "Analyze the data and determine what to do"
+        "description": "Like understanding if an email is urgent or not — figuring out the significance of what was read"
       },
       "planning": {
         "label": "3. Make a Plan",
-        "description": "Choose the specific action to take next"
+        "description": "Like choosing to reply, forward, or archive — picking which specific action to take"
       },
       "execution": {
         "label": "4. Take Action",
-        "description": "Carry out the chosen step"
+        "description": "Like actually sending the reply — doing the action that was planned"
       }
     },
     "supporting": {
-      "title": "+ 2 Supporting Systems (Available Throughout)",
+      "title": "+ 2 Supporting Systems (Available anytime, not steps)",
       "memory": {
         "label": "Memory (Learning)",
-        "description": "Stores knowledge and context—any step can read or write to it",
-        "badge": "Cross-cutting"
+        "description": "Like a notebook the agent carries — it can look up past information or write down new things at ANY point during the 4 steps",
+        "badge": "Always available"
       },
       "tools": {
         "label": "Tools & UI (Interaction)",
-        "description": "How the agent acts in the world—any step can call tools or show output",
-        "badge": "Cross-cutting"
+        "description": "Like a toolbox or phone to call for help — the agent can use tools or show messages at ANY point during the 4 steps",
+        "badge": "Always available"
       },
       "crossCutting": {
-        "title": "Why \"Supporting Systems\"?",
-        "description": "Memory and Tools aren't steps in the loop—they're resources available to ALL four steps"
+        "title": "Why are these \"Supporting\" not \"Steps\"?",
+        "description": "Steps 1-4 happen in order, one after another. But Memory and Tools are different — they're like resources sitting on a shelf that ANY step can reach for when needed."
       }
     },
     "demo": {
-      "title": "See It In Action",
-      "subtitle": "Watch the 4+2 model handle a health coaching scenario",
+      "title": "Real Example: Health Coach Agent",
+      "subtitle": "Let's watch an AI health coach go through the 4 steps with a real user's fitness data",
       "perception": {
-        "label": "Read the Data (Perception)",
-        "example": "Agent receives heart rate readings: [72, 68, 75, 71 BPM] and step count: 8,500 steps"
+        "label": "Step 1: Read the Data",
+        "example": "The agent receives messy sensor data like \"HR:72,68,75,71|STEPS:8500\" and organizes it into: Heart rate = [72, 68, 75, 71 BPM], Steps = 8,500"
       },
       "reasoning": {
-        "label": "Decide What It Means (Reasoning)",
-        "example": "Agent checks if heart rate is within healthy range (60-100 BPM) and step count meets goal (≥7,000 steps)"
+        "label": "Step 2: Decide What It Means",
+        "example": "The agent thinks: \"Is 71 BPM healthy? (Yes, it's between 60-100.) Did they meet their goal of 7,000 steps? (Yes, 8,500 > 7,000.) This person is doing well!\""
       },
       "planning": {
-        "label": "Make a Plan (Planning)",
-        "example": "Agent decides to send an encouragement notification since metrics are healthy"
+        "label": "Step 3: Make a Plan",
+        "example": "The agent decides: \"Since everything looks healthy, I should encourage them to keep it up rather than warning them about problems.\""
       },
       "execution": {
-        "label": "Take Action (Execution)",
-        "example": "Agent calls sendNotification tool: \"Great job! Your heart rate is steady and you hit your step goal.\""
+        "label": "Step 4: Take Action",
+        "example": "The agent sends the message: \"Great job! Your heart rate is steady at 71 BPM and you exceeded your 7,000 step goal. Keep up the excellent work!\""
       },
       "memory": {
-        "label": "🧠 Memory Used Throughout",
-        "example": "Agent stores user's baseline metrics and retrieves historical patterns to inform reasoning"
+        "label": "🧠 Memory (used during Step 2)",
+        "example": "While deciding what the data means, the agent checks its notebook: \"Last week this user averaged 65 BPM, so 71 is normal for them.\""
       },
       "tools": {
-        "label": "🔧 Tools Called When Needed",
-        "example": "Agent uses sendNotification tool in Execution step to deliver the message"
+        "label": "🔧 Tools (used during Step 4)",
+        "example": "To send the message, the agent uses the notification tool — like using a phone to text the user."
       }
     },
     "check": {
@@ -90,80 +90,80 @@
       "incorrect": "Not quite—try again"
     },
     "check1": {
-      "question": "Which step chooses the specific action to take next?",
-      "option1": "Perception",
-      "option2": "Reasoning",
-      "option3": "Planning",
-      "option4": "Execution",
-      "explanation": "Planning is where the agent decides WHICH action to take. Reasoning figures out what the situation means; Planning chooses the response."
+      "question": "In our health coach example, the agent decided to \"send encouragement\" rather than \"send a warning.\" Which step made this choice?",
+      "option1": "Perception (reading data)",
+      "option2": "Reasoning (understanding meaning)",
+      "option3": "Planning (choosing action)",
+      "option4": "Execution (doing action)",
+      "explanation": "Correct! Planning is Step 3, where the agent chooses WHICH specific action to take. Reasoning (Step 2) figured out the user was healthy, but Planning (Step 3) decided that meant sending encouragement rather than a warning or doing nothing."
     },
     "check2": {
-      "question": "Where does \"Send a notification to the user\" belong?",
-      "option1": "Reasoning",
-      "option2": "Planning",
-      "option3": "Execution",
-      "option4": "Interaction (Tools & UI)",
-      "explanation": "Sending notifications uses the Interaction system (Tools & UI). This is a supporting system available throughout the loop—usually called during the Execution step."
+      "question": "The notification tool that sends messages to users — is this a \"step\" in the 4-step loop, or a \"supporting system\"?",
+      "option1": "It's Step 3 (Planning)",
+      "option2": "It's Step 4 (Execution)",
+      "option3": "It's a step between 3 and 4",
+      "option4": "It's a supporting system (Tools)",
+      "explanation": "Right! The notification tool is part of the Tools supporting system. It's not a step itself — it's a resource that Step 4 (Execution) uses to carry out the planned action. Think of it like a hammer in a toolbox: not a step in building, but a tool you use during the building step."
     },
     "complete": {
-      "title": "You've Got the 4+2 Model!",
-      "description": "Now you're ready to practice applying it",
+      "title": "Perfect! You Understand the 4+2 Model",
+      "description": "You've learned how every AI agent follows the same fundamental pattern",
       "remember": {
-        "title": "Remember:",
-        "point1": "4-step loop: Read → Decide → Plan → Do",
-        "point2": "Memory and Tools support all steps (not in the loop)",
-        "point3": "Understanding WHY something belongs where matters more than just getting it right"
+        "title": "Key Takeaways:",
+        "point1": "Every agent does 4 steps in order: Read → Understand → Choose → Act",
+        "point2": "Memory & Tools aren't steps — they're resources any step can use",
+        "point3": "Now you'll practice sorting real agent capabilities into these categories"
       },
       "continue": "Start Practice"
     }
   },
   "workedExample": {
-    "title": "Watch an Expert Think",
-    "subtitle": "See how an expert classifies agent capabilities and why",
+    "title": "Learn From an Expert's Thinking",
+    "subtitle": "Watch how an expert decides where each capability belongs — and learn from common mistakes",
     "progress": "Example {{current}} of {{total}}",
-    "cardLabel": "Capability to classify:",
-    "nearMiss": "Near-miss",
-    "commonMistake": "Common Mistake",
-    "mightThink": "You might think this belongs in",
+    "cardLabel": "What the agent needs to do:",
+    "nearMiss": "Tricky example",
+    "commonMistake": "Common Beginner Mistake",
+    "mightThink": "Many beginners incorrectly think this goes in",
     "because": "because",
-    "expertClassifies": "Expert classification:",
-    "whyLabel": "Why?",
+    "expertClassifies": "Expert's answer:",
+    "whyLabel": "Expert's reasoning:",
     "previous": "Previous",
     "next": "Next Example",
-    "startPractice": "Start Guided Practice",
+    "startPractice": "Try It Yourself",
     "tip": {
-      "title": "Learning Tip",
-      "description": "Notice the expert focuses on WHAT the capability DOES, not just its name. Ask: Does it transform inputs? Make decisions? Choose actions? Execute steps?"
+      "title": "Pro Tip",
+      "description": "Don't get fooled by keywords! Focus on the ACTION. Is it reading input? Understanding meaning? Choosing what to do? Or actually doing it?"
     },
     "cards": {
       "parseSensor": {
         "text": "Parse wearable sensor data",
-        "explanation": "This transforms raw input (sensor readings) into structured information the agent can work with. That's the core job of Perception."
+        "explanation": "\"Parse\" means to read and organize. This takes messy sensor data like 'HR:72,68,75' and turns it into clean numbers the agent can understand. That's Step 1 (Perception) — reading and organizing input. Think: Is it READING data? Yes!"
       },
       "thresholdCheck": {
         "text": "Check if heart rate is within healthy range",
-        "explanation": "This analyzes the data to determine what it means (is it healthy or concerning?). That's Reasoning—deciding what the situation calls for."
+        "explanation": "This is figuring out what the numbers MEAN. Is 72 BPM good or bad? That requires understanding health ranges. That's Step 2 (Reasoning) — understanding the significance. Think: Is it DECIDING what the data means? Yes!"
       },
       "chooseAction": {
         "text": "Decide whether to encourage or alert the user",
-        "explanation": "This chooses which specific action to take next based on reasoning. That's Planning—selecting the response strategy."
+        "explanation": "Now the agent knows the user is healthy, but should it send encouragement, a warning, or stay quiet? This is Step 3 (Planning) — choosing WHICH action to take. Think: Is it CHOOSING between different possible actions? Yes!"
       },
       "sendMessage": {
         "text": "Send notification with health recommendation",
-        "explanation": "This carries out the chosen action, executing the plan. Execution is where the agent acts on its decisions."
+        "explanation": "This is actually sending the message to the user's phone. It's Step 4 (Execution) — carrying out the chosen action. Think: Is it DOING the actual task? Yes!"
       },
       "storeBaseline": {
         "text": "Remember user's baseline heart rate for future comparisons",
-        "explanation": "This stores knowledge for later use. Memory (Learning) is a supporting system—not a step in the loop, but available throughout."
+        "explanation": "\"Storing\" and \"remembering\" are memory operations. This isn't a step in the 4-step loop — it's using the Memory supporting system (like writing in a notebook). Any of the 4 steps could do this. Think: Is it storing information for later? Yes → Memory!"
       },
       "callApi": {
         "text": "Fetch user's calendar to avoid alerts during meetings",
-        "explanation": "This uses external tools or APIs to interact with the world. Tools/UI (Interaction) is a supporting system available to any step."
+        "explanation": "\"Fetching\" from an API means using an external tool. This isn't a step — it's using the Tools supporting system. Any of the 4 steps might need calendar data. Think: Is it using an external service or tool? Yes → Tools!"
       },
       "calendarNearMiss": {
         "text": "Schedule a follow-up check for tomorrow",
-        "explanation": "Scheduling uses the calendar API (a tool), making this Interaction. Near-miss: it feels like Planning because it's about 'planning ahead,' but the ACT of scheduling is tool use.",
-        "nearMissExplanation": "it involves planning ahead in time"
+        "explanation": "TRICKY! The word \"schedule\" makes you think Planning, but look closer: this is USING the calendar tool to CREATE an appointment. It's Interaction (Tools), not Planning. Planning would be DECIDING to schedule, but the actual ACT of scheduling uses a tool.",
+        "nearMissExplanation": "the word 'schedule' sounds like planning"
       }
     }
   },
@@ -225,45 +225,45 @@
     "executionDual": "Do the actions (Execution)"
   },
   "classification": {
-    "title": "Phase 1: Classification & Explanation",
-    "description": "Classify agent capabilities into the six core processes and explain your reasoning. Remember the 4+2 model: 4 steps in the run loop, plus 2 supporting systems.",
-    "independentDescription": "Classify agent capabilities into the six core processes and explain your reasoning",
-    "dragInstruction": "Drag items from the tray below to the correct process category and explain your reasoning",
-    "unsortedTray": "Unsorted Items",
-    "dragItemsHere": "Drag items here",
-    "scramble": "Scramble",
-    "submitCheck": "Submit & Check",
-    "explainPlaceholder": "Explain why you placed this item here...",
-    "explanationRequired": "Please provide explanations for all items before submitting",
-    "phaseComplete": "Phase Complete!",
-    "continueDescription": "Review your feedback and continue to the next phase",
-    "continueToPhase2": "Continue to Phase 2",
-    "crossCuttingHint": "Cross-cutting: available to any stage rather than a step in the line",
+    "title": "Phase 1: Apply What You've Learned",
+    "description": "Now it's your turn! Sort these agent capabilities into the 6 categories. Remember: 4 steps happen in order (Perception → Reasoning → Planning → Execution), while Memory and Tools are available anytime.",
+    "independentDescription": "Sort capabilities into the 6 processes and explain your thinking — this helps you learn!",
+    "dragInstruction": "Drag each capability from below into the correct category above, then explain your reasoning",
+    "unsortedTray": "Capabilities to Sort",
+    "dragItemsHere": "Drop capabilities here",
+    "scramble": "Reset All",
+    "submitCheck": "Check My Answers",
+    "explainPlaceholder": "Why does this belong here? (Tip: Mention what ACTION this performs)",
+    "explanationRequired": "Please explain each choice — this helps you understand WHY, not just memorize WHERE",
+    "phaseComplete": "Excellent Work!",
+    "continueDescription": "You've mastered classification! Review your results and continue",
+    "continueToPhase2": "Next: Boundary Mapping",
+    "crossCuttingHint": "Remember: This isn't a step — it's a resource available to ALL steps",
     "correct": "Correct!",
-    "incorrectClassification": "Incorrect Classification",
-    "incorrectFeedback": "Consider how this relates to the core function of the correct process",
+    "incorrectClassification": "Not quite right",
+    "incorrectFeedback": "Think about the core action: Is it reading, understanding, choosing, doing, remembering, or using tools?",
     "hints": {
-      "learning": "Supporting system: Stores knowledge and improves over time (not in the 4-step loop)",
-      "interaction": "Supporting system: Provides tools and communication (not in the 4-step loop)"
+      "learning": "Hint: Memory/Learning isn't a step in the loop — it's like a notebook any step can write in or read from",
+      "interaction": "Hint: Tools/Interaction isn't a step in the loop — it's like a toolbox any step can reach for when needed"
     }
   },
   "guided": {
-    "title": "Guided Practice: Perception vs Execution",
-    "description": "Let's start with two processes that are easy to distinguish. Sort these items into either Read (Perception) or Do (Execution).",
-    "dragInstruction": "Drag items and explain your reasoning. Use the seed prompts to get started!",
-    "checkAnswers": "Check Answers",
-    "sortAllItems": "Please sort all items before checking your answers",
-    "contrastiveHint": "Hint: If it transforms raw input into structured data, it's Perception. If it carries out actions or uses tools, it's Execution.",
+    "title": "Practice with Help: Start Simple",
+    "description": "Let's practice with just 2 processes that are opposites: Perception (reading input) vs Execution (taking action). These are the easiest to tell apart!",
+    "dragInstruction": "Drag each item to the correct box. Click a starter phrase if you're stuck on the explanation.",
+    "checkAnswers": "Check My Work",
+    "sortAllItems": "Please sort all items before checking — try your best guess!",
+    "contrastiveHint": "Quick Test: Ask yourself — Is this about GETTING information IN (Perception) or SENDING actions OUT (Execution)? Reading = IN, Doing = OUT.",
     "seedPrompts": {
       "perception": {
-        "1": "Transforms raw input...",
-        "2": "Detects patterns in...",
-        "3": "Processes sensor data..."
+        "1": "This reads and organizes...",
+        "2": "This takes raw input from...",
+        "3": "This converts messy data into..."
       },
       "execution": {
-        "1": "Carries out actions...",
-        "2": "Uses tools to...",
-        "3": "Performs the steps..."
+        "1": "This performs the action of...",
+        "2": "This sends output to...",
+        "3": "This makes something happen by..."
       }
     }
   },
@@ -347,18 +347,18 @@
   },
   "circuit": {
     "title": "Phase 3: Build Your Health Coach Agent",
-    "description": "Your agent is already configured with working blocks. Run it to see how it processes wearable data!",
-    "pipelineTitle": "Agent Pipeline",
-    "pipelineDescription": "Select a block for each process to build your agent",
-    "blockPalette": "Block Palette",
-    "dragInstruction": "Select blocks for each step of the pipeline",
-    "canvasTitle": "Agent Circuit Canvas",
-    "clear": "Clear",
-    "saveCircuit": "Save Circuit",
-    "connectInstructions": "Connect blocks by dragging from one block's edge to another. Click and drag blocks to reposition them.",
-    "pipelineComplete": "Pipeline Complete",
-    "clickToChoose": "Click to choose",
-    "selected": "Selected",
+    "description": "Now you'll build a real AI health coach! It reads fitness data and helps users stay healthy. Your agent already has smart blocks — just run it to see them work!",
+    "pipelineTitle": "Your Agent's Brain",
+    "pipelineDescription": "Each slot teaches your agent one of the 4 steps",
+    "blockPalette": "Available Strategies",
+    "dragInstruction": "Click a slot, then pick which strategy to use for that step",
+    "canvasTitle": "Agent Assembly Area",
+    "clear": "Start Over",
+    "saveCircuit": "Save My Agent",
+    "connectInstructions": "Build connections: drag from one block to another. Reposition blocks by dragging them around.",
+    "pipelineComplete": "Agent Ready!",
+    "clickToChoose": "Click to select",
+    "selected": "Using:",
     "slotLabels": {
       "perception": "Read the data",
       "reasoning": "Decide what it means",
@@ -383,22 +383,22 @@
     "testYourAgent": "Test Your Agent"
   },
   "simulation": {
-    "title": "Phase 4: Run & Test Your Agent",
-    "description": "Watch your agent process real data, then experiment with different blocks and failure modes",
-    "execution": "Simulation Execution",
-    "run": "Run",
+    "title": "Phase 4: Test Your Health Coach",
+    "description": "Time to see your agent in action! Watch it process real fitness data step-by-step, then test how it handles problems",
+    "execution": "Watch It Run",
+    "run": "Start",
     "runDemo": "Run Demo",
-    "runAgain": "Run Again",
+    "runAgain": "Try Again",
     "pause": "Pause",
     "reset": "Reset",
-    "resetToClean": "Reset to Clean Data",
-    "executionLog": "Execution Log",
-    "noLogs": "No logs yet",
-    "buildCircuitFirst": "Build a circuit to run a simulation",
-    "testScenario": "Test Scenario",
+    "resetToClean": "Use Normal Data",
+    "executionLog": "What Happened",
+    "noLogs": "Nothing yet — click Run Demo to start",
+    "buildCircuitFirst": "First, build your agent in Phase 3",
+    "testScenario": "Test Data",
     "step": "Step",
-    "input": "Input",
-    "output": "Output",
+    "input": "What came in",
+    "output": "What came out",
     "metrics": {
       "result": "Result",
       "steps": "Steps",
@@ -497,34 +497,34 @@
   },
   "guidedCoach": {
     "welcome": {
-      "title": "Your agent is ready!",
-      "message": "The pipeline is already set up with working blocks. Click 'Run Demo' to see the 4-step run loop in action.",
-      "tip": "You'll go through the 4-step loop; any step may tap Memory 🧠 or Tools 🔧"
+      "title": "Your First Agent is Ready!",
+      "message": "Great! The pipeline shows a working Health Coach agent. Click 'Run Demo' to watch it help a real user with their fitness data.",
+      "tip": "As it runs, you'll see exactly how the 4 steps work together, plus when Memory 🧠 or Tools 🔧 get used"
     },
     "firstRun": {
-      "title": "Run your first demo",
-      "message": "Your Health Coach agent is configured. Click 'Run Demo' to watch it execute the full 4-step loop.",
-      "tip": "Watch each stage: Read the data → Decide what it means → Make a plan → Do the step. Notice which steps use Memory 🧠 or Tools 🔧!"
+      "title": "Time for Your First Run!",
+      "message": "Your Health Coach is set up perfectly. Click 'Run Demo' and watch carefully as it goes through each step with real fitness data.",
+      "tip": "Follow along: Step 1 reads raw data → Step 2 understands it → Step 3 chooses action → Step 4 does it. The icons show when Memory 🧠 or Tools 🔧 are used!"
     },
     "successFirst": {
-      "title": "Success! Your agent worked perfectly",
-      "message": "The agent completed the 4-step loop successfully. Circle where you see 🧠/🔧 in the trace. Which steps used them?",
-      "tip": "Now try swapping one of the blocks to see how different logic changes the result. Notice how Memory stores data between steps!"
+      "title": "🎉 Success! Your Agent Helped Someone!",
+      "message": "Perfect! The agent read fitness data, understood the user was healthy, and sent encouragement. Did you notice the 🧠 and 🔧 icons showing when Memory and Tools were used?",
+      "tip": "Now experiment: swap different blocks to see how they handle data differently. Each block is like a different strategy — some are stricter, some more flexible!"
     },
     "changeBlock": {
-      "title": "Try changing something!",
-      "message": "Experiment by swapping blocks in the pipeline. Each block has different logic that will produce different results.",
-      "tip": "For example, Rule Classifier uses stricter criteria than Threshold Check. Watch how this changes what gets stored in Memory 🧠 and which Tools 🔧 get called!"
+      "title": "Experiment Time!",
+      "message": "Each block uses different logic. Try swapping them to learn the trade-offs — like how 'Rule Classifier' is stricter than 'Threshold Check'.",
+      "tip": "Watch what changes: Does it store different things in Memory 🧠? Call different Tools 🔧? This teaches you how small changes affect the whole system!"
     },
     "failureRecovery": {
-      "title": "Simulation failed - Let's debug",
-      "message": "The agent encountered an error during the run loop. Check the logs to see which step failed and why.",
-      "tip": "Which step chose the action? → Planning. Where was the habit streak stored? → Learning (Memory 🧠). Understanding this helps debug!"
+      "title": "Learning from Errors",
+      "message": "The agent hit a problem — this is valuable! Check the error message to see exactly which step failed and why.",
+      "tip": "Debug like a pro: Which step failed? What was it trying to do? Was it missing data from Memory 🧠 or couldn't find a Tool 🔧? This teaches real debugging!"
     },
     "withFailures": {
-      "title": "Observing failure handling",
-      "message": "You've injected failures. Toggle 'Noisy input' and run—does your Perception step change? Why?",
-      "tip": "Notice how failures affect different parts: noisy sensors hit Perception, missing tools hit Execution 🔧, stale data hits Memory 🧠!"
+      "title": "Testing Real Problems",
+      "message": "Smart! You're testing how your agent handles real-world issues like broken sensors or missing tools. Watch how it adapts (or doesn't)!",
+      "tip": "Each failure tests different parts: noisy data tests Step 1 (Perception), missing tools test Step 4 (Execution), stale memory tests the Memory system 🧠!"
     },
     "tryFailure": {
       "title": "Great work!",
