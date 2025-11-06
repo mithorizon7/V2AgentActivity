@@ -1,0 +1,231 @@
+**Short answer:** Yes—**go with Option A (fixed 6‑slot, executable pipeline)** and keep your current React Flow canvas as an **optional “diagram mode”** (no execution) for later. You can land the four “best” ideas quickly by scoping them to a deterministic, front‑end–only runtime and a single concrete scenario pack (Health Coach). Below is a crisp migration plan, implementation blueprint, and acceptance criteria that fit modest dev resources.
+
+> **Why Option A now:** It delivers real causality (block → different outputs), aligns with your beginner pedagogy, avoids the heavy complexity of executing arbitrary graphs, and creates a solid base you can extend to new scenarios. The React Flow editor remains valuable as a polished *visualizer* you can surface later for advanced learners or as a marketing asset.
+
+---
+
+## A. Decision & framing
+
+* **Primary objective:** teach complete beginners *how agents work* by letting them *build, run, and debug* a simple agent with **visible causality**.
+* **Chosen path:** **Option A** (fixed pipeline + executable blocks) for learning value; **retain** React Flow as a *non‑executing diagram mode* and tuck it behind an “Advanced (beta)” switch.
+* **Scope discipline:** one scenario (Health Coach), deterministic blocks, three fixtures, small failure injector, minimal metrics. i18n wired end‑to‑end so you don’t pay that tax later.
+
+---
+
+## B. What to ship (the four “best” ideas, implemented)
+
+1. **Explain‑Your‑Placement (Classification)**
+
+   * Already mostly there; add **mandatory one‑sentence rationale**, per‑card **why feedback**, and **near‑miss distractors**.
+   * Store attempts locally; no backend required.
+
+2. **Boundary Mapper (System view)**
+
+   * Keep your current mapper; ensure each required node connects to the intended process; show specific missing links on “Check.”
+
+3. **Agent Circuit Builder (Fixed pipeline)**
+
+   * Replace free‑form build with **four executable slots**: **Perception → Reasoning → Planning → Execution** (Memory & Tools are global).
+   * Each slot offers **3–4 blocks**. A **Run** button executes the pipeline on Fixture 1–3 and shows a **Trace Log**.
+
+4. **Failure Injector (Debugging)**
+
+   * Three toggles: `noisyInput`, `staleMemory`, `missingTool`.
+   * Failures mutate input or runtime context **before** execution; resulting trace and metrics change accordingly.
+
+> Keep your **Simulation Tracer UI**—connect it to the real runtime, not mock steps.
+
+---
+
+## C. Implementation plan (4 small phases, each shippable)
+
+### Phase 0 — Pre‑flight (keep scope small)
+
+* **Feature flag:** `useFixedPipeline` (default **on**). Keep React Flow accessible only via “Advanced (beta)” toggle (non‑executing).
+* **Minimal scenario pack:** `scenarios/health-coach/` with `blocks.ts`, `fixtures.json`, `copy.json` (i18n), and `feedback.json`.
+
+### Phase 1 — Runtime core + block registry
+
+* **Types (tiny & stable):**
+
+  ```ts
+  type Process = 'Perception'|'Reasoning'|'Planning'|'Execution';
+  interface RuntimeCtx {
+    input: any;
+    state: Record<string, any>;
+    tools: Record<string, (args:any)=>any>;
+    log: Array<{ step: string; data: any }>;
+    success?: boolean;
+  }
+  interface Block {
+    id: string;
+    kind: Process;
+    label: string;
+    run: (ctx: RuntimeCtx) => Promise<RuntimeCtx> | RuntimeCtx;
+  }
+  ```
+* **Engine (pure, deterministic):**
+
+  ```ts
+  export async function runPipeline(
+    pipeline: Record<Process, Block>,
+    ctx: RuntimeCtx
+  ): Promise<RuntimeCtx> {
+    let current = ctx;
+    for (const p of ['Perception','Reasoning','Planning','Execution'] as const) {
+      current.log.push({ step: `START_${p}`, data: null });
+      current = await pipeline[p].run(current);
+      current.log.push({ step: `END_${p}`, data: { state: current.state } });
+    }
+    return current;
+  }
+
+  export function applyFailures(
+    base: RuntimeCtx,
+    f: { noisyInput?: boolean; missingTool?: string; staleMemory?: boolean }
+  ): RuntimeCtx {
+    const c = structuredClone(base);
+    if (f.noisyInput && Array.isArray(c.input.heartRate)) {
+      c.input.heartRate = c.input.heartRate.map((hr:number)=>hr + Math.round(Math.random()*40 - 20));
+    }
+    if (f.missingTool) delete c.tools[f.missingTool];
+    if (f.staleMemory) c.state = {}; // or delete specific keys
+    c.log.push({ step: 'FAILURE_INJECTED', data: f });
+    return c;
+  }
+  ```
+* **Block registry (Health Coach):**
+
+  * **Perception:** `parseWearables`, `smoothWearables`
+  * **Reasoning:** `thresholdCheck`, `ruleClassifier`
+  * **Planning:** `dailyPlanner`, `safetyPlanner` (blocks execution if HR too high)
+  * **Execution:** `sendNotification`, `updateStreak`
+  * **Tools:** `sendNotification`, `readSteps`, `readHR` (front‑end stubs; just log calls)
+* **Fixtures (3 JSONs):** normal, borderline, edge/noisy.
+
+**Acceptance (Phase 1):** Given Fixture 1 and `smoothWearables + thresholdCheck + dailyPlanner + sendNotification` → `success=true`, 4 steps, 1 tool call; swapping `thresholdCheck` for `ruleClassifier` flips plan on Fixture 2.
+
+---
+
+### Phase 2 — Fixed‑pipeline UI & Trace integration
+
+* Replace graph builder with **four slots**. Click → choose block modal (3–4 choices with 1‑line descriptions).
+* **Run** menu: Fixture selector + Failure toggles.
+* Bind **Trace Log** to `ctx.log` from the real engine; keep your play/pause visual affordances by stepping through `log` entries.
+* Metrics: `success`, `steps`, `toolCalls` (count `Execution` tool events), optional warning badges (e.g., high variance detected).
+
+**Acceptance (Phase 2):** Changing a block changes the trace and final result; failure toggles visibly alter inputs or tool availability and propagate through the log.
+
+---
+
+### Phase 3 — Explain‑your‑placement & Boundary polish
+
+* **Classification:** make rationale **required**; show **why** feedback keyed to the confusion (short, targeted).
+* **Boundary mapper:** add **Check** button that lists exact missing connections (not just “incorrect”).
+
+**Acceptance (Phase 3):** Solve disabled until all rationales present; wrong placements show tailored “why”; mapper check lists specific missing links (e.g., “Wearable Stream → Perception”).
+
+---
+
+### Phase 4 — i18n wiring (no content rewrite)
+
+* Replace hard‑coded strings with `t('namespace.key')`.
+* Create a tiny typed wrapper so missing keys fail fast:
+
+  ```ts
+  const dict = {
+    builder: { run: 'Run', fixture: 'Fixture', perception: 'Perception' /* … */ }
+  } as const;
+  type Dict = typeof dict;
+  export function t<K1 extends keyof Dict, K2 extends keyof Dict[K1]>(n:K1, k:K2) {
+    return dict[n][k];
+  }
+  ```
+* Run a quick grep/ESLint rule to block new hard‑coded strings in core views.
+
+**Acceptance (Phase 4):** Flipping language file swaps all labels in Builder/Boundary/Classification without code changes.
+
+---
+
+## D. File layout (keeps code small & readable)
+
+```
+src/
+  runtime/
+    engine.ts           // runPipeline, applyFailures
+    types.ts
+  scenarios/
+    health-coach/
+      blocks.ts         // all Block implementations
+      fixtures.json
+      feedback.json     // classification "why" messages
+      copy.json         // i18n content for this scenario
+  ui/
+    classify/
+    boundary/
+    builder/            // fixed pipeline UI + trace
+    shared/trace/
+  i18n/
+    index.ts            // typed t()
+```
+
+---
+
+## E. How to salvage the React Flow work (without derailing)
+
+* Keep it behind an **“Advanced (beta)”** toggle as a **diagram‑only** mode (no execution).
+* Add a one‑way **“Export diagram as image”** to support presentations and docs.
+* If you absolutely must bridge: provide a **manual mapping** panel where users map each graph cluster to one of the four pipeline slots. (Avoid auto‑execution of arbitrary graphs.)
+
+---
+
+## F. Tests that matter (fast and deterministic)
+
+**Unit (Vitest)**
+
+* Each block’s `run()` mutates `ctx.state` as expected given fixture A/B/C.
+* `applyFailures` actually alters `ctx.input` / `ctx.tools`.
+
+**Integration**
+
+* A complete pipeline over Fixture 1 yields the expected trace sequence and `success` flag.
+* Failure toggles change at least one metric and a trace datum (e.g., smoothed HR).
+
+**UI (Playwright)**
+
+* Changing a block changes the rendered trace.
+* “Solve” locked until rationales exist; incorrect drops surface the correct “why” message.
+
+---
+
+## G. Risks & mitigations
+
+* **Scope creep (graph execution):** Explicitly out of scope. Keep React Flow as visualization only.
+* **Non‑determinism:** Avoid randomness except inside `applyFailures`; if present, seed it.
+* **i18n debt:** Wire `t()` wrapper now; forbid hard‑coded strings via lint rule.
+
+---
+
+## H. What to do later (not now)
+
+* Instructor dashboard, analytics/xAPI, persistence to DB.
+* Confidence calibration UI and learner model.
+* Multiple agent branches/parallelism; “true” graph execution.
+* Additional scenario packs (Classroom Helper, Email Triage).
+* Optional LLM power‑ups (a Reasoning block that calls an API), behind a feature flag.
+
+---
+
+## Bottom line
+
+* **Pick Option A** to meet your beginner‑learning goal with genuine causality and low engineering burden.
+* Ship in **four small phases**; each phase stands on its own and builds toward the complete experience.
+* Keep React Flow as a **non‑executing, advanced diagram mode** so prior work isn’t wasted and you have a path for future sophistication.
+
+---
+
+## Confidence
+
+* **Recommendation (choose Option A) & pedagogy rationale:** **High** — strong alignment with novice learning science and your stated goals.
+* **Feasibility of the fixed‑pipeline runtime and UI with modest resources:** **High** — the runtime is tiny and deterministic; UI is straightforward.
+* **Exact effort estimates and your current codebase fit:** **Medium** — depends on how entangled hard‑coded strings are and how much of the tracer can be reused verbatim.

@@ -1,0 +1,277 @@
+Short answer: **You’re close on the shell but still missing the heart.** The most recent state (based on your description and repo list) has the **classification**, **boundary mapper**, **failure toggles UI**, and a **nice tracer**, but your **builder is still a React Flow graph (non-executing)** and there’s **no fixed 4-slot runtime** or **Health Coach scenario pack** wired in. That’s the difference between a polished demo and a tool that actually teaches causality.
+
+I tried to pull the latest files from `mithorizon7/V2AgentActivity`, but the GitHub connector errored on direct file fetch. I’ll proceed with a precise punch-list you can run today and include acceptance tests so you can confirm each piece is done.
+
+---
+
+# What’s missing (the minimum to be truly educational)
+
+1. **Fixed, executable pipeline (Perception → Reasoning → Planning → Execution)**
+
+   * Replace the free-form React Flow *as the default builder*. Keep it only as a **non-executing “Diagram Mode (beta)”** behind a toggle.
+
+2. **Tiny deterministic runtime + block registry**
+
+   * Real `run(ctx)` functions per block; `runPipeline` to iterate slots; `applyFailures` to mutate `ctx` before execution.
+
+3. **Concrete scenario pack: Health Coach**
+
+   * 3 fixtures (normal/borderline/edge), 3–4 block choices per slot, simple tool stubs, short copy strings. Causality must be visible in the **Trace**.
+
+4. **Beginner defaults + progressive guidance**
+
+   * Prefilled runnable pipeline; one guided tweak (“swap Reasoning”) → visibly different outcome; failure toggle that visibly changes Perception inputs.
+
+5. **i18n wired into core views**
+
+   * No hardcoded strings in Classification / Boundary / Builder / Trace; dual labels like *Read the data (Perception)*.
+
+6. **A11y: keyboard parity + color-independent cues**
+
+   * Button alternatives to drag-drop, visible focus, reduced-motion mode, screen-reader announcements for step changes.
+
+---
+
+# What to do next (small, finishable steps)
+
+## Phase 1 — Runtime core (½ day)
+
+Create a **pure** engine and registry.
+
+**Files to add**
+
+```
+src/runtime/types.ts
+src/runtime/engine.ts
+src/scenarios/health-coach/blocks.ts
+src/scenarios/health-coach/fixtures.json
+src/scenarios/health-coach/copy.json
+```
+
+**engine.ts**
+
+```ts
+export type Process = 'Perception'|'Reasoning'|'Planning'|'Execution';
+
+export interface RuntimeCtx {
+  input: any;
+  state: Record<string, any>;
+  tools: Record<string, (args:any)=>any>;
+  log: Array<{ step: string; data: any }>;
+  success?: boolean;
+}
+
+export interface Block {
+  id: string;
+  kind: Process;
+  label: string;
+  run: (ctx: RuntimeCtx) => Promise<RuntimeCtx> | RuntimeCtx;
+}
+
+export async function runPipeline(
+  pipeline: Record<Process, Block>,
+  ctx: RuntimeCtx
+): Promise<RuntimeCtx> {
+  let c = ctx;
+  for (const p of ['Perception','Reasoning','Planning','Execution'] as const) {
+    c.log.push({ step: `START_${p}`, data: null });
+    c = await pipeline[p].run(c);
+    c.log.push({ step: `END_${p}`, data: { state: c.state } });
+  }
+  return c;
+}
+
+export function applyFailures(
+  base: RuntimeCtx,
+  f: { noisyInput?: boolean; missingTool?: string; staleMemory?: boolean }
+): RuntimeCtx {
+  const c: RuntimeCtx = structuredClone(base);
+  if (f.noisyInput && Array.isArray(c.input.heartRate)) {
+    c.input.heartRate = c.input.heartRate.map((hr:number)=>hr + Math.round(Math.random()*40 - 20));
+  }
+  if (f.missingTool) delete c.tools[f.missingTool];
+  if (f.staleMemory)  c.state = {};
+  c.log.push({ step: 'FAILURE_INJECTED', data: f });
+  return c;
+}
+```
+
+**blocks.ts (examples)**
+
+```ts
+import { Block } from '../../runtime/engine';
+
+export const smoothWearables: Block = {
+  id: 'perception.smooth',
+  kind: 'Perception',
+  label: 'Smooth Sensor Noise',
+  run: (ctx) => {
+    const arr = ctx.input.heartRate ?? [];
+    const avg = Math.round((arr[0]+arr[1]+arr[2]) / 3);
+    ctx.state.hrAvg = avg;
+    ctx.log.push({ step: 'Perception', data: { hrAvg: avg } });
+    return ctx;
+  }
+};
+
+export const thresholdCheck: Block = {
+  id: 'reason.threshold',
+  kind: 'Reasoning',
+  label: 'Threshold Check',
+  run: (ctx) => {
+    ctx.state.activeToday = (ctx.input.steps ?? 0) > 8000;
+    ctx.log.push({ step: 'Reasoning', data: { activeToday: ctx.state.activeToday } });
+    return ctx;
+  }
+};
+
+export const ruleClassifier: Block = {
+  id: 'reason.rule',
+  kind: 'Reasoning',
+  label: 'Rule-based Classifier',
+  run: (ctx) => {
+    const hr = ctx.state.hrAvg ?? ctx.input.heartRate?.[1] ?? 0;
+    ctx.state.activeToday = (hr > 150) && ((ctx.input.steps ?? 0) > 10000);
+    ctx.log.push({ step: 'Reasoning', data: { activeToday: ctx.state.activeToday } });
+    return ctx;
+  }
+};
+
+export const dailyPlanner: Block = {
+  id: 'plan.daily',
+  kind: 'Planning',
+  label: 'Daily Goal Planner',
+  run: (ctx) => { ctx.state.plan = ctx.state.activeToday ? 'congratulate':'nudge';
+    ctx.log.push({ step: 'Planning', data: { plan: ctx.state.plan } });
+    return ctx;
+  }
+};
+
+export const execNotify: Block = {
+  id: 'exec.notify',
+  kind: 'Execution',
+  label: 'Send Notification',
+  run: (ctx) => {
+    const fn = ctx.tools.sendNotification;
+    if (!fn) { ctx.log.push({ step:'Execution', data:{ error:'missing tool' }}); ctx.success=false; return ctx; }
+    fn({ type: ctx.state.plan });
+    ctx.log.push({ step:'Execution', data:{ sent: ctx.state.plan } });
+    ctx.success = true;
+    return ctx;
+  }
+};
+```
+
+**fixtures.json**
+
+```json
+[
+  { "id":"f1","date":"2025-03-15","heartRate":[142,156,138],"steps":9500,"sleepHours":7.5 },
+  { "id":"f2","date":"2025-03-16","heartRate":[150,152,154],"steps":10200,"sleepHours":6.0 },
+  { "id":"f3","date":"2025-03-17","heartRate":[160,110,165],"steps":7800,"sleepHours":5.0 }
+]
+```
+
+**Acceptance (Phase 1)**
+
+* Fixture 1 + `smoothWearables` + `thresholdCheck` + `dailyPlanner` + `execNotify` → `success=true`, plan=`congratulate`, tool calls=`1`.
+* Swap `thresholdCheck` → `ruleClassifier` on Fixture 2 → plan changes to `nudge`.
+
+---
+
+## Phase 2 — Fixed 4-slot UI (½ day)
+
+Create `BuilderFixed.tsx` with four slots and a block picker (3–4 choices each). Keep your current tracer but bind it to **real `ctx.log`**.
+
+**Acceptance**
+
+* First load shows **prefilled pipeline**. Click **Run** → trace shows four steps with **plain-English one-liners**.
+* Swapping one block changes both trace and outcome.
+
+---
+
+## Phase 3 — Failure toggles that actually change inputs (1–2 hrs)
+
+Bind your existing toggles to `applyFailures` before `runPipeline`. In the trace, **highlight changed inputs** (e.g., noisy HR values) and add a small note “noisy data injected”.
+
+**Acceptance**
+
+* Toggling “Noisy input” changes Perception input arrays and `hrAvg`.
+* Toggling “Missing tool: sendNotification” causes Execution to log an error and `success=false`.
+
+---
+
+## Phase 4 — i18n sweep + dual labels (2–3 hrs)
+
+Replace hardcoded strings in **Classification / Boundary / Builder / Trace** with `t()`. In dictionaries, keep dual labels:
+
+* `slots.perception.simple: "Read the data"`
+* `slots.perception.formal: "(Perception)"`
+
+Render as `Read the data (Perception)` by default.
+
+**Acceptance**
+
+* Switching language files updates all core strings without code changes.
+
+---
+
+## Phase 5 — Beginner defaults & micro-coach (1–2 hrs)
+
+* **First-run CTA:** “Run a demo” (prefilled).
+* After success, show a **single guided tweak**: spotlight Reasoning slot → “Try ‘Rule-based Classifier’” → Run again.
+* Right-rail coach: one sentence before/during/after.
+
+**Acceptance**
+
+* A true beginner can complete: Run → Swap Reasoning → Run → Toggle “Noisy input” → Run, and see differences in trace/outcome without touching JSON.
+
+---
+
+## Phase 6 — A11y pass (1–2 hrs)
+
+* Button alternatives: “Move to *Read the data*” for cards/blocks.
+* 44px targets, visible focus, reduced motion toggle.
+* Screen-reader announcements: “Running Perception: Smooth Sensor Noise”, “Result success”.
+
+**Acceptance**
+
+* Full keyboard completion for Classify/Boundary/Builder; color-independent cues present.
+
+---
+
+# Red flags to remove before novice testing
+
+* **React Flow as default** (keep it as non-executing “Diagram Mode” only).
+* **Mocked trace** (must reflect real `ctx.log`).
+* **Hardcoded English strings** (wire i18n now; it’s mostly search-and-replace).
+* **No prefilled executable state** (novices need one-click success).
+
+---
+
+# Quick test script you or QA can run
+
+1. **Run demo** (prefilled) → Expect: 4 steps, `success=true`, plan `congratulate`.
+2. **Swap Reasoning** to `ruleClassifier` on Fixture 2 → Expect: plan flips to `nudge`.
+3. **Toggle Noisy input** on Fixture 1 → Expect: Perception input vector changes; `hrAvg` changes; trace shows “noisy data injected”.
+4. **Missing tool: sendNotification** → Expect: Execution logs “missing tool”; `success=false`.
+5. **Classification**: Solve stays disabled until every card has a 1-sentence rationale; wrong placements show **specific why**.
+6. **Boundary**: “Check” lists the **missing exact link** (e.g., Wearable → Perception) not just “incorrect”.
+
+---
+
+## Recommendations summary
+
+* Make the **fixed, executable pipeline** the default builder now.
+* Bind the existing **tracer** and **failure toggles** to the real runtime.
+* Ship the **Health Coach** scenario pack with 3 fixtures and ~8 blocks.
+* Add **prefilled defaults, a single guided tweak, dual labels, and i18n**.
+* Do a **one-hour A11y/keyboard pass**.
+
+---
+
+## Confidence
+
+* **High** on what’s missing and what to do next (it’s the same gap we identified earlier: executable pipeline + scenario pack + binding the UI to real logs).
+* **Medium** on tiny code specifics because the GitHub connector blocked direct file reads; the plan above is implementation-ready regardless of minor structural differences in your current code.
+* **High** that landing these six phases will make the experience novice-ready and pedagogically strong.
