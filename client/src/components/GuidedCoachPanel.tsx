@@ -4,13 +4,15 @@ import { Lightbulb, CheckCircle2, Play, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 
-type CoachState = "welcome" | "first-run" | "change-block" | "try-failure" | "completed";
+type CoachState = "welcome" | "first-run" | "success-experiment" | "failure-recovery" | "completed";
 
 type GuidedCoachPanelProps = {
   state: CoachState;
   hasRun: boolean;
   pipelineComplete: boolean;
   simulationSuccess?: boolean;
+  failuresEnabled?: boolean;
+  runCount?: number;
 };
 
 export function GuidedCoachPanel({
@@ -18,10 +20,13 @@ export function GuidedCoachPanel({
   hasRun,
   pipelineComplete,
   simulationSuccess,
+  failuresEnabled = false,
+  runCount = 0,
 }: GuidedCoachPanelProps) {
   const { t } = useTranslation();
 
   const getContent = () => {
+    // Welcome state: Pipeline not complete
     if (!pipelineComplete) {
       return {
         icon: Sparkles,
@@ -32,6 +37,7 @@ export function GuidedCoachPanel({
       };
     }
 
+    // First run: Pipeline complete but never run
     if (!hasRun) {
       return {
         icon: Play,
@@ -42,22 +48,46 @@ export function GuidedCoachPanel({
       };
     }
 
-    if (simulationSuccess === true) {
+    // After first successful run
+    if (runCount === 1 && simulationSuccess === true) {
       return {
-        icon: Lightbulb,
-        iconColor: "text-amber-600",
-        title: t("guidedCoach.changeBlock.title"),
-        message: t("guidedCoach.changeBlock.message"),
-        tip: t("guidedCoach.changeBlock.tip"),
+        icon: CheckCircle2,
+        iconColor: "text-green-600",
+        title: t("guidedCoach.successFirst.title"),
+        message: t("guidedCoach.successFirst.message"),
+        tip: t("guidedCoach.successFirst.tip"),
       };
     }
 
+    // Failed simulation
+    if (simulationSuccess === false) {
+      return {
+        icon: Lightbulb,
+        iconColor: "text-red-600",
+        title: t("guidedCoach.failureRecovery.title"),
+        message: t("guidedCoach.failureRecovery.message"),
+        tip: t("guidedCoach.failureRecovery.tip"),
+      };
+    }
+
+    // After experimenting with failures
+    if (failuresEnabled) {
+      return {
+        icon: Lightbulb,
+        iconColor: "text-amber-600",
+        title: t("guidedCoach.withFailures.title"),
+        message: t("guidedCoach.withFailures.message"),
+        tip: t("guidedCoach.withFailures.tip"),
+      };
+    }
+
+    // General experimentation after multiple successful runs
     return {
-      icon: CheckCircle2,
-      iconColor: "text-green-600",
-      title: t("guidedCoach.tryFailure.title"),
-      message: t("guidedCoach.tryFailure.message"),
-      tip: t("guidedCoach.tryFailure.tip"),
+      icon: Lightbulb,
+      iconColor: "text-amber-600",
+      title: t("guidedCoach.changeBlock.title"),
+      message: t("guidedCoach.changeBlock.message"),
+      tip: t("guidedCoach.changeBlock.tip"),
     };
   };
 

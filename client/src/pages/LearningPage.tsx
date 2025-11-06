@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { PhaseProgress, Phase } from "@/components/PhaseProgress";
+import { useSession } from "@/hooks/useSession";
+import { useClassification } from "@/hooks/useClassification";
+import { useBoundaryMap } from "@/hooks/useBoundaryMap";
 import { ClassificationActivity } from "@/components/ClassificationActivity";
 import { ConfidenceSlider } from "@/components/ConfidenceSlider";
 import { FeedbackPanel } from "@/components/FeedbackPanel";
@@ -65,6 +68,9 @@ const FIXTURES: Fixture[] = fixturesData as Fixture[];
 
 export default function LearningPage() {
   const { t } = useTranslation();
+  const { sessionId, progress, isLoading: sessionLoading } = useSession();
+  const classificationMutation = useClassification(sessionId || "");
+  const boundaryMapMutation = useBoundaryMap(sessionId || "");
   const [currentPhase, setCurrentPhase] = useState(1);
 
   const FAILURE_MODES: FailureMode[] = [
@@ -104,6 +110,11 @@ export default function LearningPage() {
   const [feedbackData, setFeedbackData] = useState<any>(null);
   const [classifications, setClassifications] = useState<ClassificationSubmission[]>([]);
 
+  // Phase 2: Boundary Mapping
+  const [boundaryElements, setBoundaryElements] = useState<BoundaryElement[]>([]);
+  const [boundaryConnections, setBoundaryConnections] = useState<BoundaryConnection[]>([]);
+  const [boundaryMapFeedback, setBoundaryMapFeedback] = useState<string | null>(null);
+
   // Phase 3: Circuit Building  
   const [selectedBlocks, setSelectedBlocks] = useState<Record<Process, Block | null>>({
     perception: PERCEPTION_BLOCKS[1], // Smooth Wearables (better for beginners)
@@ -119,6 +130,7 @@ export default function LearningPage() {
   const [simulationSteps, setSimulationSteps] = useState<SimulationStep[]>([]);
   const [executionContext, setExecutionContext] = useState<RuntimeCtx | null>(null);
   const [isRunning, setIsRunning] = useState(false);
+  const [runCount, setRunCount] = useState(0);
 
   const phases: Phase[] = [
     {
@@ -176,7 +188,7 @@ export default function LearningPage() {
     const calibrationError = Math.abs(accuracy - confidenceLevel);
     const calibration = Math.max(0, 100 - calibrationError);
 
-    setFeedbackData({
+    const feedback = {
       accuracy,
       explanationQuality,
       calibration,
@@ -189,9 +201,18 @@ export default function LearningPage() {
           message: `Consider how this relates to the core function of the correct process`,
           itemName: CLASSIFICATION_ITEMS.find((i) => i.id === s.itemId)?.text,
         })),
-    });
+    };
 
+    setFeedbackData(feedback);
     setShowFeedback(true);
+
+    // Persist to server
+    if (sessionId) {
+      classificationMutation.mutate({
+        submissions,
+        confidence: confidenceLevel,
+      });
+    }
   };
 
   const handlePhaseComplete = () => {
@@ -206,6 +227,48 @@ export default function LearningPage() {
     elements: BoundaryElement[],
     connections: BoundaryConnection[]
   ) => {
+    setBoundaryElements(elements);
+    setBoundaryConnections(connections);
+
+    // Validation: Require minimum mapping effort
+    const MIN_ELEMENTS = 3;
+    const MIN_CONNECTIONS = 4; // At least one per core process
+    
+    if (elements.length < MIN_ELEMENTS) {
+      setBoundaryMapFeedback(t("boundaryMap.feedback.needMoreElements", { count: MIN_ELEMENTS }));
+      return;
+    }
+
+    if (connections.length < MIN_CONNECTIONS) {
+      setBoundaryMapFeedback(t("boundaryMap.feedback.needMoreConnections", { count: MIN_CONNECTIONS }));
+      return;
+    }
+
+    // Check if at least perception, reasoning, planning, and execution have connections
+    const connectedProcesses = new Set(connections.map(c => c.process));
+    const requiredProcesses: AgentProcess[] = ["perception", "reasoning", "planning", "execution"];
+    const missingProcesses = requiredProcesses.filter(p => !connectedProcesses.has(p));
+
+    if (missingProcesses.length > 0) {
+      setBoundaryMapFeedback(
+        t("boundaryMap.feedback.missingProcesses", { 
+          processes: missingProcesses.join(", ") 
+        })
+      );
+      return;
+    }
+
+    // All validation passed
+    setBoundaryMapFeedback(null);
+    
+    // Persist to server
+    if (sessionId) {
+      boundaryMapMutation.mutate({
+        elements,
+        connections,
+      });
+    }
+    
     handlePhaseComplete();
   };
 
@@ -285,6 +348,7 @@ export default function LearningPage() {
       setSimulationSteps(steps);
       setExecutionContext(result);
       setHasRunOnce(true);
+      setRunCount((prev) => prev + 1);
     } finally {
       setIsRunning(false);
     }
@@ -358,13 +422,35 @@ export default function LearningPage() {
         {currentPhase === 2 && (
           <div className="space-y-6">
             <div>
-              <h2 className="text-3xl font-bold mb-2">Phase 2: Boundary Mapping</h2>
+              <h2 className="text-3xl font-bold mb-2">{t("boundaryMap.title")}</h2>
               <p className="text-muted-foreground">
-                Map the agent's environment, tools, and data flows to understand system boundaries
+                {t("boundaryMap.description")}
               </p>
             </div>
 
-            <BoundaryMapCanvas onSave={handleBoundaryMapSave} />
+            <BoundaryMapCanvas 
+              onSave={handleBoundaryMapSave}
+              initialElements={boundaryElements}
+              initialConnections={boundaryConnections}
+            />
+
+            {boundaryMapFeedback && (
+              <Card className="p-4 border-amber-500 bg-amber-50 dark:bg-amber-950/20">
+                <div className="flex items-start gap-3">
+                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-amber-500 flex items-center justify-center text-white text-xs font-bold">
+                    !
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium text-amber-900 dark:text-amber-100">
+                      {boundaryMapFeedback}
+                    </p>
+                    <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">
+                      Complete the mapping requirements above to continue to Phase 3
+                    </p>
+                  </div>
+                </div>
+              </Card>
+            )}
           </div>
         )}
 
@@ -394,6 +480,9 @@ export default function LearningPage() {
                   state="first-run"
                   hasRun={false}
                   pipelineComplete={pipelineComplete}
+                  simulationSuccess={undefined}
+                  failuresEnabled={false}
+                  runCount={0}
                 />
               </div>
             </div>
@@ -510,6 +599,8 @@ export default function LearningPage() {
                   hasRun={hasRunOnce}
                   pipelineComplete={pipelineComplete}
                   simulationSuccess={executionContext?.success}
+                  failuresEnabled={failureModes.some(f => f.enabled)}
+                  runCount={runCount}
                 />
               </div>
             </div>

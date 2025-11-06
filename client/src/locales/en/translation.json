@@ -69,7 +69,13 @@
     "connectToProcess": "Connect to Process",
     "selectFirst": "Select an element on the canvas first",
     "clickToConnect": "Click a process to connect the selected element",
-    "saveMap": "Save Map"
+    "saveMap": "Save Map",
+    "feedback": {
+      "needMoreElements": "Please place at least {{count}} elements on the canvas to continue",
+      "needMoreConnections": "Please create at least {{count}} connections to processes to continue",
+      "missingProcesses": "Please connect elements to these core processes: {{processes}}",
+      "success": "Great work! Your boundary map is complete"
+    }
   },
   "circuit": {
     "title": "Phase 3: Build Your Health Coach Agent",
@@ -207,15 +213,30 @@
       "message": "Your Health Coach agent is configured. Click 'Run Demo' to watch it process a normal active day.",
       "tip": "You'll see each step: smoothing sensor noise, checking thresholds, planning a response, and sending a notification."
     },
+    "successFirst": {
+      "title": "Success! Your agent worked perfectly",
+      "message": "The agent processed the data successfully through all four steps. Notice how each block contributed to the final notification.",
+      "tip": "Now try swapping one of the blocks (like changing Threshold Check to Rule Classifier) to see how different logic affects the result!"
+    },
     "changeBlock": {
       "title": "Try changing something!",
-      "message": "Now experiment: switch 'Decide what it means' from Threshold Check to Rule Classifier and run again.",
-      "tip": "The Rule Classifier uses stricter criteria. Watch how this changes the final plan!"
+      "message": "Experiment by swapping blocks in the pipeline. Each block has different logic that will produce different results.",
+      "tip": "For example, Rule Classifier uses stricter criteria than Threshold Check. Watch how this changes the agent's decision!"
+    },
+    "failureRecovery": {
+      "title": "Simulation failed - Let's debug",
+      "message": "The agent encountered an error during execution. Check the logs to see which step failed and why.",
+      "tip": "Common issues: missing tools when execution runs, or corrupted data from noisy inputs. Try disabling failure modes to isolate the problem."
+    },
+    "withFailures": {
+      "title": "Observing failure handling",
+      "message": "You've injected failures into the system. Notice how different blocks handle (or struggle with) corrupted data and missing tools.",
+      "tip": "Smooth Wearables can filter noisy data, but Rule Classifier is stricter and may fail. Experiment to see which combinations are robust!"
     },
     "tryFailure": {
       "title": "Great work!",
-      "message": "You've seen how changing blocks affects the outcome. Try toggling 'Noisy Sensor Data' to see how perception handles errors.",
-      "tip": "The Smooth Wearables block will average out the noise. Watch the trace to see the difference!"
+      "message": "You've seen how changing blocks affects the outcome. Try toggling failure modes like 'Noisy Sensor Data' to see how perception handles errors.",
+      "tip": "Watch how Smooth Wearables filters noise while Parse Sensor Data might struggle. Understanding failure modes is key to building robust agents!"
     },
     "badge": "Guide",
     "tipLabel": "Tip"
