@@ -1,0 +1,207 @@
+**Summary answer:**
+Yes—**it will be accessible to true beginners** if you keep “Guided (fixed pipeline)” as the default and add a handful of beginner‑first adjustments: plain‑language framing, progressive disclosure, defaults that “just run,” visible causality, and strong A11y. Below I lay out exactly what to change so someone with *zero* technical background can complete the activity, learn, and feel successful.
+
+---
+
+## A. What changes are essential for true beginners?
+
+### 1) Plain language + dual labels (everywhere)
+
+* **Rename the four slots in UI copy (keep formal terms in parentheses):**
+
+  * *Read the data (Perception)* → *Decide what it means (Reasoning)* → *Make a plan (Planning)* → *Do the step (Execution)*
+* **Block names and descriptions:** 1‑line *purpose*, 1‑line *effect*, 1 tiny example.
+  “**Smooth Sensor Noise** — *Purpose:* tidy bumpy heart‑rate numbers. *Effect:* averages the last 3 readings. *Example:* 142, 156, 138 → **145**.”
+* **Trace narration line:** Add a plain‑English subtitle under each log row: “We averaged three heart‑rate readings to 145 bpm.”
+
+**Why:** Removes jargon shock while retaining correct vocabulary for later transfer.
+
+---
+
+### 2) Progressive disclosure (no blank canvases)
+
+* **Prefilled, runnable default.** On first load, the four slots are already filled with a *sensible* pipeline. Primary CTA is **“Run a demo”** (don’t force them to construct before they can see success).
+* **Then “tweak one thing.”** After the first run, prompt: “Try changing *Reasoning* from **Threshold Check** to **Rule Classifier** and run again.” Provide a single glowing affordance on that slot.
+
+**Why:** Time‑to‑first‑success is critical. Beginners learn more from changing one piece of a working thing than assembling from zero.
+
+---
+
+### 3) Guided path (micro‑coach panel)
+
+* **Coach panel** (right rail) that updates per step:
+
+  * **Before run:** “You’re about to: read → decide → plan → do. Click *Run* to watch.”
+  * **During trace:** “Perception just cleaned the numbers. Next we’ll decide if today was active.”
+  * **After run:** “Result: **Nudge**. You changed the reasoner; that changed the plan.”
+* Provide **one hint button** per slot: “When sensor data is jumpy, this option is usually safer.”
+
+**Why:** Over‑the‑shoulder guidance cuts cognitive load without hiding the model.
+
+---
+
+### 4) Explain‑your‑placement with scaffolds (not just “why?”)
+
+* After each card drop (in Classification), **show three auto‑prompts** to seed the rationale:
+
+  * “This *transforms* raw inputs.”
+  * “This *chooses* between options.”
+  * “This *carries out* steps.”
+    The learner can click a prompt, then add 3–7 words.
+* If wrong twice, show a **contrastive hint**: “If it changes the *plan*, it’s Planning; if it follows a plan, it’s Execution.”
+
+**Why:** Novices struggle to generate justifications from scratch; seed phrases create traction without giving away the answer.
+
+---
+
+### 5) Failure injection that’s visible and reversible
+
+* **Before toggling**: a 1‑line preview (“Noisy input will jitter heart‑rate by ±20 bpm”).
+* **After run**: highlight the *changed* values in the trace (e.g., 158, **121**, 163 with a subtle badge “noisy”).
+* **Reset button**: “Back to clean data.”
+
+**Why:** Make the *consequence* of a toggle obvious; always provide a safe revert.
+
+---
+
+### 6) Trace readability for non‑technical users
+
+* **Three layers:**
+
+  * **Badge** (✓ Perception)
+  * **Plain‑English one‑liner** (“Averaged three readings to 145 bpm”)
+  * **Details on demand** (chevron to show the JSON payload)
+* **Outcome summary chips** at the top: “Result: **Nudge** • Steps: 4 • Tool calls: 1”
+
+**Why:** Beginners can skim; curious learners can open the details.
+
+---
+
+### 7) A11y & novice‑friendly interaction defaults (WCAG 2.2 AA)
+
+* **Keyboard‑first parity:** Every drag action has a button alternative: *Move to “Read the data”*.
+* **Color‑independent cues:** Icons/shape + text labels for the six processes; don’t rely on color alone.
+* **Target size:** >44px clickable targets; generous spacing.
+* **Focus state:** Highly visible outlines; logical tab order.
+* **Reduced motion:** Global toggle disables animated edges/trace transitions.
+* **Screen readers:** Announce step changes (“Now running Perception: Smooth Sensor Noise”) and success/failure.
+* **Language level:** Keep the core copy at ~6th–8th grade reading level (no multi‑clause sentences in UI).
+
+**Why:** True beginners include users with a wide range of abilities and device constraints.
+
+---
+
+### 8) i18n that actually works for novices
+
+* **Dual‑label strings** in translation files (simple label + formal term), example keys:
+
+  * `slots.perception.simple: "Read the data"`
+  * `slots.perception.formal: "(Perception)"`
+    Render as: `Read the data (Perception)`—or provide a setting to hide formal terms.
+* **Avoid idioms** (“nudge” may not translate well; include a glossary hover: *friendly reminder*).
+
+**Why:** You already have i18n scaffolding; putting novice‑friendly labels into the dictionaries is the unlock.
+
+---
+
+## B. Where complete beginners will still get stuck (and how to remove the friction)
+
+| Likely snag                     | Symptom                              | Fix                                                                                                 |
+| ------------------------------- | ------------------------------------ | --------------------------------------------------------------------------------------------------- |
+| **Blank‑state anxiety**         | They hesitate to select blocks.      | Prefill the pipeline; primary CTA is **Run a demo**.                                                |
+| **Jargon fatigue**              | “Perception? Planning?”              | Dual labels + inline micro‑definitions; keep JSON hidden by default.                                |
+| **Too many choices**            | They click through options randomly. | 3–4 blocks per slot max; one “Recommended” tag; one “Try this change next” prompt.                  |
+| **Invisible effects**           | Failures feel cosmetic.              | Show *delta* in trace (what changed) and a short cause‑effect note.                                 |
+| **Cognitive overload in trace** | They ignore logs.                    | One‑line narration per step; detail chevrons for power users.                                       |
+| **Unclear next step**           | After success, they stall.           | “Next: switch Reasoning to *Rule Classifier* and run again.” Then “Try turning on **Noisy input**.” |
+
+---
+
+## C. First‑run flow (scripted so anyone can finish)
+
+1. **Welcome card (one screen):**
+   “You’ll build a tiny helper that reads data, decides what it means, makes a plan, and does one step.” Buttons: **Run a demo** | “What are these steps?” (opens a 30‑sec illustrated explainer).
+
+2. **Run demo (prefilled):**
+   Immediately shows a 4‑step trace with one‑line narrations.
+
+3. **Prompt to tweak:**
+   “Now change one thing: switch **Decide what it means** to **Rule Classifier** and run again.”
+
+4. **Failure tryout:**
+   “Turn on **Noisy input** and run.” The trace highlights changed readings; a note explains why *Smooth Sensor Noise* helped.
+
+5. **Boundary check (quick):**
+   “Connect Wearable Stream → Read the data.” The *Check* button confirms green.
+
+6. **Done card:**
+   “You changed the system and saw the effect. That’s how agents work. Next, try the Classification activity or build a tiny classroom helper.”
+
+**Notice:** No wall of text, no up‑front quiz, no required free‑form explanation until they’ve *seen* the system run.
+
+---
+
+## D. Copy deck templates (drop‑in content that helps novices)
+
+* **Slot headers:**
+
+  * Read the data *(Perception)* — “Turn messy inputs into usable numbers.”
+  * Decide what it means *(Reasoning)* — “Judge the situation using rules.”
+  * Make a plan *(Planning)* — “Choose the next step.”
+  * Do the step *(Execution)* — “Carry out the step in the real world.”
+
+* **Failure toggles (tooltip text):**
+
+  * *Noisy input:* “Jitters heart‑rate by ±20 bpm before running.”
+  * *Stale memory:* “Clears last week’s step history.”
+  * *Missing tool:* “Removes ‘send notification’ so execution can’t send.”
+
+* **Trace subtitles:**
+
+  * “Averaged three readings to 145 bpm.”
+  * “Decided today counts as active (9500 > 8000).”
+  * “Planned to **congratulate**.”
+  * “Tried to send a message (tool present: yes).”
+
+---
+
+## E. Minimal success criteria for “zero‑background ready”
+
+Adopt these as your **Definition of Done** for the novice experience:
+
+1. **Time‑to‑first‑run** is one click (prefilled pipeline).
+2. **Single guided tweak** (swap Reasoning) produces a visibly different outcome without reading JSON.
+3. **One failure toggle** produces a visibly different Perception output and a one‑sentence causal explanation.
+4. **No required jargon** to complete the activity (formal terms are present but optional).
+5. **Full keyboard & screen‑reader parity** for Classification, Boundary, Pipeline, and Trace.
+6. **All major strings** pulled from i18n files with dual labels; reading level kept concise and concrete.
+7. **Clear finish state** with two next‑step suggestions (Classification or second scenario) so learners don’t stall.
+
+---
+
+## F. What *not* to add for beginners (yet)
+
+* Don’t show parallel branches, loops, or complex conditions in the builder.
+* Don’t require free‑form explanations before they’ve seen a success run.
+* Don’t surface metrics beyond “Result • Steps • Tool calls” in v1.
+* Don’t gate progress on the Boundary map perfection; a single core link (Wearable → Perception) is enough to continue.
+
+---
+
+## G. Instructor toggle (optional, low effort, high value)
+
+A tiny **“Instructor mode”** switch can reveal deeper labels (only for facilitators): show formal terms first, expand JSON by default, and display suggested discussion prompts (e.g., “Where in this loop could bias enter?”). Hidden from beginner learners by default.
+
+---
+
+## Bottom line
+
+With the fixed 4‑slot pipeline, a prefilled first run, dual‑label language, gently guided tweaks, and visible failure effects—**yes, this will be natural and usable for learners with literally zero background**. The adjustments above ensure they succeed quickly, understand why outcomes change, and build the right mental model without wrestling the UI.
+
+---
+
+## Confidence
+
+* **High** on the adequacy of these adjustments for novice accessibility (they directly target cognitive load, plain language, and A11y).
+* **High** that the proposed UI/content tweaks are feasible within your current architecture (they’re mostly copy, defaults, and simple view logic).
+* **Medium** on the exact phrasing and hint density that will work best for *your* audience—small user tests may reveal where to tune wording and when to reveal formal terms.

@@ -4,12 +4,19 @@ import { ClassificationActivity } from "@/components/ClassificationActivity";
 import { ConfidenceSlider } from "@/components/ConfidenceSlider";
 import { FeedbackPanel } from "@/components/FeedbackPanel";
 import { BoundaryMapCanvas } from "@/components/BoundaryMapCanvas";
-import { CircuitBuilder } from "@/components/CircuitBuilder";
+import { FixedPipelineBuilder } from "@/components/FixedPipelineBuilder";
 import { SimulationTracer } from "@/components/SimulationTracer";
 import { FailureInjector } from "@/components/FailureInjector";
 import { AssessmentDashboard } from "@/components/AssessmentDashboard";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   ClassificationItem,
   ClassificationSubmission,
@@ -18,7 +25,17 @@ import {
   FailureMode,
   SimulationStep,
 } from "@shared/schema";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight, CheckCircle2, Play, Sparkles } from "lucide-react";
+import { Block, Process, RuntimeCtx, Fixture, FailureConfig } from "@/runtime/types";
+import { runPipeline, applyFailures, createInitialContext } from "@/runtime/engine";
+import { cn } from "@/lib/utils";
+import {
+  PERCEPTION_BLOCKS,
+  REASONING_BLOCKS,
+  PLANNING_BLOCKS,
+  EXECUTION_BLOCKS,
+} from "@/scenarios/health-coach/blocks";
+import fixturesData from "@/scenarios/health-coach/fixtures.json";
 
 const CLASSIFICATION_ITEMS: ClassificationItem[] = [
   { id: "feedback_loops", text: "Feedback Loops", correctProcess: "learning" },
@@ -43,34 +60,29 @@ const CLASSIFICATION_ITEMS: ClassificationItem[] = [
 
 const FAILURE_MODES: FailureMode[] = [
   {
-    id: "memory-blank",
-    name: "Blank Memory",
-    description: "Agent has no stored context or previous interactions",
-    enabled: false,
-    affectedProcess: "learning",
-  },
-  {
-    id: "tool-wrong",
-    name: "Wrong Tool Handle",
-    description: "Agent attempts to use unavailable or incorrect tools",
-    enabled: false,
-    affectedProcess: "execution",
-  },
-  {
-    id: "perception-noisy",
+    id: "noisy-input",
     name: "Noisy Sensor Data",
-    description: "Input data contains errors or inconsistencies",
+    description: "Random noise added to heart rate and step readings",
     enabled: false,
     affectedProcess: "perception",
   },
   {
-    id: "reasoning-incomplete",
-    name: "Incomplete Knowledge Base",
-    description: "Missing critical information for decision-making",
+    id: "missing-tool",
+    name: "Missing Tool",
+    description: "sendNotification tool unavailable",
     enabled: false,
-    affectedProcess: "reasoning",
+    affectedProcess: "execution",
+  },
+  {
+    id: "stale-memory",
+    name: "Stale Memory",
+    description: "Agent memory cleared before execution",
+    enabled: false,
+    affectedProcess: "learning",
   },
 ];
+
+const FIXTURES: Fixture[] = fixturesData as Fixture[];
 
 export default function LearningPage() {
   const [currentPhase, setCurrentPhase] = useState(1);
@@ -82,12 +94,26 @@ export default function LearningPage() {
     "5": false,
   });
 
+  // Phase 1: Classification
   const [confidenceLevel, setConfidenceLevel] = useState(50);
   const [showFeedback, setShowFeedback] = useState(false);
   const [feedbackData, setFeedbackData] = useState<any>(null);
   const [classifications, setClassifications] = useState<ClassificationSubmission[]>([]);
+
+  // Phase 3: Circuit Building
+  const [selectedBlocks, setSelectedBlocks] = useState<Record<Process, Block | null>>({
+    perception: null,
+    reasoning: null,
+    planning: null,
+    execution: null,
+  });
+  const [selectedFixture, setSelectedFixture] = useState<string>(FIXTURES[0].id);
+
+  // Phase 4: Simulation & Testing
   const [failureModes, setFailureModes] = useState<FailureMode[]>(FAILURE_MODES);
   const [simulationSteps, setSimulationSteps] = useState<SimulationStep[]>([]);
+  const [executionContext, setExecutionContext] = useState<RuntimeCtx | null>(null);
+  const [isRunning, setIsRunning] = useState(false);
 
   const phases: Phase[] = [
     {
@@ -171,41 +197,62 @@ export default function LearningPage() {
     handlePhaseComplete();
   };
 
-  const handleCircuitSave = (nodes: any[], edges: any[]) => {
+  const handleBlockSelect = (process: Process, block: Block) => {
+    setSelectedBlocks((prev) => ({ ...prev, [process]: block }));
+  };
+
+  const handleCircuitComplete = () => {
     handlePhaseComplete();
   };
 
-  const handleSimulationRun = () => {
-    const mockSteps: SimulationStep[] = [
-      {
-        id: "step-1",
-        blockId: "perception-input",
-        timestamp: Date.now(),
-        input: { sensorData: "temperature: 98.6°F" },
-        output: { structured: { temp: 98.6, unit: "F" } },
-        status: "success",
-        message: "Successfully processed sensor input",
-      },
-      {
-        id: "step-2",
-        blockId: "reasoning-logic",
-        timestamp: Date.now() + 1000,
-        input: { temp: 98.6, unit: "F" },
-        output: { assessment: "normal" },
-        status: "success",
-        message: "Temperature within normal range",
-      },
-      {
-        id: "step-3",
-        blockId: "planning-strategy",
-        timestamp: Date.now() + 2000,
-        input: { assessment: "normal" },
-        output: { action: "monitor" },
-        status: "success",
-        message: "Planned monitoring action",
-      },
-    ];
-    setSimulationSteps(mockSteps);
+  const handleSimulationRun = async () => {
+    const pipeline = selectedBlocks as Record<Process, Block>;
+    
+    // Check if all blocks are selected
+    const allSelected = Object.values(pipeline).every((block) => block !== null);
+    if (!allSelected) {
+      return;
+    }
+
+    setIsRunning(true);
+    setSimulationSteps([]);
+
+    try {
+      // Get selected fixture
+      const fixture = FIXTURES.find((f) => f.id === selectedFixture);
+      if (!fixture) return;
+
+      // Create initial context
+      let ctx = createInitialContext(fixture.input);
+
+      // Apply failures if any are enabled
+      const activeFailures: FailureConfig = {
+        noisyInput: failureModes.find((f) => f.id === "noisy-input")?.enabled,
+        missingTool: failureModes.find((f) => f.id === "missing-tool")?.enabled ? "sendNotification" : undefined,
+        staleMemory: failureModes.find((f) => f.id === "stale-memory")?.enabled,
+      };
+
+      ctx = applyFailures(ctx, activeFailures);
+
+      // Run the pipeline
+      const result = await runPipeline(pipeline, ctx);
+
+      // Convert runtime log to simulation steps
+      const steps: SimulationStep[] = result.log.map((logEntry, index) => ({
+        id: `step-${index}`,
+        blockId: logEntry.step,
+        timestamp: logEntry.timestamp,
+        input: index > 0 ? result.log[index - 1]?.data : fixture.input,
+        output: logEntry.data,
+        status: logEntry.step.startsWith("ERROR") ? "error" : "success",
+        message: JSON.stringify(logEntry.data, null, 2),
+      }));
+
+      setSimulationSteps(steps);
+      setExecutionContext(result);
+    } finally {
+      setIsRunning(false);
+    }
   };
 
   const handleFailureToggle = (failureId: string, enabled: boolean) => {
@@ -214,11 +261,13 @@ export default function LearningPage() {
     );
   };
 
+  const pipelineComplete = Object.values(selectedBlocks).every((block) => block !== null);
+
   const assessmentMetrics = {
     classificationAccuracy: feedbackData?.accuracy || 0,
     explanationQuality: feedbackData?.explanationQuality || 0,
     boundaryMapCompleteness: phaseCompletion["2"] ? 85 : 0,
-    circuitCorrectness: phaseCompletion["3"] ? 80 : 0,
+    circuitCorrectness: phaseCompletion["3"] ? 90 : 0,
     calibration: feedbackData?.calibration || 0,
   };
 
@@ -287,13 +336,40 @@ export default function LearningPage() {
         {currentPhase === 3 && (
           <div className="space-y-6">
             <div>
-              <h2 className="text-3xl font-bold mb-2">Phase 3: Circuit Building</h2>
+              <h2 className="text-3xl font-bold mb-2">Phase 3: Build Your Health Coach Agent</h2>
               <p className="text-muted-foreground">
-                Assemble agent blocks to create a functional workflow
+                Select executable blocks to create a pipeline that processes wearable data
               </p>
             </div>
 
-            <CircuitBuilder onSave={handleCircuitSave} />
+            <FixedPipelineBuilder
+              perceptionBlocks={PERCEPTION_BLOCKS}
+              reasoningBlocks={REASONING_BLOCKS}
+              planningBlocks={PLANNING_BLOCKS}
+              executionBlocks={EXECUTION_BLOCKS}
+              selectedBlocks={selectedBlocks}
+              onBlockSelect={handleBlockSelect}
+            />
+
+            {pipelineComplete && (
+              <Card className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Sparkles className="w-6 h-6 text-amber-600" />
+                    <div>
+                      <h3 className="font-semibold">Pipeline Ready!</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Your agent is fully configured. Continue to test it!
+                      </p>
+                    </div>
+                  </div>
+                  <Button onClick={handleCircuitComplete} data-testid="button-complete-circuit">
+                    Continue to Phase 4
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </div>
+              </Card>
+            )}
           </div>
         )}
 
@@ -302,15 +378,74 @@ export default function LearningPage() {
             <div>
               <h2 className="text-3xl font-bold mb-2">Phase 4: Simulation & Testing</h2>
               <p className="text-muted-foreground">
-                Run your agent, observe execution traces, and inject failures to test resilience
+                Run your agent with different scenarios and inject failures to test resilience
               </p>
             </div>
+
+            <Card className="p-6 space-y-4">
+              <div className="flex items-center gap-4">
+                <div className="flex-1">
+                  <label className="text-sm font-medium mb-2 block">Select Test Scenario</label>
+                  <Select value={selectedFixture} onValueChange={setSelectedFixture}>
+                    <SelectTrigger data-testid="fixture-selector">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {FIXTURES.map((fixture) => (
+                        <SelectItem key={fixture.id} value={fixture.id}>
+                          {fixture.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Button
+                  size="lg"
+                  onClick={handleSimulationRun}
+                  disabled={!pipelineComplete || isRunning}
+                  data-testid="button-run-simulation"
+                  className="mt-6"
+                >
+                  <Play className="w-4 h-4 mr-2" />
+                  Run Simulation
+                </Button>
+              </div>
+
+              {executionContext && (
+                <div className="grid grid-cols-3 gap-4 pt-4 border-t">
+                  <Card className="p-4">
+                    <div className="text-sm text-muted-foreground mb-1">Status</div>
+                    <div className={cn(
+                      "text-lg font-semibold",
+                      executionContext.success ? "text-green-600" : "text-red-600"
+                    )}>
+                      {executionContext.success ? "Success" : "Failed"}
+                    </div>
+                  </Card>
+                  <Card className="p-4">
+                    <div className="text-sm text-muted-foreground mb-1">Steps Executed</div>
+                    <div className="text-lg font-semibold">
+                      {simulationSteps.length}
+                    </div>
+                  </Card>
+                  <Card className="p-4">
+                    <div className="text-sm text-muted-foreground mb-1">Tool Calls</div>
+                    <div className="text-lg font-semibold">
+                      {executionContext.log.filter((l) => l.step.includes("EXECUTION")).length}
+                    </div>
+                  </Card>
+                </div>
+              )}
+            </Card>
 
             <SimulationTracer
               steps={simulationSteps}
               onRun={handleSimulationRun}
-              onReset={() => setSimulationSteps([])}
-              isRunning={simulationSteps.length > 0}
+              onReset={() => {
+                setSimulationSteps([]);
+                setExecutionContext(null);
+              }}
+              isRunning={isRunning}
             />
 
             <FailureInjector failures={failureModes} onToggle={handleFailureToggle} />
