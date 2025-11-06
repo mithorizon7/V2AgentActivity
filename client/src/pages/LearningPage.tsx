@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { PhaseProgress, Phase } from "@/components/PhaseProgress";
 import { useSession } from "@/hooks/useSession";
@@ -51,7 +51,8 @@ const FIXTURES: Fixture[] = fixturesData as Fixture[];
 export default function LearningPage() {
   const { t } = useTranslation();
 
-  const CLASSIFICATION_ITEMS: ClassificationItem[] = [
+  // Memoize classification items to prevent recreation on every render
+  const CLASSIFICATION_ITEMS: ClassificationItem[] = useMemo(() => [
     { id: "feedback_loops", text: t("classificationItems.feedbackLoops"), correctProcess: "learning" },
     { id: "adaptation", text: t("classificationItems.adaptation"), correctProcess: "learning" },
     { id: "memory", text: t("classificationItems.memory"), correctProcess: "learning" },
@@ -70,7 +71,8 @@ export default function LearningPage() {
     { id: "monitoring", text: t("classificationItems.monitoring"), correctProcess: "execution" },
     { id: "tool_usage", text: t("classificationItems.toolUsage"), correctProcess: "execution" },
     { id: "action_selection", text: t("classificationItems.actionSelection"), correctProcess: "execution" },
-  ];
+  ], [t]);
+  
   const { sessionId, progress, isLoading: sessionLoading } = useSession();
   const classificationMutation = useClassification(sessionId || "");
   const boundaryMapMutation = useBoundaryMap(sessionId || "");
@@ -227,8 +229,8 @@ export default function LearningPage() {
         .filter((s) => !s.isCorrect)
         .map((s) => ({
           type: "incorrect" as const,
-          title: "Incorrect Classification",
-          message: `Consider how this relates to the core function of the correct process`,
+          title: t("classification.incorrectClassification"),
+          message: t("classification.incorrectFeedback"),
           itemName: CLASSIFICATION_ITEMS.find((i) => i.id === s.itemId)?.text,
         })),
     };
@@ -461,9 +463,9 @@ export default function LearningPage() {
         {currentPhase === 1 && (
           <div className="space-y-6">
             <div>
-              <h2 className="text-3xl font-bold mb-2">Phase 1: Classification & Explanation</h2>
+              <h2 className="text-3xl font-bold mb-2">{t("classification.title")}</h2>
               <p className="text-muted-foreground">
-                Classify agent capabilities into the six core processes and explain your reasoning
+                {t("classification.independentDescription")}
               </p>
             </div>
 
@@ -486,14 +488,14 @@ export default function LearningPage() {
                   <div className="flex items-center gap-3">
                     <CheckCircle2 className="w-6 h-6 text-green-600" />
                     <div>
-                      <h3 className="font-semibold">Phase Complete!</h3>
+                      <h3 className="font-semibold">{t("classification.phaseComplete")}</h3>
                       <p className="text-sm text-muted-foreground">
-                        Review your feedback and continue to the next phase
+                        {t("classification.continueDescription")}
                       </p>
                     </div>
                   </div>
                   <Button onClick={handlePhaseComplete} data-testid="button-next-phase">
-                    Continue to Phase 2
+                    {t("classification.continueToPhase2")}
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </div>

@@ -144,8 +144,7 @@ export function BoundaryMapCanvas({
             </Button>
           </div>
           <p className="text-sm text-muted-foreground">
-            Place elements and connect them to processes by clicking an element, then clicking a
-            process
+            {t("boundaryMap.canvasDescription")}
           </p>
           <div
             ref={canvasRef}
@@ -161,7 +160,7 @@ export function BoundaryMapCanvas({
             </div>
 
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-primary/10 border-2 border-primary rounded-md flex items-center justify-center">
-              <span className="font-bold text-sm text-primary">AI AGENT</span>
+              <span className="font-bold text-sm text-primary">{t("boundaryMap.aiAgent")}</span>
             </div>
 
             {placedElements.map((element) => {
