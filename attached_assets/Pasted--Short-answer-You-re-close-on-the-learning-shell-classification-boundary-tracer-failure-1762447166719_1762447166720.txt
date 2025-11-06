@@ -1,0 +1,150 @@
+**Short answer:** You’re close on the *learning shell* (classification + boundary + tracer + failure toggles), but you’re still missing the *engine that makes it genuinely educational for beginners* (fixed 4‑slot pipeline + executable blocks + concrete Health Coach scenario). That gap is the difference between a polished demo and a tool that teaches causal understanding.
+
+I tried to pull the “most recent version” via the available connector in this environment; no actions/resources were exposed. So this snapshot is based on the latest status you shared (and the behaviors implied by it). If you want me to review a live branch or build artifact, I can do that once it’s exposed.
+
+---
+
+## Current state at a glance (vs. the plan)
+
+| Area                               | Status                   | Notes                                                                                                    |
+| ---------------------------------- | ------------------------ | -------------------------------------------------------------------------------------------------------- |
+| **Classification w/ explanations** | **✓ Partial/Working**    | Drag‑drop + rationale present; add near‑miss distractors and targeted “why” feedback to deepen learning. |
+| **Boundary mapper**                | **✓ Working**            | Enforce required node→process connections and provide specific “missing” messages.                       |
+| **Failure injector (toggles)**     | **✓ UI in place**        | Real effect hinges on runtime; currently cosmetic without execution engine.                              |
+| **Simulation tracer UI**           | **✓ Polished**           | Great scaffolding; needs to bind to *actual* pipeline logs.                                              |
+| **Circuit builder**                | **✗ Mismatch**           | React Flow free‑form graph ≠ fixed, guided pipeline. Too open for novices; not executable.               |
+| **Executable runtime**             | **✗ Missing**            | No `run(ctx)` blocks, no deterministic engine, no tool stubs.                                            |
+| **Health Coach scenario pack**     | **✗ Missing**            | No fixtures or domain blocks; the “concrete” hook for novices isn’t there.                               |
+| **i18n integration**               | **△ Present but unused** | Dictionaries exist, but components hardcode strings.                                                     |
+| **Beginner defaults**              | **?**                    | Need prefilled runnable pipeline + one guided tweak.                                                     |
+| **A11y & keyboard parity**         | **?**                    | Must verify: drag alternatives, focus order, color‑independent cues.                                     |
+
+**Bottom line:** You’ve built the right *frames*; what’s left is wiring in the **fixed, executable core** and the **concrete scenario** so beginners see cause → effect when they change one block or flip a failure toggle.
+
+---
+
+## What “good” looks like for the newest build (novice‑ready DoD)
+
+1. **Prefilled pipeline runs in one click** and shows a 4‑step trace with plain‑English subtitles.
+2. **Swapping one block** (e.g., Reasoning: Threshold → Rule‑based) **changes the outcome** *and* the trace.
+3. **Turning on “Noisy input”** visibly jitters the HR readings in the Perception step; smoothing mitigates it.
+4. **Boundary check** confirms at least one critical link (Wearable → Perception).
+5. **All learner‑facing strings** come from i18n files; dual labels appear (e.g., *Read the data (Perception)*).
+6. **Full keyboard/screen‑reader parity** for classify, boundary, builder, and trace.
+
+If your current build doesn’t satisfy all six, it’s not yet novice‑ready.
+
+---
+
+## Specific recommendations (ordered, small and finishable)
+
+### 1) Land the core runtime (half‑day)
+
+* Add a tiny, deterministic engine:
+
+  * `runPipeline({Perception, Reasoning, Planning, Execution}, ctx)` → iterates slots, appends to `ctx.log`.
+  * `applyFailures(ctx, toggles)` → mutates `ctx.input`/`ctx.tools`/`ctx.state` *before* the run.
+* Implement **block registry** (3–4 per slot) for *Health Coach*:
+
+  * Perception: `parseWearables`, `smoothWearables`
+  * Reasoning: `thresholdCheck`, `ruleClassifier`
+  * Planning: `dailyPlanner`, `safetyPlanner`
+  * Execution: `sendNotification`, `updateStreak`
+* Provide three fixtures (normal / borderline / edge).
+
+### 2) Replace graph build with **fixed 4‑slot UI** (half‑day)
+
+* Keep React Flow as a **non‑executing “Diagram Mode (beta)”** hidden by default.
+* Slots show novice‑friendly labels with formal terms in parentheses:
+
+  * *Read the data (Perception)* → *Decide what it means (Reasoning)* → *Make a plan (Planning)* → *Do the step (Execution)*
+* Each slot’s modal: 1‑line *purpose*, 1‑line *effect*, 1 tiny example.
+
+### 3) Bind the tracer to **real logs** (1–2 hrs)
+
+* Trace rows show **badge + plain‑English subtitle**, details under chevron (JSON collapsed by default).
+* Add top‑line metrics: `Result • Steps • Tool calls`.
+
+### 4) Make failures **visible and reversible** (1–2 hrs)
+
+* Before toggle: tooltip previews effect (e.g., “±20 bpm jitter”).
+* After run: highlight changed inputs in the trace; “Reset to clean data” button.
+
+### 5) Ship **beginner defaults & micro‑coach** (1–2 hrs)
+
+* First‑run loads a **prefilled, runnable pipeline**; primary CTA is **Run demo**.
+* After success: spotlight a single **guided tweak** (“Now change *Decide what it means* to Rule Classifier → Run again”).
+* Right‑rail coach messages update per step.
+
+### 6) Wire **i18n in core views** (2–3 hrs)
+
+* Replace hardcoded strings in Builder/Boundary/Classification.
+* Add dual labels to dictionaries (simple + formal).
+* Lint rule to prevent new hardcoded strings.
+
+### 7) A11y checklist pass (1–2 hrs)
+
+* Keyboard alternatives for drag (Move to [slot]/[bin] buttons).
+* Focus ring, logical tab order, skip‑to‑main.
+* Color‑independent cues and reduced‑motion toggle.
+* Screen reader announcements for step starts and results.
+
+> These seven steps are small, additive, and each leaves the product better than it was the hour before.
+
+---
+
+## Red flags to fix before you demo to novices
+
+* **Visual‑only tracer** (no causal change when blocks/toggles change)
+  *Fix:* Connect tracer to `ctx.log` from runtime; delete mock steps.
+* **React Flow as the default builder**
+  *Fix:* Hide behind “Advanced (beta)”; ship fixed 4‑slot as default.
+* **i18n files present but unused**
+  *Fix:* Wire strings now; it’s mostly search‑and‑replace with `t()` calls.
+* **No prefilled runnable state**
+  *Fix:* Ship with sensible defaults and a one‑click run.
+
+---
+
+## Quick test plan (you can run these today)
+
+**Unit**
+
+* `smoothWearables` turns `[142,156,138]` → `hrAvg=145`.
+* `thresholdCheck` sets `activeToday=true` when `steps>8000`.
+
+**Integration**
+
+* Default pipeline + Fixture 1 → `success=true`, plan=`congratulate`, tool calls=`1`.
+* Swap Reasoning to `ruleClassifier` on Fixture 2 → plan changes to `nudge`.
+* Toggle `noisyInput` → Perception input differs and `hrAvg` changes in trace.
+
+**UI**
+
+* First screen shows **Run demo**; Run produces trace; swapping Reasoning changes outcome.
+* Classification **Solve** disabled until rationales present; wrong drops surface “why.”
+
+---
+
+## What you can safely defer (until after novices succeed)
+
+* Instructor dashboards/analytics, state persistence beyond `localStorage`.
+* Confidence calibration UI.
+* Executing arbitrary graphs, parallel branches, loops.
+* Additional scenarios (use the Health Coach win to template future packs).
+
+---
+
+## Overall read
+
+* **Architecture:** Solid scaffolding; the choice to build a general graph first is understandable, but it’s the wrong default for novices.
+* **Pedagogy:** Classification + boundary + *real* execution + visible failure is the right recipe—your tracer and failure toggles will shine once connected to a deterministic engine.
+* **Feasibility:** High. The runtime and block registry are small; the UI adjustments are mostly copy and view logic.
+
+---
+
+## Confidence
+
+* **High** on the gaps and recommendations (they follow directly from your latest status and the original plan).
+* **Medium** on fine‑grained implementation details (I haven’t inspected the live code/build; connector exposed nothing here).
+* **High** that landing the 4‑slot executable pipeline + Health Coach scenario will make this genuinely beginner‑ready and educational.

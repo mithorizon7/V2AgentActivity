@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Lightbulb, CheckCircle2, Play, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 type CoachState = "welcome" | "first-run" | "change-block" | "try-failure" | "completed";
 
@@ -18,14 +19,16 @@ export function GuidedCoachPanel({
   pipelineComplete,
   simulationSuccess,
 }: GuidedCoachPanelProps) {
+  const { t } = useTranslation();
+
   const getContent = () => {
     if (!pipelineComplete) {
       return {
         icon: Sparkles,
         iconColor: "text-purple-600",
-        title: "Your agent is ready!",
-        message: "The pipeline is already set up with working blocks. Click 'Run Demo' to see how it processes wearable data.",
-        tip: "The agent will: read sensor data → decide if you're active → make a plan → send a notification",
+        title: t("guidedCoach.welcome.title"),
+        message: t("guidedCoach.welcome.message"),
+        tip: t("guidedCoach.welcome.tip"),
       };
     }
 
@@ -33,9 +36,9 @@ export function GuidedCoachPanel({
       return {
         icon: Play,
         iconColor: "text-blue-600",
-        title: "Run your first demo",
-        message: "Your Health Coach agent is configured. Click 'Run Demo' to watch it process a normal active day.",
-        tip: "You'll see each step: smoothing sensor noise, checking thresholds, planning a response, and sending a notification.",
+        title: t("guidedCoach.firstRun.title"),
+        message: t("guidedCoach.firstRun.message"),
+        tip: t("guidedCoach.firstRun.tip"),
       };
     }
 
@@ -43,18 +46,18 @@ export function GuidedCoachPanel({
       return {
         icon: Lightbulb,
         iconColor: "text-amber-600",
-        title: "Try changing something!",
-        message: "Now experiment: switch 'Decide what it means' from Threshold Check to Rule Classifier and run again.",
-        tip: "The Rule Classifier uses stricter criteria. Watch how this changes the final plan!",
+        title: t("guidedCoach.changeBlock.title"),
+        message: t("guidedCoach.changeBlock.message"),
+        tip: t("guidedCoach.changeBlock.tip"),
       };
     }
 
     return {
       icon: CheckCircle2,
       iconColor: "text-green-600",
-      title: "Great work!",
-      message: "You've seen how changing blocks affects the outcome. Try toggling 'Noisy Sensor Data' to see how perception handles errors.",
-      tip: "The Smooth Wearables block will average out the noise. Watch the trace to see the difference!",
+      title: t("guidedCoach.tryFailure.title"),
+      message: t("guidedCoach.tryFailure.message"),
+      tip: t("guidedCoach.tryFailure.tip"),
     };
   };
 
@@ -72,7 +75,7 @@ export function GuidedCoachPanel({
             <div className="flex items-center gap-2">
               <h3 className="font-semibold">{content.title}</h3>
               <Badge variant="secondary" className="text-xs">
-                Guide
+                {t("guidedCoach.badge")}
               </Badge>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
@@ -83,7 +86,7 @@ export function GuidedCoachPanel({
 
         <div className="p-3 rounded-md bg-background/50 border-l-4 border-l-primary/30">
           <p className="text-xs text-muted-foreground">
-            <span className="font-semibold text-foreground">💡 Tip: </span>
+            <span className="font-semibold text-foreground">{t("guidedCoach.tipLabel")}: </span>
             {content.tip}
           </p>
         </div>

@@ -72,30 +72,81 @@
     "saveMap": "Save Map"
   },
   "circuit": {
-    "title": "Phase 3: Circuit Building",
-    "description": "Assemble agent blocks to create a functional workflow",
+    "title": "Phase 3: Build Your Health Coach Agent",
+    "description": "Your agent is already configured with working blocks. Run it to see how it processes wearable data!",
+    "pipelineTitle": "Agent Pipeline",
+    "pipelineDescription": "Select a block for each process to build your agent",
     "blockPalette": "Block Palette",
-    "dragInstruction": "Drag blocks onto the canvas to build your agent",
+    "dragInstruction": "Select blocks for each step of the pipeline",
     "canvasTitle": "Agent Circuit Canvas",
     "clear": "Clear",
     "saveCircuit": "Save Circuit",
-    "connectInstructions": "Connect blocks by dragging from one block's edge to another. Click and drag blocks to reposition them."
+    "connectInstructions": "Connect blocks by dragging from one block's edge to another. Click and drag blocks to reposition them.",
+    "pipelineComplete": "Pipeline Complete",
+    "clickToChoose": "Click to choose",
+    "selected": "Selected",
+    "slotLabels": {
+      "perception": "Read the data",
+      "reasoning": "Decide what it means",
+      "planning": "Make a plan",
+      "execution": "Take action"
+    },
+    "slotLabelsFormal": {
+      "perception": "Perception",
+      "reasoning": "Reasoning",
+      "planning": "Planning",
+      "execution": "Execution"
+    },
+    "dialogDescriptions": {
+      "perception": "process incoming data",
+      "reasoning": "analyze and decide",
+      "planning": "create its action plan",
+      "execution": "carry out the planned action"
+    },
+    "dialogPrompt": "Choose how your agent will {{action}}",
+    "readyToTest": "Ready to test!",
+    "readyToTestDescription": "Continue to Phase 4 to run your agent and see it in action",
+    "testYourAgent": "Test Your Agent"
   },
   "simulation": {
-    "title": "Phase 4: Simulation & Testing",
-    "description": "Run your agent, observe execution traces, and inject failures to test resilience",
+    "title": "Phase 4: Run & Test Your Agent",
+    "description": "Watch your agent process real data, then experiment with different blocks and failure modes",
     "execution": "Simulation Execution",
     "run": "Run",
+    "runDemo": "Run Demo",
+    "runAgain": "Run Again",
     "pause": "Pause",
     "reset": "Reset",
+    "resetToClean": "Reset to Clean Data",
     "executionLog": "Execution Log",
     "noLogs": "No logs yet",
-    "buildCircuitFirst": "Build a circuit to run a simulation"
+    "buildCircuitFirst": "Build a circuit to run a simulation",
+    "testScenario": "Test Scenario",
+    "metrics": {
+      "result": "Result",
+      "steps": "Steps",
+      "toolCalls": "Tool Calls",
+      "success": "✓ Success",
+      "failed": "✗ Failed"
+    },
+    "completePhase": "Complete Phase 4"
   },
   "failures": {
     "title": "Failure Injection",
     "description": "Toggle faults to observe how the agent handles errors and edge cases",
-    "activeFailures": "{{count}} failure(s) active. Run the simulation to observe the effects."
+    "activeFailures": "{{count}} failure(s) active. Run the simulation to observe the effects.",
+    "modes": {
+      "noisyInput": {
+        "name": "Noisy Sensor Data",
+        "description": "Heart rate readings fluctuate ±15 BPM, simulating sensor noise or measurement error",
+        "tooltip": "Adds ±15 BPM jitter to heart rate readings"
+      },
+      "reducedActivity": {
+        "name": "Reduced Step Count",
+        "description": "Daily steps are reduced by 800, testing threshold logic for borderline activity levels",
+        "tooltip": "Reduces step count by -800 steps"
+      }
+    }
   },
   "assessment": {
     "title": "Phase 5: Assessment & Review",
@@ -133,6 +184,88 @@
       "term": "Memory",
       "definition": "Storage and retrieval of past interactions, decisions, and learned patterns",
       "example": "Remembering user preferences across sessions"
+    }
+  },
+  "guidedCoach": {
+    "welcome": {
+      "title": "Your agent is ready!",
+      "message": "The pipeline is already set up with working blocks. Click 'Run Demo' to see how it processes wearable data.",
+      "tip": "The agent will: read sensor data → decide if you're active → make a plan → send a notification"
+    },
+    "firstRun": {
+      "title": "Run your first demo",
+      "message": "Your Health Coach agent is configured. Click 'Run Demo' to watch it process a normal active day.",
+      "tip": "You'll see each step: smoothing sensor noise, checking thresholds, planning a response, and sending a notification."
+    },
+    "changeBlock": {
+      "title": "Try changing something!",
+      "message": "Now experiment: switch 'Decide what it means' from Threshold Check to Rule Classifier and run again.",
+      "tip": "The Rule Classifier uses stricter criteria. Watch how this changes the final plan!"
+    },
+    "tryFailure": {
+      "title": "Great work!",
+      "message": "You've seen how changing blocks affects the outcome. Try toggling 'Noisy Sensor Data' to see how perception handles errors.",
+      "tip": "The Smooth Wearables block will average out the noise. Watch the trace to see the difference!"
+    },
+    "badge": "Guide",
+    "tipLabel": "Tip"
+  },
+  "healthCoach": {
+    "fixtures": {
+      "normalDay": {
+        "name": "Normal Active Day",
+        "description": "Healthy activity levels with clean sensor data"
+      },
+      "borderlineActivity": {
+        "name": "Borderline Activity",
+        "description": "Just below activity threshold—tests edge cases"
+      },
+      "noisySensors": {
+        "name": "Noisy Sensors",
+        "description": "Data with measurement errors—tests robustness"
+      }
+    },
+    "blocks": {
+      "perception": {
+        "parse": {
+          "name": "Parse Wearables",
+          "description": "Extract raw heart rate and step count from sensor data"
+        },
+        "smooth": {
+          "name": "Smooth Wearables",
+          "description": "Average readings to reduce sensor noise and outliers"
+        }
+      },
+      "reasoning": {
+        "threshold": {
+          "name": "Threshold Check",
+          "description": "Simple rule: Active if steps ≥ 8000 and HR ≥ 90"
+        },
+        "ruleBased": {
+          "name": "Rule Classifier",
+          "description": "Strict criteria: steps ≥ 10000 and HR ≥ 100 for active"
+        }
+      },
+      "planning": {
+        "daily": {
+          "name": "Daily Planner",
+          "description": "Create today's response: congratulate if active, nudge if not"
+        },
+        "weekly": {
+          "name": "Weekly Planner",
+          "description": "Plan weekly trends and suggest long-term habits"
+        }
+      },
+      "execution": {
+        "notify": {
+          "name": "Send Notification",
+          "description": "Deliver push notification with encouragement or nudge"
+        },
+        "followup": {
+          "name": "Schedule Follow-up",
+          "description": "Book check-in reminder for tomorrow"
+        }
+      }
     }
   }
 }

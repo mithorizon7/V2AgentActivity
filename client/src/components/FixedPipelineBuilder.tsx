@@ -12,6 +12,7 @@ import {
 import { Block, Process } from "@/runtime/types";
 import { getProcessColor } from "@/lib/processColors";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 import {
   Eye,
   Lightbulb,
@@ -28,12 +29,6 @@ const PROCESS_ICONS: Record<Process, React.ComponentType<{ className?: string }>
   execution: Play,
 };
 
-const PROCESS_LABELS: Record<Process, { simple: string; formal: string }> = {
-  perception: { simple: "Read the data", formal: "Perception" },
-  reasoning: { simple: "Decide what it means", formal: "Reasoning" },
-  planning: { simple: "Make a plan", formal: "Planning" },
-  execution: { simple: "Do the step", formal: "Execution" },
-};
 
 type FixedPipelineBuilderProps = {
   perceptionBlocks: Block[];
@@ -52,8 +47,14 @@ export function FixedPipelineBuilder({
   selectedBlocks,
   onBlockSelect,
 }: FixedPipelineBuilderProps) {
+  const { t } = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [currentProcess, setCurrentProcess] = useState<Process | null>(null);
+
+  const getProcessLabel = (process: Process) => ({
+    simple: t(`circuit.slotLabels.${process}`),
+    formal: t(`circuit.slotLabelsFormal.${process}`),
+  });
 
   const getBlocksForProcess = (process: Process): Block[] => {
     switch (process) {
@@ -89,15 +90,15 @@ export function FixedPipelineBuilder({
       <div className="p-6 border rounded-md bg-card">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h3 className="font-semibold text-lg">Agent Pipeline</h3>
+            <h3 className="font-semibold text-lg">{t("circuit.pipelineTitle")}</h3>
             <p className="text-sm text-muted-foreground mt-1">
-              Select a block for each process to build your agent
+              {t("circuit.pipelineDescription")}
             </p>
           </div>
           {allSelected && (
             <Badge variant="default" className="gap-1">
               <Check className="w-3 h-3" />
-              Pipeline Complete
+              {t("circuit.pipelineComplete")}
             </Badge>
           )}
         </div>
@@ -123,11 +124,11 @@ export function FixedPipelineBuilder({
                       <div className="flex items-center gap-2">
                         <div className={cn("w-2 h-2 rounded-full", colors.bg)} />
                         <span className="font-semibold text-sm">
-                          {PROCESS_LABELS[process].simple}
+                          {getProcessLabel(process).simple}
                         </span>
                       </div>
                       <span className="text-xs text-muted-foreground pl-4">
-                        ({PROCESS_LABELS[process].formal})
+                        ({getProcessLabel(process).formal})
                       </span>
                     </div>
                     
@@ -143,7 +144,7 @@ export function FixedPipelineBuilder({
                       </div>
                     ) : (
                       <div className="flex items-center justify-center h-12 text-xs text-muted-foreground">
-                        Click to choose
+                        {t("circuit.clickToChoose")}
                       </div>
                     )}
                   </div>
@@ -162,13 +163,10 @@ export function FixedPipelineBuilder({
         <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>
-              {currentProcess && PROCESS_LABELS[currentProcess].simple}
+              {currentProcess && getProcessLabel(currentProcess).simple}
             </DialogTitle>
             <DialogDescription>
-              Choose how your agent will {currentProcess === 'perception' ? 'process incoming data' : 
-                currentProcess === 'reasoning' ? 'analyze and decide' :
-                currentProcess === 'planning' ? 'create its action plan' :
-                'carry out the planned action'}
+              {currentProcess && t("circuit.dialogPrompt", { action: t(`circuit.dialogDescriptions.${currentProcess}`) })}
             </DialogDescription>
           </DialogHeader>
 
@@ -198,7 +196,7 @@ export function FixedPipelineBuilder({
                           <span className="font-semibold">{block.label}</span>
                           {isSelected && (
                             <Badge variant="default" className="text-xs">
-                              Selected
+                              {t("circuit.selected")}
                             </Badge>
                           )}
                         </div>

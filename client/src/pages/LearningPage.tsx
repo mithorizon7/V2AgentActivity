@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { PhaseProgress, Phase } from "@/components/PhaseProgress";
 import { ClassificationActivity } from "@/components/ClassificationActivity";
 import { ConfidenceSlider } from "@/components/ConfidenceSlider";
@@ -59,34 +60,29 @@ const CLASSIFICATION_ITEMS: ClassificationItem[] = [
   { id: "action_selection", text: "Action Selection", correctProcess: "execution" },
 ];
 
-const FAILURE_MODES: FailureMode[] = [
-  {
-    id: "noisy-input",
-    name: "Noisy Sensor Data",
-    description: "Random noise added to heart rate and step readings",
-    enabled: false,
-    affectedProcess: "perception",
-  },
-  {
-    id: "missing-tool",
-    name: "Missing Tool",
-    description: "sendNotification tool unavailable",
-    enabled: false,
-    affectedProcess: "execution",
-  },
-  {
-    id: "stale-memory",
-    name: "Stale Memory",
-    description: "Agent memory cleared before execution",
-    enabled: false,
-    affectedProcess: "learning",
-  },
-];
 
 const FIXTURES: Fixture[] = fixturesData as Fixture[];
 
 export default function LearningPage() {
+  const { t } = useTranslation();
   const [currentPhase, setCurrentPhase] = useState(1);
+
+  const FAILURE_MODES: FailureMode[] = [
+    {
+      id: "noisy-input",
+      name: t("failures.modes.noisyInput.name"),
+      description: t("failures.modes.noisyInput.description"),
+      enabled: false,
+      affectedProcess: "perception",
+    },
+    {
+      id: "reduced-activity",
+      name: t("failures.modes.reducedActivity.name"),
+      description: t("failures.modes.reducedActivity.description"),
+      enabled: false,
+      affectedProcess: "perception",
+    },
+  ];
   const [phaseCompletion, setPhaseCompletion] = useState<Record<string, boolean>>({
     "1": false,
     "2": false,
@@ -112,7 +108,7 @@ export default function LearningPage() {
   const [hasRunOnce, setHasRunOnce] = useState(false);
 
   // Phase 4: Simulation & Testing
-  const [failureModes, setFailureModes] = useState<FailureMode[]>(FAILURE_MODES);
+  const [failureModes, setFailureModes] = useState<FailureMode[]>([]);
   const [simulationSteps, setSimulationSteps] = useState<SimulationStep[]>([]);
   const [executionContext, setExecutionContext] = useState<RuntimeCtx | null>(null);
   const [isRunning, setIsRunning] = useState(false);
@@ -120,35 +116,42 @@ export default function LearningPage() {
   const phases: Phase[] = [
     {
       id: 1,
-      name: "Classification & Explanation",
+      name: t("phases.phase1"),
       completed: phaseCompletion["1"],
       current: currentPhase === 1,
     },
     {
       id: 2,
-      name: "Boundary Mapping",
+      name: t("phases.phase2"),
       completed: phaseCompletion["2"],
       current: currentPhase === 2,
     },
     {
       id: 3,
-      name: "Circuit Building",
+      name: t("phases.phase3"),
       completed: phaseCompletion["3"],
       current: currentPhase === 3,
     },
     {
       id: 4,
-      name: "Simulation & Testing",
+      name: t("phases.phase4"),
       completed: phaseCompletion["4"],
       current: currentPhase === 4,
     },
     {
       id: 5,
-      name: "Assessment & Review",
+      name: t("phases.phase5"),
       completed: phaseCompletion["5"],
       current: currentPhase === 5,
     },
   ];
+
+  // Initialize failure modes with translations
+  useEffect(() => {
+    if (failureModes.length === 0) {
+      setFailureModes(FAILURE_MODES);
+    }
+  }, [FAILURE_MODES, failureModes.length]);
 
   const handleClassificationSubmit = (submissions: ClassificationSubmission[]) => {
     setClassifications(submissions);
@@ -339,9 +342,9 @@ export default function LearningPage() {
         {currentPhase === 3 && (
           <div className="space-y-6">
             <div>
-              <h2 className="text-3xl font-bold mb-2">Phase 3: Build Your Health Coach Agent</h2>
+              <h2 className="text-3xl font-bold mb-2">{t("circuit.title")}</h2>
               <p className="text-muted-foreground">
-                Your agent is already configured with working blocks. Run it to see how it processes wearable data!
+                {t("circuit.description")}
               </p>
             </div>
 
@@ -372,14 +375,14 @@ export default function LearningPage() {
                   <div className="flex items-center gap-3">
                     <Sparkles className="w-6 h-6 text-amber-600" />
                     <div>
-                      <h3 className="font-semibold">Ready to test!</h3>
+                      <h3 className="font-semibold">{t("circuit.readyToTest")}</h3>
                       <p className="text-sm text-muted-foreground">
-                        Continue to Phase 4 to run your agent and see it in action
+                        {t("circuit.readyToTestDescription")}
                       </p>
                     </div>
                   </div>
                   <Button onClick={handleCircuitComplete} data-testid="button-complete-circuit">
-                    Test Your Agent
+                    {t("circuit.testYourAgent")}
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </div>
@@ -391,9 +394,9 @@ export default function LearningPage() {
         {currentPhase === 4 && (
           <div className="space-y-6">
             <div>
-              <h2 className="text-3xl font-bold mb-2">Phase 4: Run & Test Your Agent</h2>
+              <h2 className="text-3xl font-bold mb-2">{t("simulation.title")}</h2>
               <p className="text-muted-foreground">
-                Watch your agent process real data, then experiment with different blocks and failure modes
+                {t("simulation.description")}
               </p>
             </div>
 
@@ -402,7 +405,7 @@ export default function LearningPage() {
                 <Card className="p-6 space-y-4">
                   <div className="flex items-center gap-4">
                     <div className="flex-1">
-                      <label className="text-sm font-medium mb-2 block">Test Scenario</label>
+                      <label className="text-sm font-medium mb-2 block">{t("simulation.testScenario")}</label>
                       <Select value={selectedFixture} onValueChange={setSelectedFixture}>
                         <SelectTrigger data-testid="fixture-selector">
                           <SelectValue />
@@ -427,29 +430,29 @@ export default function LearningPage() {
                       className="mt-6"
                     >
                       <Play className="w-4 h-4 mr-2" />
-                      {hasRunOnce ? "Run Again" : "Run Demo"}
+                      {hasRunOnce ? t("simulation.runAgain") : t("simulation.runDemo")}
                     </Button>
                   </div>
 
                   {executionContext && (
                     <div className="grid grid-cols-3 gap-4 pt-4 border-t">
                       <div className="p-3 rounded-md bg-muted/50">
-                        <div className="text-xs text-muted-foreground mb-1">Result</div>
+                        <div className="text-xs text-muted-foreground mb-1">{t("simulation.metrics.result")}</div>
                         <div className={cn(
                           "text-base font-semibold",
                           executionContext.success ? "text-green-600" : "text-red-600"
                         )}>
-                          {executionContext.success ? "✓ Success" : "✗ Failed"}
+                          {executionContext.success ? t("simulation.metrics.success") : t("simulation.metrics.failed")}
                         </div>
                       </div>
                       <div className="p-3 rounded-md bg-muted/50">
-                        <div className="text-xs text-muted-foreground mb-1">Steps</div>
+                        <div className="text-xs text-muted-foreground mb-1">{t("simulation.metrics.steps")}</div>
                         <div className="text-base font-semibold">
                           {Math.floor(simulationSteps.length / 2)}
                         </div>
                       </div>
                       <div className="p-3 rounded-md bg-muted/50">
-                        <div className="text-xs text-muted-foreground mb-1">Tool Calls</div>
+                        <div className="text-xs text-muted-foreground mb-1">{t("simulation.metrics.toolCalls")}</div>
                         <div className="text-base font-semibold">
                           {executionContext.log.filter((l) => l.step.includes("EXECUTION")).length}
                         </div>
@@ -484,7 +487,7 @@ export default function LearningPage() {
 
             <Card className="p-6">
               <Button onClick={handlePhaseComplete} data-testid="button-complete-simulation">
-                Complete Phase 4
+                {t("simulation.completePhase")}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </Card>
