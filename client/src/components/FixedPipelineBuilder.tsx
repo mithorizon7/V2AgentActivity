@@ -28,11 +28,11 @@ const PROCESS_ICONS: Record<Process, React.ComponentType<{ className?: string }>
   execution: Play,
 };
 
-const PROCESS_LABELS: Record<Process, string> = {
-  perception: "Perception",
-  reasoning: "Reasoning",
-  planning: "Planning",
-  execution: "Execution",
+const PROCESS_LABELS: Record<Process, { simple: string; formal: string }> = {
+  perception: { simple: "Read the data", formal: "Perception" },
+  reasoning: { simple: "Decide what it means", formal: "Reasoning" },
+  planning: { simple: "Make a plan", formal: "Planning" },
+  execution: { simple: "Do the step", formal: "Execution" },
 };
 
 type FixedPipelineBuilderProps = {
@@ -119,10 +119,15 @@ export function FixedPipelineBuilder({
                   data-testid={`pipeline-slot-${process}`}
                 >
                   <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <div className={cn("w-2 h-2 rounded-full", colors.bg)} />
-                      <span className="font-semibold text-sm uppercase tracking-wide">
-                        {PROCESS_LABELS[process]}
+                    <div className="space-y-0.5">
+                      <div className="flex items-center gap-2">
+                        <div className={cn("w-2 h-2 rounded-full", colors.bg)} />
+                        <span className="font-semibold text-sm">
+                          {PROCESS_LABELS[process].simple}
+                        </span>
+                      </div>
+                      <span className="text-xs text-muted-foreground pl-4">
+                        ({PROCESS_LABELS[process].formal})
                       </span>
                     </div>
                     
@@ -157,10 +162,13 @@ export function FixedPipelineBuilder({
         <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>
-              Choose {currentProcess && PROCESS_LABELS[currentProcess]} Block
+              {currentProcess && PROCESS_LABELS[currentProcess].simple}
             </DialogTitle>
             <DialogDescription>
-              Select which {currentProcess} block to use in your agent pipeline
+              Choose how your agent will {currentProcess === 'perception' ? 'process incoming data' : 
+                currentProcess === 'reasoning' ? 'analyze and decide' :
+                currentProcess === 'planning' ? 'create its action plan' :
+                'carry out the planned action'}
             </DialogDescription>
           </DialogHeader>
 

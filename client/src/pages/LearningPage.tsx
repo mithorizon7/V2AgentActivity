@@ -8,6 +8,7 @@ import { FixedPipelineBuilder } from "@/components/FixedPipelineBuilder";
 import { SimulationTracer } from "@/components/SimulationTracer";
 import { FailureInjector } from "@/components/FailureInjector";
 import { AssessmentDashboard } from "@/components/AssessmentDashboard";
+import { GuidedCoachPanel } from "@/components/GuidedCoachPanel";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -100,14 +101,15 @@ export default function LearningPage() {
   const [feedbackData, setFeedbackData] = useState<any>(null);
   const [classifications, setClassifications] = useState<ClassificationSubmission[]>([]);
 
-  // Phase 3: Circuit Building
+  // Phase 3: Circuit Building  
   const [selectedBlocks, setSelectedBlocks] = useState<Record<Process, Block | null>>({
-    perception: null,
-    reasoning: null,
-    planning: null,
-    execution: null,
+    perception: PERCEPTION_BLOCKS[1], // Smooth Wearables (better for beginners)
+    reasoning: REASONING_BLOCKS[0],   // Threshold Check (simpler)
+    planning: PLANNING_BLOCKS[0],     // Daily Planner
+    execution: EXECUTION_BLOCKS[0],   // Send Notification
   });
   const [selectedFixture, setSelectedFixture] = useState<string>(FIXTURES[0].id);
+  const [hasRunOnce, setHasRunOnce] = useState(false);
 
   // Phase 4: Simulation & Testing
   const [failureModes, setFailureModes] = useState<FailureMode[]>(FAILURE_MODES);
@@ -250,6 +252,7 @@ export default function LearningPage() {
 
       setSimulationSteps(steps);
       setExecutionContext(result);
+      setHasRunOnce(true);
     } finally {
       setIsRunning(false);
     }
@@ -338,18 +341,30 @@ export default function LearningPage() {
             <div>
               <h2 className="text-3xl font-bold mb-2">Phase 3: Build Your Health Coach Agent</h2>
               <p className="text-muted-foreground">
-                Select executable blocks to create a pipeline that processes wearable data
+                Your agent is already configured with working blocks. Run it to see how it processes wearable data!
               </p>
             </div>
 
-            <FixedPipelineBuilder
-              perceptionBlocks={PERCEPTION_BLOCKS}
-              reasoningBlocks={REASONING_BLOCKS}
-              planningBlocks={PLANNING_BLOCKS}
-              executionBlocks={EXECUTION_BLOCKS}
-              selectedBlocks={selectedBlocks}
-              onBlockSelect={handleBlockSelect}
-            />
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 space-y-6">
+                <FixedPipelineBuilder
+                  perceptionBlocks={PERCEPTION_BLOCKS}
+                  reasoningBlocks={REASONING_BLOCKS}
+                  planningBlocks={PLANNING_BLOCKS}
+                  executionBlocks={EXECUTION_BLOCKS}
+                  selectedBlocks={selectedBlocks}
+                  onBlockSelect={handleBlockSelect}
+                />
+              </div>
+
+              <div>
+                <GuidedCoachPanel
+                  state="first-run"
+                  hasRun={false}
+                  pipelineComplete={pipelineComplete}
+                />
+              </div>
+            </div>
 
             {pipelineComplete && (
               <Card className="p-6">
@@ -357,14 +372,14 @@ export default function LearningPage() {
                   <div className="flex items-center gap-3">
                     <Sparkles className="w-6 h-6 text-amber-600" />
                     <div>
-                      <h3 className="font-semibold">Pipeline Ready!</h3>
+                      <h3 className="font-semibold">Ready to test!</h3>
                       <p className="text-sm text-muted-foreground">
-                        Your agent is fully configured. Continue to test it!
+                        Continue to Phase 4 to run your agent and see it in action
                       </p>
                     </div>
                   </div>
                   <Button onClick={handleCircuitComplete} data-testid="button-complete-circuit">
-                    Continue to Phase 4
+                    Test Your Agent
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </div>
@@ -376,79 +391,96 @@ export default function LearningPage() {
         {currentPhase === 4 && (
           <div className="space-y-6">
             <div>
-              <h2 className="text-3xl font-bold mb-2">Phase 4: Simulation & Testing</h2>
+              <h2 className="text-3xl font-bold mb-2">Phase 4: Run & Test Your Agent</h2>
               <p className="text-muted-foreground">
-                Run your agent with different scenarios and inject failures to test resilience
+                Watch your agent process real data, then experiment with different blocks and failure modes
               </p>
             </div>
 
-            <Card className="p-6 space-y-4">
-              <div className="flex items-center gap-4">
-                <div className="flex-1">
-                  <label className="text-sm font-medium mb-2 block">Select Test Scenario</label>
-                  <Select value={selectedFixture} onValueChange={setSelectedFixture}>
-                    <SelectTrigger data-testid="fixture-selector">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {FIXTURES.map((fixture) => (
-                        <SelectItem key={fixture.id} value={fixture.id}>
-                          {fixture.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <Button
-                  size="lg"
-                  onClick={handleSimulationRun}
-                  disabled={!pipelineComplete || isRunning}
-                  data-testid="button-run-simulation"
-                  className="mt-6"
-                >
-                  <Play className="w-4 h-4 mr-2" />
-                  Run Simulation
-                </Button>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 space-y-6">
+                <Card className="p-6 space-y-4">
+                  <div className="flex items-center gap-4">
+                    <div className="flex-1">
+                      <label className="text-sm font-medium mb-2 block">Test Scenario</label>
+                      <Select value={selectedFixture} onValueChange={setSelectedFixture}>
+                        <SelectTrigger data-testid="fixture-selector">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {FIXTURES.map((fixture) => (
+                            <SelectItem key={fixture.id} value={fixture.id}>
+                              {fixture.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {FIXTURES.find(f => f.id === selectedFixture)?.description}
+                      </p>
+                    </div>
+                    <Button
+                      size="lg"
+                      onClick={handleSimulationRun}
+                      disabled={!pipelineComplete || isRunning}
+                      data-testid="button-run-simulation"
+                      className="mt-6"
+                    >
+                      <Play className="w-4 h-4 mr-2" />
+                      {hasRunOnce ? "Run Again" : "Run Demo"}
+                    </Button>
+                  </div>
+
+                  {executionContext && (
+                    <div className="grid grid-cols-3 gap-4 pt-4 border-t">
+                      <div className="p-3 rounded-md bg-muted/50">
+                        <div className="text-xs text-muted-foreground mb-1">Result</div>
+                        <div className={cn(
+                          "text-base font-semibold",
+                          executionContext.success ? "text-green-600" : "text-red-600"
+                        )}>
+                          {executionContext.success ? "✓ Success" : "✗ Failed"}
+                        </div>
+                      </div>
+                      <div className="p-3 rounded-md bg-muted/50">
+                        <div className="text-xs text-muted-foreground mb-1">Steps</div>
+                        <div className="text-base font-semibold">
+                          {Math.floor(simulationSteps.length / 2)}
+                        </div>
+                      </div>
+                      <div className="p-3 rounded-md bg-muted/50">
+                        <div className="text-xs text-muted-foreground mb-1">Tool Calls</div>
+                        <div className="text-base font-semibold">
+                          {executionContext.log.filter((l) => l.step.includes("EXECUTION")).length}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </Card>
+
+                <SimulationTracer
+                  steps={simulationSteps}
+                  onRun={handleSimulationRun}
+                  onReset={() => {
+                    setSimulationSteps([]);
+                    setExecutionContext(null);
+                    setHasRunOnce(false);
+                  }}
+                  isRunning={isRunning}
+                />
+
+                <FailureInjector failures={failureModes} onToggle={handleFailureToggle} />
               </div>
 
-              {executionContext && (
-                <div className="grid grid-cols-3 gap-4 pt-4 border-t">
-                  <Card className="p-4">
-                    <div className="text-sm text-muted-foreground mb-1">Status</div>
-                    <div className={cn(
-                      "text-lg font-semibold",
-                      executionContext.success ? "text-green-600" : "text-red-600"
-                    )}>
-                      {executionContext.success ? "Success" : "Failed"}
-                    </div>
-                  </Card>
-                  <Card className="p-4">
-                    <div className="text-sm text-muted-foreground mb-1">Steps Executed</div>
-                    <div className="text-lg font-semibold">
-                      {simulationSteps.length}
-                    </div>
-                  </Card>
-                  <Card className="p-4">
-                    <div className="text-sm text-muted-foreground mb-1">Tool Calls</div>
-                    <div className="text-lg font-semibold">
-                      {executionContext.log.filter((l) => l.step.includes("EXECUTION")).length}
-                    </div>
-                  </Card>
-                </div>
-              )}
-            </Card>
-
-            <SimulationTracer
-              steps={simulationSteps}
-              onRun={handleSimulationRun}
-              onReset={() => {
-                setSimulationSteps([]);
-                setExecutionContext(null);
-              }}
-              isRunning={isRunning}
-            />
-
-            <FailureInjector failures={failureModes} onToggle={handleFailureToggle} />
+              <div>
+                <GuidedCoachPanel
+                  state={hasRunOnce ? "change-block" : "first-run"}
+                  hasRun={hasRunOnce}
+                  pipelineComplete={pipelineComplete}
+                  simulationSuccess={executionContext?.success}
+                />
+              </div>
+            </div>
 
             <Card className="p-6">
               <Button onClick={handlePhaseComplete} data-testid="button-complete-simulation">

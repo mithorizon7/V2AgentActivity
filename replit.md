@@ -54,19 +54,34 @@ Each with distinct color coding for visual learning:
 - **Interactive**: Immediate feedback and step-by-step guidance
 
 ## Development Status
-- ✅ Frontend components and design system complete
-- ✅ Backend API and storage layer complete
-- ✅ Integration and i18n setup complete
-- ⏳ End-to-end testing pending
+- ✅ Executable runtime engine with Health Coach scenario
+- ✅ Fixed 4-slot pipeline with real causality demonstration
+- ✅ Beginner-friendly UI with plain language dual labels
+- ✅ Prefilled defaults and guided coach panel
+- ✅ Deterministic failure injection for reproducible learning
+- ✅ Backend API with server-side classification validation
+- ⏳ Full i18n integration and accessibility enhancements pending
 
-## Recent Changes
-- Created complete schema for learner progress, classifications, boundary maps, circuits, and simulations
-- Implemented all five phase components with rich interactions
-- Configured educational design system with process-specific colors
-- Set up i18next for internationalization with comprehensive English translation file
-- Built comprehensive assessment and feedback systems
-- Integrated backend APIs with custom hooks for session management, classification, boundary mapping, circuit building, and simulation
-- Implemented rubric-based evaluation for classifications and explanations
-- Added calibration metrics to compare confidence vs actual performance
-- Created in-memory storage with session persistence using localStorage
-- All text content structured in translation JSON for easy future translation
+## Recent Changes (November 2024)
+**Phase 1: Runtime Core & Executable Blocks**
+- Built deterministic execution engine (runPipeline, applyFailures, createInitialContext)
+- Created 8 Health Coach blocks with real run() functions processing wearable data
+- Implemented 3 test fixtures (normal, borderline, noisy sensor data)
+- Replaced free-form graph editor with fixed 4-slot pipeline (Perception → Reasoning → Planning → Execution)
+- Made failure injection deterministic (±15 BPM alternating, -800 steps) for educational reproducibility
+
+**Phase 2: Beginner-Friendly Enhancements**
+- Added plain language dual labels: "Read the data (Perception)", "Decide what it means (Reasoning)", etc.
+- Prefilled pipeline with sensible defaults so learners can run immediately
+- Built GuidedCoachPanel component providing step-by-step guidance and tips
+- Updated primary CTA to "Run Demo" for progressive disclosure
+- Enhanced fixture descriptions and outcome summary chips (Result • Steps • Tool Calls)
+- Improved Phase 3 and Phase 4 layouts with coach panel in side column
+
+**Earlier Work**
+- Classification activity with drag-and-drop and explanation textareas
+- Boundary mapping canvas for environment-to-process connections
+- Simulation tracer with step visualization
+- Assessment dashboard with calibration metrics
+- i18next framework with translation file structure
+- Server-side classification validation replacing client trust
