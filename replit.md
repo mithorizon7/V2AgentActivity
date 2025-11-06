@@ -155,19 +155,26 @@ Each with distinct color coding for visual learning:
 
 **Phase 7: Pedagogical Sequence Fix (November 2024)**
 - Fixed critical backwards pedagogy flaw: app was asking learners to classify BEFORE teaching the model
-- Implemented teach → model → practice sequence:
+- Implemented teach → model → guided practice → independent practice sequence:
   - **Primer (Phase 0)**: Interactive intro teaching 4+2 model through paced steps, animated demo, micro-checks
   - **WorkedExample**: Expert reasoning for 6 core cards + 1 near-miss showing misconceptions
-  - **Phase 1 Practice**: Now properly gated behind completion of teach/model phases
+  - **Guided Practice (Phase 0.75)**: 2-bin scaffolded practice (Perception vs Execution only)
+  - **Independent Practice (Phase 1)**: Full 6-bin classification with all processes
 - Fixed pre-sorted bug in ClassificationActivity:
   - Cards now start in shuffled "Unsorted" tray (never auto-placed in correct bins)
   - DEV warning alerts if any bin starts with correct items
   - localStorage persistence prevents progress loss on refresh
   - Scramble button returns all cards to unsorted tray
-- Gated progression using localStorage flags: primerComplete → workedExampleComplete → Phase 1
-- Added 60+ translation keys for Primer, WorkedExample, unsorted tray
-- Architect verified: proper sequencing, no auto-placement bugs, clear UX
-- Next steps: Split Phase 1 into guided (2-bin) vs independent (6-bin) practice, add targeted feedback
+- Gated progression using localStorage flags: primerComplete → workedExampleComplete → guidedPracticeComplete → Phase 1
+- Implemented guided practice (M2) features:
+  - **2-bin layout**: Shows only Perception vs Execution bins for easier contrast
+  - **Seed prompts**: 3 clickable templates per bin to help learners start rationales
+  - **Attempt tracking**: Counts wrong attempts per card, persisted in localStorage
+  - **Contrastive hints**: Shows hint after 2 wrong attempts explaining the difference
+  - **Full i18n coverage**: All guided practice strings localized
+- Added 75+ translation keys for Primer, WorkedExample, unsorted tray, guided practice
+- Architect verified: proper sequencing, scaffolded difficulty, no auto-placement bugs, clear UX
+- Next steps: Add near-miss distractors, targeted feedback, 80% accuracy gate, keyboard alternatives
 
 **Earlier Work**
 - Classification activity with drag-and-drop and explanation textareas
