@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Block, Process } from "@/runtime/types";
+import { Block, Process } from "@shared/runtime/types";
 import { getProcessColor } from "@/lib/processColors";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";

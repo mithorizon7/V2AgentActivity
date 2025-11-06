@@ -28,16 +28,16 @@ import {
   SimulationStep,
 } from "@shared/schema";
 import { ArrowRight, CheckCircle2, Play, Sparkles } from "lucide-react";
-import { Block, Process, RuntimeCtx, Fixture, FailureConfig } from "@/runtime/types";
-import { runPipeline, applyFailures, createInitialContext } from "@/runtime/engine";
+import { Block, Process, RuntimeCtx, Fixture, FailureConfig } from "@shared/runtime/types";
+import { runPipeline, applyFailures, createInitialContext } from "@shared/runtime/engine";
 import { cn } from "@/lib/utils";
 import {
   PERCEPTION_BLOCKS,
   REASONING_BLOCKS,
   PLANNING_BLOCKS,
   EXECUTION_BLOCKS,
-} from "@/scenarios/health-coach/blocks";
-import fixturesData from "@/scenarios/health-coach/fixtures.json";
+} from "@shared/scenarios/health-coach/blocks";
+import fixturesData from "@shared/scenarios/health-coach/fixtures.json";
 
 const CLASSIFICATION_ITEMS: ClassificationItem[] = [
   { id: "feedback_loops", text: "Feedback Loops", correctProcess: "learning" },

@@ -1,0 +1,207 @@
+Plan for Upgrading V2AgentActivity into a Guided AI Agent Learning Tool
+Current State: Visually Rich but Non-Functional Circuit Builder
+The repository currently provides an interactive React Flow-based Circuit Builder UI, where users can drag & drop abstract “process” blocks (Perception, Learning, Reasoning, etc.) onto a canvas and connect them with edges
+GitHub
+GitHub
+. This offers a visually appealing way to construct an AI agent’s flow. However, it remains a static editor – there is no execution/simulation engine wired up. The onSave simply serializes nodes/edges to an API (progress store)
+GitHub
+, but does not run the agent logic. In other words, learners can sketch an agent architecture, but they cannot observe it in action yet. Furthermore, the current builder is very free-form and not tied to a concrete scenario. While it supports the six agent process types (learning, interaction, perception, reasoning, planning, execution) as node categories
+GitHub
+, it doesn’t enforce any particular workflow or real-world context. This abstraction risks confusing absolute beginners – there’s no obvious cause-and-effect or storyline to follow. On the plus side, the codebase has laid groundwork for the intended features:
+Classification Exercise: A drag-and-drop classification of concepts into the six processes, with an explanation textbox for each item
+GitHub
+. This is meant to teach the definitions of each agent process.
+Boundary Mapper: A canvas where users place environment nodes (APIs, sensors, UI, etc.) around an “AI Agent” and connect them to processes
+GitHub
+GitHub
+. This helps visualize an agent’s external interfaces.
+Fixed Pipeline Builder (in progress): There’s a new FixedPipelineBuilder component which constrains the agent to a linear 4-step pipeline (Perception → Reasoning → Planning → Execution) and lets the user choose one block per slot via a modal dialog
+GitHub
+GitHub
+. This suggests a shift towards the fixed pipeline approach from the original spec.
+Scenario Blocks and Engine: The repo defines an AI Health Coach scenario with a library of Block objects for each process (e.g. parseWearables for Perception, thresholdCheck for Reasoning, etc.), each implementing a run(ctx) function with deterministic logic
+GitHub
+GitHub
+. An execution engine (runPipeline) is also implemented to iterate through perception → reasoning → planning → execution in order
+GitHub
+GitHub
+. The engine records logs for each step, and handles errors or missing blocks
+GitHub
+GitHub
+. There’s even a failure injection utility (applyFailures) to tweak the context for testing robustness (e.g. inject sensor noise, drop a tool)
+GitHub
+GitHub
+. However, these back-end pieces are not yet exposed in the UI for the learner.
+Summary: We have a strong foundation (classification, boundary mapping, block library, pipeline runner). The missing link is integration and polish: tying the fixed pipeline UI to the execution engine and scenario, presenting a clear step-by-step learning flow, and providing visual feedback (trace logs, success metrics) so beginners can see causality. Next, we outline a step-by-step build plan to achieve this, focusing on pedagogical clarity (“constraint before freedom”, “visible causality”, iterative experimentation, and meaningful failure testing).
+Development Plan Overview
+We propose implementing the remaining features in incremental stages, aligning with the learning phases. The plan emphasizes clarity and impact over generality – we will hard-code a single coherent scenario (the AI Health Coach) and a fixed pipeline, rather than building a generic AI platform. This keeps the scope manageable for a small team and ensures each feature directly supports a learning goal. We also ensure each stage adds a usable piece for learners, following the principle of scaffolding (each step builds on prior understanding). Below are the stages with key tasks, pedagogical rationale, and estimated effort for a small but skilled dev team.
+Stage 1: Constrain the Circuit to a Fixed Pipeline (Perception→Reasoning→Planning→Execution)
+What & Why: Simplify the agent-building experience by replacing the open graph editor with a fixed sequence of 6 slots corresponding to the core processes. In practice, we will focus on the four main decision-making stages (Perception, Reasoning, Planning, Execution) while treating “Learning” (memory) and “Interaction” (tool/UI output) as supporting roles accessible via the context. This implements “constraint before freedom” – beginners start with a guided template instead of a blank canvas, making it easier to follow the agent’s flow
+GitHub
+. Implementation: Utilize the existing FixedPipelineBuilder component as the primary UI for pipeline construction. For each of the four pipeline slots, present a card placeholder. When a user clicks a slot, open a modal block chooser listing a few pre-defined block options for that process
+GitHub
+GitHub
+. Each option will have a user-friendly name and description (with translation strings for the scenario) – for example, in the Health Coach scenario the Perception slot might offer “Parse Wearable Data” vs. “Smooth Sensor Data”
+GitHub
+GitHub
+. The chooser UI should use icons/colors consistently (e.g. Eye icon for Perception) and perhaps an explanation of what that stage does (from pedagogical content). Visually, connect the slots with arrows to emphasize the pipeline order (the current UI shows chevron arrows between cards
+GitHub
+). Indicate when all slots are filled – e.g. show a ✅ “Pipeline Complete” badge once a block is selected for each stage
+GitHub
+. This feedback guides learners to the next step. We will deprecate or hide the free-form ReactFlow canvas in the main learner path. (It can be kept behind a “sandbox mode” toggle for advanced exploration later, but not surface it to beginners now to avoid confusion.) Effort: Moderate. Most UI building blocks exist (FixedPipelineBuilder skeleton is there). We need to integrate translation text for block names/descriptions and ensure state management for selected blocks. Expect ~2 days to polish the pipeline UI and remove the old CircuitBuilder references from the main flow.
+Stage 2: Implement Executable Blocks and Pipeline Run Engine
+What & Why: Give each block actual behavior and allow the agent to be “run.” This provides causality – learners see that the blocks they chose have effects on data/state. We design a simple Block interface with a deterministic run(context) → context method (pure function) so each stage transforms the agent’s state
+GitHub
+. The pipeline execution will chain these in order, passing the updated context along, which models how an AI agent processes input step by step. Implementation: Define a TypeScript Block type if not already (kind, label, description, and run function). The repo already sketches this in the attached design notes
+GitHub
+ and scenario code. We will formalize it and ensure all Health Coach blocks conform to it. For example, the Perception block “Parse Wearable Data” might take raw sensor input and populate structured data in ctx.state (steps count, heart rate)
+GitHub
+GitHub
+; the Reasoning block “Threshold Check” reads those and infers flags like activeToday or elevatedHR
+GitHub
+GitHub
+; Planning decides a plan/message based on state
+GitHub
+GitHub
+; Execution attempts an action (e.g. send notification) and sets a success flag
+GitHub
+GitHub
+. Implement the pipeline runner function runPipeline(pipeline, ctx) to execute the 4 chosen blocks in sequence. The pseudo-code is given in the spec
+GitHub
+ and a version exists in runtime/engine.ts. We will use that: iterate through each process slot in order, call the block’s run, and catch any exceptions. Before and after each block, log an event (START/END) with timestamps and maybe a snapshot of state
+GitHub
+GitHub
+. If a slot has no block (shouldn’t happen in this guided UI since we require all slots), log an error
+GitHub
+. Use the RuntimeCtx to hold an input (initial sensor readings), a mutable state (agent memory/blackboard), and tools (stub functions for external actions). The engine must be deterministic – all randomness should be eliminated or controlled (the provided blocks use fixed calculations, and any randomness like noise injection will be done in a controlled way in the next stage). Tie this engine into the UI: when the user clicks “Run”, we will call runPipeline(selectedBlocks, initialCtx) and get a final context with a log of steps. Effort: Low. The heavy lifting (block logic for the scenario and a baseline engine) is largely done in code
+GitHub
+. We need to ensure each block’s run is properly integrated and perhaps refactor a bit for consistency. Testing the pipeline with a known input to verify the outputs flow correctly will take some time. Estimate ~1 day to finalize the Block interface and pipeline integration.
+Stage 3: Introduce a Concrete Scenario (AI Health Coach) with Fixed Inputs
+What & Why: Ground the learning in a concrete use case – an “AI Health Coach” – so that each block and result is meaningful, not abstract. Beginners learn better with a narrative: e.g. “The agent reads wearable data (Perception), decides if you’ve been active (Reasoning), comes up with a daily plan (Planning), and sends you a notification (Execution).” Using a fixed scenario also allows us to supply a predefined test input and expected outcomes, reinforcing determinism and making results easier to interpret. Implementation: Leverage the health-coach scenario content already present. We have a set of block definitions in scenarios/health-coach/blocks.ts covering all four pipeline stages
+GitHub
+GitHub
+. We also have a fixtures.json with sample inputs (e.g. a day’s steps count and heart rate series)
+GitHub
+. We will integrate these as follows:
+Block Library: Feed the scenario-specific blocks into the FixedPipelineBuilder. For example, pass PERCEPTION_BLOCKS (like ParseWearables, SmoothWearables) as the options for the Perception slot, and similarly for others
+GitHub
+GitHub
+. Ensure the UI displays the block’s friendly name and description via i18n keys (the code uses t(block.label) which maps to entries like "healthCoach.blocks.perception.parse.name" in locale files
+GitHub
+). By selecting among these, the learner is choosing how their Health Coach agent will function at each step.
+Fixture Input Selection: Provide a dropdown or list of scenario test inputs (fixtures) in the Simulation phase. The code already includes a select menu for test scenarios
+GitHub
+. For instance, fixtures might be “Sedentary Day (2000 steps)” vs “Active Day (12,000 steps)” with a short description for context
+GitHub
+. The learner can pick one to run their agent on, which gives a concrete situation to analyze (e.g., if the user was very active today, does the agent appropriately decide to congratulate rather than nudge?).
+Narrative Context: In the UI text (instructions and Guided Coach panel), frame the exercise as building a health coach. For example: “Choose how the agent will interpret the user’s data (Perception) … how it will reason about activity … plan a feedback … and execute an action (like sending a notification).” This makes each step’s purpose clear.
+Ensuring the scenario’s relevance will make outcomes more intuitive. When the agent runs, the log might say, “Plan = congratulate, Message = ‘Great job staying active today!’”, which is easier to grasp than abstract variables. Effort: Low to Moderate. The content is mostly there; it’s a matter of wiring it up and writing good explanatory text. Possibly 1 day to integrate the fixture selection and verify the blocks all connect correctly with the provided input format. Another day to polish text/instructions so the scenario story comes through.
+Stage 4: Add Run Simulation Button and Visual Trace of Execution
+What & Why: Now that the user has built an agent, let them execute it and visualize the step-by-step results. This is the core of “visible causality” – the learner sees each block in action and how data flows through the pipeline. It also enables “hands-on iteration”: users can tweak their block choices and immediately observe different outcomes on the same scenario. Implementation: In Phase 4 of the LearningPage (Testing phase), include a prominent “Run” button (already in UI code as a Play button)
+GitHub
+ that triggers the pipeline execution with the selected blocks and chosen fixture input. When run starts, initialize the context via createInitialContext(input) (which sets up initial sensor readings and default tool functions)
+GitHub
+GitHub
+. Then apply any failure toggles (if set – see next stage)
+GitHub
+, and call runPipeline. This returns a final context with a log (ctx.log). We then need to display the log as a trace:
+Use the SimulationTracer component to render the timeline of steps. The code already maps the raw log into an array of SimulationStep objects with input/output snapshots
+GitHub
+. Each step can be shown as a card with a step number, a label (e.g. END_PLANNING or a custom action name), and check or X icon for success/error
+GitHub
+GitHub
+. Below that, show a small snippet of the input and output at that step
+GitHub
+. This allows learners to inspect how, say, heartRateAvg was computed from heartRate input in Perception, and how that influenced the plan in Planning. The SimulationTracer UI already supports play/pause and step-by-step advancement
+GitHub
+GitHub
+, which we can keep for learners who want to replay the execution slowly.
+Alongside the step cards, display an “Execution Log” pane in plain text (scrollable)
+GitHub
+. Each log entry shows a timestamp and the step’s message details
+GitHub
+. We will populate those messages with human-friendly text by leveraging the translation keys in the log data. (The code does this: if a log data.action is "healthCoach.runtime.reasoning.threshold.action", it replaces it with a readable string via i18n
+GitHub
+.) This log view is helpful for seeing the entire run at a glance and highlighting any errors in red or successes in green, as the component already styles them
+GitHub
+GitHub
+.
+Show outcome metrics or a summary above or below the trace. For example, after run, show a result banner: “Success! Agent completed all steps” or “Failed: Execution step encountered an error” in colored text
+GitHub
+. Additionally, the UI can display simple metrics like number of steps executed and how many tool calls were made
+GitHub
+ – these give a sense of performance and tie into assessment (e.g. efficiency of the agent). The code snippet shows placeholders for “Result (Success/Failed)”, “Steps”, “Tool Calls” in the UI
+GitHub
+GitHub
+, which we will make functional using the executionContext and simulationSteps data.
+By the end of this stage, after clicking Run, a beginner should be able to watch their agent think – they see each stage, what it did, and the final outcome for the scenario. This is a big moment for learning by observation and will likely be exciting for them (seeing their creation work). Effort: Moderate. The UI components for trace and log exist; the main work is hooking up state: feeding the SimulationTracer with the log from our engine and ensuring the formatting is clear. We must test a few runs to verify that the trace accurately reflects the block logic (e.g., if a block is missing a tool, does the log show an error at the right step?). Budget ~2 days for integration and testing of the run flow and trace display.
+Stage 5: Integrate Failure Injection for Debugging Practice
+What & Why: Introduce a Failure Injector panel that allows learners to toggle certain fault conditions (e.g. sensor noise, memory loss, tool failure) before running the simulation. This feature aligns with teaching debugging and robustness: learners can see how an AI agent fails under certain conditions and then learn to mitigate or understand those failures. It adds an element of experimentation: “what if the heart rate sensor is noisy – can the agent still make the right decision?” This implements meaningful failure injection – each toggle produces a predictable change, so the effect on the outcome is educational, not random
+GitHub
+. Implementation: Use the FailureInjector component (already in the repo) to render a list of failure mode toggles (likely checkboxes or switches). Each toggle corresponds to a FailureMode object with an id and description
+GitHub
+GitHub
+. For example, modes might include: Noisy Input (adds deterministic noise to sensor readings), Missing Tool (removes the notification function), Stale Memory (clears any stored state). The code defines two by default (noisy-input and reduced-activity)
+GitHub
+; we should expand to cover the major failure ideas (the code’s applyFailures handles noisyInput, missingTool, staleMemory already
+GitHub
+GitHub
+). We will add UI entries for those and any others we find relevant (e.g. “Reduced Activity Data” might correlate with subtracting steps, which is actually implemented as part of noisy input in code
+GitHub
+). When the user toggles a failure, update a failureConfig state. Then, when Run is clicked, apply these failures to the initial context before executing the pipeline. In practice, call applyFailures(ctx, failureConfig) as shown in the code
+GitHub
+. This will mutate the context (for example, ctx.input.steps gets reduced, or ctx.tools.sendNotification gets deleted). The pipeline then runs on this altered context, producing a different log. Make sure to log the injection event so it appears in the trace. The engine already pushes a log entry like FAILURE_INJECTED_NOISY_INPUT with details
+GitHub
+, etc., whenever a failure is applied. These will show up as extra steps in the SimulationTracer (we might label them clearly or with an alert icon). In the UI, perhaps visually highlight when a failure mode is active (e.g. a warning icon or colored text on the Run button or trace header). The learner should immediately see why the agent’s behavior changed – e.g., the log might show “FAILURE_INJECTED_NOISY_INPUT: heartRate data corrupted with ±15 BPM noise”
+GitHub
+ followed by the Perception step logging a different average heart rate than before. After running with a failure, they can observe if the agent succeeded or failed (the success metric will likely be false if a crucial tool was missing, for instance), and compare how the trace differs from the normal run. This encourages them to think about how agents handle unexpected conditions and fosters debugging skills. Effort: Low. The backend logic for failure injection is in place; we need to expose it in the UI and test the end-to-end behavior. Likely ~1 day to integrate the toggles and verify logs update accordingly. We should also craft learner-friendly descriptions for each failure mode (the translations files have placeholders for these descriptions which we can fill in).
+Stage 6: Pedagogical Enhancements and Guidance UI
+With core functionality done, this stage ensures the entire experience is instructionally effective. We add guidance, feedback, and enforce reflection at each step:
+Explain-Your-Placement (Phase 1) Improvements: Make sure learners input a rationale when classifying the concept cards. The current UI already provides a textbox for each item
+GitHub
+, but we should require at least a few words before allowing submission. After submission, provide targeted feedback for any incorrect placements. Ideally, we’d have a feedback library mapping common mistakes to explanations (e.g. if someone put “Memory” under Perception, explain that memory is a Learning function). The spec suggested a FeedbackRule system for this
+GitHub
+. If time is short, at least display a generic explanation for each wrong answer (the code currently generates a generic message
+GitHub
+). Ensure the feedback panel highlights correct vs incorrect (the UI uses green/red styling on the dragged items
+GitHub
+GitHub
+). This solidifies the foundational knowledge before they proceed.
+Boundary Mapping (Phase 2) Checks: To reinforce the “system thinking” outcome, consider adding an auto-check when the user saves the boundary map. For example, verify that certain essential elements are connected: in the health coach scenario, maybe we expect a Sensor connected to Perception (e.g. “Sensor Stream” → Perception) and a UI connected to Execution (e.g. “Notification UI” → Execution). If a required connection is missing, we could prompt the user with a hint like “Did you forget to connect a sensor to the Perception process?” This ensures they haven’t just placed items arbitrarily. The idea is mentioned in the spec (required nodes/edges)
+GitHub
+. Implementing a full correctness check might be involved, but a simple checklist of 2-3 critical connections is feasible. Mark the Boundary phase “complete” only after these conditions are met. (The current code simply proceeds on save
+GitHub
+ without checks, so this would be an enhancement.)
+Guided Coach Panel: There is a GuidedCoachPanel component integrated into phases 3 and 4
+GitHub
+GitHub
+. We should utilize this to provide contextual tips or next-step prompts. For instance:
+In the build phase (Stage 3), if the pipeline is not complete, the coach panel (state "first-run") can say: “Select a block for each slot to build your agent. Click each slot to choose a predefined block.” Once pipelineComplete is true, perhaps it nudges: “Great! Your agent is built. Click Test Your Agent to run it.” (We already show a “Test Your Agent” button when ready
+GitHub
+.)
+In the simulation phase (Stage 4), if the user hasn’t run yet (hasRun=false), coach can encourage: “Run the simulation to see how your agent performs.” After a run (hasRun=true), if it succeeded (simulationSuccess=true), suggest: “Try toggling a failure mode on the left and run again – how does it change?” If it failed, the coach can ask: “It looks like something went wrong. Check the log for ERROR steps. Perhaps try a different block or see if a failure mode was the cause.” These guided questions embody the hands-on iteration principle, prompting the learner to reflect and experiment rather than just moving on.
+Assessment & Reflection (Phase 5): Conclude with a summary of what the learner accomplished. The code already computes metrics like classification accuracy, explanation quality (based on explanation length), boundary completeness, circuit correctness, and calibration (confidence vs accuracy)
+GitHub
+GitHub
+. We should display these in an Assessment Dashboard (there’s a component for it) to let the user review their performance. For instance: “Your classification accuracy was 80% – you misclassified 3 items, consider reviewing those definitions. Your agent built and ran correctly (circuit score 100%). You observed how failures affect the agent (debugging experience). Confidence calibration: you were a bit overconfident if this score is low, etc.” The assessment phase should reinforce key learning points and encourage the learner to reflect or even retry phases if desired.
+Internationalization & Copy: Since the UI text uses i18n (t(...) calls), ensure all new strings (block descriptions, hints, etc.) are added to the locale files (client/src/locales/en/translation.json etc.). Write them in simple, clear language for the target audience (absolute beginners). For example, avoid technical jargon; use phrases like “plan an action” rather than “formulate a policy” for Planning.
+Throughout these enhancements, maintain the theme of constraint then gradual freedom. Only once the learner has seen a full example (Health Coach agent) would we consider allowing a more open challenge. One possible stretch goal (if time permits and once everything else is stable) is to unlock a “Sandbox Mode” after Phase 5, where the full React Flow editor (CircuitBuilder) is available and learners can create any graph they want. But this is optional and should be clearly separated from the guided path. Given limited time, we prioritize the structured path. Effort: Moderate. These are mostly content and minor logic additions but are crucial for pedagogy. Expect ~2 days to implement feedback rules and boundary checks, ~1 day to fill in GuidedCoachPanel content and assessment summaries. Polishing language and doing a pass for clarity might take another day. This stage can be done in parallel with others, since it’s about content.
+Stage 7: Testing, QA, and Polish
+Finally, allocate time for thorough testing and UI/UX polish:
+Test each phase with a few users if possible (or team members) who simulate the target audience. Observe if the instructions are clear and if they can complete tasks without confusion.
+Fine-tune the drag-and-drop interactions (e.g., ensure classification items can’t be accidentally dropped without an explanation, ensure boundary nodes are easy to drag on smaller screens, etc.).
+Ensure determinism: Running the same scenario twice with same blocks and failures should produce the same trace. Fix any non-deterministic behavior.
+Accessibility check: basic a11y for buttons, color contrast (important as we use color to convey correctness), and keyboard navigation where feasible (maybe not full due to drag-drop, but at least ensure modals have focus traps).
+Remove or hide any unused features or dev toggles from the UI to avoid distraction. Also, if any part of the old design (like the arbitrary CircuitBuilder canvas or unused menu items) remain, conditionally disable them for this release.
+Given the high skill of the team, many of these are quick fixes. The key is to present a smooth, bug-free experience because nothing derails learning faster than a glitch or confusing interface. Effort: Low to Moderate. Ongoing small fixes; allocate ~1 week at the end for internal QA, user testing, and last-minute tweaks, given this is an educational tool that should be very polished in clarity.
+Summary & Impact
+By following these stages, we transform V2AgentActivity from an isolated graph editor into a fully guided, hands-on AI agent lab. The end result will walk an absolute beginner through:
+Learning core AI agent concepts (the six processes) by sorting examples and explaining in their own words.
+Mapping an agent’s world and seeing how an agent “connects” to data sources and outputs.
+Building a simple agent using a constrained pipeline and understanding each component’s role.
+Running the agent on a realistic scenario and observing a clear trace of how it works (visible cause and effect).
+Iteratively improving or experimenting with the agent, including seeing how things can fail (and by extension, how to make agents robust).
+Reflecting on what they learned via feedback and assessment.
+Throughout, the focus is on clarity, causality, and learn-by-doing. We sacrifice some generality (only one scenario, fixed pipeline) in order to maximize educational value – this is a conscious choice as recommended
+GitHub
+. The implementation plan is scoped such that a small, skilled team can complete it in a short timeframe (on the order of 1–2 weeks of focused work for the main features, plus testing), since we’re mostly connecting existing pieces and adding UX refinement rather than building from scratch. By the end of this roadmap, the repository will achieve a “highly usable educational state.” Beginners will be able to not just draw an AI agent, but actually build one that runs in a controlled setting, see why it works or fails, and learn fundamental AI agent design principles in an interactive, guided way. This creates a strong foundation that can later be extended (e.g. adding more scenarios or more advanced agent features) once the core learning outcomes are met. The immediate goal, however, is to deliver a polished, impactful learning experience with what we have now.
