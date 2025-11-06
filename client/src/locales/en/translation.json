@@ -9,6 +9,35 @@
     "loading": "Loading...",
     "error": "An error occurred"
   },
+  "model": {
+    "title": "How agents work: a 4-step run loop + 2 supporting systems (4+2)",
+    "runLoop": {
+      "title": "4-Step Run Loop",
+      "description": "Read the data (Perception) → Decide what it means (Reasoning) → Make a plan (Planning) → Do the step (Execution)",
+      "steps": {
+        "perception": "Read the data",
+        "reasoning": "Decide what it means",
+        "planning": "Make a plan",
+        "execution": "Do the step"
+      }
+    },
+    "supporting": {
+      "title": "2 Supporting Systems",
+      "memory": {
+        "icon": "🧠",
+        "title": "Memory (Learning)",
+        "description": "The agent's notes—any stage can read or update them",
+        "badge": "uses Memory"
+      },
+      "tools": {
+        "icon": "🔧",
+        "title": "Tools & UI (Interaction)",
+        "description": "How the agent acts in the world—any stage can call a tool or show something to a user",
+        "badge": "calls Tool: {{tool}}"
+      }
+    },
+    "crossCutting": "Cross-cutting: available to any stage rather than a step in the line"
+  },
   "home": {
     "title": "AI Agents Learning Platform",
     "subtitle": "Master AI agents from core concepts to building your own—through interactive, pedagogically-designed activities",
@@ -35,14 +64,15 @@
   },
   "classification": {
     "title": "Phase 1: Classification & Explanation",
-    "description": "Classify agent capabilities into the six core processes and explain your reasoning",
+    "description": "Classify agent capabilities into the six core processes and explain your reasoning. Remember the 4+2 model: 4 steps in the run loop, plus 2 supporting systems.",
     "dragInstruction": "Drag items to the correct process category and explain your reasoning",
     "scramble": "Scramble",
     "submitCheck": "Submit & Check",
     "explainPlaceholder": "Explain why you placed this item here...",
     "explanationRequired": "Please provide explanations for all items before submitting",
     "phaseComplete": "Phase Complete!",
-    "continueDescription": "Review your feedback and continue to the next phase"
+    "continueDescription": "Review your feedback and continue to the next phase",
+    "crossCuttingHint": "Cross-cutting: available to any stage rather than a step in the line"
   },
   "confidence": {
     "title": "Confidence Level",
@@ -175,7 +205,29 @@
     "strongClassification": "Strong Classification Skills",
     "strongClassificationDesc": "You've demonstrated solid understanding of the six agent processes.",
     "improveExplanations": "Improve Explanations",
-    "improveExplanationsDesc": "Try to provide more detailed reasoning that connects the item to the process's core function."
+    "improveExplanationsDesc": "Try to provide more detailed reasoning that connects the item to the process's core function.",
+    "exitCheck": {
+      "title": "Final Understanding Check",
+      "description": "Answer these questions to confirm your grasp of the 4+2 model",
+      "questions": {
+        "q1": {
+          "question": "Which activity belongs to the run loop vs the rails?",
+          "prompt": "'Call Calendar API' belongs to:",
+          "answers": ["Run Loop", "Interaction Rail", "Memory Rail", "Both Rails"],
+          "correct": 1
+        },
+        "q2": {
+          "question": "Which step in the run loop chooses the action?",
+          "answers": ["Perception", "Reasoning", "Planning", "Execution"],
+          "correct": 2
+        },
+        "q3": {
+          "question": "Where is the habit streak stored?",
+          "answers": ["In the run loop", "Learning (Memory)", "Interaction (Tools)", "Execution"],
+          "correct": 1
+        }
+      }
+    }
   },
   "processes": {
     "learning": "Learning",
@@ -205,38 +257,38 @@
   "guidedCoach": {
     "welcome": {
       "title": "Your agent is ready!",
-      "message": "The pipeline is already set up with working blocks. Click 'Run Demo' to see how it processes wearable data.",
-      "tip": "The agent will: read sensor data → decide if you're active → make a plan → send a notification"
+      "message": "The pipeline is already set up with working blocks. Click 'Run Demo' to see the 4-step run loop in action.",
+      "tip": "You'll go through the 4-step loop; any step may tap Memory 🧠 or Tools 🔧"
     },
     "firstRun": {
       "title": "Run your first demo",
-      "message": "Your Health Coach agent is configured. Click 'Run Demo' to watch it process a normal active day.",
-      "tip": "You'll see each step: smoothing sensor noise, checking thresholds, planning a response, and sending a notification."
+      "message": "Your Health Coach agent is configured. Click 'Run Demo' to watch it execute the full 4-step loop.",
+      "tip": "Watch each stage: Read the data → Decide what it means → Make a plan → Do the step. Notice which steps use Memory 🧠 or Tools 🔧!"
     },
     "successFirst": {
       "title": "Success! Your agent worked perfectly",
-      "message": "The agent processed the data successfully through all four steps. Notice how each block contributed to the final notification.",
-      "tip": "Now try swapping one of the blocks (like changing Threshold Check to Rule Classifier) to see how different logic affects the result!"
+      "message": "The agent completed the 4-step loop successfully. Circle where you see 🧠/🔧 in the trace. Which steps used them?",
+      "tip": "Now try swapping one of the blocks to see how different logic changes the result. Notice how Memory stores data between steps!"
     },
     "changeBlock": {
       "title": "Try changing something!",
       "message": "Experiment by swapping blocks in the pipeline. Each block has different logic that will produce different results.",
-      "tip": "For example, Rule Classifier uses stricter criteria than Threshold Check. Watch how this changes the agent's decision!"
+      "tip": "For example, Rule Classifier uses stricter criteria than Threshold Check. Watch how this changes what gets stored in Memory 🧠 and which Tools 🔧 get called!"
     },
     "failureRecovery": {
       "title": "Simulation failed - Let's debug",
-      "message": "The agent encountered an error during execution. Check the logs to see which step failed and why.",
-      "tip": "Common issues: missing tools when execution runs, or corrupted data from noisy inputs. Try disabling failure modes to isolate the problem."
+      "message": "The agent encountered an error during the run loop. Check the logs to see which step failed and why.",
+      "tip": "Which step chose the action? → Planning. Where was the habit streak stored? → Learning (Memory 🧠). Understanding this helps debug!"
     },
     "withFailures": {
       "title": "Observing failure handling",
-      "message": "You've injected failures into the system. Notice how different blocks handle (or struggle with) corrupted data and missing tools.",
-      "tip": "Smooth Wearables can filter noisy data, but Rule Classifier is stricter and may fail. Experiment to see which combinations are robust!"
+      "message": "You've injected failures. Toggle 'Noisy input' and run—does your Perception step change? Why?",
+      "tip": "Notice how failures affect different parts: noisy sensors hit Perception, missing tools hit Execution 🔧, stale data hits Memory 🧠!"
     },
     "tryFailure": {
       "title": "Great work!",
-      "message": "You've seen how changing blocks affects the outcome. Try toggling failure modes like 'Noisy Sensor Data' to see how perception handles errors.",
-      "tip": "Watch how Smooth Wearables filters noise while Parse Sensor Data might struggle. Understanding failure modes is key to building robust agents!"
+      "message": "You've seen how the 4-step loop handles normal operation. Try toggling failure modes to see how each step responds to errors.",
+      "tip": "Watch which steps tap into Memory 🧠 (Learning) and which call Tools 🔧 (Interaction). These supporting systems work with any step in the loop!"
     },
     "badge": "Guide",
     "tipLabel": "Tip"
