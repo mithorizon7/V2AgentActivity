@@ -3,6 +3,10 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertProgressSchema } from "@shared/schema";
 import { z } from "zod";
+import { runPipeline, applyFailures, createInitialContext } from "../shared/runtime/engine";
+import { Block, Process, RuntimeCtx, FailureConfig } from "../shared/runtime/types";
+import { ALL_BLOCKS } from "../shared/scenarios/health-coach/blocks";
+import fixturesData from "../shared/scenarios/health-coach/fixtures.json";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/progress", async (req, res) => {
@@ -162,51 +166,85 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/simulate", async (req, res) => {
     try {
-      const { sessionId, circuit, failureModes = [] } = req.body;
+      const { sessionId, blockIds, fixtureId, failureConfig = {} } = req.body;
       
-      if (!sessionId || !circuit) {
-        return res.status(400).json({ error: "Invalid simulation request" });
+      if (!sessionId || !blockIds || !fixtureId) {
+        return res.status(400).json({ error: "Missing required fields: sessionId, blockIds, fixtureId" });
       }
 
-      const steps = circuit.blocks.map((block: any, index: number) => {
-        const timestamp = Date.now() + index * 1000;
-        const activeFailure = failureModes.find(
-          (f: any) => f.enabled && f.affectedProcess === block.type
-        );
+      // Create block registry for easy lookup
+      const blockRegistry = new Map<string, Block>();
+      ALL_BLOCKS.forEach(block => blockRegistry.set(block.id, block));
 
-        if (activeFailure) {
-          return {
-            id: `step-${index}`,
-            blockId: block.id,
-            timestamp,
-            input: index === 0 ? { initial: "data" } : { from: `step-${index - 1}` },
-            output: { error: activeFailure.name },
-            status: "error",
-            message: `Failed: ${activeFailure.description}`,
-          };
-        }
+      // Build pipeline from block IDs
+      const pipeline: Record<Process, Block> = {
+        perception: blockRegistry.get(blockIds.perception),
+        reasoning: blockRegistry.get(blockIds.reasoning),
+        planning: blockRegistry.get(blockIds.planning),
+        execution: blockRegistry.get(blockIds.execution),
+      } as Record<Process, Block>;
 
-        return {
-          id: `step-${index}`,
-          blockId: block.id,
-          timestamp,
-          input: index === 0 ? { initial: "data" } : { from: `step-${index - 1}` },
-          output: { processed: `output-${index}` },
-          status: "success",
-          message: `Successfully executed ${block.label}`,
-        };
-      });
+      // Verify all blocks were found
+      const missingBlocks = Object.entries(pipeline)
+        .filter(([_, block]) => !block)
+        .map(([process]) => process);
+      
+      if (missingBlocks.length > 0) {
+        return res.status(400).json({ 
+          error: "Invalid block IDs", 
+          missingBlocks 
+        });
+      }
 
+      // Get fixture data
+      const fixture = fixturesData.find((f: any) => f.id === fixtureId);
+      if (!fixture) {
+        return res.status(400).json({ error: "Invalid fixture ID" });
+      }
+
+      // Create initial context with fixture input
+      let ctx = createInitialContext(fixture.input);
+
+      // Apply failures if configured
+      const failures: FailureConfig = {
+        noisyInput: failureConfig.noisyInput || false,
+        missingTool: failureConfig.missingTool || undefined,
+        staleMemory: failureConfig.staleMemory || false,
+      };
+
+      if (failures.noisyInput || failures.missingTool || failures.staleMemory) {
+        ctx = applyFailures(ctx, failures);
+      }
+
+      // Run the pipeline
+      const result = await runPipeline(pipeline, ctx);
+
+      // Transform log into simulation steps
+      const steps = result.log.map((logEntry, index) => ({
+        id: `step-${index}`,
+        blockId: logEntry.data?.blockId || 'system',
+        timestamp: logEntry.timestamp,
+        input: index > 0 ? result.log[index - 1].data : fixture.input,
+        output: logEntry.data,
+        status: logEntry.step.includes('ERROR') ? ('error' as const) : ('success' as const),
+        message: logEntry.step,
+      }));
+
+      // Save to storage
       const progress = await storage.getProgress(sessionId);
       if (progress) {
         await storage.updateProgress(sessionId, {
           simulationResults: steps,
-          failureModes,
         });
       }
 
-      res.json({ steps });
+      res.json({ 
+        steps,
+        success: result.success,
+        finalState: result.state,
+      });
     } catch (error) {
+      console.error('Simulation error:', error);
       res.status(500).json({ error: "Failed to run simulation" });
     }
   });
