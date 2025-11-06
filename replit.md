@@ -120,6 +120,32 @@ Each with distinct color coding for visual learning:
   - All mutations use React Query for optimistic updates and cache management
 - Added 60+ translation keys for new features maintaining i18n completeness
 
+**Phase 6: 4+2 Framework Integration (November 2024)**
+- Implemented 4+2 conceptual framework distinguishing:
+  - RUN_LOOP processes (perception, reasoning, planning, execution): Sequential 4-step execution path
+  - SUPPORTING processes (learning/memory, interaction/tools): Cross-cutting systems available throughout
+- Added block metadata (usesMemory, toolCalls) to all 8 Health Coach blocks enabling visual telemetry
+- Enhanced FixedPipelineBuilder with horizontal rail visualization:
+  - Memory rail (purple, Brain icon) displayed above pipeline
+  - Tools rail (blue, Wrench icon) displayed below pipeline
+  - Dashed connector lines ("tap indicators") show which blocks access each system
+- Updated block picker dialog with informational badges:
+  - "Uses Memory 🧠" badge for blocks that access memory
+  - "Calls Tools 🔧: {toolName}" badges for blocks that invoke tools
+- Enhanced SimulationTracer with rail tap badges on each execution step:
+  - Purple Memory badge with Brain icon for steps accessing memory
+  - Blue Tools badge with Wrench icon for steps calling tools
+  - Real-time visualization of supporting system usage during execution
+- Added Classification phase hints for supporting processes:
+  - Amber hint boxes in Learning and Interaction bins
+  - Explains "Supporting system: not in the 4-step loop" concept
+  - Helps learners distinguish loop processes from cross-cutting concerns
+- Strengthened Boundary Mapping validation with causal requirements:
+  - Sensor → Perception: Sensors must provide input to perception layer
+  - Execution → Tool/UI: Execution must connect to tools or UI to act
+  - Reinforces 4+2 framework through structural validation
+- Added 10+ i18n keys for framework explanation and hints
+
 **Earlier Work**
 - Classification activity with drag-and-drop and explanation textareas
 - Boundary mapping canvas for environment-to-process connections
