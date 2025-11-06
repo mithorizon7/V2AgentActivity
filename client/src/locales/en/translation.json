@@ -223,7 +223,8 @@
   "classification": {
     "title": "Phase 1: Classification & Explanation",
     "description": "Classify agent capabilities into the six core processes and explain your reasoning. Remember the 4+2 model: 4 steps in the run loop, plus 2 supporting systems.",
-    "dragInstruction": "Drag items to the correct process category and explain your reasoning",
+    "dragInstruction": "Drag items from the tray below to the correct process category and explain your reasoning",
+    "unsortedTray": "Unsorted Items",
     "dragItemsHere": "Drag items here",
     "scramble": "Scramble",
     "submitCheck": "Submit & Check",

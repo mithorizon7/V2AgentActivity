@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { AgentProcess, ClassificationItem, ClassificationSubmission } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -164,8 +164,33 @@ export function ClassificationActivity({
   correctAnswers,
 }: ClassificationActivityProps) {
   const { t } = useTranslation();
+  
+  // CRITICAL FIX: Start with ALL cards UNSORTED and SHUFFLED
+  // Never auto-place based on correctProcess - that's backwards pedagogy!
+  const [unsortedItems, setUnsortedItems] = useState<ClassificationItem[]>(() => {
+    const saved = localStorage.getItem("classification_unsorted_v1");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.warn("Failed to restore unsorted items");
+      }
+    }
+    return [...items].sort(() => Math.random() - 0.5);
+  });
+  
   const [itemsByProcess, setItemsByProcess] = useState<Record<AgentProcess, ClassificationItem[]>>(() => {
-    const grouped: Record<AgentProcess, ClassificationItem[]> = {
+    const saved = localStorage.getItem("classification_sorted_v1");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.warn("Failed to restore sorted items");
+      }
+    }
+    
+    // Start with EMPTY bins - no pre-sorting!
+    return {
       learning: [],
       interaction: [],
       perception: [],
@@ -173,20 +198,54 @@ export function ClassificationActivity({
       planning: [],
       execution: [],
     };
-    items.forEach((item) => {
-      grouped[item.correctProcess].push(item);
-    });
-    return grouped;
   });
   
   const [draggedItem, setDraggedItem] = useState<ClassificationItem | null>(null);
-  const [explanations, setExplanations] = useState<Record<string, string>>({});
+  const [explanations, setExplanations] = useState<Record<string, string>>(() => {
+    const saved = localStorage.getItem("classification_explanations_v1");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        return {};
+      }
+    }
+    return {};
+  });
+
+  // Dev guard: warn if cards are in correct bins before user interaction
+  if (import.meta.env.DEV) {
+    const autoPlaced: string[] = [];
+    Object.entries(itemsByProcess).forEach(([process, processItems]) => {
+      processItems.forEach(item => {
+        if (item.correctProcess === process) {
+          autoPlaced.push(`${item.id} → ${process}`);
+        }
+      });
+    });
+    if (autoPlaced.length > 0 && !showFeedback) {
+      console.warn("⚠️ PRE-SORTED BUG:", autoPlaced);
+    }
+  }
 
   const getProcessHint = (process: AgentProcess): string | undefined => {
     if (process === "learning") return t("classification.hints.learning");
     if (process === "interaction") return t("classification.hints.interaction");
     return undefined;
   };
+
+  // Persist to localStorage whenever state changes
+  useEffect(() => {
+    localStorage.setItem("classification_unsorted_v1", JSON.stringify(unsortedItems));
+  }, [unsortedItems]);
+
+  useEffect(() => {
+    localStorage.setItem("classification_sorted_v1", JSON.stringify(itemsByProcess));
+  }, [itemsByProcess]);
+
+  useEffect(() => {
+    localStorage.setItem("classification_explanations_v1", JSON.stringify(explanations));
+  }, [explanations]);
 
   const handleDragStart = useCallback((item: ClassificationItem) => {
     setDraggedItem(item);
@@ -195,6 +254,10 @@ export function ClassificationActivity({
   const handleDrop = useCallback((targetProcess: AgentProcess) => {
     if (!draggedItem) return;
 
+    // Remove from unsorted tray if coming from there
+    setUnsortedItems((prev) => prev.filter((i) => i.id !== draggedItem.id));
+
+    // Remove from all bins and place in target
     setItemsByProcess((prev) => {
       const newState = { ...prev };
       Object.keys(newState).forEach((process) => {
@@ -214,27 +277,25 @@ export function ClassificationActivity({
   }, []);
 
   const handleScramble = useCallback(() => {
-    const allItems = Object.values(itemsByProcess).flat();
+    // Return ALL items to unsorted tray, shuffled
+    const allItems = [
+      ...unsortedItems,
+      ...Object.values(itemsByProcess).flat()
+    ];
     const shuffled = [...allItems].sort(() => Math.random() - 0.5);
     
-    const processes: AgentProcess[] = ["learning", "interaction", "perception", "reasoning", "planning", "execution"];
-    const newGrouping: Record<AgentProcess, ClassificationItem[]> = {
+    setUnsortedItems(shuffled);
+    setItemsByProcess({
       learning: [],
       interaction: [],
       perception: [],
       reasoning: [],
       planning: [],
       execution: [],
-    };
-
-    shuffled.forEach((item, index) => {
-      const process = processes[Math.floor(Math.random() * processes.length)];
-      newGrouping[process].push(item);
     });
-
-    setItemsByProcess(newGrouping);
+    
     if (onScramble) onScramble();
-  }, [itemsByProcess, onScramble]);
+  }, [unsortedItems, itemsByProcess, onScramble]);
 
   const handleSubmit = () => {
     const submissions: ClassificationSubmission[] = [];
@@ -255,7 +316,7 @@ export function ClassificationActivity({
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4">
         <p className="text-sm text-muted-foreground">
-          Drag items to the correct process category and explain your reasoning
+          {t("classification.dragInstruction")}
         </p>
         <div className="flex gap-2">
           <Button
@@ -263,16 +324,38 @@ export function ClassificationActivity({
             onClick={handleScramble}
             data-testid="button-scramble"
           >
-            Scramble
+            {t("classification.scramble")}
           </Button>
           <Button
             onClick={handleSubmit}
             data-testid="button-solve"
           >
-            Submit & Check
+            {t("classification.submitCheck")}
           </Button>
         </div>
       </div>
+
+      {/* Unsorted Tray - where all cards start */}
+      {unsortedItems.length > 0 && (
+        <Card className="p-4 border-2 border-dashed">
+          <div className="mb-2">
+            <span className="text-sm font-semibold">{t("classification.unsortedTray")}</span>
+            <Badge variant="outline" className="ml-2">{unsortedItems.length}</Badge>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            {unsortedItems.map((item) => (
+              <DraggableItem
+                key={item.id}
+                item={item}
+                onDragStart={handleDragStart}
+                explanation={explanations[item.id] || ""}
+                onExplanationChange={handleExplanationChange}
+                showFeedback={false}
+              />
+            ))}
+          </div>
+        </Card>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
         {(["learning", "interaction", "perception", "reasoning", "planning", "execution"] as AgentProcess[]).map(

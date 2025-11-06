@@ -1,0 +1,146 @@
+You’re right—that’s backwards pedagogy. We should **teach → model → guided practice → independent practice**, not drop them straight into sorting. And the “already in the right bins” bug absolutely undercuts learning.
+
+Here’s a tight fix that keeps your 4+2 direction and is fast to ship.
+
+---
+
+# What to change (in order)
+
+## 0) Add a short **Primer (Teach)** before Phase 1
+
+**Goal:** give novices the concepts *before* asking them to classify.
+
+* **Screen: “How agents work (4+2)”**
+
+  * 4-step run loop: *Read (Perception) → Decide (Reasoning) → Plan (Planning) → Do (Execution)*
+  * Rails: *🧠 Memory (Learning)*, *🔧 Tools & UI (Interaction)* — available to any step.
+* **Micro-demo (30–45s)**: a tiny animation of the loop with one sentence per step.
+* **1–2 quick “spot-the-verb” checks** (e.g., “choose” → Planning, “send” → Execution).
+* **Gate:** Continue only after the micro-lesson completes (or the two checks are correct).
+
+**Acceptance:** Users cannot reach Phase 1 until Primer is completed.
+
+---
+
+## 1) Insert a **Worked Example (I do)** before they sort
+
+**Goal:** show exactly how an expert reasons.
+
+* Show **6 example cards** and narrate why each belongs in its process.
+* Use highlight cues (e.g., “*transforms inputs* → Perception”, “*chooses* → Planning”).
+* Include one **near-miss** (“Call Calendar API” feels like Planning but is actually **Interaction**).
+
+**Acceptance:** Example shows 1 card per process + 1 near-miss with explicit “why.”
+
+---
+
+## 2) Phase 1 becomes **Guided Practice (We do)**, then **Independent (You do)**
+
+**Guided sub-round (reduced load):**
+
+* Only **2 bins visible** at a time (e.g., Perception vs Execution), 6–8 cards total.
+* After 2 wrong drops on a card, show a **contrastive hint**.
+* Require a **1-sentence rationale** (with 3 seed prompts to click, e.g., “This *carries out* steps”).
+
+**Independent sub-round:**
+
+* All **6 bins** visible, 14–20 cards including **distractors**.
+* **Timer removed**; **accuracy ≥80%** required to pass.
+* Tailored “why” feedback after **Solve**.
+
+**Acceptance:** Users can’t reach the boundary map until they hit the threshold in independent round.
+
+---
+
+## 3) Fix the “starts in right places” issue (critical)
+
+**Goal:** guarantee no pre-sorted state and prevent subtle auto-placement.
+
+* **Initial state:** all cards in an **Unsorted tray** (or completely off the board); **shuffle** every load.
+* **Never** derive UI position from `canonicalProcess`. Hold placement only in **UI state**, not computed props.
+* **Kill any effect** that places cards by default (audit for `useEffect` that hydrates from canonical answers).
+* **Persist** progress locally so a refresh doesn’t “snap” them to correct bins.
+
+**Acceptance:** On reload, cards remain unsorted (or in last user state); no auto-placement ever occurs.
+
+---
+
+# UI & copy that make this intuitive
+
+* **Headings everywhere:** “**4-step run loop + 2 supporting systems (4+2)**”
+* **Bin labels (dual):** “Read the data *(Perception)*”, “Decide *(Reasoning)*”, “Plan *(Planning)*”, “Do *(Execution)*”, “🧠 Memory *(Learning)*”, “🔧 Tools & UI *(Interaction)*”
+* **Seed prompts under the rationale box:**
+
+  * “This *transforms* raw input…”
+  * “This *chooses* between options…”
+  * “This *carries out* steps…”
+* **Near-miss hints:** “If it *changes the plan*, it’s Planning; if it *follows* a plan, it’s Execution.”
+
+---
+
+# Implementation tasks (dev-ready)
+
+1. **Primer gate**
+
+   * Add `primerComplete` flag in global state; gate Phase 1 route until true.
+   * Build a 2-slide micro-lesson + 2 MCQs; store completion.
+
+2. **Worked example**
+
+   * `WorkedExample.tsx`: fixed set of 7 cards (6 + 1 near-miss) with the model’s explanations revealed step-by-step (Next/Back).
+
+3. **Phase 1 refactor**
+
+   * Split into `Phase1Guided` (2 bins at a time) and `Phase1Independent` (all 6).
+   * Require rationale text (≥ 6 characters) on drop before **Solve** unlocks.
+   * Add distractors and near-misses to `cards.json`.
+   * Add “after 2 wrongs, show hint” logic.
+
+4. **No pre-sort**
+
+   * Initialize as `cards.map(c => ({...c, bin: null}))`.
+   * Remove any `useEffect` that maps by `canonicalProcess`.
+   * `localStorage` persistence: `phase1Progress_v1`.
+   * Add QA guard: log a console warning if any card renders in its canonical bin *before* user acts.
+
+5. **Feedback**
+
+   * Implement `feedbackRules` keyed by (cardId, wrongProcess) for targeted “why.”
+   * Show “common confusion” tooltips under wrong bins post-Solve.
+
+6. **i18n & accessibility**
+
+   * All new copy to locales; run reading-level pass (~6–8th grade).
+   * Keyboard alternative for drag (“Move to [Bin]” buttons); focus ring & ARIA live announcements on Solve.
+
+---
+
+# Quick test plan
+
+* **Gate test:** Cannot open Phase 1 until micro-lesson + 2 MCQs completed.
+* **Worked example:** Near-miss explained correctly.
+* **Guided round:** With 2 bins, wrong twice → hint appears; rationale required.
+* **Independent round:** Cards start unsorted & shuffled; ≥80% accuracy required; “why” feedback ties to each wrong.
+* **Persistence:** Refresh preserves user placements; no card snaps to canonical bin.
+* **A11y:** Complete the round with keyboard only.
+
+---
+
+# Why this fixes the pedagogy
+
+* **Teach first:** Primer + Worked Example build a correct schema before application.
+* **Scaffolded difficulty:** 2-bin guided practice reduces cognitive load, then full 6-bin independent practice builds mastery.
+* **Real thinking:** Rationale + tailored feedback enforce *explanation*, not just recognition.
+* **No false signals:** Scrambled start and no auto-placement mean success reflects understanding, not UI defaults.
+
+---
+
+## What happens next
+
+Once they clear Phase 1 with this path, they hit Boundary → Builder → Run/Trace → Failure Injection—now on a solid foundation.
+
+**Confidence:**
+
+* **High** this change removes the current pedagogical flaw and improves learning outcomes.
+* **High** feasibility (all changes are UI/state + copy; no heavy backend).
+* **Medium** on exact hint wording density—expect one tuning pass after a quick user test.
