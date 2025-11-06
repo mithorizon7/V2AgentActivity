@@ -153,6 +153,22 @@ Each with distinct color coding for visual learning:
   - All user-facing text properly localized and ready for translation
   - Consistent translation key naming following existing patterns
 
+**Phase 7: Pedagogical Sequence Fix (November 2024)**
+- Fixed critical backwards pedagogy flaw: app was asking learners to classify BEFORE teaching the model
+- Implemented teach → model → practice sequence:
+  - **Primer (Phase 0)**: Interactive intro teaching 4+2 model through paced steps, animated demo, micro-checks
+  - **WorkedExample**: Expert reasoning for 6 core cards + 1 near-miss showing misconceptions
+  - **Phase 1 Practice**: Now properly gated behind completion of teach/model phases
+- Fixed pre-sorted bug in ClassificationActivity:
+  - Cards now start in shuffled "Unsorted" tray (never auto-placed in correct bins)
+  - DEV warning alerts if any bin starts with correct items
+  - localStorage persistence prevents progress loss on refresh
+  - Scramble button returns all cards to unsorted tray
+- Gated progression using localStorage flags: primerComplete → workedExampleComplete → Phase 1
+- Added 60+ translation keys for Primer, WorkedExample, unsorted tray
+- Architect verified: proper sequencing, no auto-placement bugs, clear UX
+- Next steps: Split Phase 1 into guided (2-bin) vs independent (6-bin) practice, add targeted feedback
+
 **Earlier Work**
 - Classification activity with drag-and-drop and explanation textareas
 - Boundary mapping canvas for environment-to-process connections
