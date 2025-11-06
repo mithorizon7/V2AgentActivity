@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { getProcessColor } from "@/lib/processColors";
 import { cn } from "@/lib/utils";
-import { GripVertical, Check, X, AlertCircle } from "lucide-react";
+import { GripVertical, Check, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 type DraggableItemProps = {
@@ -233,10 +233,6 @@ export function ClassificationActivity({
     onSubmit(submissions);
   };
 
-  const allItemsHaveExplanations = Object.values(itemsByProcess)
-    .flat()
-    .every((item) => explanations[item.id]?.trim().length > 0);
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4">
@@ -253,22 +249,12 @@ export function ClassificationActivity({
           </Button>
           <Button
             onClick={handleSubmit}
-            disabled={!allItemsHaveExplanations}
             data-testid="button-solve"
           >
             Submit & Check
           </Button>
         </div>
       </div>
-
-      {!allItemsHaveExplanations && (
-        <div className="flex items-center gap-2 p-3 bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-md">
-          <AlertCircle className="w-4 h-4 text-amber-600" />
-          <p className="text-sm text-amber-900 dark:text-amber-100">
-            Please provide explanations for all items before submitting
-          </p>
-        </div>
-      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
         {(["learning", "interaction", "perception", "reasoning", "planning", "execution"] as AgentProcess[]).map(
