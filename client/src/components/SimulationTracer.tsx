@@ -4,11 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SimulationStep } from "@shared/schema";
-import { Play, Pause, SkipForward, RotateCcw, CheckCircle2, XCircle, Clock } from "lucide-react";
+import { Block, Process } from "@shared/runtime/types";
+import { Play, Pause, SkipForward, RotateCcw, CheckCircle2, XCircle, Clock, Brain, Wrench } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 type SimulationTracerProps = {
   steps: SimulationStep[];
+  selectedBlocks?: Record<Process, Block | null>;
   onRun: () => void;
   onReset: () => void;
   isRunning: boolean;
@@ -16,12 +19,21 @@ type SimulationTracerProps = {
 
 export function SimulationTracer({
   steps,
+  selectedBlocks,
   onRun,
   onReset,
   isRunning,
 }: SimulationTracerProps) {
+  const { t } = useTranslation();
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+
+  const getBlockFromStepId = (stepId: string): Block | null => {
+    if (!selectedBlocks) return null;
+    // Block IDs are like "perception.parse", "reasoning.threshold", etc.
+    // Find the block that matches
+    return Object.values(selectedBlocks).find(block => block?.id === stepId) || null;
+  };
 
   const handlePlay = () => {
     if (currentStepIndex >= steps.length) {
@@ -88,6 +100,7 @@ export function SimulationTracer({
               steps.map((step, index) => {
                 const isCurrent = index === currentStepIndex;
                 const isPast = index < currentStepIndex;
+                const block = getBlockFromStepId(step.blockId);
 
                 return (
                   <div
@@ -102,7 +115,7 @@ export function SimulationTracer({
                   >
                     <div className="flex items-start gap-3">
                       <div className="flex-1 space-y-2">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
                           <Badge variant="outline" className="font-mono">
                             Step {index + 1}
                           </Badge>
@@ -120,6 +133,25 @@ export function SimulationTracer({
                         {step.message && (
                           <p className="text-sm text-muted-foreground">{step.message}</p>
                         )}
+                        
+                        {/* Rail taps: show which supporting systems this step used */}
+                        {block && (block.usesMemory || (block.toolCalls && block.toolCalls.length > 0)) && (
+                          <div className="flex flex-wrap gap-1">
+                            {block.usesMemory && (
+                              <Badge variant="outline" className="text-xs gap-1 bg-purple-500/10 border-purple-500/20 text-purple-700 dark:text-purple-300">
+                                <Brain className="w-3 h-3" />
+                                {t("model.supporting.memory.badge")}
+                              </Badge>
+                            )}
+                            {block.toolCalls && block.toolCalls.map((tool) => (
+                              <Badge key={tool} variant="outline" className="text-xs gap-1 bg-blue-500/10 border-blue-500/20 text-blue-700 dark:text-blue-300">
+                                <Wrench className="w-3 h-3" />
+                                {t("model.supporting.tools.badge", { tool })}
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
+
                         <div className="grid grid-cols-2 gap-2 text-xs">
                           <div className="p-2 bg-muted/50 rounded">
                             <div className="font-semibold mb-1">Input:</div>

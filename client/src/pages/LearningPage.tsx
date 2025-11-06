@@ -581,6 +581,7 @@ export default function LearningPage() {
 
                 <SimulationTracer
                   steps={simulationSteps}
+                  selectedBlocks={selectedBlocks}
                   onRun={handleSimulationRun}
                   onReset={() => {
                     setSimulationSteps([]);
