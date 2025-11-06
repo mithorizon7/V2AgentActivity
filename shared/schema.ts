@@ -27,6 +27,14 @@ export type ClassificationItem = {
   category?: "generic" | "health-coach";
 };
 
+// Input type for classification evaluation (before correctness is determined)
+export type ClassificationInput = {
+  itemId: string;
+  selectedProcess: AgentProcess;
+  explanation: string;
+};
+
+// Result type after evaluation (includes isCorrect)
 export type ClassificationSubmission = {
   itemId: string;
   selectedProcess: AgentProcess;
@@ -69,8 +77,8 @@ export type SimulationStep = {
   id: string;
   blockId: string;
   timestamp: number;
-  input: any;
-  output: any;
+  input?: any;
+  output?: any;
   status: "success" | "error" | "pending";
   message?: string;
 };
@@ -125,6 +133,94 @@ export type FeedbackMessage = {
   explanation?: string;
 };
 
+// Zod schemas for API request validation
+export const boundaryElementSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  type: z.enum(["api", "memory", "sensor", "ui", "log"]),
+  x: z.number(),
+  y: z.number(),
+});
+
+export const boundaryConnectionSchema = z.object({
+  id: z.string(),
+  elementId: z.string(),
+  process: z.enum(agentProcesses),
+  label: z.string().optional(),
+});
+
+export const circuitBlockSchema = z.object({
+  id: z.string(),
+  type: z.enum(agentProcesses),
+  label: z.string(),
+  x: z.number(),
+  y: z.number(),
+  inputs: z.array(z.string()),
+  outputs: z.array(z.string()),
+});
+
+export const circuitConnectionSchema = z.object({
+  id: z.string(),
+  from: z.string(),
+  to: z.string(),
+});
+
+export const simulationStepSchema = z.object({
+  id: z.string(),
+  blockId: z.string(),
+  timestamp: z.number(),
+  input: z.any().optional(),
+  output: z.any().optional(),
+  status: z.enum(["success", "error", "pending"]),
+  message: z.string().optional(),
+});
+
+export const failureModeSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string(),
+  enabled: z.boolean(),
+  affectedProcess: z.enum(agentProcesses),
+});
+
+// API request schemas
+export const classifyRequestSchema = z.object({
+  submissions: z.array(z.object({
+    itemId: z.string().min(1),
+    selectedProcess: z.enum(agentProcesses),
+    explanation: z.string().min(1, "Explanation is required"),
+  })).min(1, "At least one submission is required"),
+  confidence: z.number().min(0).max(100),
+});
+
+export const boundaryMapRequestSchema = z.object({
+  sessionId: z.string().min(1),
+  elements: z.array(boundaryElementSchema),
+  connections: z.array(boundaryConnectionSchema),
+});
+
+export const circuitRequestSchema = z.object({
+  sessionId: z.string().min(1),
+  blocks: z.array(circuitBlockSchema),
+  connections: z.array(circuitConnectionSchema),
+});
+
+export const simulateRequestSchema = z.object({
+  sessionId: z.string().min(1),
+  blockIds: z.object({
+    perception: z.string().min(1),
+    reasoning: z.string().min(1),
+    planning: z.string().min(1),
+    execution: z.string().min(1),
+  }),
+  fixtureId: z.string().min(1),
+  failureConfig: z.object({
+    noisyInput: z.boolean().optional(),
+    missingTool: z.string().optional(),
+    staleMemory: z.boolean().optional(),
+  }).optional(),
+});
+
 export const insertProgressSchema = z.object({
   sessionId: z.string(),
   currentPhase: z.number().min(0).max(5),
@@ -137,15 +233,15 @@ export const insertProgressSchema = z.object({
   })),
   confidenceLevel: z.number().min(0).max(100),
   boundaryMap: z.object({
-    elements: z.array(z.any()),
-    connections: z.array(z.any()),
+    elements: z.array(boundaryElementSchema),
+    connections: z.array(boundaryConnectionSchema),
   }).optional(),
   circuit: z.object({
-    blocks: z.array(z.any()),
-    connections: z.array(z.any()),
+    blocks: z.array(circuitBlockSchema),
+    connections: z.array(circuitConnectionSchema),
   }).optional(),
-  simulationResults: z.array(z.any()).optional(),
-  failureModes: z.array(z.any()).optional(),
+  simulationResults: z.array(simulationStepSchema).optional(),
+  failureModes: z.array(failureModeSchema).optional(),
   assessmentScores: z.object({
     classificationAccuracy: z.number(),
     explanationQuality: z.number(),

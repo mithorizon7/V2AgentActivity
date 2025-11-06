@@ -1,7 +1,13 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertProgressSchema } from "@shared/schema";
+import { 
+  insertProgressSchema,
+  classifyRequestSchema,
+  boundaryMapRequestSchema,
+  circuitRequestSchema,
+  simulateRequestSchema,
+} from "@shared/schema";
 import { z } from "zod";
 import { runPipeline, applyFailures, createInitialContext } from "../shared/runtime/engine";
 import { Block, Process, RuntimeCtx, FailureConfig } from "../shared/runtime/types";
@@ -40,17 +46,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/classify", async (req, res) => {
     try {
-      const { submissions, confidence } = req.body;
-      
-      if (!Array.isArray(submissions)) {
-        return res.status(400).json({ error: "Submissions must be an array" });
-      }
+      const validated = classifyRequestSchema.parse(req.body);
+      const { submissions, confidence } = validated;
 
-      const evaluations = submissions.map((submission: any) => {
-        const classificationResult = storage.evaluateClassification({
-          itemId: submission.itemId,
-          selectedProcess: submission.selectedProcess,
-        });
+      const evaluations = submissions.map((submission) => {
+        const classificationResult = storage.evaluateClassification(submission);
         const explanationResult = storage.evaluateExplanation(submission.explanation);
         
         return {
@@ -63,9 +63,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       const correctCount = evaluations.filter((e) => e.isCorrect).length;
-      const accuracy = (correctCount / evaluations.length) * 100;
+      const accuracy = evaluations.length > 0 ? (correctCount / evaluations.length) * 100 : 0;
       
-      const avgExplanationScore = evaluations.reduce((acc, e) => acc + e.explanationScore, 0) / evaluations.length;
+      const avgExplanationScore = evaluations.length > 0 
+        ? evaluations.reduce((acc, e) => acc + e.explanationScore, 0) / evaluations.length 
+        : 0;
       
       const calibration = storage.calculateCalibration(confidence, accuracy);
 
@@ -84,17 +86,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
           })),
       });
     } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Invalid request data", details: error.errors });
+      }
       res.status(500).json({ error: "Failed to evaluate classifications" });
     }
   });
 
   app.post("/api/boundary-map", async (req, res) => {
     try {
-      const { sessionId, elements, connections } = req.body;
-      
-      if (!sessionId || !Array.isArray(elements) || !Array.isArray(connections)) {
-        return res.status(400).json({ error: "Invalid boundary map data" });
-      }
+      const validated = boundaryMapRequestSchema.parse(req.body);
+      const { sessionId, elements, connections } = validated;
 
       const progress = await storage.getProgress(sessionId);
       if (!progress) {
@@ -119,26 +121,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
         progress: updated,
       });
     } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Invalid request data", details: error.errors });
+      }
       res.status(500).json({ error: "Failed to save boundary map" });
     }
   });
 
   app.post("/api/circuit", async (req, res) => {
     try {
-      const { sessionId, blocks, connections } = req.body;
-      
-      if (!sessionId || !Array.isArray(blocks) || !Array.isArray(connections)) {
-        return res.status(400).json({ error: "Invalid circuit data" });
-      }
+      const validated = circuitRequestSchema.parse(req.body);
+      const { sessionId, blocks, connections } = validated;
 
       const progress = await storage.getProgress(sessionId);
       if (!progress) {
         return res.status(404).json({ error: "Session not found" });
       }
 
-      const hasPerception = blocks.some((b: any) => b.type === "perception");
-      const hasReasoning = blocks.some((b: any) => b.type === "reasoning");
-      const hasExecution = blocks.some((b: any) => b.type === "execution");
+      const hasPerception = blocks.some((b) => b.type === "perception");
+      const hasReasoning = blocks.some((b) => b.type === "reasoning");
+      const hasExecution = blocks.some((b) => b.type === "execution");
       const isConnected = connections.length >= blocks.length - 1;
 
       const correctnessScore = 
@@ -160,17 +162,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         progress: updated,
       });
     } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Invalid request data", details: error.errors });
+      }
       res.status(500).json({ error: "Failed to save circuit" });
     }
   });
 
   app.post("/api/simulate", async (req, res) => {
     try {
-      const { sessionId, blockIds, fixtureId, failureConfig = {} } = req.body;
-      
-      if (!sessionId || !blockIds || !fixtureId) {
-        return res.status(400).json({ error: "Missing required fields: sessionId, blockIds, fixtureId" });
-      }
+      const validated = simulateRequestSchema.parse(req.body);
+      const { sessionId, blockIds, fixtureId, failureConfig = {} } = validated;
 
       // Create block registry for easy lookup
       const blockRegistry = new Map<string, Block>();
@@ -244,6 +246,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         finalState: result.state,
       });
     } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Invalid request data", details: error.errors });
+      }
       console.error('Simulation error:', error);
       res.status(500).json({ error: "Failed to run simulation" });
     }

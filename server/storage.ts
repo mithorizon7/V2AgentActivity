@@ -3,6 +3,7 @@ import {
   type InsertUser,
   type LearnerProgress,
   type InsertProgress,
+  type ClassificationInput,
   type ClassificationSubmission,
   type BoundaryElement,
   type BoundaryConnection,
@@ -20,7 +21,7 @@ export interface IStorage {
   saveProgress(progress: InsertProgress): Promise<LearnerProgress>;
   updateProgress(sessionId: string, updates: Partial<LearnerProgress>): Promise<LearnerProgress | undefined>;
   
-  evaluateClassification(submission: ClassificationSubmission): { isCorrect: boolean; feedback: string };
+  evaluateClassification(submission: ClassificationInput): { isCorrect: boolean; feedback: string };
   evaluateExplanation(explanation: string): { score: number; feedback: string };
   calculateCalibration(confidence: number, accuracy: number): number;
 }
@@ -106,7 +107,7 @@ export class MemStorage implements IStorage {
     ["action_selection", { correctProcess: "execution", explanation: "Selecting actions is the core of execution - choosing what to do next" }],
   ]);
 
-  evaluateClassification(submission: { itemId: string; selectedProcess: string }): { isCorrect: boolean; feedback: string } {
+  evaluateClassification(submission: ClassificationInput): { isCorrect: boolean; feedback: string } {
     const correctAnswer = this.classificationAnswers.get(submission.itemId);
     
     if (!correctAnswer) {
@@ -123,9 +124,25 @@ export class MemStorage implements IStorage {
   }
 
   evaluateExplanation(explanation: string): { score: number; feedback: string } {
-    const wordCount = explanation.trim().split(/\s+/).length;
-    const hasKeyTerms = /because|since|therefore|due to|when|while|process|function|system/i.test(explanation);
-    const hasSpecifics = /\b(input|output|data|action|plan|decision|context)\b/i.test(explanation);
+    // Handle null, undefined, or empty explanations
+    if (!explanation || typeof explanation !== 'string') {
+      return {
+        score: 0,
+        feedback: "No explanation provided. Please explain your reasoning."
+      };
+    }
+
+    const trimmed = explanation.trim();
+    if (trimmed.length === 0) {
+      return {
+        score: 0,
+        feedback: "Explanation is empty. Please provide your reasoning."
+      };
+    }
+
+    const wordCount = trimmed.split(/\s+/).length;
+    const hasKeyTerms = /because|since|therefore|due to|when|while|process|function|system/i.test(trimmed);
+    const hasSpecifics = /\b(input|output|data|action|plan|decision|context)\b/i.test(trimmed);
 
     let score = 0;
     let feedback = "";
