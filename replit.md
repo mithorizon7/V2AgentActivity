@@ -87,6 +87,15 @@ Each with distinct color coding for visual learning:
 - Zero hardcoded English in critical learner path (Phases 3-4)
 - Production-ready for multi-language deployment
 
+**Phase 4: Shared Runtime Architecture (November 2024)**
+- Moved runtime engine and types from client/ to shared/runtime/ for server accessibility
+- Relocated Health Coach blocks and fixtures to shared/scenarios/health-coach/
+- Updated all client imports to use @shared paths for consistency
+- Refactored /api/simulate route to use real execution engine (createInitialContext, applyFailures, runPipeline)
+- Fixed structuredClone error in applyFailures by excluding tools (functions) from cloning
+- Cleaned up duplicate client-side files to prevent code drift
+- Both client and server now use identical deterministic engine ensuring consistent execution results
+
 **Earlier Work**
 - Classification activity with drag-and-drop and explanation textareas
 - Boundary mapping canvas for environment-to-process connections
