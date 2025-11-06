@@ -61,6 +61,7 @@ Each with distinct color coding for visual learning:
 - ✅ Deterministic failure injection for reproducible learning
 - ✅ Backend API with server-side classification validation
 - ✅ Complete i18n integration with translation-key architecture
+- ✅ Comprehensive API validation and type safety hardening
 - ⏳ Accessibility enhancements (keyboard navigation, ARIA) pending
 
 ## Recent Changes (November 2024)
@@ -175,6 +176,31 @@ Each with distinct color coding for visual learning:
 - Added 75+ translation keys for Primer, WorkedExample, unsorted tray, guided practice
 - Architect verified: proper sequencing, scaffolded difficulty, no auto-placement bugs, clear UX
 - Next steps: Add near-miss distractors, targeted feedback, 80% accuracy gate, keyboard alternatives
+
+**Phase 8: API Validation & Type Safety Hardening (November 2024)**
+- Implemented comprehensive Zod validation for all API endpoints:
+  - classifyRequestSchema: Validates submissions array (min 1 item), explanations (min 1 char), confidence (0-100)
+  - boundaryMapRequestSchema: Validates sessionId, elements, connections with proper types
+  - circuitRequestSchema: Validates sessionId, blocks, connections with enum constraints
+  - simulateRequestSchema: Validates blockIds object, fixtureId, optional failureConfig
+- Fixed critical robustness issues:
+  - Division-by-zero protection in /api/classify (empty submissions → accuracy: 0, explanationQuality: 0)
+  - Null/undefined guards in evaluateExplanation (returns score: 0 with helpful feedback)
+  - Type separation: ClassificationInput (request) vs ClassificationSubmission (response with isCorrect)
+- Strengthened type definitions in shared/schema.ts:
+  - Created boundaryElementSchema, boundaryConnectionSchema, circuitBlockSchema, etc.
+  - Made SimulationStep input/output optional (appropriate for runtime data flexibility)
+  - Replaced z.any() placeholders with concrete schemas where appropriate
+- Enhanced error handling:
+  - All endpoints return 400 with Zod error details on validation failure
+  - Consistent error response format: { error: string, details: ZodIssue[] }
+  - Server console logs include full error context for debugging
+- Validated via curl tests:
+  - Empty submissions → proper error
+  - Missing required fields → detailed error listing
+  - Invalid types → type mismatch errors
+  - Valid payloads → success with correct evaluation
+- Zero LSP diagnostics; all types properly aligned between frontend and backend
 
 **Earlier Work**
 - Classification activity with drag-and-drop and explanation textareas
