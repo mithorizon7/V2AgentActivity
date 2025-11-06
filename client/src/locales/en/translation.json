@@ -145,6 +145,16 @@
         "name": "Reduced Step Count",
         "description": "Daily steps are reduced by 800, testing threshold logic for borderline activity levels",
         "tooltip": "Reduces step count by -800 steps"
+      },
+      "missingTool": {
+        "name": "Missing Notification Tool",
+        "description": "The sendNotification tool is unavailable, preventing the agent from alerting the user",
+        "tooltip": "Removes the sendNotification tool from available tools"
+      },
+      "staleMemory": {
+        "name": "Stale Memory State",
+        "description": "Agent's memory is cleared, losing all context from previous steps",
+        "tooltip": "Clears all state/memory before execution"
       }
     }
   },

@@ -76,11 +76,18 @@ export default function LearningPage() {
       affectedProcess: "perception",
     },
     {
-      id: "reduced-activity",
-      name: t("failures.modes.reducedActivity.name"),
-      description: t("failures.modes.reducedActivity.description"),
+      id: "missing-tool",
+      name: t("failures.modes.missingTool.name"),
+      description: t("failures.modes.missingTool.description"),
       enabled: false,
-      affectedProcess: "perception",
+      affectedProcess: "execution",
+    },
+    {
+      id: "stale-memory",
+      name: t("failures.modes.staleMemory.name"),
+      description: t("failures.modes.staleMemory.description"),
+      enabled: false,
+      affectedProcess: "reasoning",
     },
   ];
   const [phaseCompletion, setPhaseCompletion] = useState<Record<string, boolean>>({
