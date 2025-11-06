@@ -9,6 +9,7 @@ export const parseWearables: Block = {
   kind: 'perception',
   label: 'healthCoach.blocks.perception.parse.name',
   description: 'healthCoach.blocks.perception.parse.description',
+  usesMemory: true,
   run: (ctx: RuntimeCtx): RuntimeCtx => {
     const steps = ctx.input.steps || 0;
     const heartRate = ctx.input.heartRate || [];
@@ -35,6 +36,7 @@ export const smoothWearables: Block = {
   kind: 'perception',
   label: 'healthCoach.blocks.perception.smooth.name',
   description: 'healthCoach.blocks.perception.smooth.description',
+  usesMemory: true,
   run: (ctx: RuntimeCtx): RuntimeCtx => {
     const steps = ctx.input.steps || 0;
     const heartRate = ctx.input.heartRate || [];
@@ -73,6 +75,7 @@ export const thresholdCheck: Block = {
   kind: 'reasoning',
   label: 'healthCoach.blocks.reasoning.threshold.name',
   description: 'healthCoach.blocks.reasoning.threshold.description',
+  usesMemory: true,
   run: (ctx: RuntimeCtx): RuntimeCtx => {
     const steps = ctx.state.steps ?? ctx.input.steps ?? 0;
     const hrAvg = ctx.state.heartRateAvg ?? 0;
@@ -106,6 +109,7 @@ export const ruleClassifier: Block = {
   kind: 'reasoning',
   label: 'healthCoach.blocks.reasoning.ruleBased.name',
   description: 'healthCoach.blocks.reasoning.ruleBased.description',
+  usesMemory: true,
   run: (ctx: RuntimeCtx): RuntimeCtx => {
     const steps = ctx.state.steps ?? ctx.input.steps ?? 0;
     const hrAvg = ctx.state.heartRateAvg ?? 0;
@@ -157,6 +161,7 @@ export const dailyPlanner: Block = {
   kind: 'planning',
   label: 'healthCoach.blocks.planning.daily.name',
   description: 'healthCoach.blocks.planning.daily.description',
+  usesMemory: true,
   run: (ctx: RuntimeCtx): RuntimeCtx => {
     const activeToday = ctx.state.activeToday ?? false;
     const activityLevel = ctx.state.activityLevel ?? 'low';
@@ -199,6 +204,7 @@ export const safetyPlanner: Block = {
   kind: 'planning',
   label: 'healthCoach.blocks.planning.weekly.name',
   description: 'healthCoach.blocks.planning.weekly.description',
+  usesMemory: true,
   run: (ctx: RuntimeCtx): RuntimeCtx => {
     const elevatedHR = ctx.state.elevatedHR ?? false;
     const hrAvg = ctx.state.heartRateAvg ?? 0;
@@ -253,6 +259,8 @@ export const sendNotification: Block = {
   kind: 'execution',
   label: 'healthCoach.blocks.execution.notify.name',
   description: 'healthCoach.blocks.execution.notify.description',
+  usesMemory: true,
+  toolCalls: ['sendNotification'],
   run: (ctx: RuntimeCtx): RuntimeCtx => {
     const plan = ctx.state.plan;
     const message = ctx.state.message ?? 'healthCoach.runtime.execution.notify.defaultMessage';
@@ -296,6 +304,7 @@ export const updateStreak: Block = {
   kind: 'execution',
   label: 'healthCoach.blocks.execution.followup.name',
   description: 'healthCoach.blocks.execution.followup.description',
+  usesMemory: true,
   run: (ctx: RuntimeCtx): RuntimeCtx => {
     const activeToday = ctx.state.activeToday ?? false;
     const currentStreak = ctx.state.currentStreak ?? 0;
