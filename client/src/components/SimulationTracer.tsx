@@ -30,9 +30,13 @@ export function SimulationTracer({
 
   const getBlockFromStepId = (stepId: string): Block | null => {
     if (!selectedBlocks) return null;
-    // Block IDs are like "perception.parse", "reasoning.threshold", etc.
-    // Find the block that matches
-    return Object.values(selectedBlocks).find(block => block?.id === stepId) || null;
+    // stepId is like "START_PERCEPTION", "END_REASONING", "ERROR_EXECUTION"
+    // Extract the process name and look it up in selectedBlocks
+    const processMatch = stepId.match(/_(PERCEPTION|REASONING|PLANNING|EXECUTION)/);
+    if (!processMatch) return null;
+    
+    const processName = processMatch[1].toLowerCase() as Process;
+    return selectedBlocks[processName] || null;
   };
 
   const handlePlay = () => {

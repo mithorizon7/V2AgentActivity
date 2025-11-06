@@ -270,10 +270,10 @@ export default function LearningPage() {
       return;
     }
 
-    // Execution → Tool/UI: Execution requires tools or UI to interact with the world
+    // Execution → Tool/UI/API: Execution requires tools, APIs, or UI to interact with the world
     const hasExecutionToToolOrUI = connections.some(conn => {
       const element = elements.find(e => e.id === conn.elementId);
-      return conn.process === "execution" && (element?.type === "ui" || element?.type === "log");
+      return conn.process === "execution" && (element?.type === "ui" || element?.type === "log" || element?.type === "api");
     });
 
     if (!hasExecutionToToolOrUI) {

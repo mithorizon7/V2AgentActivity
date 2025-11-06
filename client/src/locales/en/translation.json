@@ -109,7 +109,7 @@
       "needMoreConnections": "Please create at least {{count}} connections to processes to continue",
       "missingProcesses": "Please connect elements to these core processes: {{processes}}",
       "needSensorToPerception": "Connect at least one Sensor element to Perception (sensors provide input data)",
-      "needExecutionToTool": "Connect Execution to at least one Tool or UI element (execution needs tools to act)",
+      "needExecutionToTool": "Connect Execution to at least one API, Tool, or UI element (execution needs to interact with the world)",
       "success": "Great work! Your boundary map is complete"
     }
   },
