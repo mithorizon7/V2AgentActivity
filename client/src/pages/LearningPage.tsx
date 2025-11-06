@@ -6,6 +6,7 @@ import { useClassification } from "@/hooks/useClassification";
 import { useBoundaryMap } from "@/hooks/useBoundaryMap";
 import { Primer } from "@/components/Primer";
 import { WorkedExample } from "@/components/WorkedExample";
+import { Phase1Guided } from "@/components/Phase1Guided";
 import { ClassificationActivity } from "@/components/ClassificationActivity";
 import { ConfidenceSlider } from "@/components/ConfidenceSlider";
 import { FeedbackPanel } from "@/components/FeedbackPanel";
@@ -25,6 +26,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  AgentProcess,
   ClassificationItem,
   ClassificationSubmission,
   BoundaryElement,
@@ -86,12 +88,20 @@ export default function LearningPage() {
     return saved === "true";
   });
   
+  // Guided Practice (2-bin practice) - persisted in localStorage
+  const [guidedPracticeComplete, setGuidedPracticeComplete] = useState(() => {
+    const saved = localStorage.getItem("guidedPracticeComplete");
+    return saved === "true";
+  });
+  
   const [currentPhase, setCurrentPhase] = useState(() => {
     const savedPrimer = localStorage.getItem("primerComplete");
     const savedExample = localStorage.getItem("workedExampleComplete");
+    const savedGuided = localStorage.getItem("guidedPracticeComplete");
     if (savedPrimer !== "true") return 0;
-    if (savedExample !== "true") return 0.5; // Between primer and classification
-    return 1;
+    if (savedExample !== "true") return 0.5;
+    if (savedGuided !== "true") return 0.75; // Guided practice
+    return 1; // Independent practice
   });
 
   const FAILURE_MODES: FailureMode[] = [
@@ -245,7 +255,13 @@ export default function LearningPage() {
   const handleWorkedExampleComplete = () => {
     setWorkedExampleComplete(true);
     localStorage.setItem("workedExampleComplete", "true");
-    setCurrentPhase(1); // Go to classification practice
+    setCurrentPhase(0.75); // Go to guided practice
+  };
+
+  const handleGuidedPracticeComplete = () => {
+    setGuidedPracticeComplete(true);
+    localStorage.setItem("guidedPracticeComplete", "true");
+    setCurrentPhase(1); // Go to independent practice
   };
 
   const handlePhaseComplete = () => {
@@ -437,6 +453,10 @@ export default function LearningPage() {
 
         {currentPhase === 0.5 && (
           <WorkedExample onComplete={handleWorkedExampleComplete} />
+        )}
+
+        {currentPhase === 0.75 && (
+          <Phase1Guided items={CLASSIFICATION_ITEMS} onComplete={handleGuidedPracticeComplete} />
         )}
 
         {currentPhase === 1 && (
@@ -660,7 +680,7 @@ export default function LearningPage() {
 
               <div>
                 <GuidedCoachPanel
-                  state={hasRunOnce ? "change-block" : "first-run"}
+                  state={hasRunOnce ? "success-experiment" : "first-run"}
                   hasRun={hasRunOnce}
                   pipelineComplete={pipelineComplete}
                   simulationSuccess={executionContext?.success}

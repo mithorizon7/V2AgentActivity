@@ -218,7 +218,11 @@
     "phase2": "Boundary Mapping",
     "phase3": "Circuit Building",
     "phase4": "Simulation & Testing",
-    "phase5": "Assessment & Review"
+    "phase5": "Assessment & Review",
+    "perception": "Perception",
+    "perceptionDual": "Read the data (Perception)",
+    "execution": "Execution",
+    "executionDual": "Do the actions (Execution)"
   },
   "classification": {
     "title": "Phase 1: Classification & Explanation",
@@ -233,9 +237,30 @@
     "phaseComplete": "Phase Complete!",
     "continueDescription": "Review your feedback and continue to the next phase",
     "crossCuttingHint": "Cross-cutting: available to any stage rather than a step in the line",
+    "correct": "Correct!",
     "hints": {
       "learning": "Supporting system: Stores knowledge and improves over time (not in the 4-step loop)",
       "interaction": "Supporting system: Provides tools and communication (not in the 4-step loop)"
+    }
+  },
+  "guided": {
+    "title": "Guided Practice: Perception vs Execution",
+    "description": "Let's start with two processes that are easy to distinguish. Sort these items into either Read (Perception) or Do (Execution).",
+    "dragInstruction": "Drag items and explain your reasoning. Use the seed prompts to get started!",
+    "checkAnswers": "Check Answers",
+    "sortAllItems": "Please sort all items before checking your answers",
+    "contrastiveHint": "Hint: If it transforms raw input into structured data, it's Perception. If it carries out actions or uses tools, it's Execution.",
+    "seedPrompts": {
+      "perception": {
+        "1": "Transforms raw input...",
+        "2": "Detects patterns in...",
+        "3": "Processes sensor data..."
+      },
+      "execution": {
+        "1": "Carries out actions...",
+        "2": "Uses tools to...",
+        "3": "Performs the steps..."
+      }
     }
   },
   "confidence": {
