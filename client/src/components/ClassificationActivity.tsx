@@ -5,8 +5,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { getProcessColor } from "@/lib/processColors";
 import { cn } from "@/lib/utils";
-import { GripVertical, Check, X } from "lucide-react";
+import { GripVertical, Check, X, Info } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useTranslation } from "react-i18next";
 
 type DraggableItemProps = {
   item: ClassificationItem;
@@ -70,6 +71,7 @@ type ProcessColumnProps = {
   onExplanationChange: (itemId: string, explanation: string) => void;
   onDragStart: (item: ClassificationItem) => void;
   correctAnswers?: Record<string, boolean>;
+  hint?: string;
 };
 
 function ProcessColumn({
@@ -82,6 +84,7 @@ function ProcessColumn({
   onExplanationChange,
   onDragStart,
   correctAnswers,
+  hint,
 }: ProcessColumnProps) {
   const [isDraggedOver, setIsDraggedOver] = useState(false);
   const colors = getProcessColor(process);
@@ -114,6 +117,12 @@ function ProcessColumn({
           {items.length}
         </Badge>
       </div>
+      {hint && (
+        <div className="mb-3 p-2 rounded-md bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 flex gap-2">
+          <Info className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+          <p className="text-xs text-amber-800 dark:text-amber-200">{hint}</p>
+        </div>
+      )}
       <div className="space-y-3 flex-1">
         {items.length === 0 ? (
           <div className="flex items-center justify-center h-32 border-2 border-dashed rounded-md text-sm text-muted-foreground">
@@ -152,6 +161,7 @@ export function ClassificationActivity({
   showFeedback = false,
   correctAnswers,
 }: ClassificationActivityProps) {
+  const { t } = useTranslation();
   const [itemsByProcess, setItemsByProcess] = useState<Record<AgentProcess, ClassificationItem[]>>(() => {
     const grouped: Record<AgentProcess, ClassificationItem[]> = {
       learning: [],
@@ -169,6 +179,12 @@ export function ClassificationActivity({
   
   const [draggedItem, setDraggedItem] = useState<ClassificationItem | null>(null);
   const [explanations, setExplanations] = useState<Record<string, string>>({});
+
+  const getProcessHint = (process: AgentProcess): string | undefined => {
+    if (process === "learning") return t("classification.hints.learning");
+    if (process === "interaction") return t("classification.hints.interaction");
+    return undefined;
+  };
 
   const handleDragStart = useCallback((item: ClassificationItem) => {
     setDraggedItem(item);
@@ -270,6 +286,7 @@ export function ClassificationActivity({
               onExplanationChange={handleExplanationChange}
               onDragStart={handleDragStart}
               correctAnswers={correctAnswers}
+              hint={getProcessHint(process)}
             />
           )
         )}

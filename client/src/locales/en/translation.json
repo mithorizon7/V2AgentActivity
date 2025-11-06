@@ -72,7 +72,11 @@
     "explanationRequired": "Please provide explanations for all items before submitting",
     "phaseComplete": "Phase Complete!",
     "continueDescription": "Review your feedback and continue to the next phase",
-    "crossCuttingHint": "Cross-cutting: available to any stage rather than a step in the line"
+    "crossCuttingHint": "Cross-cutting: available to any stage rather than a step in the line",
+    "hints": {
+      "learning": "Supporting system: Stores knowledge and improves over time (not in the 4-step loop)",
+      "interaction": "Supporting system: Provides tools and communication (not in the 4-step loop)"
+    }
   },
   "confidence": {
     "title": "Confidence Level",
