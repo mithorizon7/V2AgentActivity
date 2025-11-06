@@ -1,0 +1,214 @@
+Here’s a tight, dev-ready brief you can hand off. It explains the problem (why we’re changing course) and then gives exact implementation steps with acceptance criteria and a quick test plan.
+
+# Context + Why We’re Changing It (for the dev)
+
+**What’s wrong now**
+
+* We drop learners straight into **Phase 1 (classification)** and ask them to sort agent capabilities **before we teach them any model**. That’s backwards pedagogy.
+* Some items appear **already in the correct bins**, which undercuts learning and gives a false signal of mastery.
+* The 6-process model vs 4-stage loop is confusing in practice.
+
+**What “good” looks like**
+
+* **Teach → Model → Guided Practice → Independent Practice.**
+* Use a **4+2 framing** consistently:
+
+  * **4-step run loop:** *Read (Perception) → Decide (Reasoning) → Plan (Planning) → Do (Execution)*
+  * **+2 supporting systems:** *🧠 Memory (Learning)* and *🔧 Tools & UI (Interaction)* available to any step.
+* Then continue with Boundary → Fixed 4-slot Builder → Run/Trace → Failure Injection.
+
+---
+
+# Implementation Plan (what to build next)
+
+## 0) Primer (Teach) — **new pre-Phase 1 gate**
+
+**Goal:** Learners see the 4+2 model **before** any sorting.
+
+* Add a **Primer screen** with:
+
+  * One simple diagram of **4-step run loop** + **2 rails** (Memory, Tools/UI).
+  * A 30–45s micro-demo (static or simple animation is fine): one sentence per step.
+  * **2 micro-checks** (e.g., “Which step *chooses* the next action?” → Planning; “Which part sends something to the user?” → Interaction).
+* Gate Phase 1 behind `primerComplete=true`.
+
+**Acceptance**
+
+* Users **cannot** access Phase 1 until Primer is completed (micro-checks correct).
+
+**Notes**
+
+* Add `primerComplete` to global state (persist in `localStorage`).
+
+---
+
+## 1) Worked Example (Model) — **new**
+
+**Goal:** Show *how an expert thinks* before learners try.
+
+* `WorkedExample.tsx` with **7 cards**:
+
+  * 1 clear example for each of the 6 processes + 1 **near-miss** (e.g., “Call Calendar API” feels like Planning but is **Interaction**).
+* Present one card at a time; show the correct bin and a one-line **why** (“*Transforms raw input → Perception.*”).
+
+**Acceptance**
+
+* Learner can click through all 7, seeing the expert’s classification + explanation.
+
+---
+
+## 2) Phase 1 split: Guided → Independent (Practice)
+
+**Goal:** Scaffolded difficulty; move from 2-bin contrasts to full 6-bin mastery.
+
+### 2a) **Guided round (We do)**
+
+* Show only **2 bins at a time** (e.g., Perception vs Execution) with 6–8 cards.
+* Require a **1-sentence rationale** for each drop (provide 3 **seed prompts** under the input: “*Transforms input…*”, “*Chooses between options…*”, “*Carries out steps…*”).
+* After **2 wrong attempts** on a card, show a **contrastive hint** (e.g., “If it changes the *plan*, it’s Planning; if it follows a plan, it’s Execution.”).
+
+**Acceptance**
+
+* All cards placed with rationales; hints appear on second miss.
+
+### 2b) **Independent round (You do)**
+
+* Show **all 6 bins** with **14–20 cards**, including 3–4 **near-miss distractors**.
+* No timer; require **≥80% accuracy** to pass.
+* On **Solve**, show **targeted ‘why’ feedback** for each incorrect (use a `feedbackRules` map by `(cardId, wrongProcess)`).
+
+**Acceptance**
+
+* Gate progression until ≥80% accuracy **and** all rationales present.
+
+**Notes**
+
+* Keep the dual labels on bins:
+  *Read the data (Perception) • Decide (Reasoning) • Plan (Planning) • Do (Execution) • 🧠 Memory (Learning) • 🔧 Tools & UI (Interaction)*
+  Add small “**Cross-cutting**” hint under Learning/Interaction.
+
+---
+
+## 3) Kill the “pre-sorted” bug (Critical)
+
+**Goal:** Cards **never** start in correct bins.
+
+* Initialize Phase 1 with **all cards unsorted & shuffled** (tray).
+* **Do not** derive any placement from `canonicalProcess` in render; store placement only in UI state.
+* Persist placements to `localStorage` so refresh doesn’t snap to canonical.
+* Add a dev guard: warn in console if any card renders in its canonical bin **before** any user action.
+
+**Acceptance**
+
+* Fresh load shows all cards unsorted; reload preserves user placements; no auto-placement ever.
+
+---
+
+## 4) Language + UI consistency for **4+2**
+
+**Goal:** Resolve 6 vs 4 confusion while keeping the full model.
+
+* Everywhere we teach: headline **“4-step run loop + 2 supporting systems (4+2)”**.
+* In Builder: keep **4 slots**; draw **Memory** and **Tools/UI** as **rails** (visual only).
+* In block picker and trace, show **badges**:
+
+  * 🧠 **uses Memory** if the block reads/writes `ctx.state`
+  * 🔧 **Tool calls:** list names (e.g., `sendNotification`)
+* In Classification bins: keep 6; Learning/Interaction labeled “Cross-cutting”.
+
+**Acceptance**
+
+* Headings and labels updated; rails visible; badges appear in picker and trace.
+
+**Minimal code hook**
+
+```ts
+interface Block {
+  id: string;
+  kind: 'Perception'|'Reasoning'|'Planning'|'Execution';
+  label: string;
+  run: (ctx: RuntimeCtx) => Promise<RuntimeCtx> | RuntimeCtx;
+  usesMemory?: boolean;
+  toolCalls?: string[];  // e.g., ['sendNotification']
+}
+```
+
+---
+
+## 5) Boundary “Check” rules (lightweight)
+
+**Goal:** Enforce core system thinking without heavy scoring.
+
+* On “Check,” require at least:
+
+  * **Sensor/Stream → Perception**
+  * **Execution → Tool/UI**
+* Give **specific** missing messages (“Connect a sensor to Perception”).
+
+**Acceptance**
+
+* “All set” only when required links exist.
+
+---
+
+## 6) i18n + A11y pass (fast)
+
+* Replace any remaining hardcoded strings in Primer, Worked Example, Phase 1.
+* Keyboard alternatives for drag: per card **“Move to [Bin]”** buttons.
+* Visible focus, ARIA announcements on **Solve**, reduced-motion toggle.
+
+**Acceptance**
+
+* Phase 1 fully completable with keyboard; screen reader announces Solve results.
+
+---
+
+# File/Component Cheatsheet
+
+* **New** `Primer.tsx` (+ small MCQ component)
+* **New** `WorkedExample.tsx`
+* **Refactor** `Phase1.tsx` → `Phase1Guided.tsx` + `Phase1Independent.tsx`
+* **Add** `feedbackRules.ts` (map: `(cardId, wrongProcess) -> message`)
+* **Update** `cards.json` (add distractors; short hints)
+* **Update** `i18n` keys for 4+2 copy, hints, micro-checks
+
+---
+
+# Acceptance Test (QA script)
+
+1. **Gate**: Cannot open Phase 1 until Primer micro-checks are correct.
+2. **Worked Example**: Shows 6 + 1 near-miss; each with an explicit expert “why.”
+3. **Guided**: Only 2 bins visible; second wrong shows hint; rationale required to proceed.
+4. **Independent**: All 6 bins; unsorted start; Solve blocked until all rationales; pass requires ≥80% accuracy; shows targeted “why” feedback.
+5. **No pre-sort**: Hard refresh preserves placements; never autoplaces.
+6. **4+2 UI**: Headings reflect 4+2; rails visible in Builder; 🧠/🔧 badges show in picker/trace.
+7. **Boundary Check**: Specific missing-link messages; “All set” only when Sensor→Perception and Execution→Tool/UI present.
+8. **A11y**: Complete Guided and Independent rounds with keyboard only; SR announces pass/fail.
+
+---
+
+# Milestone Breakdown (you can copy to tickets)
+
+* **M1 (Teach/Model)**: Primer gate + Worked Example (1–2 d)
+* **M2 (Guided Practice)**: 2-bin guided round + hints + rationale (1–2 d)
+* **M3 (Independent Practice)**: full 6-bin, distractors, targeted feedback, ≥80% gate (1–2 d)
+* **M4 (No Pre-sort)**: unsorted start, persistence, guard (½ d)
+* **M5 (4+2 Consistency)**: labels, rails, badges (½–1 d)
+* **M6 (Boundary Check)**: minimal rule check + messages (½ d)
+* **M7 (i18n/A11y)**: text sweep, keyboard alt for drag, SR (½–1 d)
+
+---
+
+# Risks & Mitigations
+
+* **Scope creep in Phase 1** → Keep to *one* guided round (2 bins), then *one* independent round (6 bins).
+* **Copy churn** → Load all text from i18n; we can tune wording without touching code.
+* **Hidden auto-placement** → Add console warn if any card renders in canonical bin pre-interaction.
+
+---
+
+**Confidence:**
+
+* **High** this fixes the pedagogy (teach before apply; scaffolded difficulty; real explanations).
+* **High** feasibility: mostly UI/state + copy; no heavy backend.
+* **Medium** on exact hint wording and seed prompts—expect a short tuning pass after first user test.

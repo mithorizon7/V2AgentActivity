@@ -1,0 +1,106 @@
+Here’s the clear call:
+
+**Direction:** Teach the full **six-process model** for understanding, but **build and run with a four-stage loop**. Standardize all language and UI to **“4+2”**:
+
+* **4 = Run Loop:** *Read the data (Perception) → Decide what it means (Reasoning) → Make a plan (Planning) → Do the step (Execution)*
+* **+2 = Supporting Systems:** *🧠 Memory (Learning)* and *🔧 Tools & UI (Interaction)*, available to any stage.
+
+---
+
+## What to change—concretely (copy, UI, and code)
+
+### 1) Copy (drop-in text)
+
+* **Global header (Phase 1 & Builder):**
+  “**How agents work: a 4-step run loop + 2 supporting systems (4+2)**”
+* **Run loop labels:**
+  “Read the data *(Perception)* → Decide what it means *(Reasoning)* → Make a plan *(Planning)* → Do the step *(Execution)*”
+* **Rails blurbs (shown wherever first introduced):**
+  “**🧠 Memory (Learning):** the agent’s notes—any stage can read or update them.”
+  “**🔧 Tools & UI (Interaction):** how the agent acts in the world—any stage can call a tool or show something to a user.”
+
+### 2) UI structure
+
+* **Builder:** keep **4 slots** only. Show **Memory** and **Tools/UI** as **horizontal rails** above/below the pipeline with small “tap” icons from each slot to the rails.
+* **Block picker:** add badges per block:
+
+  * “🧠 uses Memory” if the block reads/writes `ctx.state`
+  * “🔧 calls Tool: {name}” if it uses `ctx.tools.*`
+* **Trace:** under each step, show rail “taps,” e.g.
+  “🧠 Read: `lastWeekSteps` • 🔧 Tool: `sendNotification`”
+* **Classification (Phase 1):** keep **six bins**. Add a hint line under Learning/Interaction:
+  “**Cross-cutting:** available to any stage rather than a step in the line.”
+* **Boundary Mapper:** visually link at least one **Sensor → Perception** and one **Execution → Tool/UI**; call these out as **required links** on “Check.”
+
+### 3) Minimal code changes
+
+* **Types/constants:**
+
+  ```ts
+  export const RUN_LOOP = ['Perception','Reasoning','Planning','Execution'] as const;
+  export const SUPPORTING = ['Learning','Interaction'] as const;
+  export type Process = typeof RUN_LOOP[number] | typeof SUPPORTING[number];
+  ```
+* **Block metadata:** add optional flags used by UI:
+
+  ```ts
+  interface Block {
+    id: string;
+    kind: 'Perception'|'Reasoning'|'Planning'|'Execution';
+    label: string;
+    run: (ctx: RuntimeCtx) => Promise<RuntimeCtx> | RuntimeCtx;
+    usesMemory?: boolean;           // set true if reads/writes ctx.state
+    toolCalls?: string[];           // e.g. ['sendNotification']
+  }
+  ```
+
+  Populate these in your Health-Coach blocks so the builder and trace can render badges without introspection.
+* **Fixed pipeline UI:** enforce selection for all 4 slots; rails are **visual only** (no extra slots).
+* **SimulationTracer:** render rail badges from `usesMemory` / `toolCalls` captured in step logs; add a single line “plain-English” subtitle per step.
+* **i18n:** introduce keys for the 4+2 headings and tooltips; ensure dual labels appear: “Read the data *(Perception)*”.
+
+### 4) Assessment & guidance
+
+* **Coach panel micro-prompts:**
+
+  * *Before run:* “You’ll go through the 4-step loop; any step may tap Memory 🧠 or Tools 🔧.”
+  * *After run:* “Circle where you see 🧠/🔧 in the trace. Which steps used them?”
+  * *Next try:* “Toggle **Noisy input** and run—does your Perception step change? Why?”
+* **Exit check:** 3 quick items:
+
+  * “Match each activity to loop vs rails” (e.g., “Call Calendar API” → Interaction rail).
+  * “Which step chose the action?” → Planning.
+  * “Where was the habit streak stored?” → Learning (Memory).
+
+---
+
+## Why this resolves the confusion
+
+* **Consistency:** everywhere says “4+2” so learners aren’t whipsawed by “6 vs 4.”
+* **Accuracy:** you keep the *complete* agent model (6), so later work on memory/tools isn’t a surprise.
+* **Simplicity:** the *operational* thing beginners build and run is always the same 4-stage loop.
+
+---
+
+## Quick implementation checklist
+
+* [ ] Replace headings with **4+2** phrasing across Phase 1, Builder, Trace.
+* [ ] Add **rails** visuals to the Builder; keep 4 slots only.
+* [ ] Add `usesMemory` / `toolCalls` to blocks; render **🧠/🔧 badges** in picker and trace.
+* [ ] Add **hints** under Learning/Interaction bins in Classification.
+* [ ] Update Boundary “Check” to require **Sensor→Perception** and **Execution→Tool/UI**.
+* [ ] Add coach panel prompts and a 3-item exit check.
+
+---
+
+## If you must pick one label set for everything
+
+Use **“4+2”** as the standard everywhere (not “six”), and always show dual labels (plain + formal). You still teach all six concepts; you just brand the model as 4+2 so it feels unified.
+
+---
+
+**Confidence:**
+
+* **High** that this eliminates learner confusion while preserving correctness.
+* **High** that these UI/copy updates are straightforward given your current components.
+* **Medium** that you’ll need a short round of wording tweaks after the first user test; the structure is right, the copy will benefit from one pass with real learners.

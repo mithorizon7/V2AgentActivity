@@ -58,7 +58,14 @@ export function applyFailures(
   baseCtx: RuntimeCtx,
   failures: FailureConfig
 ): RuntimeCtx {
-  const ctx = structuredClone(baseCtx);
+  // Deep copy everything except tools (which contain functions)
+  // Create a temp context without tools for structured cloning
+  const { tools, ...clonableCtx } = baseCtx;
+  
+  const ctx: RuntimeCtx = {
+    ...structuredClone(clonableCtx),
+    tools: { ...tools }, // Shallow copy of tools to preserve functions
+  };
 
   if (failures.noisyInput) {
     // Use deterministic noise pattern based on array indices
