@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,19 +18,19 @@ const ELEMENT_ICONS = {
 
 type DraggableElement = {
   id: string;
-  label: string;
+  labelKey: string;
   type: "api" | "memory" | "sensor" | "ui" | "log";
 };
 
 const AVAILABLE_ELEMENTS: DraggableElement[] = [
-  { id: "wearable-api", label: "Wearable API", type: "sensor" },
-  { id: "calendar-api", label: "Calendar API", type: "api" },
-  { id: "user-memory", label: "User Memory", type: "memory" },
-  { id: "notification-ui", label: "Notification UI", type: "ui" },
-  { id: "activity-log", label: "Activity Log", type: "log" },
-  { id: "health-db", label: "Health Database", type: "memory" },
-  { id: "sensor-stream", label: "Sensor Stream", type: "sensor" },
-  { id: "chat-interface", label: "Chat Interface", type: "ui" },
+  { id: "wearable-api", labelKey: "boundaryMap.elements.wearableApi", type: "sensor" },
+  { id: "calendar-api", labelKey: "boundaryMap.elements.calendarApi", type: "api" },
+  { id: "user-memory", labelKey: "boundaryMap.elements.userMemory", type: "memory" },
+  { id: "notification-ui", labelKey: "boundaryMap.elements.notificationUi", type: "ui" },
+  { id: "activity-log", labelKey: "boundaryMap.elements.activityLog", type: "log" },
+  { id: "health-db", labelKey: "boundaryMap.elements.healthDb", type: "memory" },
+  { id: "sensor-stream", labelKey: "boundaryMap.elements.sensorStream", type: "sensor" },
+  { id: "chat-interface", labelKey: "boundaryMap.elements.chatInterface", type: "ui" },
 ];
 
 type BoundaryMapCanvasProps = {
@@ -43,6 +44,7 @@ export function BoundaryMapCanvas({
   initialElements = [],
   initialConnections = [],
 }: BoundaryMapCanvasProps) {
+  const { t } = useTranslation();
   const [placedElements, setPlacedElements] = useState<BoundaryElement[]>(initialElements);
   const [connections, setConnections] = useState<BoundaryConnection[]>(initialConnections);
   const [selectedElement, setSelectedElement] = useState<string | null>(null);
@@ -61,14 +63,14 @@ export function BoundaryMapCanvas({
 
     const newElement: BoundaryElement = {
       id: `${element.id}-${Date.now()}`,
-      label: element.label,
+      label: t(element.labelKey),
       type: element.type,
       x,
       y,
     };
 
     setPlacedElements((prev) => [...prev, newElement]);
-  }, []);
+  }, [t]);
 
   const handleElementClick = useCallback((elementId: string) => {
     setSelectedElement(elementId);
@@ -108,9 +110,9 @@ export function BoundaryMapCanvas({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
       <Card className="p-6 space-y-4">
-        <h3 className="font-semibold text-lg">Available Elements</h3>
+        <h3 className="font-semibold text-lg">{t("boundaryMap.availableElements")}</h3>
         <p className="text-sm text-muted-foreground">
-          Drag elements onto the canvas
+          {t("boundaryMap.dragInstruction")}
         </p>
         <div className="space-y-2">
           {AVAILABLE_ELEMENTS.map((element) => {
@@ -126,7 +128,7 @@ export function BoundaryMapCanvas({
                 data-testid={`boundary-element-${element.id}`}
               >
                 <Icon className="w-5 h-5 text-muted-foreground" />
-                <span className="text-sm font-medium">{element.label}</span>
+                <span className="text-sm font-medium">{t(element.labelKey)}</span>
               </div>
             );
           })}
@@ -136,9 +138,9 @@ export function BoundaryMapCanvas({
       <Card className="lg:col-span-2 p-6">
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-lg">Boundary Map Canvas</h3>
+            <h3 className="font-semibold text-lg">{t("boundaryMap.canvasTitle")}</h3>
             <Button onClick={handleSave} data-testid="button-save-boundary">
-              Save Map
+              {t("boundaryMap.saveMap")}
             </Button>
           </div>
           <p className="text-sm text-muted-foreground">
@@ -217,11 +219,11 @@ export function BoundaryMapCanvas({
       </Card>
 
       <Card className="p-6 space-y-4">
-        <h3 className="font-semibold text-lg">Connect to Process</h3>
+        <h3 className="font-semibold text-lg">{t("boundaryMap.connectToProcess")}</h3>
         <p className="text-sm text-muted-foreground">
           {selectedElement
-            ? "Click a process to connect the selected element"
-            : "Select an element on the canvas first"}
+            ? t("boundaryMap.clickToConnect")
+            : t("boundaryMap.selectFirst")}
         </p>
         <div className="space-y-2">
           {(["learning", "interaction", "perception", "reasoning", "planning", "execution"] as AgentProcess[]).map(

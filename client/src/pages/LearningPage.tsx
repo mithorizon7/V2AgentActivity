@@ -46,32 +46,31 @@ import {
 } from "@shared/scenarios/health-coach/blocks";
 import fixturesData from "@shared/scenarios/health-coach/fixtures.json";
 
-const CLASSIFICATION_ITEMS: ClassificationItem[] = [
-  { id: "feedback_loops", text: "Feedback Loops", correctProcess: "learning" },
-  { id: "adaptation", text: "Adaptation", correctProcess: "learning" },
-  { id: "memory", text: "Memory", correctProcess: "learning" },
-  { id: "communication", text: "Communication", correctProcess: "interaction" },
-  { id: "api_integration", text: "API Integration", correctProcess: "interaction" },
-  { id: "output_generation", text: "Output Generation", correctProcess: "interaction" },
-  { id: "input_processing", text: "Input Processing", correctProcess: "perception" },
-  { id: "context_understanding", text: "Context Understanding", correctProcess: "perception" },
-  { id: "state_tracking", text: "State Tracking", correctProcess: "perception" },
-  { id: "logical_interface", text: "Logical Interface", correctProcess: "reasoning" },
-  { id: "knowledge_base", text: "Knowledge Base", correctProcess: "reasoning" },
-  { id: "heuristics", text: "Heuristics", correctProcess: "reasoning" },
-  { id: "optimization", text: "Optimization", correctProcess: "planning" },
-  { id: "strategy", text: "Strategy", correctProcess: "planning" },
-  { id: "goal_setting", text: "Goal Setting", correctProcess: "planning" },
-  { id: "monitoring", text: "Monitoring", correctProcess: "execution" },
-  { id: "tool_usage", text: "Tool Usage", correctProcess: "execution" },
-  { id: "action_selection", text: "Action Selection", correctProcess: "execution" },
-];
-
-
 const FIXTURES: Fixture[] = fixturesData as Fixture[];
 
 export default function LearningPage() {
   const { t } = useTranslation();
+
+  const CLASSIFICATION_ITEMS: ClassificationItem[] = [
+    { id: "feedback_loops", text: t("classificationItems.feedbackLoops"), correctProcess: "learning" },
+    { id: "adaptation", text: t("classificationItems.adaptation"), correctProcess: "learning" },
+    { id: "memory", text: t("classificationItems.memory"), correctProcess: "learning" },
+    { id: "communication", text: t("classificationItems.communication"), correctProcess: "interaction" },
+    { id: "api_integration", text: t("classificationItems.apiIntegration"), correctProcess: "interaction" },
+    { id: "output_generation", text: t("classificationItems.outputGeneration"), correctProcess: "interaction" },
+    { id: "input_processing", text: t("classificationItems.inputProcessing"), correctProcess: "perception" },
+    { id: "context_understanding", text: t("classificationItems.contextUnderstanding"), correctProcess: "perception" },
+    { id: "state_tracking", text: t("classificationItems.stateTracking"), correctProcess: "perception" },
+    { id: "logical_interface", text: t("classificationItems.logicalInterface"), correctProcess: "reasoning" },
+    { id: "knowledge_base", text: t("classificationItems.knowledgeBase"), correctProcess: "reasoning" },
+    { id: "heuristics", text: t("classificationItems.heuristics"), correctProcess: "reasoning" },
+    { id: "optimization", text: t("classificationItems.optimization"), correctProcess: "planning" },
+    { id: "strategy", text: t("classificationItems.strategy"), correctProcess: "planning" },
+    { id: "goal_setting", text: t("classificationItems.goalSetting"), correctProcess: "planning" },
+    { id: "monitoring", text: t("classificationItems.monitoring"), correctProcess: "execution" },
+    { id: "tool_usage", text: t("classificationItems.toolUsage"), correctProcess: "execution" },
+    { id: "action_selection", text: t("classificationItems.actionSelection"), correctProcess: "execution" },
+  ];
   const { sessionId, progress, isLoading: sessionLoading } = useSession();
   const classificationMutation = useClassification(sessionId || "");
   const boundaryMapMutation = useBoundaryMap(sessionId || "");

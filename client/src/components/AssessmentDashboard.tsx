@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
@@ -26,33 +27,34 @@ export function AssessmentDashboard({
   metrics,
   phaseCompletion,
 }: AssessmentDashboardProps) {
+  const { t } = useTranslation();
   const completedPhases = Object.values(phaseCompletion).filter(Boolean).length;
   const totalPhases = Object.keys(phaseCompletion).length;
   const overallProgress = (completedPhases / totalPhases) * 100;
 
   const metricCards: Metric[] = [
     {
-      label: "Classification Accuracy",
+      label: t("assessment.metrics.classificationAccuracy"),
       value: metrics.classificationAccuracy,
       target: 80,
     },
     {
-      label: "Explanation Quality",
+      label: t("assessment.metrics.explanationQuality"),
       value: metrics.explanationQuality,
       target: 70,
     },
     {
-      label: "Boundary Map Completeness",
+      label: t("assessment.metrics.boundaryMapCompleteness"),
       value: metrics.boundaryMapCompleteness,
       target: 75,
     },
     {
-      label: "Circuit Correctness",
+      label: t("assessment.metrics.circuitCorrectness"),
       value: metrics.circuitCorrectness,
       target: 80,
     },
     {
-      label: "Calibration Score",
+      label: t("assessment.metrics.calibrationScore"),
       value: metrics.calibration,
       target: 85,
     },
@@ -63,9 +65,9 @@ export function AssessmentDashboard({
       <Card className="p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="font-semibold text-lg">Overall Progress</h3>
+            <h3 className="font-semibold text-lg">{t("assessment.overallProgress")}</h3>
             <p className="text-sm text-muted-foreground">
-              {completedPhases} of {totalPhases} phases completed
+              {t("assessment.phasesCompleted", { completed: completedPhases, total: totalPhases })}
             </p>
           </div>
           <Badge

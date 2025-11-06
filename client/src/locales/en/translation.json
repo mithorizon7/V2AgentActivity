@@ -263,6 +263,26 @@
       }
     }
   },
+  "classificationItems": {
+    "feedbackLoops": "Feedback Loops",
+    "adaptation": "Adaptation",
+    "memory": "Memory",
+    "communication": "Communication",
+    "apiIntegration": "API Integration",
+    "outputGeneration": "Output Generation",
+    "inputProcessing": "Input Processing",
+    "contextUnderstanding": "Context Understanding",
+    "stateTracking": "State Tracking",
+    "logicalInterface": "Logical Interface",
+    "knowledgeBase": "Knowledge Base",
+    "heuristics": "Heuristics",
+    "optimization": "Optimization",
+    "strategy": "Strategy",
+    "goalSetting": "Goal Setting",
+    "monitoring": "Monitoring",
+    "toolUsage": "Tool Usage",
+    "actionSelection": "Action Selection"
+  },
   "confidence": {
     "title": "Confidence Level",
     "question": "How confident are you in your classifications?",
@@ -279,6 +299,17 @@
     "detailedFeedback": "Detailed Feedback",
     "noFeedback": "No feedback available"
   },
+  "assessment": {
+    "overallProgress": "Overall Progress",
+    "phasesCompleted": "{{completed}} of {{total}} phases completed",
+    "metrics": {
+      "classificationAccuracy": "Classification Accuracy",
+      "explanationQuality": "Explanation Quality",
+      "boundaryMapCompleteness": "Boundary Map Completeness",
+      "circuitCorrectness": "Circuit Correctness",
+      "calibrationScore": "Calibration Score"
+    }
+  },
   "boundaryMap": {
     "title": "Phase 2: Boundary Mapping",
     "description": "Map the agent's environment, tools, and data flows to understand system boundaries",
@@ -289,6 +320,16 @@
     "selectFirst": "Select an element on the canvas first",
     "clickToConnect": "Click a process to connect the selected element",
     "saveMap": "Save Map",
+    "elements": {
+      "wearableApi": "Wearable API",
+      "calendarApi": "Calendar API",
+      "userMemory": "User Memory",
+      "notificationUi": "Notification UI",
+      "activityLog": "Activity Log",
+      "healthDb": "Health Database",
+      "sensorStream": "Sensor Stream",
+      "chatInterface": "Chat Interface"
+    },
     "feedback": {
       "needMoreElements": "Please place at least {{count}} elements on the canvas to continue",
       "needMoreConnections": "Please create at least {{count}} connections to processes to continue",
