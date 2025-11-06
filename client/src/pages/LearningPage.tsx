@@ -4,6 +4,8 @@ import { PhaseProgress, Phase } from "@/components/PhaseProgress";
 import { useSession } from "@/hooks/useSession";
 import { useClassification } from "@/hooks/useClassification";
 import { useBoundaryMap } from "@/hooks/useBoundaryMap";
+import { Primer } from "@/components/Primer";
+import { WorkedExample } from "@/components/WorkedExample";
 import { ClassificationActivity } from "@/components/ClassificationActivity";
 import { ConfidenceSlider } from "@/components/ConfidenceSlider";
 import { FeedbackPanel } from "@/components/FeedbackPanel";
@@ -71,7 +73,26 @@ export default function LearningPage() {
   const { sessionId, progress, isLoading: sessionLoading } = useSession();
   const classificationMutation = useClassification(sessionId || "");
   const boundaryMapMutation = useBoundaryMap(sessionId || "");
-  const [currentPhase, setCurrentPhase] = useState(1);
+  
+  // Phase 0: Primer (teach before practice) - persisted in localStorage
+  const [primerComplete, setPrimerComplete] = useState(() => {
+    const saved = localStorage.getItem("primerComplete");
+    return saved === "true";
+  });
+  
+  // Worked Example (model before practice) - persisted in localStorage
+  const [workedExampleComplete, setWorkedExampleComplete] = useState(() => {
+    const saved = localStorage.getItem("workedExampleComplete");
+    return saved === "true";
+  });
+  
+  const [currentPhase, setCurrentPhase] = useState(() => {
+    const savedPrimer = localStorage.getItem("primerComplete");
+    const savedExample = localStorage.getItem("workedExampleComplete");
+    if (savedPrimer !== "true") return 0;
+    if (savedExample !== "true") return 0.5; // Between primer and classification
+    return 1;
+  });
 
   const FAILURE_MODES: FailureMode[] = [
     {
@@ -213,6 +234,18 @@ export default function LearningPage() {
         confidence: confidenceLevel,
       });
     }
+  };
+
+  const handlePrimerComplete = () => {
+    setPrimerComplete(true);
+    localStorage.setItem("primerComplete", "true");
+    setCurrentPhase(0.5); // Go to worked example
+  };
+
+  const handleWorkedExampleComplete = () => {
+    setWorkedExampleComplete(true);
+    localStorage.setItem("workedExampleComplete", "true");
+    setCurrentPhase(1); // Go to classification practice
   };
 
   const handlePhaseComplete = () => {
@@ -395,9 +428,17 @@ export default function LearningPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <PhaseProgress phases={phases} onPhaseClick={(id) => setCurrentPhase(id)} />
+      {currentPhase > 0 && <PhaseProgress phases={phases} onPhaseClick={(id) => setCurrentPhase(id)} />}
 
       <div className="max-w-7xl mx-auto px-6 py-8">
+        {currentPhase === 0 && (
+          <Primer onComplete={handlePrimerComplete} />
+        )}
+
+        {currentPhase === 0.5 && (
+          <WorkedExample onComplete={handleWorkedExampleComplete} />
+        )}
+
         {currentPhase === 1 && (
           <div className="space-y-6">
             <div>

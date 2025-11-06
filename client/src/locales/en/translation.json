@@ -9,6 +9,164 @@
     "loading": "Loading...",
     "error": "An error occurred"
   },
+  "primer": {
+    "title": "How AI Agents Work",
+    "subtitle": "Learn the 4+2 model before you build",
+    "continueToDemo": "See It In Action",
+    "continueToChecks": "Quick Understanding Check",
+    "intro": {
+      "heading": "The 4+2 Model",
+      "description": "Every agent follows a 4-step run loop, supported by 2 cross-cutting systems"
+    },
+    "runLoop": {
+      "title": "The 4-Step Run Loop",
+      "perception": {
+        "label": "1. Read the Data",
+        "description": "Transform raw inputs into structured information"
+      },
+      "reasoning": {
+        "label": "2. Decide What It Means",
+        "description": "Analyze the data and determine what to do"
+      },
+      "planning": {
+        "label": "3. Make a Plan",
+        "description": "Choose the specific action to take next"
+      },
+      "execution": {
+        "label": "4. Take Action",
+        "description": "Carry out the chosen step"
+      }
+    },
+    "supporting": {
+      "title": "+ 2 Supporting Systems (Available Throughout)",
+      "memory": {
+        "label": "Memory (Learning)",
+        "description": "Stores knowledge and context—any step can read or write to it",
+        "badge": "Cross-cutting"
+      },
+      "tools": {
+        "label": "Tools & UI (Interaction)",
+        "description": "How the agent acts in the world—any step can call tools or show output",
+        "badge": "Cross-cutting"
+      },
+      "crossCutting": {
+        "title": "Why \"Supporting Systems\"?",
+        "description": "Memory and Tools aren't steps in the loop—they're resources available to ALL four steps"
+      }
+    },
+    "demo": {
+      "title": "See It In Action",
+      "subtitle": "Watch the 4+2 model handle a health coaching scenario",
+      "perception": {
+        "label": "Read the Data (Perception)",
+        "example": "Agent receives heart rate readings: [72, 68, 75, 71 BPM] and step count: 8,500 steps"
+      },
+      "reasoning": {
+        "label": "Decide What It Means (Reasoning)",
+        "example": "Agent checks if heart rate is within healthy range (60-100 BPM) and step count meets goal (≥7,000 steps)"
+      },
+      "planning": {
+        "label": "Make a Plan (Planning)",
+        "example": "Agent decides to send an encouragement notification since metrics are healthy"
+      },
+      "execution": {
+        "label": "Take Action (Execution)",
+        "example": "Agent calls sendNotification tool: \"Great job! Your heart rate is steady and you hit your step goal.\""
+      },
+      "memory": {
+        "label": "🧠 Memory Used Throughout",
+        "example": "Agent stores user's baseline metrics and retrieves historical patterns to inform reasoning"
+      },
+      "tools": {
+        "label": "🔧 Tools Called When Needed",
+        "example": "Agent uses sendNotification tool in Execution step to deliver the message"
+      }
+    },
+    "check": {
+      "badge": "Check {{number}} of {{total}}",
+      "title": "Quick Understanding Check",
+      "submit": "Check My Answer",
+      "correct": "✓ Correct!",
+      "incorrect": "Not quite—try again"
+    },
+    "check1": {
+      "question": "Which step chooses the specific action to take next?",
+      "option1": "Perception",
+      "option2": "Reasoning",
+      "option3": "Planning",
+      "option4": "Execution",
+      "explanation": "Planning is where the agent decides WHICH action to take. Reasoning figures out what the situation means; Planning chooses the response."
+    },
+    "check2": {
+      "question": "Where does \"Send a notification to the user\" belong?",
+      "option1": "Reasoning",
+      "option2": "Planning",
+      "option3": "Execution",
+      "option4": "Interaction (Tools & UI)",
+      "explanation": "Sending notifications uses the Interaction system (Tools & UI). This is a supporting system available throughout the loop—usually called during the Execution step."
+    },
+    "complete": {
+      "title": "You've Got the 4+2 Model!",
+      "description": "Now you're ready to practice applying it",
+      "remember": {
+        "title": "Remember:",
+        "point1": "4-step loop: Read → Decide → Plan → Do",
+        "point2": "Memory and Tools support all steps (not in the loop)",
+        "point3": "Understanding WHY something belongs where matters more than just getting it right"
+      },
+      "continue": "Start Practice"
+    }
+  },
+  "workedExample": {
+    "title": "Watch an Expert Think",
+    "subtitle": "See how an expert classifies agent capabilities and why",
+    "progress": "Example {{current}} of {{total}}",
+    "cardLabel": "Capability to classify:",
+    "nearMiss": "Near-miss",
+    "commonMistake": "Common Mistake",
+    "mightThink": "You might think this belongs in",
+    "because": "because",
+    "expertClassifies": "Expert classification:",
+    "whyLabel": "Why?",
+    "previous": "Previous",
+    "next": "Next Example",
+    "startPractice": "Start Guided Practice",
+    "tip": {
+      "title": "Learning Tip",
+      "description": "Notice the expert focuses on WHAT the capability DOES, not just its name. Ask: Does it transform inputs? Make decisions? Choose actions? Execute steps?"
+    },
+    "cards": {
+      "parseSensor": {
+        "text": "Parse wearable sensor data",
+        "explanation": "This transforms raw input (sensor readings) into structured information the agent can work with. That's the core job of Perception."
+      },
+      "thresholdCheck": {
+        "text": "Check if heart rate is within healthy range",
+        "explanation": "This analyzes the data to determine what it means (is it healthy or concerning?). That's Reasoning—deciding what the situation calls for."
+      },
+      "chooseAction": {
+        "text": "Decide whether to encourage or alert the user",
+        "explanation": "This chooses which specific action to take next based on reasoning. That's Planning—selecting the response strategy."
+      },
+      "sendMessage": {
+        "text": "Send notification with health recommendation",
+        "explanation": "This carries out the chosen action, executing the plan. Execution is where the agent acts on its decisions."
+      },
+      "storeBaseline": {
+        "text": "Remember user's baseline heart rate for future comparisons",
+        "explanation": "This stores knowledge for later use. Memory (Learning) is a supporting system—not a step in the loop, but available throughout."
+      },
+      "callApi": {
+        "text": "Fetch user's calendar to avoid alerts during meetings",
+        "explanation": "This uses external tools or APIs to interact with the world. Tools/UI (Interaction) is a supporting system available to any step."
+      },
+      "calendarNearMiss": {
+        "text": "Schedule a follow-up check for tomorrow",
+        "explanation": "Scheduling uses the calendar API (a tool), making this Interaction. Near-miss: it feels like Planning because it's about 'planning ahead,' but the ACT of scheduling is tool use.",
+        "nearMissExplanation": "it involves planning ahead in time"
+      }
+    }
+  },
   "model": {
     "title": "How agents work: a 4-step run loop + 2 supporting systems (4+2)",
     "runLoop": {
