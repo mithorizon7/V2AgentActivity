@@ -258,6 +258,29 @@ export default function LearningPage() {
       return;
     }
 
+    // New validation: Check for required element type → process connections (4+2 framework)
+    // Sensor → Perception: Sensors provide input data that must be perceived
+    const hasSensorToPerception = connections.some(conn => {
+      const element = elements.find(e => e.id === conn.elementId);
+      return element?.type === "sensor" && conn.process === "perception";
+    });
+
+    if (!hasSensorToPerception) {
+      setBoundaryMapFeedback(t("boundaryMap.feedback.needSensorToPerception"));
+      return;
+    }
+
+    // Execution → Tool/UI: Execution requires tools or UI to interact with the world
+    const hasExecutionToToolOrUI = connections.some(conn => {
+      const element = elements.find(e => e.id === conn.elementId);
+      return conn.process === "execution" && (element?.type === "ui" || element?.type === "log");
+    });
+
+    if (!hasExecutionToToolOrUI) {
+      setBoundaryMapFeedback(t("boundaryMap.feedback.needExecutionToTool"));
+      return;
+    }
+
     // All validation passed
     setBoundaryMapFeedback(null);
     

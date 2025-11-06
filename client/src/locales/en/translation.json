@@ -108,6 +108,8 @@
       "needMoreElements": "Please place at least {{count}} elements on the canvas to continue",
       "needMoreConnections": "Please create at least {{count}} connections to processes to continue",
       "missingProcesses": "Please connect elements to these core processes: {{processes}}",
+      "needSensorToPerception": "Connect at least one Sensor element to Perception (sensors provide input data)",
+      "needExecutionToTool": "Connect Execution to at least one Tool or UI element (execution needs tools to act)",
       "success": "Great work! Your boundary map is complete"
     }
   },
