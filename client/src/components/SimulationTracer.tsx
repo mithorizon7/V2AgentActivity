@@ -68,17 +68,17 @@ export function SimulationTracer({
       <div className="lg:col-span-2">
         <Card className="p-6 space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-lg">Simulation Execution</h3>
+            <h3 className="font-semibold text-lg">{t("simulation.execution")}</h3>
             <div className="flex gap-2">
               {isPaused || !isRunning ? (
                 <Button onClick={handlePlay} data-testid="button-play">
                   <Play className="w-4 h-4 mr-2" />
-                  Run
+                  {t("simulation.run")}
                 </Button>
               ) : (
                 <Button onClick={handlePause} variant="secondary" data-testid="button-pause">
                   <Pause className="w-4 h-4 mr-2" />
-                  Pause
+                  {t("simulation.pause")}
                 </Button>
               )}
               <Button
@@ -98,7 +98,7 @@ export function SimulationTracer({
           <div className="space-y-3">
             {steps.length === 0 ? (
               <div className="flex items-center justify-center h-64 border-2 border-dashed rounded-md">
-                <p className="text-muted-foreground">Build a circuit to run a simulation</p>
+                <p className="text-muted-foreground">{t("simulation.buildCircuitFirst")}</p>
               </div>
             ) : (
               steps.map((step, index) => {
@@ -121,7 +121,7 @@ export function SimulationTracer({
                       <div className="flex-1 space-y-2">
                         <div className="flex items-center gap-2 flex-wrap">
                           <Badge variant="outline" className="font-mono">
-                            Step {index + 1}
+                            {t("simulation.step")} {index + 1}
                           </Badge>
                           <span className="font-medium text-sm">{step.blockId}</span>
                           {step.status === "success" && (
@@ -158,11 +158,11 @@ export function SimulationTracer({
 
                         <div className="grid grid-cols-2 gap-2 text-xs">
                           <div className="p-2 bg-muted/50 rounded">
-                            <div className="font-semibold mb-1">Input:</div>
+                            <div className="font-semibold mb-1">{t("simulation.input")}:</div>
                             <div className="font-mono">{JSON.stringify(step.input)}</div>
                           </div>
                           <div className="p-2 bg-muted/50 rounded">
-                            <div className="font-semibold mb-1">Output:</div>
+                            <div className="font-semibold mb-1">{t("simulation.output")}:</div>
                             <div className="font-mono">{JSON.stringify(step.output)}</div>
                           </div>
                         </div>
@@ -177,11 +177,11 @@ export function SimulationTracer({
       </div>
 
       <Card className="p-6 space-y-4">
-        <h3 className="font-semibold text-lg">Execution Log</h3>
+        <h3 className="font-semibold text-lg">{t("simulation.executionLog")}</h3>
         <ScrollArea className="h-96">
           <div className="space-y-2 font-mono text-xs">
             {steps.length === 0 ? (
-              <p className="text-muted-foreground">No logs yet</p>
+              <p className="text-muted-foreground">{t("simulation.noLogs")}</p>
             ) : (
               steps.map((step, index) => (
                 <div

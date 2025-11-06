@@ -136,15 +136,22 @@ Each with distinct color coding for visual learning:
   - Purple Memory badge with Brain icon for steps accessing memory
   - Blue Tools badge with Wrench icon for steps calling tools
   - Real-time visualization of supporting system usage during execution
+  - Fixed block lookup logic to correctly match step IDs (START_PERCEPTION, END_REASONING) with blocks
+  - Fully translated all UI strings (execution, step labels, input/output labels, logs)
 - Added Classification phase hints for supporting processes:
   - Amber hint boxes in Learning and Interaction bins
   - Explains "Supporting system: not in the 4-step loop" concept
   - Helps learners distinguish loop processes from cross-cutting concerns
+  - Fully translated placeholder text and drag prompts
 - Strengthened Boundary Mapping validation with causal requirements:
   - Sensor → Perception: Sensors must provide input to perception layer
-  - Execution → Tool/UI: Execution must connect to tools or UI to act
+  - Execution → Tool/UI/API: Execution must connect to tools, APIs, or UI to act
   - Reinforces 4+2 framework through structural validation
-- Added 10+ i18n keys for framework explanation and hints
+- Complete i18n coverage:
+  - Added 15+ translation keys for all new features
+  - Zero hardcoded English strings in any 4+2 framework components
+  - All user-facing text properly localized and ready for translation
+  - Consistent translation key naming following existing patterns
 
 **Earlier Work**
 - Classification activity with drag-and-drop and explanation textareas

@@ -26,6 +26,7 @@ function DraggableItem({
   showFeedback,
   isCorrect,
 }: DraggableItemProps) {
+  const { t } = useTranslation();
   return (
     <div className="space-y-2">
       <div
@@ -52,10 +53,10 @@ function DraggableItem({
       <Textarea
         value={explanation}
         onChange={(e) => onExplanationChange(item.id, e.target.value)}
-        placeholder="Explain why you placed this item here..."
+        placeholder={t("classification.explainPlaceholder")}
         className="min-h-20 text-sm resize-none"
         data-testid={`explanation-input-${item.id}`}
-        aria-label={`Explanation for ${item.text}`}
+        aria-label={t("classification.explainPlaceholder")}
       />
     </div>
   );
@@ -86,6 +87,7 @@ function ProcessColumn({
   correctAnswers,
   hint,
 }: ProcessColumnProps) {
+  const { t } = useTranslation();
   const [isDraggedOver, setIsDraggedOver] = useState(false);
   const colors = getProcessColor(process);
 
@@ -126,7 +128,7 @@ function ProcessColumn({
       <div className="space-y-3 flex-1">
         {items.length === 0 ? (
           <div className="flex items-center justify-center h-32 border-2 border-dashed rounded-md text-sm text-muted-foreground">
-            Drag items here
+            {t("classification.dragItemsHere")}
           </div>
         ) : (
           items.map((item) => (
