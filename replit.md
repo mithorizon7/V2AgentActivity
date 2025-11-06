@@ -96,6 +96,30 @@ Each with distinct color coding for visual learning:
 - Cleaned up duplicate client-side files to prevent code drift
 - Both client and server now use identical deterministic engine ensuring consistent execution results
 
+**Phase 5: Enhanced Learning Features & Persistence (November 2024)**
+- Expanded failure injection to include all three modes:
+  - noisy-input: Adds ±15 BPM sensor noise (targets Perception)
+  - missing-tool: Removes sendRecommendation tool (targets Execution)
+  - stale-memory: Corrupts knowledge base (targets Reasoning)
+- Implemented boundary mapping validation requiring:
+  - Minimum 3 environment elements
+  - Minimum 4 connections to processes
+  - Coverage of all 4 core processes (perception, reasoning, planning, execution)
+  - Localized validation feedback displayed in amber warning cards
+- Enhanced GuidedCoachPanel with 6 adaptive states:
+  - Welcome: First-time user with incomplete pipeline
+  - First Run: Guidance for initial execution
+  - First Success: Celebration and next steps
+  - Failure Recovery: Debugging tips when errors occur
+  - Failure Experimentation: Advanced guidance with failures enabled
+  - General Experimentation: Multi-run exploration tips
+- Integrated Phase 1-2 server persistence:
+  - useSession hook creates/retrieves learning session with localStorage ID
+  - useClassification hook persists classification submissions and confidence
+  - useBoundaryMap hook persists boundary elements and connections
+  - All mutations use React Query for optimistic updates and cache management
+- Added 60+ translation keys for new features maintaining i18n completeness
+
 **Earlier Work**
 - Classification activity with drag-and-drop and explanation textareas
 - Boundary mapping canvas for environment-to-process connections
