@@ -1,6 +1,7 @@
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 type ConfidenceSliderProps = {
   value: number;
@@ -13,11 +14,13 @@ export function ConfidenceSlider({
   onChange,
   disabled = false,
 }: ConfidenceSliderProps) {
+  const { t } = useTranslation();
+  
   return (
     <div className="space-y-3 p-6 bg-card rounded-md border" data-testid="confidence-slider">
       <div className="flex items-center justify-between">
         <Label htmlFor="confidence" className="text-base font-semibold">
-          Confidence Level
+          {t("confidence.title")}
         </Label>
         <span
           className="text-2xl font-bold text-primary tabular-nums"
@@ -27,7 +30,7 @@ export function ConfidenceSlider({
         </span>
       </div>
       <p className="text-sm text-muted-foreground">
-        How confident are you in your classifications?
+        {t("confidence.question")}
       </p>
       <Slider
         id="confidence"
@@ -39,12 +42,12 @@ export function ConfidenceSlider({
         disabled={disabled}
         className="w-full"
         data-testid="confidence-slider-input"
-        aria-label="Confidence level slider from 0 to 100 percent"
+        aria-label={t("confidence.question")}
       />
       <div className="flex justify-between text-xs text-muted-foreground">
-        <span>Not confident</span>
-        <span>Somewhat confident</span>
-        <span>Very confident</span>
+        <span>{t("confidence.notConfident")}</span>
+        <span>{t("confidence.somewhatConfident")}</span>
+        <span>{t("confidence.veryConfident")}</span>
       </div>
     </div>
   );
