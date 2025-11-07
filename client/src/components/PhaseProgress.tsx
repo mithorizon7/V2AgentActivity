@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -14,6 +15,8 @@ type PhaseProgressProps = {
 };
 
 export function PhaseProgress({ phases, onPhaseClick }: PhaseProgressProps) {
+  const { t } = useTranslation();
+  
   return (
     <div className="sticky top-0 z-50 bg-background border-b" data-testid="phase-progress">
       <div className="max-w-7xl mx-auto px-6 py-4">
@@ -33,7 +36,7 @@ export function PhaseProgress({ phases, onPhaseClick }: PhaseProgressProps) {
                     isClickable && "cursor-pointer hover-elevate active-elevate-2",
                     !isAccessible && "opacity-40 cursor-not-allowed"
                   )}
-                  aria-label={`Phase ${phase.id}: ${phase.name}`}
+                  aria-label={t("phaseProgress.phaseLabel", { id: phase.id, name: phase.name })}
                   aria-current={phase.current ? "step" : undefined}
                 >
                   <div
@@ -59,7 +62,7 @@ export function PhaseProgress({ phases, onPhaseClick }: PhaseProgressProps) {
                   </div>
                   <div className="flex flex-col items-start min-w-0">
                     <span className="text-xs text-muted-foreground uppercase tracking-wide">
-                      Phase {phase.id}
+                      {t("phaseProgress.phaseNumber", { id: phase.id })}
                     </span>
                     <span
                       className={cn(

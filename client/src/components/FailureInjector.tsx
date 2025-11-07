@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -21,14 +22,17 @@ type FailureInjectorProps = {
 };
 
 export function FailureInjector({ failures, onToggle }: FailureInjectorProps) {
+  const { t } = useTranslation();
+  const activeCount = failures.filter((f) => f.enabled).length;
+  
   return (
     <Card className="p-6 space-y-4">
       <div className="flex items-center gap-2">
         <AlertTriangle className="w-5 h-5 text-amber-600" />
-        <h3 className="font-semibold text-lg">Failure Injection</h3>
+        <h3 className="font-semibold text-lg">{t("failureInjection.title")}</h3>
       </div>
       <p className="text-sm text-muted-foreground">
-        Toggle faults to observe how the agent handles errors and edge cases
+        {t("failureInjection.description")}
       </p>
 
       <div className="space-y-3">
@@ -65,11 +69,10 @@ export function FailureInjector({ failures, onToggle }: FailureInjectorProps) {
         })}
       </div>
 
-      {failures.filter((f) => f.enabled).length > 0 && (
+      {activeCount > 0 && (
         <div className="p-3 bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-md">
           <p className="text-sm text-amber-900 dark:text-amber-100">
-            {failures.filter((f) => f.enabled).length} failure(s) active. Run the simulation to
-            observe the effects.
+            {t(`failureInjection.activeMessage`, { count: activeCount })}
           </p>
         </div>
       )}

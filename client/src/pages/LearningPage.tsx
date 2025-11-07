@@ -703,9 +703,9 @@ export default function LearningPage() {
         {currentPhase === 5 && (
           <div className="space-y-6">
             <div>
-              <h2 className="text-3xl font-bold mb-2">Phase 5: Assessment & Review</h2>
+              <h2 className="text-3xl font-bold mb-2">{t("assessment.title")}</h2>
               <p className="text-muted-foreground">
-                Review your performance across all phases and identify areas for growth
+                {t("assessment.description")}
               </p>
             </div>
 

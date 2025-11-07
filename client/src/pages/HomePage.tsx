@@ -1,4 +1,5 @@
 import { useLocation } from "wouter";
+import { useTranslation } from "react-i18next";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -6,6 +7,7 @@ import { Brain, ArrowRight, BookOpen, Target, Code } from "lucide-react";
 
 export default function HomePage() {
   const [, setLocation] = useLocation();
+  const { t } = useTranslation();
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
@@ -13,11 +15,10 @@ export default function HomePage() {
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-3 mb-4">
             <Brain className="w-12 h-12 text-primary" />
-            <h1 className="text-4xl font-bold">AI Agents Learning Platform</h1>
+            <h1 className="text-4xl font-bold">{t("homePage.title")}</h1>
           </div>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Master AI agents from core concepts to building your own—through interactive,
-            pedagogically-designed activities
+            {t("homePage.subtitle")}
           </p>
         </div>
 
@@ -26,10 +27,9 @@ export default function HomePage() {
             <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
               <BookOpen className="w-6 h-6 text-primary" />
             </div>
-            <h3 className="font-semibold text-lg">Understand</h3>
+            <h3 className="font-semibold text-lg">{t("homePage.understand.title")}</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Learn the six core processes that make AI agents work: Learning, Interaction,
-              Perception, Reasoning, Planning, and Execution
+              {t("homePage.understand.description")}
             </p>
           </Card>
 
@@ -37,10 +37,9 @@ export default function HomePage() {
             <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
               <Target className="w-6 h-6 text-primary" />
             </div>
-            <h3 className="font-semibold text-lg">Practice</h3>
+            <h3 className="font-semibold text-lg">{t("homePage.practice.title")}</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Map agent boundaries, build circuits, run simulations, and debug failures through
-              hands-on activities
+              {t("homePage.practice.description")}
             </p>
           </Card>
 
@@ -48,10 +47,9 @@ export default function HomePage() {
             <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
               <Code className="w-6 h-6 text-primary" />
             </div>
-            <h3 className="font-semibold text-lg">Build</h3>
+            <h3 className="font-semibold text-lg">{t("homePage.build.title")}</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Design and construct your own agents, evaluate their performance, and iterate based
-              on real feedback
+              {t("homePage.build.description")}
             </p>
           </Card>
         </div>
@@ -60,12 +58,11 @@ export default function HomePage() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="space-y-2 flex-1">
               <div className="flex items-center gap-2">
-                <h2 className="text-2xl font-bold">Ready to Begin?</h2>
-                <Badge variant="secondary">5 Interactive Phases</Badge>
+                <h2 className="text-2xl font-bold">{t("homePage.ready.title")}</h2>
+                <Badge variant="secondary">{t("homePage.ready.badge")}</Badge>
               </div>
               <p className="text-muted-foreground">
-                Complete all five phases to progress from understanding to building AI agents.
-                Each phase builds on the last, with immediate feedback and assessment.
+                {t("homePage.ready.description")}
               </p>
             </div>
             <Button
@@ -74,7 +71,7 @@ export default function HomePage() {
               className="px-8"
               data-testid="button-start-learning"
             >
-              Start Learning
+              {t("homePage.ready.startButton")}
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           </div>
@@ -82,8 +79,7 @@ export default function HomePage() {
 
         <div className="mt-12 text-center text-sm text-muted-foreground">
           <p>
-            Designed with cognitive apprenticeship, retrieval practice, and metacognitive
-            calibration to maximize learning outcomes
+            {t("homePage.methodology")}
           </p>
         </div>
       </div>

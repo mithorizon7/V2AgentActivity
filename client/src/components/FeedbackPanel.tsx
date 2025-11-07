@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -30,6 +31,8 @@ export function FeedbackPanel({
   calibration,
   feedback,
 }: FeedbackPanelProps) {
+  const { t } = useTranslation();
+  
   if (!isOpen) return null;
 
   return (
@@ -39,13 +42,13 @@ export function FeedbackPanel({
     >
       <div className="flex flex-col h-full">
         <div className="flex items-center justify-between p-6 border-b">
-          <h2 className="text-xl font-bold">Feedback & Results</h2>
+          <h2 className="text-xl font-bold">{t("feedbackPanel.title")}</h2>
           <Button
             variant="ghost"
             size="icon"
             onClick={onClose}
             data-testid="button-close-feedback"
-            aria-label="Close feedback panel"
+            aria-label={t("feedbackPanel.closeLabel")}
           >
             <X className="w-5 h-5" />
           </Button>
@@ -86,7 +89,7 @@ export function FeedbackPanel({
                 </div>
                 <Progress value={calibration} className="h-2" />
                 <p className="text-xs text-muted-foreground">
-                  How well your confidence matched your actual performance
+                  {t("feedbackPanel.calibrationDescription")}
                 </p>
               </div>
             </div>
@@ -95,10 +98,10 @@ export function FeedbackPanel({
 
             <div className="space-y-3">
               <h3 className="font-semibold text-sm uppercase tracking-wide">
-                Detailed Feedback
+                {t("feedbackPanel.detailedFeedback")}
               </h3>
               {feedback.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No feedback available</p>
+                <p className="text-sm text-muted-foreground">{t("feedbackPanel.noFeedback")}</p>
               ) : (
                 feedback.map((item, index) => (
                   <Card key={index} className="p-4 space-y-2">

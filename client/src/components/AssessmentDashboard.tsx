@@ -111,7 +111,7 @@ export function AssessmentDashboard({
               {metric.target && (
                 <div className="space-y-1">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-muted-foreground">Target: {metric.target}%</span>
+                    <span className="text-muted-foreground">{t("assessment.target", { value: metric.target })}</span>
                     <span
                       className={cn(
                         "font-medium",
@@ -141,18 +141,17 @@ export function AssessmentDashboard({
       </div>
 
       <Card className="p-6">
-        <h3 className="font-semibold text-lg mb-4">Learning Insights</h3>
+        <h3 className="font-semibold text-lg mb-4">{t("assessment.insights")}</h3>
         <div className="space-y-3">
           {metrics.calibration >= 85 && (
             <div className="flex items-start gap-3 p-3 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-md">
               <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
               <div>
                 <p className="font-medium text-sm text-green-900 dark:text-green-100">
-                  Excellent Calibration
+                  {t("assessment.excellentCalibration")}
                 </p>
                 <p className="text-xs text-green-700 dark:text-green-300">
-                  Your confidence levels closely match your actual performance. This indicates
-                  strong metacognitive awareness.
+                  {t("assessment.excellentCalibrationDesc")}
                 </p>
               </div>
             </div>
@@ -163,10 +162,10 @@ export function AssessmentDashboard({
               <CheckCircle2 className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
               <div>
                 <p className="font-medium text-sm text-blue-900 dark:text-blue-100">
-                  Strong Classification Skills
+                  {t("assessment.strongClassification")}
                 </p>
                 <p className="text-xs text-blue-700 dark:text-blue-300">
-                  You've demonstrated solid understanding of the six agent processes.
+                  {t("assessment.strongClassificationDesc")}
                 </p>
               </div>
             </div>
@@ -177,11 +176,10 @@ export function AssessmentDashboard({
               <Target className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
               <div>
                 <p className="font-medium text-sm text-amber-900 dark:text-amber-100">
-                  Improve Explanations
+                  {t("assessment.improveExplanations")}
                 </p>
                 <p className="text-xs text-amber-700 dark:text-amber-300">
-                  Try to provide more detailed reasoning that connects the item to the process's
-                  core function.
+                  {t("assessment.improveExplanationsDesc")}
                 </p>
               </div>
             </div>
