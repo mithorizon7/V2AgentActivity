@@ -9,6 +9,72 @@
     "loading": "Loading...",
     "error": "An error occurred"
   },
+  "homePage": {
+    "title": "AI Agents Learning Platform",
+    "subtitle": "Master AI agents from core concepts to building your own—through interactive, pedagogically-designed activities",
+    "understand": {
+      "title": "Understand",
+      "description": "Learn the six core processes that make AI agents work: Learning, Interaction, Perception, Reasoning, Planning, and Execution"
+    },
+    "practice": {
+      "title": "Practice",
+      "description": "Map agent boundaries, build circuits, run simulations, and debug failures through hands-on activities"
+    },
+    "build": {
+      "title": "Build",
+      "description": "Design and construct your own agents, evaluate their performance, and iterate based on real feedback"
+    },
+    "ready": {
+      "title": "Ready to Begin?",
+      "badge": "5 Interactive Phases",
+      "description": "Complete all five phases to progress from understanding to building AI agents. Each phase builds on the last, with immediate feedback and assessment.",
+      "startButton": "Start Learning"
+    },
+    "methodology": "Designed with cognitive apprenticeship, retrieval practice, and metacognitive calibration to maximize learning outcomes"
+  },
+  "notFound": {
+    "title": "404 Page Not Found",
+    "message": "Did you forget to add the page to the router?"
+  },
+  "ui": {
+    "sidebar": {
+      "title": "Sidebar",
+      "description": "Displays the mobile sidebar.",
+      "toggleLabel": "Toggle Sidebar"
+    },
+    "pagination": {
+      "label": "pagination",
+      "previous": "Previous",
+      "next": "Next",
+      "previousLabel": "Go to previous page",
+      "nextLabel": "Go to next page",
+      "morePages": "More pages"
+    }
+  },
+  "phaseProgress": {
+    "phaseLabel": "Phase {{id}}: {{name}}",
+    "phaseNumber": "Phase {{id}}"
+  },
+  "confidence": {
+    "title": "Confidence Level",
+    "question": "How confident are you in your classifications?",
+    "notConfident": "Not confident",
+    "somewhatConfident": "Somewhat confident",
+    "veryConfident": "Very confident"
+  },
+  "failureInjection": {
+    "title": "Failure Injection",
+    "description": "Toggle faults to observe how the agent handles errors and edge cases",
+    "activeMessage_one": "{{count}} failure active. Run the simulation to observe the effects.",
+    "activeMessage_other": "{{count}} failures active. Run the simulation to observe the effects."
+  },
+  "feedbackPanel": {
+    "title": "Feedback & Results",
+    "closeLabel": "Close feedback panel",
+    "calibrationDescription": "How well your confidence matched your actual performance",
+    "detailedFeedback": "Detailed Feedback",
+    "noFeedback": "No feedback available"
+  },
   "primer": {
     "title": "How AI Agents Work",
     "subtitle": "Learn the 4+2 model — the fundamental pattern behind every AI agent",
@@ -440,6 +506,7 @@
     "description": "Review your performance across all phases and identify areas for growth",
     "overallProgress": "Overall Progress",
     "phasesCompleted": "{{completed}} of {{total}} phases completed",
+    "target": "Target: {{value}}%",
     "insights": "Learning Insights",
     "excellentCalibration": "Excellent Calibration",
     "excellentCalibrationDesc": "Your confidence levels closely match your actual performance. This indicates strong metacognitive awareness.",
