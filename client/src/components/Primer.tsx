@@ -24,6 +24,8 @@ export function Primer({ onComplete }: PrimerProps) {
   const [check2Answer, setCheck2Answer] = useState<number | null>(null);
   const [showCheck1Feedback, setShowCheck1Feedback] = useState(false);
   const [showCheck2Feedback, setShowCheck2Feedback] = useState(false);
+  const [check1Attempts, setCheck1Attempts] = useState(0);
+  const [check2Attempts, setCheck2Attempts] = useState(0);
 
   const microChecks: MicroCheck[] = [
     {
@@ -52,22 +54,48 @@ export function Primer({ onComplete }: PrimerProps) {
 
   const handleCheck1Submit = () => {
     setShowCheck1Feedback(true);
+    setCheck1Attempts(prev => prev + 1);
     if (check1Answer === microChecks[0].correctIndex) {
       setTimeout(() => {
         setCurrentStep("check2");
         setShowCheck1Feedback(false);
+        setCheck1Answer(null);
       }, 2000);
     }
   };
 
   const handleCheck2Submit = () => {
     setShowCheck2Feedback(true);
+    setCheck2Attempts(prev => prev + 1);
     if (check2Answer === microChecks[1].correctIndex) {
       setTimeout(() => {
         setCurrentStep("complete");
         setShowCheck2Feedback(false);
+        setCheck2Answer(null);
       }, 2000);
     }
+  };
+
+  const handleCheck1Retry = () => {
+    setCheck1Answer(null);
+    setShowCheck1Feedback(false);
+  };
+
+  const handleCheck2Retry = () => {
+    setCheck2Answer(null);
+    setShowCheck2Feedback(false);
+  };
+
+  const handleCheck1Continue = () => {
+    setCurrentStep("check2");
+    setShowCheck1Feedback(false);
+    setCheck1Answer(null);
+  };
+
+  const handleCheck2Continue = () => {
+    setCurrentStep("complete");
+    setShowCheck2Feedback(false);
+    setCheck2Answer(null);
   };
 
   const renderIntro = () => (
@@ -276,6 +304,9 @@ export function Primer({ onComplete }: PrimerProps) {
     const setAnswer = checkIndex === 0 ? setCheck1Answer : setCheck2Answer;
     const showFeedback = checkIndex === 0 ? showCheck1Feedback : showCheck2Feedback;
     const handleSubmit = checkIndex === 0 ? handleCheck1Submit : handleCheck2Submit;
+    const handleRetry = checkIndex === 0 ? handleCheck1Retry : handleCheck2Retry;
+    const handleContinue = checkIndex === 0 ? handleCheck1Continue : handleCheck2Continue;
+    const attempts = checkIndex === 0 ? check1Attempts : check2Attempts;
     const isCorrect = selectedAnswer === check.correctIndex;
 
     return (
@@ -346,16 +377,40 @@ export function Primer({ onComplete }: PrimerProps) {
             )}
           </div>
 
-          <div className="flex justify-center pt-4">
-            <Button
-              onClick={handleSubmit}
-              disabled={selectedAnswer === null || showFeedback}
-              size="lg"
-              className="min-w-48"
-              data-testid={`button-submit-check${checkIndex + 1}`}
-            >
-              {t("primer.check.submit")}
-            </Button>
+          <div className="flex justify-center gap-3 pt-4 flex-wrap">
+            {!showFeedback ? (
+              <Button
+                onClick={handleSubmit}
+                disabled={selectedAnswer === null}
+                size="lg"
+                className="min-w-48"
+                data-testid={`button-submit-check${checkIndex + 1}`}
+              >
+                {t("primer.check.submit")}
+              </Button>
+            ) : !isCorrect ? (
+              <>
+                <Button
+                  onClick={handleRetry}
+                  variant="outline"
+                  size="lg"
+                  className="min-w-48"
+                  data-testid={`button-retry-check${checkIndex + 1}`}
+                >
+                  {t("primer.check.tryAgain")}
+                </Button>
+                {attempts >= 2 && (
+                  <Button
+                    onClick={handleContinue}
+                    size="lg"
+                    className="min-w-48"
+                    data-testid={`button-continue-check${checkIndex + 1}`}
+                  >
+                    {t("primer.check.continueAnyway")}
+                  </Button>
+                )}
+              </>
+            ) : null}
           </div>
         </Card>
       </div>

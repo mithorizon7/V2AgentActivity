@@ -165,7 +165,9 @@
       "title": "Quick Understanding Check",
       "submit": "Check My Answer",
       "correct": "✓ Correct!",
-      "incorrect": "Not quite—try again"
+      "incorrect": "Not quite—try again",
+      "tryAgain": "Try Again",
+      "continueAnyway": "Continue Anyway"
     },
     "check1": {
       "question": "In our health coach example, the agent decided to \"send encouragement\" rather than \"send a warning.\" Which step made this choice?",
