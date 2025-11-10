@@ -18,6 +18,7 @@ import { FailureInjector } from "@/components/FailureInjector";
 import { AssessmentDashboard } from "@/components/AssessmentDashboard";
 import { GuidedCoachPanel } from "@/components/GuidedCoachPanel";
 import { ConsentManager } from "@/components/ConsentManager";
+import { HighContrastToggle } from "@/components/HighContrastToggle";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -449,9 +450,12 @@ export default function LearningPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <div className="fixed top-4 right-4 z-50 flex gap-2">
+        <HighContrastToggle />
+      </div>
       {currentPhase > 0 && <PhaseProgress phases={phases} onPhaseClick={(id) => setCurrentPhase(id)} />}
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div id="main-content" className="max-w-7xl mx-auto px-6 py-8">
         {currentPhase === 0 && (
           <Primer onComplete={handlePrimerComplete} />
         )}

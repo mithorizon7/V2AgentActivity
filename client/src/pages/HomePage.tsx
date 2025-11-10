@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ConsentManager } from "@/components/ConsentManager";
+import { HighContrastToggle } from "@/components/HighContrastToggle";
 import { Brain, ArrowRight, BookOpen, Target, Code } from "lucide-react";
 
 export default function HomePage() {
@@ -12,7 +13,10 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
-      <div className="max-w-7xl mx-auto px-6 py-12">
+      <div className="fixed top-4 right-4 z-50 flex gap-2">
+        <HighContrastToggle />
+      </div>
+      <div id="main-content" className="max-w-7xl mx-auto px-6 py-12">
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-3 mb-4">
             <Brain className="w-12 h-12 text-primary" />

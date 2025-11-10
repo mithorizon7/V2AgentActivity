@@ -784,5 +784,16 @@
       "home": "Home",
       "end": "End"
     }
+  },
+  "accessibility": {
+    "skipLinks": {
+      "skipToMainContent": "Skip to main content",
+      "skipToNavigation": "Skip to navigation"
+    },
+    "highContrast": {
+      "toggle": "Toggle High Contrast Mode",
+      "enabled": "High contrast mode enabled",
+      "disabled": "High contrast mode disabled"
+    }
   }
 }
