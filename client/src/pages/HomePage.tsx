@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { ConsentManager } from "@/components/ConsentManager";
 import { HighContrastToggle } from "@/components/HighContrastToggle";
 import { ArrowRight } from "lucide-react";
-import ProgramLogo from "@assets/LogoReal_1762810196287.png";
+import ProgramLogo from "@assets/LogoRealv2_1762811142025.png";
 import UnderstandIcon from "@assets/Understand_1762809751241.png";
 import PracticeIcon from "@assets/Practice_1762809751241.png";
 import BuildIcon from "@assets/Build_1762809751241.png";
