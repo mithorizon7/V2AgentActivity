@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ConsentManager } from "@/components/ConsentManager";
 import { HighContrastToggle } from "@/components/HighContrastToggle";
-import { Brain, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import ProgramLogo from "@assets/LogoReal_1762810196287.png";
 import UnderstandIcon from "@assets/Understand_1762809751241.png";
 import PracticeIcon from "@assets/Practice_1762809751241.png";
 import BuildIcon from "@assets/Build_1762809751241.png";
@@ -22,7 +23,7 @@ export default function HomePage() {
       <div id="main-content" className="max-w-7xl mx-auto px-6 py-12">
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <Brain className="w-12 h-12 text-primary" />
+            <img src={ProgramLogo} alt="AI Agents Learning Platform Logo" className="w-12 h-12" />
             <h1 className="text-4xl font-bold">{t("homePage.title")}</h1>
           </div>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
