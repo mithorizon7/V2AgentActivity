@@ -127,7 +127,7 @@ export default function LearningPage() {
     { id: "optimization", text: t("classificationItems.optimization"), correctProcess: "planning" },
     { id: "strategy", text: t("classificationItems.strategy"), correctProcess: "planning" },
     { id: "goal_setting", text: t("classificationItems.goalSetting"), correctProcess: "planning" },
-    { id: "monitoring", text: t("classificationItems.monitoring"), correctProcess: "execution" },
+    { id: "monitoring", text: t("classificationItems.monitoring"), correctProcess: "perception" },
     { id: "tool_usage", text: t("classificationItems.toolUsage"), correctProcess: "execution" },
     { id: "action_selection", text: t("classificationItems.actionSelection"), correctProcess: "execution" },
   ], [t]);
