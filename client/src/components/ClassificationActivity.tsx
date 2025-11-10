@@ -477,10 +477,14 @@ export function ClassificationActivity({
       }
     } else if (e.key === 'Home') {
       e.preventDefault();
-      setFocusedItem(containerItems[0]);
+      if (containerItems.length > 0) {
+        setFocusedItem(containerItems[0]);
+      }
     } else if (e.key === 'End') {
       e.preventDefault();
-      setFocusedItem(containerItems[containerItems.length - 1]);
+      if (containerItems.length > 0) {
+        setFocusedItem(containerItems[containerItems.length - 1]);
+      }
     } else if (e.key === 'Tab' && grabbedItem) {
       // Let Tab work normally to navigate to process columns
       setFocusedProcess(null);
