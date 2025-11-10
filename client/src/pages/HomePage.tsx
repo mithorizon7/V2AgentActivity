@@ -22,8 +22,8 @@ export default function HomePage() {
       </div>
       <div id="main-content" className="max-w-7xl mx-auto px-6 py-12">
         <div className="text-center mb-12">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <img src={ProgramLogo} alt="AI Agents Learning Platform Logo" className="w-12 h-12" />
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <img src={ProgramLogo} alt="AI Agents Learning Platform Logo" className="w-20 h-20" />
             <h1 className="text-4xl font-bold">{t("homePage.title")}</h1>
           </div>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
