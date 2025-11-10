@@ -25,6 +25,7 @@ export default function HomePage() {
           <div className="flex items-center justify-center gap-4 mb-4">
             <img src={ProgramLogo} alt="AI Agents Learning Platform Logo" className="w-20 h-20" />
             <h1 className="text-4xl font-bold">{t("homePage.title")}</h1>
+            <img src={ProgramLogo} alt="AI Agents Learning Platform Logo" className="w-20 h-20 scale-x-[-1]" />
           </div>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             {t("homePage.subtitle")}
