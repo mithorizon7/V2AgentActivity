@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { AgentProcess, ClassificationItem, ClassificationSubmission } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -17,6 +17,11 @@ type DraggableItemProps = {
   onExplanationChange: (itemId: string, explanation: string) => void;
   showFeedback: boolean;
   isCorrect?: boolean;
+  isGrabbed?: boolean;
+  isFocused?: boolean;
+  onKeyboardGrab?: (item: ClassificationItem) => void;
+  onFocus?: () => void;
+  onKeyDown?: (e: React.KeyboardEvent, item: ClassificationItem) => void;
 };
 
 function DraggableItem({
@@ -26,16 +31,37 @@ function DraggableItem({
   onExplanationChange,
   showFeedback,
   isCorrect,
+  isGrabbed = false,
+  isFocused = false,
+  onKeyboardGrab,
+  onFocus,
+  onKeyDown,
 }: DraggableItemProps) {
   const { t } = useTranslation();
+  const itemRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isFocused && itemRef.current) {
+      itemRef.current.focus();
+    }
+  }, [isFocused]);
+
   return (
-    <div className="space-y-2">
+    <div className="space-y-2" role="group" aria-label={`${item.text} classification card`}>
       <div
+        ref={itemRef}
         draggable
         onDragStart={() => onDragStart(item)}
+        onKeyDown={(e) => onKeyDown?.(e, item)}
+        onFocus={onFocus}
+        tabIndex={0}
+        aria-pressed={isGrabbed}
+        aria-label={`${item.text}${isGrabbed ? ' (grabbed - use Tab to navigate to drop zone, Enter to drop, Escape to cancel)' : ' (press Space or Enter to grab)'}`}
         className={cn(
           "flex items-center gap-2 p-3 rounded-md border-2 cursor-move transition-all hover-elevate active-elevate-2",
-          "bg-card",
+          "bg-card focus:outline-none",
+          isFocused && "ring-2 ring-primary ring-offset-2",
+          isGrabbed && "border-dashed border-primary shadow-lg",
           showFeedback && isCorrect === true && "border-green-500 bg-green-50 dark:bg-green-950",
           showFeedback && isCorrect === false && "border-red-500 bg-red-50 dark:bg-red-950"
         )}
@@ -57,7 +83,7 @@ function DraggableItem({
         placeholder={t("classification.explainPlaceholder")}
         className="min-h-20 text-sm resize-none"
         data-testid={`explanation-input-${item.id}`}
-        aria-label={t("classification.explainPlaceholder")}
+        aria-label={`Explanation for ${item.text}`}
       />
     </div>
   );
@@ -74,6 +100,11 @@ type ProcessColumnProps = {
   onDragStart: (item: ClassificationItem) => void;
   correctAnswers?: Record<string, boolean>;
   hint?: string;
+  grabbedItem?: ClassificationItem | null;
+  focusedItem?: ClassificationItem | null;
+  onItemKeyDown?: (e: React.KeyboardEvent, item: ClassificationItem) => void;
+  onItemFocus?: (item: ClassificationItem) => void;
+  isKeyboardFocused?: boolean;
 };
 
 function ProcessColumn({
@@ -87,16 +118,27 @@ function ProcessColumn({
   onDragStart,
   correctAnswers,
   hint,
+  grabbedItem,
+  focusedItem,
+  onItemKeyDown,
+  onItemFocus,
+  isKeyboardFocused = false,
 }: ProcessColumnProps) {
   const { t } = useTranslation();
   const [isDraggedOver, setIsDraggedOver] = useState(false);
   const colors = getProcessColor(process);
 
+  const hintId = hint ? `hint-${process}` : undefined;
+
   return (
     <Card
+      role="region"
+      aria-label={`${process} drop zone${hint ? ' (has hint)' : ''}`}
+      aria-describedby={hintId}
       className={cn(
         "flex flex-col p-4 min-h-96 transition-all",
-        isDraggedOver && "ring-2 ring-primary bg-primary/5"
+        isDraggedOver && "ring-2 ring-primary bg-primary/5",
+        isKeyboardFocused && grabbedItem && "ring-2 ring-primary"
       )}
       onDrop={(e) => {
         e.preventDefault();
@@ -121,7 +163,7 @@ function ProcessColumn({
         </Badge>
       </div>
       {hint && (
-        <div className="mb-3 p-2 rounded-md bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 flex gap-2">
+        <div id={hintId} className="mb-3 p-2 rounded-md bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 flex gap-2">
           <Info className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
           <p className="text-xs text-amber-800 dark:text-amber-200">{hint}</p>
         </div>
@@ -141,6 +183,10 @@ function ProcessColumn({
               onExplanationChange={onExplanationChange}
               showFeedback={showFeedback}
               isCorrect={correctAnswers?.[item.id]}
+              isGrabbed={grabbedItem?.id === item.id}
+              isFocused={focusedItem?.id === item.id}
+              onKeyDown={onItemKeyDown}
+              onFocus={() => onItemFocus?.(item)}
             />
           ))
         )}
@@ -167,6 +213,15 @@ export function ClassificationActivity({
   const { t } = useTranslation();
   const { hasConsent } = useConsent();
   const storage = safeLocalStorage(hasConsent);
+  
+  // Keyboard navigation state
+  const [grabbedItem, setGrabbedItem] = useState<ClassificationItem | null>(null);
+  const [focusedItem, setFocusedItem] = useState<ClassificationItem | null>(() => {
+    // Initialize with first item so keyboard users can tab into the cards
+    return items[0] || null;
+  });
+  const [focusedProcess, setFocusedProcess] = useState<AgentProcess | null>(null);
+  const [ariaAnnouncement, setAriaAnnouncement] = useState<string>("");
   
   // CRITICAL FIX: Start with ALL cards UNSORTED and SHUFFLED
   // Never auto-place based on correctProcess - that's backwards pedagogy!
@@ -315,11 +370,150 @@ export function ClassificationActivity({
     onSubmit(submissions);
   };
 
+  const announce = (message: string) => {
+    setAriaAnnouncement(message);
+    setTimeout(() => setAriaAnnouncement(""), 1000);
+  };
+
+  const handleKeyboardGrab = (item: ClassificationItem) => {
+    if (!grabbedItem) {
+      setGrabbedItem(item);
+      setFocusedItem(item);
+      announce(`Grabbed ${item.text}. Use Tab or Arrow keys to navigate to a drop zone, then press Enter to drop, or Escape to cancel.`);
+    } else if (grabbedItem.id === item.id) {
+      // Drop in same location (cancel)
+      setGrabbedItem(null);
+      announce(`Dropped ${item.text} back in original location.`);
+    } else {
+      // Can't grab another item while one is grabbed
+      announce("Release current item first with Escape");
+    }
+  };
+
+  const handleKeyboardDrop = (targetProcess: AgentProcess) => {
+    if (!grabbedItem) return;
+
+    // Remove from unsorted tray if coming from there
+    setUnsortedItems((prev) => prev.filter((i) => i.id !== grabbedItem.id));
+
+    // Remove from all bins and place in target
+    setItemsByProcess((prev) => {
+      const newState = { ...prev };
+      Object.keys(newState).forEach((process) => {
+        newState[process as AgentProcess] = newState[process as AgentProcess].filter(
+          (i) => i.id !== grabbedItem.id
+        );
+      });
+      newState[targetProcess] = [...newState[targetProcess], grabbedItem];
+      return newState;
+    });
+
+    announce(`Dropped ${grabbedItem.text} into ${targetProcess}. The card is now in ${targetProcess} and can be tabbed to or re-grabbed if needed.`);
+    setGrabbedItem(null);
+    // Keep focus on the dropped item so user can continue interacting with it
+    setFocusedItem(grabbedItem);
+    setFocusedProcess(targetProcess);
+  };
+
+  const handleItemKeyDown = (e: React.KeyboardEvent, item: ClassificationItem) => {
+    // Get all items in the current container (unsorted or specific process)
+    let containerItems: ClassificationItem[] = [];
+    let isInUnsorted = unsortedItems.some(i => i.id === item.id);
+    
+    if (isInUnsorted) {
+      containerItems = unsortedItems;
+    } else {
+      // Find which process column this item is in
+      for (const process of processes) {
+        if (itemsByProcess[process].some(i => i.id === item.id)) {
+          containerItems = itemsByProcess[process];
+          break;
+        }
+      }
+    }
+
+    const currentIndex = containerItems.findIndex(i => i.id === item.id);
+
+    if (e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      handleKeyboardGrab(item);
+    } else if (e.key === 'Escape' && grabbedItem) {
+      e.preventDefault();
+      setGrabbedItem(null);
+      announce(`Cancelled. ${item.text} remains in place.`);
+    } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (e.key === 'ArrowDown' && currentIndex < containerItems.length - 1) {
+        setFocusedItem(containerItems[currentIndex + 1]);
+      } else if (e.key === 'ArrowUp' && currentIndex > 0) {
+        setFocusedItem(containerItems[currentIndex - 1]);
+      }
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      setFocusedItem(containerItems[0]);
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      setFocusedItem(containerItems[containerItems.length - 1]);
+    } else if (e.key === 'Tab' && grabbedItem) {
+      // Let Tab work normally to navigate to process columns
+      setFocusedProcess(null);
+    }
+  };
+
+  const processes: AgentProcess[] = ["learning", "interaction", "perception", "reasoning", "planning", "execution"];
+  
+  // Refs for process column wrappers to manage focus
+  const processRefs = useRef<Map<AgentProcess, HTMLDivElement>>(new Map());
+
+  // Add keyboard handler for process columns
+  useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if (!grabbedItem) return;
+      
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        setGrabbedItem(null);
+        announce("Drop cancelled");
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        e.preventDefault();
+        
+        // Find current focused process or default to first
+        const currentIndex = focusedProcess ? processes.indexOf(focusedProcess) : 0;
+        const nextIndex = e.key === 'ArrowRight'
+          ? Math.min(currentIndex + 1, processes.length - 1)
+          : Math.max(currentIndex - 1, 0);
+        
+        const nextProcess = processes[nextIndex];
+        setFocusedProcess(nextProcess);
+        
+        // Actually move DOM focus to the target process column
+        const targetRef = processRefs.current.get(nextProcess);
+        if (targetRef) {
+          targetRef.focus();
+        }
+        
+        announce(`Navigated to ${nextProcess} drop zone. Press Enter to drop.`);
+      }
+    };
+
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+  }, [grabbedItem, focusedProcess]);
+
   return (
     <div className="space-y-6">
+      {/* ARIA Live Region for screen reader announcements */}
+      <div className="sr-only" role="status" aria-live="assertive" aria-atomic="true">
+        {ariaAnnouncement}
+      </div>
+      
       <div className="flex items-center justify-between gap-4">
         <p className="text-sm text-muted-foreground">
           {t("classification.dragInstruction")}
+          <br />
+          <span className="text-xs">
+            Keyboard: Tab/Shift+Tab to navigate all elements, Arrow Up/Down for quick navigation within sections, Space/Enter to grab/drop cards, Escape to cancel
+          </span>
         </p>
         <div className="flex gap-2">
           <Button
@@ -354,6 +548,10 @@ export function ClassificationActivity({
                 explanation={explanations[item.id] || ""}
                 onExplanationChange={handleExplanationChange}
                 showFeedback={false}
+                isGrabbed={grabbedItem?.id === item.id}
+                isFocused={focusedItem?.id === item.id}
+                onKeyDown={handleItemKeyDown}
+                onFocus={() => setFocusedItem(item)}
               />
             ))}
           </div>
@@ -361,10 +559,33 @@ export function ClassificationActivity({
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-        {(["learning", "interaction", "perception", "reasoning", "planning", "execution"] as AgentProcess[]).map(
-          (process) => (
+        {processes.map((process) => (
+          <div
+            key={process}
+            ref={(el) => {
+              if (el) {
+                processRefs.current.set(process, el);
+              }
+            }}
+            tabIndex={grabbedItem ? 0 : -1}
+            onFocus={() => {
+              if (grabbedItem) {
+                setFocusedProcess(process);
+                announce(`Focused on ${process} drop zone. Press Enter to drop.`);
+              }
+            }}
+            onKeyDown={(e) => {
+              if (grabbedItem && (e.key === 'Enter' || e.key === ' ')) {
+                e.preventDefault();
+                handleKeyboardDrop(process);
+              } else if (grabbedItem && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+                // Let the global handler manage arrow navigation
+                // Don't call preventDefault here to allow global handler to work
+              }
+            }}
+            className="focus:outline-none"
+          >
             <ProcessColumn
-              key={process}
               process={process}
               items={itemsByProcess[process]}
               onDrop={handleDrop}
@@ -375,9 +596,14 @@ export function ClassificationActivity({
               onDragStart={handleDragStart}
               correctAnswers={correctAnswers}
               hint={getProcessHint(process)}
+              grabbedItem={grabbedItem}
+              focusedItem={focusedItem}
+              onItemKeyDown={handleItemKeyDown}
+              onItemFocus={setFocusedItem}
+              isKeyboardFocused={focusedProcess === process}
             />
-          )
-        )}
+          </div>
+        ))}
       </div>
     </div>
   );
