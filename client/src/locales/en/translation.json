@@ -133,7 +133,8 @@
     },
     "demo": {
       "title": "Real Example: Health Coach Agent",
-      "subtitle": "Let's watch an AI health coach go through the 4 steps with a real user's fitness data",
+      "subtitle": "The Scenario: A Daily Fitness Summary",
+      "context": "Let's trace one complete 'run loop' for an AI Health Coach.\n• Agent's Goal: To analyze a user's daily fitness data and send a supportive, end-of-day summary.\n• Context: It's 8:00 PM, and the agent's 'run loop' is triggered. It needs to check the user's data from their fitness tracker, compare it to their goals (stored in Memory), and send a message (using a Tool).\n\nNow, let's watch the agent go through its 4-step process.",
       "perception": {
         "label": "Step 1: Read the Data",
         "example": "The agent receives messy sensor data like \"HR:72,68,75,71|STEPS:8500\" and organizes it into: Heart rate = [72, 68, 75, 71 BPM], Steps = 8,500"
@@ -151,11 +152,11 @@
         "example": "The agent sends the message: \"Great job! Your heart rate is steady at 71 BPM and you exceeded your 7,000 step goal. Keep up the excellent work!\""
       },
       "memory": {
-        "label": "🧠 Memory (used during Step 2)",
+        "label": "Memory (used during Step 2)",
         "example": "While deciding what the data means, the agent checks its notebook: \"Last week this user averaged 65 BPM, so 71 is normal for them.\""
       },
       "tools": {
-        "label": "🔧 Tools (used during Step 4)",
+        "label": "Tools (used during Step 4)",
         "example": "To send the message, the agent uses the notification tool — like using a phone to text the user."
       }
     },

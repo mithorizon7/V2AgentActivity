@@ -178,6 +178,9 @@ export function Primer({ onComplete }: PrimerProps) {
       </div>
 
       <Card className="p-8 space-y-6">
+        <div className="p-4 rounded-md bg-muted/50">
+          <p className="text-sm text-muted-foreground whitespace-pre-line">{t("primer.demo.context")}</p>
+        </div>
         <div className="space-y-4">
           {[
             { step: 1, process: "perception", color: "border-green-500" },
