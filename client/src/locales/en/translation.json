@@ -14,20 +14,20 @@
     "subtitle": "Master AI agents from core concepts to building your own—through interactive, pedagogically-designed activities",
     "understand": {
       "title": "Understand",
-      "description": "Learn the six core processes that make AI agents work: Learning, Interaction, Perception, Reasoning, Planning, and Execution"
+      "description": "Learn the 4+2 framework that powers every AI agent: a 4-step process (Perception, Reasoning, Planning, Execution) plus 2 support systems (Memory and Tools)"
     },
     "practice": {
       "title": "Practice",
-      "description": "Map agent boundaries, build circuits, run simulations, and debug failures through hands-on activities"
+      "description": "Map agent boundaries, build circuits using the 4+2 model, run simulations, and debug failures through hands-on activities"
     },
     "build": {
       "title": "Build",
-      "description": "Design and construct your own agents, evaluate their performance, and iterate based on real feedback"
+      "description": "Design and test your own agent using the 4+2 framework, evaluate its performance, and learn to identify common failure patterns"
     },
     "ready": {
       "title": "Ready to Begin?",
       "badge": "5 Interactive Phases",
-      "description": "Complete all five phases to progress from understanding to building AI agents. Each phase builds on the last, with immediate feedback and assessment.",
+      "description": "This is designed to teach you how AI agents work by breaking them down into simple parts. You'll learn that agents follow a 4-step process: they read incoming information (Perception), figure out what it means (Reasoning), decide what to do (Planning), and then do it (Execution). Along the way, they use two support systems: Memory to remember past experiences, and Tools to take actions in the world. You'll build your own simple agent, watch it run step-by-step, and learn to spot common problems when things go wrong. No coding required.",
       "startButton": "Start Learning"
     },
     "methodology": "Designed with cognitive apprenticeship, retrieval practice, and metacognitive calibration to maximize learning outcomes"
