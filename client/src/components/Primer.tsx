@@ -100,8 +100,8 @@ export function Primer({ onComplete }: PrimerProps) {
               { key: "reasoning", color: "bg-orange-500/10 border-orange-500/20", icon: "2" },
               { key: "planning", color: "bg-pink-500/10 border-pink-500/20", icon: "3" },
               { key: "execution", color: "bg-red-500/10 border-red-500/20", icon: "4" }
-            ].map((step, idx) => (
-              <>
+            ].flatMap((step, idx) => {
+              const elements = [
                 <Card key={step.key} className={cn("p-4 border-2 flex-1", step.color)}>
                   <div className="space-y-2">
                     <div className="font-bold text-base">{t(`primer.runLoop.${step.key}.name`)}</div>
@@ -109,13 +109,18 @@ export function Primer({ onComplete }: PrimerProps) {
                     <div className="text-xs text-muted-foreground">{t(`primer.runLoop.${step.key}.description`)}</div>
                   </div>
                 </Card>
-                {idx < 3 && (
+              ];
+              
+              if (idx < 3) {
+                elements.push(
                   <div key={`arrow-${idx}`} className="flex items-center">
                     <ArrowRight className="w-6 h-6 text-muted-foreground" />
                   </div>
-                )}
-              </>
-            ))}
+                );
+              }
+              
+              return elements;
+            })}
           </div>
         </div>
 
