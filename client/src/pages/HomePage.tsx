@@ -10,6 +10,7 @@ import ProgramLogo from "@assets/LogoReal_1762810196287.png";
 import UnderstandIcon from "@assets/Understand_1762809751241.png";
 import PracticeIcon from "@assets/Practice_1762809751241.png";
 import BuildIcon from "@assets/Build_1762809751241.png";
+import MITOpenLearningLogo from "@assets/Open-Learning-logo-revised copy_1762811060793.png";
 
 export default function HomePage() {
   const [, setLocation] = useLocation();
@@ -87,10 +88,8 @@ export default function HomePage() {
           </div>
         </Card>
 
-        <div className="mt-12 text-center text-sm text-muted-foreground">
-          <p>
-            {t("homePage.methodology")}
-          </p>
+        <div className="mt-12 flex justify-center">
+          <img src={MITOpenLearningLogo} alt="MIT Open Learning" className="h-12 opacity-80" />
         </div>
 
         <div className="mt-6 flex justify-center">

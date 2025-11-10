@@ -21,6 +21,7 @@ import { ConsentManager } from "@/components/ConsentManager";
 import { HighContrastToggle } from "@/components/HighContrastToggle";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import MITOpenLearningLogo from "@assets/Open-Learning-logo-revised copy_1762811060793.png";
 import {
   Select,
   SelectContent,
@@ -720,6 +721,10 @@ export default function LearningPage() {
             <AssessmentDashboard metrics={assessmentMetrics} phaseCompletion={phaseCompletion} />
           </div>
         )}
+
+        <div className="mt-12 mb-6 flex justify-center">
+          <img src={MITOpenLearningLogo} alt="MIT Open Learning" className="h-12 opacity-80" />
+        </div>
       </div>
 
       <FeedbackPanel
