@@ -47,7 +47,7 @@ function DraggableItem({
   }, [isFocused]);
 
   return (
-    <div className="space-y-2" role="group" aria-label={`${item.text} classification card`}>
+    <div className="space-y-2" role="group" aria-label={t("classification.accessibility.card.label", { item: item.text })}>
       <div
         ref={itemRef}
         draggable
@@ -56,7 +56,20 @@ function DraggableItem({
         onFocus={onFocus}
         tabIndex={0}
         aria-pressed={isGrabbed}
-        aria-label={`${item.text}${isGrabbed ? ' (grabbed - use Tab to navigate to drop zone, Enter to drop, Escape to cancel)' : ' (press Space or Enter to grab)'}`}
+        aria-label={
+          isGrabbed 
+            ? t("classification.accessibility.card.labelGrabbed", { 
+                item: item.text,
+                tab: t("keyboard.keyNames.tab"),
+                enter: t("keyboard.keyNames.enter"),
+                escape: t("keyboard.keyNames.escape")
+              })
+            : t("classification.accessibility.card.labelIdle", { 
+                item: item.text,
+                space: t("keyboard.keyNames.space"),
+                enter: t("keyboard.keyNames.enter")
+              })
+        }
         className={cn(
           "flex items-center gap-2 p-3 rounded-md border-2 cursor-move transition-all hover-elevate active-elevate-2",
           "bg-card focus:outline-none",
@@ -83,7 +96,7 @@ function DraggableItem({
         placeholder={t("classification.explainPlaceholder")}
         className="min-h-20 text-sm resize-none"
         data-testid={`explanation-input-${item.id}`}
-        aria-label={`Explanation for ${item.text}`}
+        aria-label={t("classification.accessibility.card.explanationLabel", { item: item.text })}
       />
     </div>
   );
@@ -133,7 +146,11 @@ function ProcessColumn({
   return (
     <Card
       role="region"
-      aria-label={`${process} drop zone${hint ? ' (has hint)' : ''}`}
+      aria-label={
+        hint 
+          ? t("classification.accessibility.dropZone.labelWithHint", { process })
+          : t("classification.accessibility.dropZone.label", { process })
+      }
       aria-describedby={hintId}
       className={cn(
         "flex flex-col p-4 min-h-96 transition-all",
@@ -379,14 +396,21 @@ export function ClassificationActivity({
     if (!grabbedItem) {
       setGrabbedItem(item);
       setFocusedItem(item);
-      announce(`Grabbed ${item.text}. Use Tab or Arrow keys to navigate to a drop zone, then press Enter to drop, or Escape to cancel.`);
+      announce(t("classification.accessibility.announcements.grabbed", { 
+        item: item.text,
+        tab: t("keyboard.keyNames.tab"),
+        enter: t("keyboard.keyNames.enter"),
+        escape: t("keyboard.keyNames.escape")
+      }));
     } else if (grabbedItem.id === item.id) {
       // Drop in same location (cancel)
       setGrabbedItem(null);
-      announce(`Dropped ${item.text} back in original location.`);
+      announce(t("classification.accessibility.announcements.droppedSameLocation", { item: item.text }));
     } else {
       // Can't grab another item while one is grabbed
-      announce("Release current item first with Escape");
+      announce(t("classification.accessibility.announcements.releaseFirst", { 
+        escape: t("keyboard.keyNames.escape") 
+      }));
     }
   };
 
@@ -408,7 +432,10 @@ export function ClassificationActivity({
       return newState;
     });
 
-    announce(`Dropped ${grabbedItem.text} into ${targetProcess}. The card is now in ${targetProcess} and can be tabbed to or re-grabbed if needed.`);
+    announce(t("classification.accessibility.announcements.dropped", { 
+      item: grabbedItem.text, 
+      process: targetProcess 
+    }));
     setGrabbedItem(null);
     // Keep focus on the dropped item so user can continue interacting with it
     setFocusedItem(grabbedItem);
@@ -440,7 +467,7 @@ export function ClassificationActivity({
     } else if (e.key === 'Escape' && grabbedItem) {
       e.preventDefault();
       setGrabbedItem(null);
-      announce(`Cancelled. ${item.text} remains in place.`);
+      announce(t("classification.accessibility.announcements.cancelled", { item: item.text }));
     } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
       e.preventDefault();
       if (e.key === 'ArrowDown' && currentIndex < containerItems.length - 1) {
@@ -473,7 +500,7 @@ export function ClassificationActivity({
       if (e.key === 'Escape') {
         e.preventDefault();
         setGrabbedItem(null);
-        announce("Drop cancelled");
+        announce(t("classification.accessibility.announcements.dropCancelled"));
       } else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
         e.preventDefault();
         
@@ -492,7 +519,10 @@ export function ClassificationActivity({
           targetRef.focus();
         }
         
-        announce(`Navigated to ${nextProcess} drop zone. Press Enter to drop.`);
+        announce(t("classification.accessibility.announcements.navigatedToZone", { 
+          process: nextProcess,
+          enter: t("keyboard.keyNames.enter")
+        }));
       }
     };
 
@@ -512,7 +542,12 @@ export function ClassificationActivity({
           {t("classification.dragInstruction")}
           <br />
           <span className="text-xs">
-            Keyboard: Tab/Shift+Tab to navigate all elements, Arrow Up/Down for quick navigation within sections, Space/Enter to grab/drop cards, Escape to cancel
+            {t("classification.accessibility.instructions", {
+              tab: `${t("keyboard.keyNames.tab")}/${t("keyboard.keyNames.shiftTab")}`,
+              arrowUpDown: `${t("keyboard.keyNames.arrowUp")}/${t("keyboard.keyNames.arrowDown")}`,
+              spaceEnter: `${t("keyboard.keyNames.space")}/${t("keyboard.keyNames.enter")}`,
+              escape: t("keyboard.keyNames.escape")
+            })}
           </span>
         </p>
         <div className="flex gap-2">
@@ -571,7 +606,10 @@ export function ClassificationActivity({
             onFocus={() => {
               if (grabbedItem) {
                 setFocusedProcess(process);
-                announce(`Focused on ${process} drop zone. Press Enter to drop.`);
+                announce(t("classification.accessibility.announcements.focusedOnZone", { 
+                  process,
+                  enter: t("keyboard.keyNames.enter")
+                }));
               }
             }}
             onKeyDown={(e) => {

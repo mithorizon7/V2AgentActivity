@@ -311,6 +311,29 @@
     "hints": {
       "learning": "Hint: Memory/Learning isn't a step in the loop — it's like a notebook any step can write in or read from",
       "interaction": "Hint: Tools/Interaction isn't a step in the loop — it's like a toolbox any step can reach for when needed"
+    },
+    "accessibility": {
+      "instructions": "Keyboard: {{tab}} to navigate all elements, {{arrowUpDown}} for quick navigation within sections, {{spaceEnter}} to grab/drop cards, {{escape}} to cancel",
+      "card": {
+        "label": "{{item}} classification card",
+        "labelGrabbed": "{{item}} (grabbed - use {{tab}} to navigate to drop zone, {{enter}} to drop, {{escape}} to cancel)",
+        "labelIdle": "{{item}} (press {{space}} or {{enter}} to grab)",
+        "explanationLabel": "Explanation for {{item}}"
+      },
+      "dropZone": {
+        "label": "{{process}} drop zone",
+        "labelWithHint": "{{process}} drop zone (has hint)"
+      },
+      "announcements": {
+        "grabbed": "Grabbed {{item}}. Use {{tab}} or Arrow keys to navigate to a drop zone, then press {{enter}} to drop, or {{escape}} to cancel.",
+        "droppedSameLocation": "Dropped {{item}} back in original location.",
+        "releaseFirst": "Release current item first with {{escape}}",
+        "dropped": "Dropped {{item}} into {{process}}. The card is now in {{process}} and can be tabbed to or re-grabbed if needed.",
+        "cancelled": "Cancelled. {{item}} remains in place.",
+        "dropCancelled": "Drop cancelled",
+        "navigatedToZone": "Navigated to {{process}} drop zone. Press {{enter}} to drop.",
+        "focusedOnZone": "Focused on {{process}} drop zone. Press {{enter}} to drop."
+      }
     }
   },
   "guided": {
@@ -746,5 +769,20 @@
     "saveProgress": "Yes, Save My Progress",
     "noThanks": "No Thanks, Start Fresh Each Time",
     "managePreferences": "Privacy Settings"
+  },
+  "keyboard": {
+    "keyNames": {
+      "tab": "Tab",
+      "shiftTab": "Shift+Tab",
+      "space": "Space",
+      "enter": "Enter",
+      "escape": "Escape",
+      "arrowUp": "Arrow Up",
+      "arrowDown": "Arrow Down",
+      "arrowLeft": "Arrow Left",
+      "arrowRight": "Arrow Right",
+      "home": "Home",
+      "end": "End"
+    }
   }
 }
