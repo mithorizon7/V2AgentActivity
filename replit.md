@@ -53,6 +53,32 @@ Completed comprehensive design systems pass on Primer component (pages 2-5) achi
 - Color not sole information carrier (icons + text + structure)
 - Semantic HTML throughout
 
+### Primer Micro-Check Retry Flow (November 10, 2024)
+Fixed critical UX issue where learners had no way to progress after answering incorrectly:
+
+**Retry Mechanism:**
+- Added "Try Again" button that appears immediately when answer is incorrect
+- Button clears selection and feedback state, allowing fresh attempt
+- Uses outline variant to visually differentiate from primary submit action
+- Prevents learners from being stuck in dead-end state
+
+**Progressive Disclosure:**
+- After 2 failed attempts, "Continue Anyway" button appears alongside "Try Again"
+- Balances learning goals (mastery) with user autonomy (progression)
+- Ensures no learner gets permanently blocked from advancing
+- Maintains explanatory feedback visibility so learners still see correct reasoning
+
+**State Management:**
+- Added attempt counters (check1Attempts, check2Attempts) to track retry behavior
+- Clean state transitions on retry (clears answer, hides feedback)
+- Proper cleanup when advancing to next step
+
+**User Impact:**
+- Learners can retry until they understand the concept
+- No more dead-end states blocking progression
+- Maintains pedagogical value while respecting user autonomy
+- Smooth, intuitive retry experience with clear affordances
+
 ### Classification Page Viewport Optimization (November 10, 2024)
 Fixed critical usability issue where drag-drop boxes were too large to see targets on same screen:
 
