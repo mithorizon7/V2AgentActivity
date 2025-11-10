@@ -39,12 +39,20 @@ function DraggableItem({
 }: DraggableItemProps) {
   const { t } = useTranslation();
   const itemRef = useRef<HTMLDivElement>(null);
+  const [isTextareaExpanded, setIsTextareaExpanded] = useState(false);
 
   useEffect(() => {
     if (isFocused && itemRef.current) {
       itemRef.current.focus();
     }
   }, [isFocused]);
+
+  // Auto-expand textarea if it has content
+  useEffect(() => {
+    if (explanation && explanation.length > 0) {
+      setIsTextareaExpanded(true);
+    }
+  }, [explanation]);
 
   return (
     <div className="space-y-2" role="group" aria-label={t("classification.accessibility.card.label", { item: item.text })}>
@@ -93,8 +101,18 @@ function DraggableItem({
       <Textarea
         value={explanation}
         onChange={(e) => onExplanationChange(item.id, e.target.value)}
+        onFocus={() => setIsTextareaExpanded(true)}
+        onBlur={() => {
+          // Collapse if empty to save vertical space
+          if (!explanation || explanation.trim().length === 0) {
+            setIsTextareaExpanded(false);
+          }
+        }}
         placeholder={t("classification.explainPlaceholder")}
-        className="min-h-20 text-sm resize-none"
+        className={cn(
+          "text-sm resize-none transition-all",
+          isTextareaExpanded ? "min-h-20" : "min-h-10"
+        )}
         data-testid={`explanation-input-${item.id}`}
         aria-label={t("classification.accessibility.card.explanationLabel", { item: item.text })}
       />
@@ -153,7 +171,7 @@ function ProcessColumn({
       }
       aria-describedby={hintId}
       className={cn(
-        "flex flex-col p-4 min-h-96 transition-all",
+        "flex flex-col p-4 min-h-72 transition-all",
         isDraggedOver && "ring-2 ring-primary bg-primary/5",
         isKeyboardFocused && grabbedItem && "ring-2 ring-primary"
       )}
@@ -597,7 +615,7 @@ export function ClassificationActivity({
         </Card>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {processes.map((process) => (
           <div
             key={process}
