@@ -71,30 +71,44 @@ export function Primer({ onComplete }: PrimerProps) {
   };
 
   const renderIntro = () => (
-    <div className="space-y-6">
-      <div className="text-center space-y-2">
-        <h1 className="text-4xl font-bold">{t("primer.title")}</h1>
-        <p className="text-xl text-muted-foreground">{t("primer.subtitle")}</p>
+    <div className="space-y-8">
+      {/* Progress indicator */}
+      <div className="flex justify-center gap-2" role="progressbar" aria-valuenow={1} aria-valuemin={1} aria-valuemax={5}>
+        {[1, 2, 3, 4, 5].map((step) => (
+          <div 
+            key={step}
+            className={cn(
+              "h-1.5 rounded-full transition-all duration-300",
+              step === 1 ? "w-12 bg-primary" : "w-8 bg-border"
+            )}
+          />
+        ))}
       </div>
 
-      <Card className="p-8 space-y-6">
-        <div className="text-center space-y-3">
-          <h2 className="text-2xl font-semibold">{t("primer.intro.heading")}</h2>
-          <p className="text-lg text-muted-foreground">
+      {/* Header with correct typography scale */}
+      <div className="text-center space-y-4 max-w-3xl mx-auto">
+        <h1 className="text-4xl font-bold tracking-tight leading-tight">{t("primer.title")}</h1>
+        <p className="text-lg text-muted-foreground leading-relaxed">{t("primer.subtitle")}</p>
+      </div>
+
+      <Card className="p-10 space-y-10">
+        <div className="text-center space-y-4 max-w-2xl mx-auto">
+          <h2 className="text-2xl font-bold tracking-tight">{t("primer.intro.heading")}</h2>
+          <p className="text-base text-foreground/80 leading-relaxed">
             {t("primer.intro.description").split('**').map((part, i) => 
-              i % 2 === 0 ? part : <strong key={i}>{part}</strong>
+              i % 2 === 0 ? part : <strong key={i} className="text-foreground font-semibold">{part}</strong>
             )}
           </p>
         </div>
 
-        {/* 4-Step Run Loop */}
-        <div className="space-y-4">
-          <div className="flex items-center gap-2">
+        {/* 4-Step Run Loop with improved visual hierarchy */}
+        <div className="space-y-6">
+          <div className="flex items-center gap-3 mb-2">
             <div className="h-1 bg-gradient-to-r from-green-500 via-orange-500 via-pink-500 to-red-500 rounded-full flex-1" />
-            <span className="text-sm font-semibold">{t("primer.runLoop.title")}</span>
+            <span className="text-base font-bold uppercase tracking-wide text-foreground/70">{t("primer.runLoop.title")}</span>
           </div>
           
-          <div className="flex items-stretch gap-3">
+          <div className="flex flex-wrap items-stretch gap-4">
             {[
               { key: "perception", color: "bg-green-500/10 border-green-500/20", icon: "1" },
               { key: "reasoning", color: "bg-orange-500/10 border-orange-500/20", icon: "2" },
@@ -102,19 +116,19 @@ export function Primer({ onComplete }: PrimerProps) {
               { key: "execution", color: "bg-red-500/10 border-red-500/20", icon: "4" }
             ].flatMap((step, idx) => {
               const elements = [
-                <Card key={step.key} className={cn("p-4 border-2 flex-1", step.color)}>
-                  <div className="space-y-2">
-                    <div className="font-bold text-base">{t(`primer.runLoop.${step.key}.name`)}</div>
-                    <div className="font-semibold text-sm text-muted-foreground">{t(`primer.runLoop.${step.key}.label`)}</div>
-                    <div className="text-xs text-muted-foreground">{t(`primer.runLoop.${step.key}.description`)}</div>
+                <Card key={step.key} className={cn("p-6 border-2 flex-1 min-w-[240px] transition-all hover-elevate", step.color)}>
+                  <div className="space-y-3">
+                    <div className="text-base font-bold tracking-tight">{t(`primer.runLoop.${step.key}.name`)}</div>
+                    <div className="font-medium text-sm text-foreground/60">{t(`primer.runLoop.${step.key}.label`)}</div>
+                    <div className="text-sm text-muted-foreground leading-relaxed">{t(`primer.runLoop.${step.key}.description`)}</div>
                   </div>
                 </Card>
               ];
               
               if (idx < 3) {
                 elements.push(
-                  <div key={`arrow-${idx}`} className="flex items-center">
-                    <ArrowRight className="w-6 h-6 text-muted-foreground" />
+                  <div key={`arrow-${idx}`} className="hidden lg:flex items-center flex-shrink-0">
+                    <ArrowRight className="w-6 h-6 text-muted-foreground/40" />
                   </div>
                 );
               }
@@ -124,46 +138,50 @@ export function Primer({ onComplete }: PrimerProps) {
           </div>
         </div>
 
-        {/* Supporting Systems (Rails) */}
-        <div className="space-y-4 pt-4 border-t">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold">{t("primer.supporting.title")}</span>
+        {/* Supporting Systems with improved spacing and hierarchy */}
+        <div className="space-y-6 pt-8 border-t border-border/50">
+          <div className="flex items-center gap-3">
+            <span className="text-base font-bold uppercase tracking-wide text-foreground/70">{t("primer.supporting.title")}</span>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Card className="p-4 border-2 bg-purple-500/5 border-purple-500/20">
-              <div className="flex items-center gap-2 mb-2">
-                <Brain className="w-5 h-5 text-purple-600" />
-                <Badge variant="outline" className="bg-purple-500/10 border-purple-500/20 text-purple-700 dark:text-purple-300">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="p-6 border-2 bg-purple-500/5 border-purple-500/20 transition-all hover-elevate">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 rounded-lg bg-purple-500/10">
+                  <Brain className="w-6 h-6 text-purple-600" />
+                </div>
+                <Badge variant="outline" className="bg-purple-500/10 border-purple-500/20 text-purple-700 dark:text-purple-300 font-medium">
                   {t("primer.supporting.memory.badge")}
                 </Badge>
               </div>
-              <div className="font-semibold text-sm">{t("primer.supporting.memory.label")}</div>
-              <div className="text-xs text-muted-foreground mt-1">{t("primer.supporting.memory.description")}</div>
+              <div className="font-bold text-base mb-2">{t("primer.supporting.memory.label")}</div>
+              <div className="text-sm text-muted-foreground leading-relaxed">{t("primer.supporting.memory.description")}</div>
             </Card>
 
-            <Card className="p-4 border-2 bg-blue-500/5 border-blue-500/20">
-              <div className="flex items-center gap-2 mb-2">
-                <Wrench className="w-5 h-5 text-blue-600" />
-                <Badge variant="outline" className="bg-blue-500/10 border-blue-500/20 text-blue-700 dark:text-blue-300">
+            <Card className="p-6 border-2 bg-blue-500/5 border-blue-500/20 transition-all hover-elevate">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 rounded-lg bg-blue-500/10">
+                  <Wrench className="w-6 h-6 text-blue-600" />
+                </div>
+                <Badge variant="outline" className="bg-blue-500/10 border-blue-500/20 text-blue-700 dark:text-blue-300 font-medium">
                   {t("primer.supporting.tools.badge")}
                 </Badge>
               </div>
-              <div className="font-semibold text-sm">{t("primer.supporting.tools.label")}</div>
-              <div className="text-xs text-muted-foreground mt-1">{t("primer.supporting.tools.description")}</div>
+              <div className="font-bold text-base mb-2">{t("primer.supporting.tools.label")}</div>
+              <div className="text-sm text-muted-foreground leading-relaxed">{t("primer.supporting.tools.description")}</div>
             </Card>
           </div>
 
-          <div className="p-3 rounded-md bg-muted/50 text-sm">
-            <p className="font-semibold mb-1">{t("primer.supporting.crossCutting.title")}</p>
-            <p className="text-muted-foreground text-xs">{t("primer.supporting.crossCutting.description")}</p>
+          <div className="p-6 rounded-lg bg-muted/30 border border-border/50">
+            <p className="font-bold text-base mb-3">{t("primer.supporting.crossCutting.title")}</p>
+            <p className="text-sm text-muted-foreground leading-relaxed">{t("primer.supporting.crossCutting.description")}</p>
           </div>
         </div>
 
-        <div className="flex justify-center pt-4">
-          <Button onClick={() => setCurrentStep("demo")} size="lg" data-testid="button-continue-to-demo">
+        <div className="flex justify-center pt-6">
+          <Button onClick={() => setCurrentStep("demo")} size="lg" className="min-w-48" data-testid="button-continue-to-demo">
             {t("primer.continueToDemo")}
-            <ArrowRight className="w-4 h-4 ml-2" />
+            <ArrowRight className="w-5 h-5 ml-2" />
           </Button>
         </div>
       </Card>
@@ -171,55 +189,81 @@ export function Primer({ onComplete }: PrimerProps) {
   );
 
   const renderDemo = () => (
-    <div className="space-y-6">
-      <div className="text-center space-y-2">
-        <h2 className="text-3xl font-bold">{t("primer.demo.title")}</h2>
-        <p className="text-lg text-muted-foreground">{t("primer.demo.subtitle")}</p>
+    <div className="space-y-8">
+      {/* Progress indicator */}
+      <div className="flex justify-center gap-2" role="progressbar" aria-valuenow={2} aria-valuemin={1} aria-valuemax={5}>
+        {[1, 2, 3, 4, 5].map((step) => (
+          <div 
+            key={step}
+            className={cn(
+              "h-1.5 rounded-full transition-all duration-300",
+              step <= 2 ? "w-12 bg-primary" : "w-8 bg-border"
+            )}
+          />
+        ))}
       </div>
 
-      <Card className="p-8 space-y-6">
-        <div className="p-4 rounded-md bg-muted/50">
-          <p className="text-sm text-muted-foreground whitespace-pre-line">{t("primer.demo.context")}</p>
+      {/* Header with correct typography scale */}
+      <div className="text-center space-y-4 max-w-3xl mx-auto">
+        <h2 className="text-3xl font-bold tracking-tight">{t("primer.demo.title")}</h2>
+        <p className="text-lg text-muted-foreground leading-relaxed">{t("primer.demo.subtitle")}</p>
+      </div>
+
+      <Card className="p-10 space-y-10">
+        {/* Context section with improved visual design */}
+        <div className="p-6 rounded-lg bg-primary/5 border-2 border-primary/10">
+          <p className="text-base text-foreground/80 whitespace-pre-line leading-relaxed">{t("primer.demo.context")}</p>
         </div>
-        <div className="space-y-4">
+
+        {/* 4 Steps with compliant accent treatment */}
+        <div className="space-y-5">
           {[
-            { step: 1, process: "perception", color: "border-green-500" },
-            { step: 2, process: "reasoning", color: "border-orange-500" },
-            { step: 3, process: "planning", color: "border-pink-500" },
-            { step: 4, process: "execution", color: "border-red-500" }
-          ].map(({ step, process, color }) => (
-            <div key={process} className={cn("p-4 rounded-md border-l-4", color, "space-y-2")}>
-              <div className="flex items-center gap-2">
-                <Badge variant="outline">{step}</Badge>
-                <span className="font-semibold">{t(`primer.demo.${process}.label`)}</span>
+            { step: 1, process: "perception", accentColor: "border-green-500/30", bgColor: "bg-green-500/5" },
+            { step: 2, process: "reasoning", accentColor: "border-orange-500/30", bgColor: "bg-orange-500/5" },
+            { step: 3, process: "planning", accentColor: "border-pink-500/30", bgColor: "bg-pink-500/5" },
+            { step: 4, process: "execution", accentColor: "border-red-500/30", bgColor: "bg-red-500/5" }
+          ].map(({ step, process, accentColor, bgColor }) => (
+            <div key={process} className={cn("relative p-6 rounded-md border-2 transition-all hover-elevate", accentColor, bgColor, "space-y-3")}>
+              <div className="flex items-center gap-3">
+                <Badge variant="outline" className="px-3 py-1 text-sm font-bold">{step}</Badge>
+                <span className="font-bold text-base">{t(`primer.demo.${process}.label`)}</span>
               </div>
-              <p className="text-sm text-muted-foreground">{t(`primer.demo.${process}.example`)}</p>
+              <p className="text-sm text-foreground/70 leading-relaxed">{t(`primer.demo.${process}.example`)}</p>
             </div>
           ))}
         </div>
 
-        <div className="pt-4 border-t">
-          <div className="p-4 rounded-md bg-muted/50 space-y-2">
-            <p className="font-semibold text-sm flex items-center gap-2">
-              <Brain className="w-4 h-4 text-purple-600" />
-              {t("primer.demo.memory.label")}
-            </p>
-            <p className="text-xs text-muted-foreground">{t("primer.demo.memory.example")}</p>
+        {/* Supporting systems with improved visual design */}
+        <div className="pt-8 border-t border-border/50 space-y-5">
+          <div className="p-6 rounded-lg bg-purple-500/5 border-2 border-purple-500/10 transition-all hover-elevate">
+            <div className="flex items-start gap-4">
+              <div className="p-2.5 rounded-lg bg-purple-500/10 flex-shrink-0">
+                <Brain className="w-6 h-6 text-purple-600" />
+              </div>
+              <div className="space-y-2 flex-1">
+                <p className="font-bold text-base">{t("primer.demo.memory.label")}</p>
+                <p className="text-sm text-muted-foreground leading-relaxed">{t("primer.demo.memory.example")}</p>
+              </div>
+            </div>
           </div>
           
-          <div className="p-4 rounded-md bg-muted/50 space-y-2 mt-3">
-            <p className="font-semibold text-sm flex items-center gap-2">
-              <Wrench className="w-4 h-4 text-blue-600" />
-              {t("primer.demo.tools.label")}
-            </p>
-            <p className="text-xs text-muted-foreground">{t("primer.demo.tools.example")}</p>
+          <div className="p-6 rounded-lg bg-blue-500/5 border-2 border-blue-500/10 transition-all hover-elevate">
+            <div className="flex items-start gap-4">
+              <div className="p-2.5 rounded-lg bg-blue-500/10 flex-shrink-0">
+                <Wrench className="w-6 h-6 text-blue-600" />
+              </div>
+              <div className="space-y-2 flex-1">
+                <p className="font-bold text-base">{t("primer.demo.tools.label")}</p>
+                <p className="text-sm text-muted-foreground leading-relaxed">{t("primer.demo.tools.example")}</p>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="flex justify-center pt-4">
-          <Button onClick={() => setCurrentStep("check1")} size="lg" data-testid="button-continue-to-checks">
+        <div className="flex justify-center pt-6">
+          <Button onClick={() => setCurrentStep("check1")} size="lg" className="min-w-48" data-testid="button-continue-to-checks">
             {t("primer.continueToChecks")}
-            <ArrowRight className="w-4 h-4 ml-2" />
+            <ArrowRight className="w-5 h-5 ml-2" />
           </Button>
         </div>
       </Card>
