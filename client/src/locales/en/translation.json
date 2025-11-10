@@ -128,7 +128,7 @@
       },
       "crossCutting": {
         "title": "Why are these \"Supporting\" not \"Steps\"?",
-        "description": "Steps 1-4 happen in order, one after another. But Memory and Tools are different — they're like resources sitting on a shelf that ANY step can reach for when needed."
+        "description": "Memory and Tools are supporting components, not steps in the loop. The 4 steps represent a sequential process that runs in a fixed order, while Memory and Tools are on-demand resources. Like a 'workbench,' any step in the process can access them at any time to retrieve information or perform a specific function."
       }
     },
     "demo": {
