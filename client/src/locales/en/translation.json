@@ -82,7 +82,7 @@
     "continueToChecks": "Test Your Understanding",
     "intro": {
       "heading": "The 4+2 Model",
-      "description": "Think of an AI agent like a smart assistant that follows the same basic cycle over and over: it reads information, figures out what it means, decides what to do, then does it. Plus, it has a notebook (memory) and a toolbox (tools) it can use at any time."
+      "description": "Good AI Agents are designed to behave like a smart assistant that follows the same basic cycle over and over: it reads information, figures out what it means, decides what to do, then does it. Two key elements enable this cycle: a memory system that preserves context across interactions, and a diverse toolkit of capabilities they can leverage to solve problems and complete tasks."
     },
     "runLoop": {
       "title": "The 4-Step Run Loop (happens in order, every time)",
