@@ -53,6 +53,22 @@ Completed comprehensive design systems pass on Primer component (pages 2-5) achi
 - Color not sole information carrier (icons + text + structure)
 - Semantic HTML throughout
 
+### Classification Page Viewport Optimization (November 10, 2024)
+Fixed critical usability issue where drag-drop boxes were too large to see targets on same screen:
+
+**Layout Improvements:**
+- Reduced ProcessColumn heights from min-h-96 (384px) to min-h-72 (288px) saving ~96px per column
+- Implemented smart-collapsible textareas: start at min-h-10 (40px), expand to min-h-20 on focus or when containing content
+- Auto-collapse empty textareas on blur to preserve vertical space savings
+- Changed grid layout from 6-column XL to max 3 columns (prevents horizontal overflow on 1366×768 viewports)
+- Smooth transitions on textarea expansion/collapse for polished UX
+
+**User Impact:**
+- Unsorted tray + 2-3 drop zones now visible without scrolling on laptop displays
+- Cards are ~40px shorter when explanations not needed
+- Better drag-and-drop flow - users can see source AND target in one viewport
+- Maintains WCAG 2.2 AA compliance and keyboard navigation
+
 ### Pedagogical Content Enhancement
 - **Primer Phase**: Rewrote with everyday analogies (email processing metaphor) to help beginners understand the 4+2 model
 - **Micro-checks**: Changed from abstract definitions to scenario-based questions ("Which step chose to send encouragement?")
