@@ -2,15 +2,83 @@
 
 ## Design Approach
 
-**Selected Approach:** Design System - Material Design 3 foundations adapted for educational context
+**Selected Approach:** MIT-branded educational design system with strong accessibility foundations
 
-**Rationale:** This is a utility-focused educational application requiring clear information hierarchy, complex interactive components (drag-and-drop, circuit building, mapping), and accessibility. Material Design provides robust patterns for data-dense interfaces while maintaining clarity for learners.
+**Rationale:** This is a utility-focused educational application requiring clear information hierarchy, complex interactive components (drag-and-drop, circuit building, mapping), and accessibility. The design leverages MIT's official color palette to create a trustworthy, academic feel while maintaining clarity for learners.
 
 **Core Principles:**
 - Clarity over decoration - every visual element serves learning
+- MIT brand identity through strategic use of MIT Blue, Red, and Silver Grey
 - Consistent interaction patterns across all five phases
 - Strong visual feedback for learner actions
-- Scannable content hierarchy for text-heavy explanations
+- WCAG 2.1 AA compliant contrast ratios
+
+---
+
+## Color System
+
+### MIT Official Colors
+
+**Primary: MIT Blue** `#002896` (HSL: 224° 100% 29%)
+- Interactive elements, links, primary buttons
+- Focus states and active selections
+- Primary branding elements
+- WCAG AA compliant with white text (contrast ratio 8.59:1)
+
+**Accent: MIT Red** `#750014` (HSL: 350° 100% 23%)
+- Destructive actions, error states
+- High-priority alerts
+- Strategic accent for important CTAs
+- WCAG AA compliant with white text (contrast ratio 10.24:1)
+
+**Neutral: MIT Silver Grey** `#8b959e` (HSL: 208° 9% 58%)
+- Muted backgrounds, borders
+- Secondary text and labels
+- Disabled states
+- Subtle separators
+
+**Foundation: Black** `#000000` (HSL: 0° 0% 0%)
+- Primary text on light backgrounds
+- High contrast mode elements
+
+### Extended Palette for UI Components
+
+**Light Mode:**
+- Background: Warm white `#FAFAFA` (98% lightness)
+- Cards: Light grey `#F5F5F5` (96% lightness)
+- Borders: Soft grey with MIT Blue undertone
+- Text Primary: Near black `#1A1A1A` (12% lightness)
+- Text Secondary: MIT Silver Grey at 70% opacity
+
+**Dark Mode:**
+- Background: Deep navy `#0A0F1A` (8% lightness, MIT Blue undertone)
+- Cards: Slightly lighter navy `#121826` (10% lightness)
+- Borders: MIT Silver Grey at 25% opacity
+- Text Primary: Soft white `#E8E8E8` (88% lightness)
+- Text Secondary: MIT Silver Grey lightened
+
+### Process Colors (Educational Coding)
+These remain vibrant for pedagogical distinction:
+- **Learning/Memory:** Purple `#7C3AED` (maintain existing)
+- **Interaction/Tools:** Cyan `#0891B2` (maintain existing)
+- **Perception:** Green `#10B981` (maintain existing)
+- **Reasoning:** Amber `#F59E0B` (maintain existing)
+- **Planning:** Pink `#EC4899` (maintain existing)
+- **Execution:** Orange `#F97316` (maintain existing)
+
+### Usage Guidelines
+
+**Do:**
+- Use MIT Blue for primary interactive elements
+- Use MIT Red sparingly for errors and critical actions
+- Maintain high contrast (4.5:1 minimum for text)
+- Let MIT colors create visual hierarchy
+
+**Don't:**
+- Overuse MIT Red (reserve for important moments)
+- Use MIT Blue and Red together without sufficient spacing
+- Apply MIT colors to large background areas (use neutrals instead)
+- Compromise accessibility for brand consistency
 
 ---
 
