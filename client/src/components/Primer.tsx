@@ -85,9 +85,9 @@ export function Primer({ onComplete }: PrimerProps) {
         ))}
       </div>
 
-      {/* Header with correct typography scale */}
+      {/* Header with exact design system scale: 32px */}
       <div className="text-center space-y-4 max-w-3xl mx-auto">
-        <h1 className="text-4xl font-bold tracking-tight leading-tight">{t("primer.title")}</h1>
+        <h1 className="text-[2rem] font-bold tracking-tight leading-tight">{t("primer.title")}</h1>
         <p className="text-lg text-muted-foreground leading-relaxed">{t("primer.subtitle")}</p>
       </div>
 
@@ -203,9 +203,9 @@ export function Primer({ onComplete }: PrimerProps) {
         ))}
       </div>
 
-      {/* Header with correct typography scale */}
+      {/* Header with exact design system scale: 32px */}
       <div className="text-center space-y-4 max-w-3xl mx-auto">
-        <h2 className="text-3xl font-bold tracking-tight">{t("primer.demo.title")}</h2>
+        <h2 className="text-[2rem] font-bold tracking-tight">{t("primer.demo.title")}</h2>
         <p className="text-lg text-muted-foreground leading-relaxed">{t("primer.demo.subtitle")}</p>
       </div>
 
@@ -279,39 +279,53 @@ export function Primer({ onComplete }: PrimerProps) {
     const isCorrect = selectedAnswer === check.correctIndex;
 
     return (
-      <div className="space-y-6">
-        <div className="text-center space-y-2">
-          <Badge variant="outline" className="mb-2">{t("primer.check.badge", { number: checkIndex + 1, total: 2 })}</Badge>
-          <h2 className="text-2xl font-bold">{t("primer.check.title")}</h2>
+      <div className="space-y-8">
+        {/* Progress indicator */}
+        <div className="flex justify-center gap-2" role="progressbar" aria-valuenow={checkIndex + 3} aria-valuemin={1} aria-valuemax={5}>
+          {[1, 2, 3, 4, 5].map((step) => (
+            <div 
+              key={step}
+              className={cn(
+                "h-1.5 rounded-full transition-all duration-300",
+                step <= checkIndex + 3 ? "w-12 bg-primary" : "w-8 bg-border"
+              )}
+            />
+          ))}
         </div>
 
-        <Card className="p-8 space-y-6">
-          <div className="space-y-4">
-            <p className="text-lg font-semibold">{check.question}</p>
+        <div className="text-center space-y-3">
+          <Badge variant="outline" className="px-4 py-1.5 text-sm font-medium">{t("primer.check.badge", { number: checkIndex + 1, total: 2 })}</Badge>
+          <h2 className="text-2xl font-semibold tracking-tight">{t("primer.check.title")}</h2>
+        </div>
+
+        <Card className="p-10 space-y-8">
+          <div className="space-y-6">
+            <p className="text-lg font-semibold text-center max-w-2xl mx-auto leading-relaxed">{check.question}</p>
             
-            <div className="space-y-2">
+            <div className="space-y-3">
               {check.options.map((option, idx) => (
                 <button
                   key={idx}
                   onClick={() => !showFeedback && setAnswer(idx)}
                   disabled={showFeedback}
                   className={cn(
-                    "w-full p-4 rounded-md border-2 text-left transition-all",
-                    selectedAnswer === idx && !showFeedback && "border-primary bg-primary/5",
+                    "w-full p-5 rounded-md border-2 text-left transition-all duration-200",
+                    "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
+                    selectedAnswer === idx && !showFeedback && "border-primary bg-primary/5 ring-2 ring-primary/20",
                     selectedAnswer === idx && showFeedback && isCorrect && "border-green-500 bg-green-50 dark:bg-green-950",
                     selectedAnswer === idx && showFeedback && !isCorrect && "border-red-500 bg-red-50 dark:bg-red-950",
-                    selectedAnswer !== idx && "border-border hover-elevate",
-                    showFeedback && "cursor-not-allowed"
+                    selectedAnswer !== idx && !showFeedback && "border-border hover-elevate active-elevate-2",
+                    showFeedback && "cursor-not-allowed opacity-90"
                   )}
                   data-testid={`check${checkIndex + 1}-option-${idx}`}
                 >
-                  <div className="flex items-center justify-between">
-                    <span>{option}</span>
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="text-base leading-relaxed">{option}</span>
                     {showFeedback && selectedAnswer === idx && (
                       isCorrect ? (
-                        <CheckCircle2 className="w-5 h-5 text-green-600" />
+                        <CheckCircle2 className="w-6 h-6 text-green-600 flex-shrink-0" />
                       ) : (
-                        <XCircle className="w-5 h-5 text-red-600" />
+                        <XCircle className="w-6 h-6 text-red-600 flex-shrink-0" />
                       )
                     )}
                   </div>
@@ -321,22 +335,23 @@ export function Primer({ onComplete }: PrimerProps) {
 
             {showFeedback && (
               <div className={cn(
-                "p-4 rounded-md",
-                isCorrect ? "bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800" : "bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800"
+                "p-6 rounded-lg border-2 animate-in fade-in slide-in-from-top-2 duration-300",
+                isCorrect ? "bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800" : "bg-red-50 dark:bg-red-950 border-red-200 dark:border-red-800"
               )}>
-                <p className="text-sm font-semibold mb-1">
+                <p className="text-base font-bold mb-2">
                   {isCorrect ? t("primer.check.correct") : t("primer.check.incorrect")}
                 </p>
-                <p className="text-xs text-muted-foreground">{check.explanation}</p>
+                <p className="text-sm text-muted-foreground leading-relaxed">{check.explanation}</p>
               </div>
             )}
           </div>
 
-          <div className="flex justify-center">
+          <div className="flex justify-center pt-4">
             <Button
               onClick={handleSubmit}
               disabled={selectedAnswer === null || showFeedback}
               size="lg"
+              className="min-w-48"
               data-testid={`button-submit-check${checkIndex + 1}`}
             >
               {t("primer.check.submit")}
@@ -348,28 +363,49 @@ export function Primer({ onComplete }: PrimerProps) {
   };
 
   const renderComplete = () => (
-    <div className="space-y-6">
-      <div className="text-center space-y-4">
-        <CheckCircle2 className="w-16 h-16 text-green-600 mx-auto" />
-        <h2 className="text-3xl font-bold">{t("primer.complete.title")}</h2>
-        <p className="text-lg text-muted-foreground">{t("primer.complete.description")}</p>
+    <div className="space-y-8">
+      {/* Full progress */}
+      <div className="flex justify-center gap-2" role="progressbar" aria-valuenow={5} aria-valuemin={1} aria-valuemax={5}>
+        {[1, 2, 3, 4, 5].map((step) => (
+          <div 
+            key={step}
+            className="h-1.5 w-12 rounded-full bg-primary transition-all duration-300"
+          />
+        ))}
       </div>
 
-      <Card className="p-8">
-        <div className="space-y-4">
-          <div className="p-4 rounded-md bg-muted/50">
-            <p className="font-semibold mb-2">{t("primer.complete.remember.title")}</p>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>• {t("primer.complete.remember.point1")}</li>
-              <li>• {t("primer.complete.remember.point2")}</li>
-              <li>• {t("primer.complete.remember.point3")}</li>
+      <div className="text-center space-y-6 max-w-2xl mx-auto">
+        <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-100 dark:bg-green-950">
+          <CheckCircle2 className="w-12 h-12 text-green-600" />
+        </div>
+        <h2 className="text-[2rem] font-bold tracking-tight">{t("primer.complete.title")}</h2>
+        <p className="text-lg text-muted-foreground leading-relaxed">{t("primer.complete.description")}</p>
+      </div>
+
+      <Card className="p-10">
+        <div className="space-y-6">
+          <div className="p-6 rounded-lg bg-muted/30 border border-border/50">
+            <p className="font-bold text-base mb-4">{t("primer.complete.remember.title")}</p>
+            <ul className="space-y-3 text-sm text-muted-foreground">
+              <li className="flex items-start gap-3">
+                <span className="text-primary font-bold flex-shrink-0">•</span>
+                <span className="leading-relaxed">{t("primer.complete.remember.point1")}</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="text-primary font-bold flex-shrink-0">•</span>
+                <span className="leading-relaxed">{t("primer.complete.remember.point2")}</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="text-primary font-bold flex-shrink-0">•</span>
+                <span className="leading-relaxed">{t("primer.complete.remember.point3")}</span>
+              </li>
             </ul>
           </div>
 
           <div className="flex justify-center pt-4">
-            <Button onClick={onComplete} size="lg" data-testid="button-complete-primer">
+            <Button onClick={onComplete} size="lg" className="min-w-48" data-testid="button-complete-primer">
               {t("primer.complete.continue")}
-              <ArrowRight className="w-4 h-4 ml-2" />
+              <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           </div>
         </div>
