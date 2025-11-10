@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
+import { useConsent, safeLocalStorage } from '@/hooks/useConsent';
 import type { LearnerProgress } from '@shared/schema';
 
 export function useSession() {
+  const { hasConsent } = useConsent();
+  const storage = safeLocalStorage(hasConsent);
+  
   const [sessionId, setSessionId] = useState<string | null>(() => {
-    return localStorage.getItem('agentLearningSessionId');
+    return storage.getItem('agentLearningSessionId');
   });
 
   const queryClient = useQueryClient();
@@ -22,7 +26,7 @@ export function useSession() {
     },
     onSuccess: (data: { sessionId: string; progress: LearnerProgress }) => {
       setSessionId(data.sessionId);
-      localStorage.setItem('agentLearningSessionId', data.sessionId);
+      storage.setItem('agentLearningSessionId', data.sessionId);
       queryClient.setQueryData(['/api/progress', data.sessionId], data.progress);
     },
   });

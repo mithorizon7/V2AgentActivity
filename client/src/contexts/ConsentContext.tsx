@@ -4,6 +4,7 @@ const CONSENT_KEY = 'user_consent_storage';
 
 // All localStorage keys used by the learning platform
 const LEARNING_STORAGE_KEYS = [
+  'agentLearningSessionId',
   'classification_unsorted_v1',
   'classification_sorted_v1', 
   'classification_explanations_v1',
