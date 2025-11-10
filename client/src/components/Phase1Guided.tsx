@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Brain, Wrench, AlertCircle, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useConsent, safeLocalStorage } from "@/hooks/useConsent";
 
 type DraggableItemProps = {
   item: ClassificationItem;
@@ -172,6 +173,8 @@ type Phase1GuidedProps = {
 
 export function Phase1Guided({ items, onComplete }: Phase1GuidedProps) {
   const { t } = useTranslation();
+  const { hasConsent } = useConsent();
+  const storage = safeLocalStorage(hasConsent);
   
   // Filter items for just Perception vs Execution
   const guidedItems = items.filter(
@@ -179,7 +182,7 @@ export function Phase1Guided({ items, onComplete }: Phase1GuidedProps) {
   );
   
   const [unsortedItems, setUnsortedItems] = useState<ClassificationItem[]>(() => {
-    const saved = localStorage.getItem("phase1_guided_unsorted_v1");
+    const saved = storage.getItem("phase1_guided_unsorted_v1");
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -191,7 +194,7 @@ export function Phase1Guided({ items, onComplete }: Phase1GuidedProps) {
   });
   
   const [itemsByProcess, setItemsByProcess] = useState<Record<AgentProcess, ClassificationItem[]>>(() => {
-    const saved = localStorage.getItem("phase1_guided_sorted_v1");
+    const saved = storage.getItem("phase1_guided_sorted_v1");
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -211,7 +214,7 @@ export function Phase1Guided({ items, onComplete }: Phase1GuidedProps) {
   
   const [draggedItem, setDraggedItem] = useState<ClassificationItem | null>(null);
   const [explanations, setExplanations] = useState<Record<string, string>>(() => {
-    const saved = localStorage.getItem("phase1_guided_explanations_v1");
+    const saved = storage.getItem("phase1_guided_explanations_v1");
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -223,7 +226,7 @@ export function Phase1Guided({ items, onComplete }: Phase1GuidedProps) {
   });
 
   const [attempts, setAttempts] = useState<Record<string, number>>(() => {
-    const saved = localStorage.getItem("phase1_guided_attempts_v1");
+    const saved = storage.getItem("phase1_guided_attempts_v1");
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -239,20 +242,20 @@ export function Phase1Guided({ items, onComplete }: Phase1GuidedProps) {
   const [correctAnswers, setCorrectAnswers] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    localStorage.setItem("phase1_guided_unsorted_v1", JSON.stringify(unsortedItems));
-  }, [unsortedItems]);
+    storage.setItem("phase1_guided_unsorted_v1", JSON.stringify(unsortedItems));
+  }, [unsortedItems, hasConsent]);
 
   useEffect(() => {
-    localStorage.setItem("phase1_guided_sorted_v1", JSON.stringify(itemsByProcess));
-  }, [itemsByProcess]);
+    storage.setItem("phase1_guided_sorted_v1", JSON.stringify(itemsByProcess));
+  }, [itemsByProcess, hasConsent]);
 
   useEffect(() => {
-    localStorage.setItem("phase1_guided_explanations_v1", JSON.stringify(explanations));
-  }, [explanations]);
+    storage.setItem("phase1_guided_explanations_v1", JSON.stringify(explanations));
+  }, [explanations, hasConsent]);
 
   useEffect(() => {
-    localStorage.setItem("phase1_guided_attempts_v1", JSON.stringify(attempts));
-  }, [attempts]);
+    storage.setItem("phase1_guided_attempts_v1", JSON.stringify(attempts));
+  }, [attempts, hasConsent]);
 
   const handleDragStart = useCallback((item: ClassificationItem) => {
     setDraggedItem(item);

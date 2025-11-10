@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { PhaseProgress, Phase } from "@/components/PhaseProgress";
 import { useSession } from "@/hooks/useSession";
+import { useConsent, safeLocalStorage } from "@/hooks/useConsent";
 import { useClassification } from "@/hooks/useClassification";
 import { useBoundaryMap } from "@/hooks/useBoundaryMap";
 import { Primer } from "@/components/Primer";
@@ -16,6 +17,7 @@ import { SimulationTracer } from "@/components/SimulationTracer";
 import { FailureInjector } from "@/components/FailureInjector";
 import { AssessmentDashboard } from "@/components/AssessmentDashboard";
 import { GuidedCoachPanel } from "@/components/GuidedCoachPanel";
+import { ConsentManager } from "@/components/ConsentManager";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -50,6 +52,8 @@ const FIXTURES: Fixture[] = fixturesData as Fixture[];
 
 export default function LearningPage() {
   const { t } = useTranslation();
+  const { hasConsent } = useConsent();
+  const storage = safeLocalStorage(hasConsent);
 
   // Memoize classification items to prevent recreation on every render
   const CLASSIFICATION_ITEMS: ClassificationItem[] = useMemo(() => [
@@ -79,26 +83,26 @@ export default function LearningPage() {
   
   // Phase 0: Primer (teach before practice) - persisted in localStorage
   const [primerComplete, setPrimerComplete] = useState(() => {
-    const saved = localStorage.getItem("primerComplete");
+    const saved = storage.getItem("primerComplete");
     return saved === "true";
   });
   
   // Worked Example (model before practice) - persisted in localStorage
   const [workedExampleComplete, setWorkedExampleComplete] = useState(() => {
-    const saved = localStorage.getItem("workedExampleComplete");
+    const saved = storage.getItem("workedExampleComplete");
     return saved === "true";
   });
   
   // Guided Practice (2-bin practice) - persisted in localStorage
   const [guidedPracticeComplete, setGuidedPracticeComplete] = useState(() => {
-    const saved = localStorage.getItem("guidedPracticeComplete");
+    const saved = storage.getItem("guidedPracticeComplete");
     return saved === "true";
   });
   
   const [currentPhase, setCurrentPhase] = useState(() => {
-    const savedPrimer = localStorage.getItem("primerComplete");
-    const savedExample = localStorage.getItem("workedExampleComplete");
-    const savedGuided = localStorage.getItem("guidedPracticeComplete");
+    const savedPrimer = storage.getItem("primerComplete");
+    const savedExample = storage.getItem("workedExampleComplete");
+    const savedGuided = storage.getItem("guidedPracticeComplete");
     if (savedPrimer !== "true") return 0;
     if (savedExample !== "true") return 0.5;
     if (savedGuided !== "true") return 0.75; // Guided practice
@@ -249,19 +253,19 @@ export default function LearningPage() {
 
   const handlePrimerComplete = () => {
     setPrimerComplete(true);
-    localStorage.setItem("primerComplete", "true");
+    storage.setItem("primerComplete", "true");
     setCurrentPhase(0.5); // Go to worked example
   };
 
   const handleWorkedExampleComplete = () => {
     setWorkedExampleComplete(true);
-    localStorage.setItem("workedExampleComplete", "true");
+    storage.setItem("workedExampleComplete", "true");
     setCurrentPhase(0.75); // Go to guided practice
   };
 
   const handleGuidedPracticeComplete = () => {
     setGuidedPracticeComplete(true);
-    localStorage.setItem("guidedPracticeComplete", "true");
+    storage.setItem("guidedPracticeComplete", "true");
     setCurrentPhase(1); // Go to independent practice
   };
 
@@ -722,6 +726,10 @@ export default function LearningPage() {
         calibration={feedbackData?.calibration || 0}
         feedback={feedbackData?.feedback || []}
       />
+      
+      <div className="fixed bottom-4 right-4">
+        <ConsentManager />
+      </div>
     </div>
   );
 }

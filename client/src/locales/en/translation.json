@@ -733,5 +733,18 @@
         }
       }
     }
+  },
+  "consent": {
+    "title": "Save Your Learning Progress?",
+    "description": "We can save your progress in your browser so you can pick up right where you left off next time you visit.",
+    "whatWeStore": "What we'll save locally:",
+    "storeItem1": "Which lessons you've completed",
+    "storeItem2": "Your exercise answers and scores",
+    "storeItem3": "Your phase completion status",
+    "noPersonalData": "No personal data collected - everything stays private in your browser",
+    "yourChoice": "You can change this choice anytime. If you decline, you'll start fresh each visit.",
+    "saveProgress": "Yes, Save My Progress",
+    "noThanks": "No Thanks, Start Fresh Each Time",
+    "managePreferences": "Privacy Settings"
   }
 }

@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { ConsentManager } from "@/components/ConsentManager";
 import { Brain, ArrowRight, BookOpen, Target, Code } from "lucide-react";
 
 export default function HomePage() {
@@ -81,6 +82,10 @@ export default function HomePage() {
           <p>
             {t("homePage.methodology")}
           </p>
+        </div>
+
+        <div className="mt-6 flex justify-center">
+          <ConsentManager />
         </div>
       </div>
     </div>

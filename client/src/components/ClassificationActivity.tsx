@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { GripVertical, Check, X, Info } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "react-i18next";
+import { useConsent, safeLocalStorage } from "@/hooks/useConsent";
 
 type DraggableItemProps = {
   item: ClassificationItem;
@@ -164,11 +165,13 @@ export function ClassificationActivity({
   correctAnswers,
 }: ClassificationActivityProps) {
   const { t } = useTranslation();
+  const { hasConsent } = useConsent();
+  const storage = safeLocalStorage(hasConsent);
   
   // CRITICAL FIX: Start with ALL cards UNSORTED and SHUFFLED
   // Never auto-place based on correctProcess - that's backwards pedagogy!
   const [unsortedItems, setUnsortedItems] = useState<ClassificationItem[]>(() => {
-    const saved = localStorage.getItem("classification_unsorted_v1");
+    const saved = storage.getItem("classification_unsorted_v1");
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -180,7 +183,7 @@ export function ClassificationActivity({
   });
   
   const [itemsByProcess, setItemsByProcess] = useState<Record<AgentProcess, ClassificationItem[]>>(() => {
-    const saved = localStorage.getItem("classification_sorted_v1");
+    const saved = storage.getItem("classification_sorted_v1");
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -202,7 +205,7 @@ export function ClassificationActivity({
   
   const [draggedItem, setDraggedItem] = useState<ClassificationItem | null>(null);
   const [explanations, setExplanations] = useState<Record<string, string>>(() => {
-    const saved = localStorage.getItem("classification_explanations_v1");
+    const saved = storage.getItem("classification_explanations_v1");
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -234,18 +237,18 @@ export function ClassificationActivity({
     return undefined;
   };
 
-  // Persist to localStorage whenever state changes
+  // Persist to localStorage whenever state changes (if consent granted)
   useEffect(() => {
-    localStorage.setItem("classification_unsorted_v1", JSON.stringify(unsortedItems));
-  }, [unsortedItems]);
+    storage.setItem("classification_unsorted_v1", JSON.stringify(unsortedItems));
+  }, [unsortedItems, hasConsent]);
 
   useEffect(() => {
-    localStorage.setItem("classification_sorted_v1", JSON.stringify(itemsByProcess));
-  }, [itemsByProcess]);
+    storage.setItem("classification_sorted_v1", JSON.stringify(itemsByProcess));
+  }, [itemsByProcess, hasConsent]);
 
   useEffect(() => {
-    localStorage.setItem("classification_explanations_v1", JSON.stringify(explanations));
-  }, [explanations]);
+    storage.setItem("classification_explanations_v1", JSON.stringify(explanations));
+  }, [explanations, hasConsent]);
 
   const handleDragStart = useCallback((item: ClassificationItem) => {
     setDraggedItem(item);

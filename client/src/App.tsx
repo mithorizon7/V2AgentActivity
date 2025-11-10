@@ -6,6 +6,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import HomePage from "@/pages/HomePage";
 import LearningPage from "@/pages/LearningPage";
 import NotFound from "@/pages/not-found";
+import { ConsentBanner } from "@/components/ConsentBanner";
+import { ConsentProvider } from "@/contexts/ConsentContext";
 import "./lib/i18n";
 
 function Router() {
@@ -21,10 +23,13 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Router />
-      </TooltipProvider>
+      <ConsentProvider>
+        <TooltipProvider>
+          <ConsentBanner />
+          <Toaster />
+          <Router />
+        </TooltipProvider>
+      </ConsentProvider>
     </QueryClientProvider>
   );
 }
