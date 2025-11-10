@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SimulationStep } from "@shared/schema";
 import { Block, Process } from "@shared/runtime/types";
-import { Play, Pause, SkipForward, RotateCcw, CheckCircle2, XCircle, Clock, Brain, Wrench } from "lucide-react";
+import { Play, Pause, SkipForward, RotateCcw, CheckCircle2, XCircle, Clock, Brain, Wrench, Keyboard as KeyboardIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 
@@ -63,10 +63,36 @@ export function SimulationTracer({
     onReset();
   };
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === " " && !e.ctrlKey && !e.shiftKey) {
+        e.preventDefault();
+        if (isPaused || !isRunning) {
+          handlePlay();
+        } else {
+          handlePause();
+        }
+      } else if (e.key === "n" || e.key === "N") {
+        e.preventDefault();
+        handleNext();
+      } else if (e.key === "r" || e.key === "R") {
+        e.preventDefault();
+        handleReset();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isPaused, isRunning, currentStepIndex, steps.length]);
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div className="lg:col-span-2">
         <Card className="p-6 space-y-4">
+          <div className="mb-3 p-3 bg-muted/30 rounded-md flex items-center gap-2 text-xs text-muted-foreground">
+            <KeyboardIcon className="w-4 h-4" />
+            <span><kbd className="px-1 py-0.5 bg-background rounded border">Space</kbd> Play/Pause • <kbd className="px-1 py-0.5 bg-background rounded border">N</kbd> Next • <kbd className="px-1 py-0.5 bg-background rounded border">R</kbd> Reset</span>
+          </div>
           <div className="flex items-center justify-between">
             <h3 className="font-semibold text-lg">{t("simulation.execution")}</h3>
             <div className="flex gap-2">

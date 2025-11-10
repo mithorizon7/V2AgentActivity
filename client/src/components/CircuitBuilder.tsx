@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { ReactFlow, Node, Edge, Controls, Background, Connection, addEdge, NodeTypes } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
@@ -15,6 +15,7 @@ import {
   Target,
   Play,
   Trash2,
+  Keyboard,
 } from "lucide-react";
 
 const PROCESS_ICONS: Record<AgentProcess, React.ComponentType<{ className?: string }>> = {
@@ -72,6 +73,10 @@ export function CircuitBuilder({
   const { t } = useTranslation();
   const [nodes, setNodes] = useState<Node[]>(initialNodes);
   const [edges, setEdges] = useState<Edge[]>(initialEdges);
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  const [selectedPaletteIndex, setSelectedPaletteIndex] = useState(0);
+  const [announcement, setAnnouncement] = useState("");
+  const [showInstructions, setShowInstructions] = useState(true);
 
   const BLOCK_PALETTE: BlockPaletteItem[] = [
     { process: "perception" },
@@ -136,26 +141,167 @@ export function CircuitBuilder({
     onSave(nodes, edges);
   };
 
+  const announce = useCallback((message: string) => {
+    setAnnouncement(message);
+    setTimeout(() => setAnnouncement(""), 1000);
+  }, []);
+
+  const addNodeFromPalette = useCallback(() => {
+    const item = BLOCK_PALETTE[selectedPaletteIndex];
+    if (!item) return;
+
+    const position = { x: 100 + nodes.length * 50, y: 100 + nodes.length * 30 };
+    const newNode: Node = {
+      id: `${item.process}-${Date.now()}`,
+      type: "processNode",
+      position,
+      data: {
+        id: `${item.process}-${Date.now()}`,
+        process: item.process,
+        label: t(`circuit.blocks.${item.process}.label`),
+        description: t(`circuit.blocks.${item.process}.description`),
+      },
+    };
+
+    setNodes((nds) => [...nds, newNode]);
+    setSelectedNodeId(newNode.id);
+    announce(t("circuit.keyboard.nodeAdded", { process: item.process }));
+  }, [selectedPaletteIndex, BLOCK_PALETTE, nodes.length, t, announce]);
+
+  const deleteSelectedNode = useCallback(() => {
+    if (!selectedNodeId) return;
+    
+    setNodes((nds) => nds.filter(n => n.id !== selectedNodeId));
+    setEdges((eds) => eds.filter(e => e.source !== selectedNodeId && e.target !== selectedNodeId));
+    announce(t("circuit.keyboard.nodeRemoved"));
+    setSelectedNodeId(null);
+  }, [selectedNodeId, t, announce]);
+
+  const moveSelectedNode = useCallback((dx: number, dy: number) => {
+    if (!selectedNodeId) return;
+
+    setNodes((nds) => nds.map(node => {
+      if (node.id === selectedNodeId) {
+        const newPosition = {
+          x: node.position.x + dx,
+          y: node.position.y + dy
+        };
+        announce(t("circuit.keyboard.nodeMoved", { x: Math.round(newPosition.x), y: Math.round(newPosition.y) }));
+        return { ...node, position: newPosition };
+      }
+      return node;
+    }));
+  }, [selectedNodeId, t, announce]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowUp" && !e.shiftKey) {
+        e.preventDefault();
+        if (selectedNodeId) {
+          moveSelectedNode(0, -20);
+        } else {
+          const newIndex = Math.max(selectedPaletteIndex - 1, 0);
+          setSelectedPaletteIndex(newIndex);
+          announce(t(`circuit.blocks.${BLOCK_PALETTE[newIndex].process}.label`));
+        }
+      } else if (e.key === "ArrowDown" && !e.shiftKey) {
+        e.preventDefault();
+        if (selectedNodeId) {
+          moveSelectedNode(0, 20);
+        } else {
+          const newIndex = Math.min(selectedPaletteIndex + 1, BLOCK_PALETTE.length - 1);
+          setSelectedPaletteIndex(newIndex);
+          announce(t(`circuit.blocks.${BLOCK_PALETTE[newIndex].process}.label`));
+        }
+      } else if (e.key === "ArrowLeft" && selectedNodeId) {
+        e.preventDefault();
+        moveSelectedNode(-20, 0);
+      } else if (e.key === "ArrowRight" && selectedNodeId) {
+        e.preventDefault();
+        moveSelectedNode(20, 0);
+      } else if ((e.key === "Enter" || e.key === " ") && !selectedNodeId) {
+        e.preventDefault();
+        addNodeFromPalette();
+      } else if (e.key === "Delete" || e.key === "Backspace") {
+        e.preventDefault();
+        deleteSelectedNode();
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        setSelectedNodeId(null);
+        announce(t("circuit.keyboard.selectionCleared"));
+      } else if (e.key === "Enter" && e.ctrlKey) {
+        e.preventDefault();
+        handleSave();
+        announce(t("circuit.keyboard.circuitSaved"));
+      } else if (e.key === "?") {
+        e.preventDefault();
+        setShowInstructions(!showInstructions);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedNodeId, selectedPaletteIndex, showInstructions, BLOCK_PALETTE, moveSelectedNode, addNodeFromPalette, deleteSelectedNode, handleSave, announce, t]);
+
   return (
+    <>
+      <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        {announcement}
+      </div>
+
+      {showInstructions && (
+        <Card className="p-4 mb-4 bg-muted/50">
+          <div className="flex items-start gap-3">
+            <Keyboard className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <h4 className="font-semibold text-sm mb-2">{t("circuit.keyboard.title")}</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-muted-foreground">
+                <div><kbd className="px-1 py-0.5 bg-background rounded border">↑↓</kbd> {t("circuit.keyboard.navigatePalette")}</div>
+                <div><kbd className="px-1 py-0.5 bg-background rounded border">Enter</kbd> {t("circuit.keyboard.addNode")}</div>
+                <div><kbd className="px-1 py-0.5 bg-background rounded border">←↑→↓</kbd> {t("circuit.keyboard.moveNode")}</div>
+                <div><kbd className="px-1 py-0.5 bg-background rounded border">Del</kbd> {t("circuit.keyboard.removeNode")}</div>
+                <div><kbd className="px-1 py-0.5 bg-background rounded border">Esc</kbd> {t("circuit.keyboard.clearSelection")}</div>
+                <div><kbd className="px-1 py-0.5 bg-background rounded border">Ctrl+Enter</kbd> {t("circuit.keyboard.save")}</div>
+                <div><kbd className="px-1 py-0.5 bg-background rounded border">?</kbd> {t("circuit.keyboard.toggleHelp")}</div>
+              </div>
+            </div>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-6 w-6"
+              onClick={() => setShowInstructions(false)}
+              data-testid="button-hide-circuit-help"
+            >
+              ×
+            </Button>
+          </div>
+        </Card>
+      )}
+
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
       <Card className="p-6 space-y-4">
         <h3 className="font-semibold text-lg">{t("circuit.blockPalette")}</h3>
         <p className="text-sm text-muted-foreground">
           {t("circuit.connectInstructions")}
         </p>
-        <div className="space-y-2">
-          {BLOCK_PALETTE.map((item) => {
+        <div className="space-y-2" role="listbox" aria-label={t("circuit.blockPalette")}>
+          {BLOCK_PALETTE.map((item, index) => {
             const colors = getProcessColor(item.process);
             const Icon = PROCESS_ICONS[item.process];
+            const isKeyboardSelected = !selectedNodeId && selectedPaletteIndex === index;
             return (
               <div
                 key={item.process}
+                role="option"
+                aria-selected={isKeyboardSelected}
                 draggable
                 onDragStart={(e) => handleDragStart(e, item)}
+                onClick={() => setSelectedPaletteIndex(index)}
                 className={cn(
                   "p-3 rounded-md border-2 cursor-move transition-all hover-elevate active-elevate-2",
                   colors.bg,
-                  colors.text
+                  colors.text,
+                  isKeyboardSelected && "ring-2 ring-primary"
                 )}
                 data-testid={`palette-block-${item.process}`}
               >
@@ -244,5 +390,6 @@ export function CircuitBuilder({
         </Card>
       </div>
     </div>
+    </>
   );
 }

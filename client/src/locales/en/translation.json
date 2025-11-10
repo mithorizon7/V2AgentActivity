@@ -432,6 +432,26 @@
       "needSensorToPerception": "Connect at least one Sensor element to Perception (sensors provide input data)",
       "needExecutionToTool": "Connect Execution to at least one API, Tool, or UI element (execution needs to interact with the world)",
       "success": "Great work! Your boundary map is complete"
+    },
+    "keyboard": {
+      "title": "Keyboard Shortcuts",
+      "navigatePalette": "Navigate element palette",
+      "enterCanvas": "Enter canvas mode",
+      "moveCursor": "Move cursor (grid snap)",
+      "fineTune": "Fine-tune position (4px)",
+      "placeElement": "Place selected element",
+      "removeElement": "Remove selected element",
+      "switchMode": "Switch between sections",
+      "save": "Save boundary map",
+      "toggleHelp": "Toggle this help",
+      "elementPlaced": "Placed {{element}} at X:{{x}} Y:{{y}}",
+      "elementRemoved": "Removed {{element}}",
+      "cursorMoved": "Cursor at X:{{x}} Y:{{y}}",
+      "modeCanvas": "Canvas mode - use arrows to move cursor",
+      "modePalette": "Palette mode - use arrows to select element",
+      "modeProcesses": "Processes mode - click to connect",
+      "selectionCleared": "Selection cleared",
+      "mapSaved": "Boundary map saved"
     }
   },
   "circuit": {
@@ -495,6 +515,21 @@
         "label": "Output Handler",
         "description": "Send responses"
       }
+    },
+    "keyboard": {
+      "title": "Keyboard Shortcuts",
+      "navigatePalette": "Navigate block palette",
+      "addNode": "Add selected block to canvas",
+      "moveNode": "Move selected node",
+      "removeNode": "Remove selected node",
+      "clearSelection": "Clear selection",
+      "save": "Save circuit",
+      "toggleHelp": "Toggle this help",
+      "nodeAdded": "Added {{process}} node",
+      "nodeRemoved": "Node removed",
+      "nodeMoved": "Node moved to X:{{x}} Y:{{y}}",
+      "selectionCleared": "Selection cleared",
+      "circuitSaved": "Circuit saved"
     }
   },
   "simulation": {
