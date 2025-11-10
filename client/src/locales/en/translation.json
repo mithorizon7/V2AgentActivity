@@ -211,6 +211,17 @@
     "previous": "Previous",
     "next": "Next Example",
     "startPractice": "Try It Yourself",
+    "revealAnswer": "Click to Reveal Answer",
+    "answerRevealed": "Answer revealed",
+    "revealAll": "Reveal All Answers",
+    "processLabels": {
+      "perception": "Perception",
+      "reasoning": "Reasoning",
+      "planning": "Planning",
+      "execution": "Execution",
+      "learning": "Learning (Memory)",
+      "interaction": "Interaction (Tools)"
+    },
     "tip": {
       "title": "Pro Tip",
       "description": "Don't get fooled by keywords! Focus on the ACTION. Is it reading input? Understanding meaning? Choosing what to do? Or actually doing it?"

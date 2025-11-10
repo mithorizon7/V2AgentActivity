@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, ArrowLeft, Lightbulb, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { ArrowRight, ArrowLeft, Lightbulb, AlertTriangle, CheckCircle2, Eye } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import type { AgentProcess } from "@shared/schema";
@@ -33,6 +33,7 @@ const PROCESS_COLORS: Record<AgentProcess, string> = {
 export function WorkedExample({ onComplete }: WorkedExampleProps) {
   const { t } = useTranslation();
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const [revealedCards, setRevealedCards] = useState<Set<string>>(new Set());
 
   const exampleCards: ExampleCard[] = [
     {
@@ -100,7 +101,17 @@ export function WorkedExample({ onComplete }: WorkedExampleProps) {
   };
 
   const getProcessLabel = (process: AgentProcess) => {
-    return t(`classification.processes.${process}`);
+    return t(`workedExample.processLabels.${process}`);
+  };
+
+  const isCurrentCardRevealed = revealedCards.has(currentCard.id);
+
+  const handleRevealAnswer = () => {
+    setRevealedCards(prev => new Set(prev).add(currentCard.id));
+  };
+
+  const handleRevealAll = () => {
+    setRevealedCards(new Set(exampleCards.map(card => card.id)));
   };
 
   return (
@@ -109,9 +120,21 @@ export function WorkedExample({ onComplete }: WorkedExampleProps) {
         <div className="text-center space-y-2">
           <h1 className="text-4xl font-bold">{t("workedExample.title")}</h1>
           <p className="text-xl text-muted-foreground">{t("workedExample.subtitle")}</p>
-          <Badge variant="outline" className="mt-2">
-            {t("workedExample.progress", { current: currentCardIndex + 1, total: exampleCards.length })}
-          </Badge>
+          <div className="flex items-center justify-center gap-3 mt-2 flex-wrap">
+            <Badge variant="outline">
+              {t("workedExample.progress", { current: currentCardIndex + 1, total: exampleCards.length })}
+            </Badge>
+            <Button
+              onClick={handleRevealAll}
+              variant="ghost"
+              size="sm"
+              className="text-xs"
+              data-testid="button-reveal-all"
+            >
+              <Eye className="w-3 h-3 mr-1" />
+              {t("workedExample.revealAll")}
+            </Button>
+          </div>
         </div>
 
         <Card className="p-8 space-y-6">
@@ -155,23 +178,53 @@ export function WorkedExample({ onComplete }: WorkedExampleProps) {
               <span className="text-sm font-semibold">{t("workedExample.expertClassifies")}</span>
             </div>
 
-            <Card className={cn("p-4 border-2", PROCESS_COLORS[currentCard.correctProcess])}>
-              <div className="flex items-center gap-2 mb-2">
-                <CheckCircle2 className="w-5 h-5" />
-                <span className="font-semibold">{getProcessLabel(currentCard.correctProcess)}</span>
+            {!isCurrentCardRevealed ? (
+              <button
+                onClick={handleRevealAnswer}
+                aria-expanded={false}
+                aria-controls={`answer-${currentCard.id}`}
+                aria-label={t("workedExample.revealAnswer")}
+                className="w-full text-left focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-md transition-all"
+                data-testid="button-reveal-answer"
+              >
+                <Card className={cn("p-4 border-2 relative overflow-hidden hover-elevate active-elevate-2 cursor-pointer", PROCESS_COLORS[currentCard.correctProcess])}>
+                  <div className="relative">
+                    <div className="flex items-center gap-2 mb-2 blur-md select-none" aria-hidden="true">
+                      <CheckCircle2 className="w-5 h-5" />
+                      <span className="font-semibold">{getProcessLabel(currentCard.correctProcess)}</span>
+                    </div>
+                    <div className="absolute inset-0 flex items-center justify-center" aria-hidden="true">
+                      <div className="flex items-center gap-2 text-sm font-medium text-foreground bg-background/95 px-4 py-2 rounded-md border">
+                        <Eye className="w-4 h-4" />
+                        <span>{t("workedExample.revealAnswer")}</span>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              </button>
+            ) : (
+              <div id={`answer-${currentCard.id}`} role="region" aria-live="polite">
+                <Card className={cn("p-4 border-2 animate-in fade-in slide-in-from-top-2 duration-300", PROCESS_COLORS[currentCard.correctProcess])}>
+                  <div className="flex items-center gap-2 mb-2">
+                    <CheckCircle2 className="w-5 h-5" />
+                    <span className="font-semibold">{getProcessLabel(currentCard.correctProcess)}</span>
+                  </div>
+                </Card>
               </div>
-            </Card>
+            )}
           </div>
 
-          {/* Expert explanation */}
-          <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-semibold">{t("workedExample.whyLabel")}</span>
+          {/* Expert explanation - only shown when revealed */}
+          {isCurrentCardRevealed && (
+            <div className="space-y-3 animate-in fade-in slide-in-from-top-2 duration-300" id={`explanation-${currentCard.id}`}>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-semibold">{t("workedExample.whyLabel")}</span>
+              </div>
+              <div className="p-4 rounded-md bg-muted/50">
+                <p className="text-sm">{currentCard.explanation}</p>
+              </div>
             </div>
-            <div className="p-4 rounded-md bg-muted/50">
-              <p className="text-sm">{currentCard.explanation}</p>
-            </div>
-          </div>
+          )}
 
           {/* Navigation */}
           <div className="flex justify-between items-center pt-4 border-t">
