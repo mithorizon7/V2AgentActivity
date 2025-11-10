@@ -53,6 +53,57 @@ import fixturesData from "@shared/scenarios/health-coach/fixtures.json";
 
 const FIXTURES: Fixture[] = fixturesData as Fixture[];
 
+// Phase Navigation Component with semantic HTML and ARIA support
+function PhaseNavigation({ 
+  onPrevious, 
+  onNext, 
+  showPrevious = true, 
+  showNext = true,
+  nextLabel,
+  previousLabel 
+}: { 
+  onPrevious?: () => void; 
+  onNext?: () => void; 
+  showPrevious?: boolean; 
+  showNext?: boolean;
+  nextLabel?: string;
+  previousLabel?: string;
+}) {
+  const { t } = useTranslation();
+  
+  return (
+    <nav aria-label={t("navigation.phaseNavigation")} className="mt-6">
+      <Card className="p-4">
+        <div className="flex items-center justify-between gap-4">
+          {showPrevious && onPrevious ? (
+            <Button
+              variant="outline"
+              onClick={onPrevious}
+              data-testid="button-previous-phase"
+              aria-label={previousLabel || t("navigation.previousPhase")}
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" aria-hidden="true" />
+              {previousLabel || t("navigation.previousPhase")}
+            </Button>
+          ) : (
+            <div />
+          )}
+          {showNext && onNext ? (
+            <Button
+              onClick={onNext}
+              data-testid="button-next-phase-bottom"
+              aria-label={nextLabel || t("navigation.nextPhase")}
+            >
+              {nextLabel || t("navigation.nextPhase")}
+              <ArrowRight className="w-4 h-4 ml-2" aria-hidden="true" />
+            </Button>
+          ) : null}
+        </div>
+      </Card>
+    </nav>
+  );
+}
+
 export default function LearningPage() {
   const { t } = useTranslation();
   const [, setLocation] = useLocation();
@@ -279,6 +330,38 @@ export default function LearningPage() {
       setCurrentPhase(currentPhase + 1);
     }
     setShowFeedback(false);
+  };
+
+  // Helper function to navigate to previous phase, handling all states including fractional ones
+  const navigateToPreviousPhase = () => {
+    if (currentPhase === 0.5) {
+      setCurrentPhase(0); // Worked example → Primer
+    } else if (currentPhase === 0.75) {
+      setCurrentPhase(0.5); // Guided practice → Worked example
+    } else if (currentPhase === 1) {
+      setCurrentPhase(0.75); // Phase 1 → Guided practice
+    } else if (currentPhase === 2) {
+      setCurrentPhase(1);
+    } else if (currentPhase === 3) {
+      setCurrentPhase(2);
+    } else if (currentPhase === 4) {
+      setCurrentPhase(3);
+    } else if (currentPhase === 5) {
+      setCurrentPhase(4);
+    }
+  };
+
+  // Helper function to navigate to next phase, handling fractional states properly
+  const navigateToNextPhase = () => {
+    if (currentPhase === 0) {
+      handlePrimerComplete();
+    } else if (currentPhase === 0.5) {
+      handleWorkedExampleComplete();
+    } else if (currentPhase === 0.75) {
+      handleGuidedPracticeComplete();
+    } else if (currentPhase >= 1 && currentPhase < 5) {
+      handlePhaseComplete();
+    }
   };
 
   const handleBoundaryMapSave = (
@@ -524,24 +607,11 @@ export default function LearningPage() {
               </Card>
             )}
 
-            <Card className="p-4 mt-6">
-              <div className="flex items-center justify-between">
-                <Button
-                  variant="outline"
-                  onClick={() => setCurrentPhase(0.75)}
-                  data-testid="button-previous-phase"
-                >
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  {t("navigation.previousPhase")}
-                </Button>
-                {showFeedback && (
-                  <Button onClick={handlePhaseComplete} data-testid="button-next-phase-bottom">
-                    {t("navigation.nextPhase")}
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
-                )}
-              </div>
-            </Card>
+            <PhaseNavigation
+              onPrevious={navigateToPreviousPhase}
+              onNext={showFeedback ? navigateToNextPhase : undefined}
+              showNext={showFeedback}
+            />
           </div>
         )}
 
@@ -571,31 +641,18 @@ export default function LearningPage() {
                       {boundaryMapFeedback}
                     </p>
                     <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">
-                      Complete the mapping requirements above to continue to Phase 3
+                      {t("boundaryMap.completeRequirements")}
                     </p>
                   </div>
                 </div>
               </Card>
             )}
 
-            <Card className="p-4 mt-6">
-              <div className="flex items-center justify-between">
-                <Button
-                  variant="outline"
-                  onClick={() => setCurrentPhase(1)}
-                  data-testid="button-previous-phase"
-                >
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  {t("navigation.previousPhase")}
-                </Button>
-                {!boundaryMapFeedback && (
-                  <Button onClick={handlePhaseComplete} data-testid="button-next-phase-bottom">
-                    {t("navigation.nextPhase")}
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
-                )}
-              </div>
-            </Card>
+            <PhaseNavigation
+              onPrevious={navigateToPreviousPhase}
+              onNext={!boundaryMapFeedback ? navigateToNextPhase : undefined}
+              showNext={!boundaryMapFeedback}
+            />
           </div>
         )}
 
@@ -652,24 +709,11 @@ export default function LearningPage() {
               </Card>
             )}
 
-            <Card className="p-4 mt-6">
-              <div className="flex items-center justify-between">
-                <Button
-                  variant="outline"
-                  onClick={() => setCurrentPhase(2)}
-                  data-testid="button-previous-phase"
-                >
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  {t("navigation.previousPhase")}
-                </Button>
-                {pipelineComplete && (
-                  <Button onClick={handleCircuitComplete} data-testid="button-next-phase-bottom">
-                    {t("navigation.nextPhase")}
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
-                )}
-              </div>
-            </Card>
+            <PhaseNavigation
+              onPrevious={navigateToPreviousPhase}
+              onNext={pipelineComplete ? navigateToNextPhase : undefined}
+              showNext={pipelineComplete}
+            />
           </div>
         )}
 
@@ -777,22 +821,10 @@ export default function LearningPage() {
               </Button>
             </Card>
 
-            <Card className="p-4 mt-6">
-              <div className="flex items-center justify-between">
-                <Button
-                  variant="outline"
-                  onClick={() => setCurrentPhase(3)}
-                  data-testid="button-previous-phase"
-                >
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  {t("navigation.previousPhase")}
-                </Button>
-                <Button onClick={handlePhaseComplete} data-testid="button-next-phase-bottom">
-                  {t("navigation.nextPhase")}
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </div>
-            </Card>
+            <PhaseNavigation
+              onPrevious={navigateToPreviousPhase}
+              onNext={navigateToNextPhase}
+            />
           </div>
         )}
 
@@ -807,26 +839,12 @@ export default function LearningPage() {
 
             <AssessmentDashboard metrics={assessmentMetrics} phaseCompletion={phaseCompletion} />
 
-            <Card className="p-4 mt-6">
-              <div className="flex items-center justify-between">
-                <Button
-                  variant="outline"
-                  onClick={() => setCurrentPhase(4)}
-                  data-testid="button-previous-phase"
-                >
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  {t("navigation.previousPhase")}
-                </Button>
-                <Button
-                  variant="default"
-                  onClick={() => setLocation("/")}
-                  data-testid="button-finish-learning"
-                >
-                  {t("navigation.backToHome")}
-                  <Home className="w-4 h-4 ml-2" />
-                </Button>
-              </div>
-            </Card>
+            <PhaseNavigation
+              onPrevious={navigateToPreviousPhase}
+              onNext={() => setLocation("/")}
+              nextLabel={t("navigation.backToHome")}
+              showNext={true}
+            />
           </div>
         )}
 

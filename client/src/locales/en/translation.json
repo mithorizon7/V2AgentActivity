@@ -40,7 +40,8 @@
     "backToHome": "Back to Home",
     "previousPhase": "Previous Phase",
     "nextPhase": "Next Phase",
-    "goHome": "Go to Home"
+    "goHome": "Go to Home",
+    "phaseNavigation": "Phase navigation"
   },
   "ui": {
     "sidebar": {
@@ -439,6 +440,7 @@
       "needExecutionToTool": "Connect Execution to at least one API, Tool, or UI element (execution needs to interact with the world)",
       "success": "Great work! Your boundary map is complete"
     },
+    "completeRequirements": "Complete the mapping requirements above to continue to Phase 3",
     "keyboard": {
       "title": "Keyboard Shortcuts",
       "navigatePalette": "Navigate element palette",
