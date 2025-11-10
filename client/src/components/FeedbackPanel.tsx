@@ -59,7 +59,7 @@ export function FeedbackPanel({
             <div className="space-y-4">
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Classification Accuracy</span>
+                  <span className="text-sm font-medium">{t("assessment.metrics.classificationAccuracy")}</span>
                   <span className="text-lg font-bold text-primary" data-testid="accuracy-score">
                     {accuracy}%
                   </span>
@@ -69,7 +69,7 @@ export function FeedbackPanel({
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Explanation Quality</span>
+                  <span className="text-sm font-medium">{t("assessment.metrics.explanationQuality")}</span>
                   <span className="text-lg font-bold text-primary" data-testid="explanation-score">
                     {explanationQuality}%
                   </span>
@@ -79,7 +79,7 @@ export function FeedbackPanel({
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Calibration</span>
+                  <span className="text-sm font-medium">{t("assessment.metrics.calibrationScore")}</span>
                   <span
                     className="text-lg font-bold text-primary"
                     data-testid="calibration-score"

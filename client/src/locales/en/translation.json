@@ -446,7 +446,33 @@
     "dialogPrompt": "Choose how your agent will {{action}}",
     "readyToTest": "Ready to test!",
     "readyToTestDescription": "Continue to Phase 4 to run your agent and see it in action",
-    "testYourAgent": "Test Your Agent"
+    "testYourAgent": "Test Your Agent",
+    "blocks": {
+      "perception": {
+        "label": "Input Processor",
+        "description": "Process incoming data"
+      },
+      "learning": {
+        "label": "Memory Store",
+        "description": "Store and retrieve knowledge"
+      },
+      "reasoning": {
+        "label": "Logic Engine",
+        "description": "Analyze and infer"
+      },
+      "planning": {
+        "label": "Strategy Planner",
+        "description": "Create action plans"
+      },
+      "execution": {
+        "label": "Action Executor",
+        "description": "Perform actions"
+      },
+      "interaction": {
+        "label": "Output Handler",
+        "description": "Send responses"
+      }
+    }
   },
   "simulation": {
     "title": "Phase 4: Test Your Health Coach",

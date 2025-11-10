@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { ReactFlow, Node, Edge, Controls, Background, Connection, addEdge, NodeTypes } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { Card } from "@/components/ui/card";
@@ -27,18 +28,7 @@ const PROCESS_ICONS: Record<AgentProcess, React.ComponentType<{ className?: stri
 
 type BlockPaletteItem = {
   process: AgentProcess;
-  label: string;
-  description: string;
 };
-
-const BLOCK_PALETTE: BlockPaletteItem[] = [
-  { process: "perception", label: "Input Processor", description: "Process incoming data" },
-  { process: "learning", label: "Memory Store", description: "Store and retrieve knowledge" },
-  { process: "reasoning", label: "Logic Engine", description: "Analyze and infer" },
-  { process: "planning", label: "Strategy Planner", description: "Create action plans" },
-  { process: "execution", label: "Action Executor", description: "Perform actions" },
-  { process: "interaction", label: "Output Handler", description: "Send responses" },
-];
 
 type CircuitBuilderProps = {
   onSave: (nodes: Node[], edges: Edge[]) => void;
@@ -79,8 +69,18 @@ export function CircuitBuilder({
   initialNodes = [],
   initialEdges = [],
 }: CircuitBuilderProps) {
+  const { t } = useTranslation();
   const [nodes, setNodes] = useState<Node[]>(initialNodes);
   const [edges, setEdges] = useState<Edge[]>(initialEdges);
+
+  const BLOCK_PALETTE: BlockPaletteItem[] = [
+    { process: "perception" },
+    { process: "learning" },
+    { process: "reasoning" },
+    { process: "planning" },
+    { process: "execution" },
+    { process: "interaction" },
+  ];
 
   const onConnect = useCallback(
     (params: Connection) => setEdges((eds) => addEdge(params, eds)),
@@ -88,9 +88,14 @@ export function CircuitBuilder({
   );
 
   const handleDragStart = useCallback((event: React.DragEvent, item: BlockPaletteItem) => {
-    event.dataTransfer.setData("application/reactflow", JSON.stringify(item));
+    const itemWithLabels = {
+      ...item,
+      label: t(`circuit.blocks.${item.process}.label`),
+      description: t(`circuit.blocks.${item.process}.description`),
+    };
+    event.dataTransfer.setData("application/reactflow", JSON.stringify(itemWithLabels));
     event.dataTransfer.effectAllowed = "move";
-  }, []);
+  }, [t]);
 
   const handleDrop = useCallback(
     (event: React.DragEvent) => {
@@ -99,7 +104,7 @@ export function CircuitBuilder({
       const data = event.dataTransfer.getData("application/reactflow");
       if (!data) return;
 
-      const item: BlockPaletteItem = JSON.parse(data);
+      const item: { process: AgentProcess; label: string; description: string } = JSON.parse(data);
       const position = {
         x: event.clientX - 350,
         y: event.clientY - 200,
@@ -134,9 +139,9 @@ export function CircuitBuilder({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
       <Card className="p-6 space-y-4">
-        <h3 className="font-semibold text-lg">Block Palette</h3>
+        <h3 className="font-semibold text-lg">{t("circuit.blockPalette")}</h3>
         <p className="text-sm text-muted-foreground">
-          Drag blocks onto the canvas to build your agent
+          {t("circuit.connectInstructions")}
         </p>
         <div className="space-y-2">
           {BLOCK_PALETTE.map((item) => {
@@ -157,8 +162,12 @@ export function CircuitBuilder({
                 <div className="flex items-center gap-2">
                   <Icon className="w-5 h-5" />
                   <div className="flex-1">
-                    <div className="font-semibold text-sm">{item.label}</div>
-                    <div className="text-xs opacity-80">{item.description}</div>
+                    <div className="font-semibold text-sm">
+                      {t(`circuit.blocks.${item.process}.label`)}
+                    </div>
+                    <div className="text-xs opacity-80">
+                      {t(`circuit.blocks.${item.process}.description`)}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -170,7 +179,7 @@ export function CircuitBuilder({
       <div className="lg:col-span-3">
         <Card className="p-6 space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-lg">Agent Circuit Canvas</h3>
+            <h3 className="font-semibold text-lg">{t("circuit.canvasTitle")}</h3>
             <div className="flex gap-2">
               <Button
                 variant="outline"
@@ -178,13 +187,16 @@ export function CircuitBuilder({
                 data-testid="button-clear-circuit"
               >
                 <Trash2 className="w-4 h-4 mr-2" />
-                Clear
+                {t("circuit.clear")}
               </Button>
               <Button onClick={handleSave} data-testid="button-save-circuit">
-                Save Circuit
+                {t("circuit.saveCircuit")}
               </Button>
             </div>
           </div>
+          <p className="text-sm text-muted-foreground">
+            {t("circuit.connectInstructions")}
+          </p>
           <div className="h-96 border-2 rounded-md">
             <ReactFlow
               nodes={nodes}
@@ -229,10 +241,6 @@ export function CircuitBuilder({
               <Controls />
             </ReactFlow>
           </div>
-          <p className="text-sm text-muted-foreground">
-            Connect blocks by dragging from one block's edge to another. Click and drag blocks to
-            reposition them.
-          </p>
         </Card>
       </div>
     </div>
