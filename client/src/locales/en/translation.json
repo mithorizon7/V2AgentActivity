@@ -36,6 +36,12 @@
     "title": "404 Page Not Found",
     "message": "Did you forget to add the page to the router?"
   },
+  "navigation": {
+    "backToHome": "Back to Home",
+    "previousPhase": "Previous Phase",
+    "nextPhase": "Next Phase",
+    "goHome": "Go to Home"
+  },
   "ui": {
     "sidebar": {
       "title": "Sidebar",

@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { useLocation } from "wouter";
 import { PhaseProgress, Phase } from "@/components/PhaseProgress";
 import { useSession } from "@/hooks/useSession";
 import { useConsent, safeLocalStorage } from "@/hooks/useConsent";
@@ -38,7 +39,7 @@ import {
   FailureMode,
   SimulationStep,
 } from "@shared/schema";
-import { ArrowRight, CheckCircle2, Play, Sparkles } from "lucide-react";
+import { ArrowRight, ArrowLeft, CheckCircle2, Play, Sparkles, Home } from "lucide-react";
 import { Block, Process, RuntimeCtx, Fixture, FailureConfig } from "@shared/runtime/types";
 import { runPipeline, applyFailures, createInitialContext } from "@shared/runtime/engine";
 import { cn } from "@/lib/utils";
@@ -54,6 +55,7 @@ const FIXTURES: Fixture[] = fixturesData as Fixture[];
 
 export default function LearningPage() {
   const { t } = useTranslation();
+  const [, setLocation] = useLocation();
   const { hasConsent } = useConsent();
   const storage = safeLocalStorage(hasConsent);
 
@@ -451,6 +453,17 @@ export default function LearningPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <div className="fixed top-4 left-4 z-50">
+        <Button 
+          variant="outline" 
+          size="sm"
+          onClick={() => setLocation("/")}
+          data-testid="button-back-home"
+        >
+          <Home className="w-4 h-4 mr-2" />
+          {t("navigation.backToHome")}
+        </Button>
+      </div>
       <div className="fixed top-4 right-4 z-50 flex gap-2">
         <HighContrastToggle />
       </div>
