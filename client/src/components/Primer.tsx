@@ -80,7 +80,11 @@ export function Primer({ onComplete }: PrimerProps) {
       <Card className="p-8 space-y-6">
         <div className="text-center space-y-3">
           <h2 className="text-2xl font-semibold">{t("primer.intro.heading")}</h2>
-          <p className="text-lg text-muted-foreground">{t("primer.intro.description")}</p>
+          <p className="text-lg text-muted-foreground">
+            {t("primer.intro.description").split('**').map((part, i) => 
+              i % 2 === 0 ? part : <strong key={i}>{part}</strong>
+            )}
+          </p>
         </div>
 
         {/* 4-Step Run Loop */}
@@ -90,23 +94,27 @@ export function Primer({ onComplete }: PrimerProps) {
             <span className="text-sm font-semibold">{t("primer.runLoop.title")}</span>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+          <div className="flex items-stretch gap-3">
             {[
               { key: "perception", color: "bg-green-500/10 border-green-500/20", icon: "1" },
               { key: "reasoning", color: "bg-orange-500/10 border-orange-500/20", icon: "2" },
               { key: "planning", color: "bg-pink-500/10 border-pink-500/20", icon: "3" },
               { key: "execution", color: "bg-red-500/10 border-red-500/20", icon: "4" }
             ].map((step, idx) => (
-              <div key={step.key} className="space-y-2">
-                <Card className={cn("p-4 border-2", step.color)}>
-                  <div className="flex items-center gap-2 mb-2">
-                    <Badge variant="outline" className="font-mono">{step.icon}</Badge>
-                    <ArrowRight className={cn("w-4 h-4", idx === 3 && "invisible")} />
+              <>
+                <Card key={step.key} className={cn("p-4 border-2 flex-1", step.color)}>
+                  <div className="space-y-2">
+                    <div className="font-bold text-base">{t(`primer.runLoop.${step.key}.name`)}</div>
+                    <div className="font-semibold text-sm text-muted-foreground">{t(`primer.runLoop.${step.key}.label`)}</div>
+                    <div className="text-xs text-muted-foreground">{t(`primer.runLoop.${step.key}.description`)}</div>
                   </div>
-                  <div className="font-semibold text-sm">{t(`primer.runLoop.${step.key}.label`)}</div>
-                  <div className="text-xs text-muted-foreground mt-1">{t(`primer.runLoop.${step.key}.description`)}</div>
                 </Card>
-              </div>
+                {idx < 3 && (
+                  <div key={`arrow-${idx}`} className="flex items-center">
+                    <ArrowRight className="w-6 h-6 text-muted-foreground" />
+                  </div>
+                )}
+              </>
             ))}
           </div>
         </div>

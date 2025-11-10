@@ -89,25 +89,29 @@
     "continueToChecks": "Test Your Understanding",
     "intro": {
       "heading": "The 4+2 Model",
-      "description": "Good AI Agents are designed to behave like a smart assistant that follows the same basic cycle over and over: it reads information, figures out what it means, decides what to do, then does it. Two key elements enable this cycle: a memory system that preserves context across interactions, and a diverse toolkit of capabilities they can leverage to solve problems and complete tasks."
+      "description": "Good AI Agents are designed to behave like a smart assistant that follows the same basic cycle over and over: it reads information, figures out what it means, decides what to do, then does it. Two key elements enable this cycle: a **memory** system that preserves context across interactions, and a diverse **toolkit** of capabilities they can leverage to solve problems and complete tasks."
     },
     "runLoop": {
       "title": "The 4-Step Run Loop (happens in order, every time)",
       "perception": {
-        "label": "1. Read the Data",
-        "description": "Like reading an email — turning messy input into something organized the agent can work with"
+        "label": "Read the Data",
+        "name": "Perception",
+        "description": "Gathers all available data from the user and environment, organizing it into a usable format."
       },
       "reasoning": {
-        "label": "2. Decide What It Means",
-        "description": "Like understanding if an email is urgent or not — figuring out the significance of what was read"
+        "label": "Decide What It Means",
+        "name": "Reasoning",
+        "description": "Interprets the data to understand the underlying intent and updates its internal model of the world."
       },
       "planning": {
-        "label": "3. Make a Plan",
-        "description": "Like choosing to reply, forward, or archive — picking which specific action to take"
+        "label": "Make a Plan",
+        "name": "Planning",
+        "description": "Formulates a specific sequence of operations and tool-calls to achieve the goal."
       },
       "execution": {
-        "label": "4. Take Action",
-        "description": "Like actually sending the reply — doing the action that was planned"
+        "label": "Take Action",
+        "name": "Execution",
+        "description": "Executes the plan to produce the final output or interact with the environment."
       }
     },
     "supporting": {
