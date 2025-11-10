@@ -5,7 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ConsentManager } from "@/components/ConsentManager";
 import { HighContrastToggle } from "@/components/HighContrastToggle";
-import { Brain, ArrowRight, BookOpen, Target, Code } from "lucide-react";
+import { Brain, ArrowRight } from "lucide-react";
+import UnderstandIcon from "@assets/Understand_1762809751241.png";
+import PracticeIcon from "@assets/Practice_1762809751241.png";
+import BuildIcon from "@assets/Build_1762809751241.png";
 
 export default function HomePage() {
   const [, setLocation] = useLocation();
@@ -29,8 +32,8 @@ export default function HomePage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           <Card className="p-6 space-y-3 hover-elevate transition-all">
-            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-              <BookOpen className="w-6 h-6 text-primary" />
+            <div className="w-16 h-16 flex items-center justify-center">
+              <img src={UnderstandIcon} alt="Understand" className="w-full h-full object-contain" />
             </div>
             <h3 className="font-semibold text-lg">{t("homePage.understand.title")}</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
@@ -39,8 +42,8 @@ export default function HomePage() {
           </Card>
 
           <Card className="p-6 space-y-3 hover-elevate transition-all">
-            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-              <Target className="w-6 h-6 text-primary" />
+            <div className="w-16 h-16 flex items-center justify-center">
+              <img src={PracticeIcon} alt="Practice" className="w-full h-full object-contain" />
             </div>
             <h3 className="font-semibold text-lg">{t("homePage.practice.title")}</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
@@ -49,8 +52,8 @@ export default function HomePage() {
           </Card>
 
           <Card className="p-6 space-y-3 hover-elevate transition-all">
-            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-              <Code className="w-6 h-6 text-primary" />
+            <div className="w-16 h-16 flex items-center justify-center">
+              <img src={BuildIcon} alt="Build" className="w-full h-full object-contain" />
             </div>
             <h3 className="font-semibold text-lg">{t("homePage.build.title")}</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
