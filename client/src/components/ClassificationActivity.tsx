@@ -531,30 +531,7 @@ export function ClassificationActivity({
         </div>
       </div>
 
-      {/* Unsorted Tray - where all cards start */}
-      {unsortedItems.length > 0 && (
-        <Card className="p-4 border-2 border-dashed">
-          <div className="mb-2">
-            <span className="text-sm font-semibold">{t("classification.unsortedTray")}</span>
-            <Badge variant="outline" className="ml-2">{unsortedItems.length}</Badge>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            {unsortedItems.map((item) => (
-              <DraggableItem
-                key={item.id}
-                item={item}
-                onDragStart={handleDragStart}
-                showFeedback={false}
-                isGrabbed={grabbedItem?.id === item.id}
-                isFocused={focusedItem?.id === item.id}
-                onKeyDown={handleItemKeyDown}
-                onFocus={() => setFocusedItem(item)}
-              />
-            ))}
-          </div>
-        </Card>
-      )}
-
+      {/* Drop Zones - 6 process categories */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {processes.map((process) => (
           <div
@@ -603,6 +580,30 @@ export function ClassificationActivity({
           </div>
         ))}
       </div>
+
+      {/* Unsorted Tray - where all cards start */}
+      {unsortedItems.length > 0 && (
+        <Card className="p-4 border-2 border-dashed">
+          <div className="mb-2">
+            <span className="text-sm font-semibold">{t("classification.unsortedTray")}</span>
+            <Badge variant="outline" className="ml-2">{unsortedItems.length}</Badge>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            {unsortedItems.map((item) => (
+              <DraggableItem
+                key={item.id}
+                item={item}
+                onDragStart={handleDragStart}
+                showFeedback={false}
+                isGrabbed={grabbedItem?.id === item.id}
+                isFocused={focusedItem?.id === item.id}
+                onKeyDown={handleItemKeyDown}
+                onFocus={() => setFocusedItem(item)}
+              />
+            ))}
+          </div>
+        </Card>
+      )}
     </div>
   );
 }

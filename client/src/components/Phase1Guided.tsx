@@ -400,30 +400,6 @@ export function Phase1Guided({ items, onComplete }: Phase1GuidedProps) {
         </div>
       </div>
 
-      {/* Unsorted Tray */}
-      {unsortedItems.length > 0 && (
-        <Card className="p-4 border-2 border-dashed">
-          <div className="mb-2">
-            <span className="text-sm font-semibold">{t("classification.unsortedTray")}</span>
-            <Badge variant="outline" className="ml-2">{unsortedItems.length}</Badge>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {unsortedItems.map((item) => (
-              <DraggableItem
-                key={item.id}
-                item={item}
-                onDragStart={handleDragStart}
-                explanation={explanations[item.id] || ""}
-                onExplanationChange={handleExplanationChange}
-                showFeedback={false}
-                seedPrompts={getSeedPrompts(item.correctProcess)}
-                hint={hints[item.id]}
-              />
-            ))}
-          </div>
-        </Card>
-      )}
-
       {/* 2-bin layout: Perception vs Execution */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <ProcessColumn
@@ -453,6 +429,30 @@ export function Phase1Guided({ items, onComplete }: Phase1GuidedProps) {
           hints={hints}
         />
       </div>
+
+      {/* Unsorted Tray */}
+      {unsortedItems.length > 0 && (
+        <Card className="p-4 border-2 border-dashed">
+          <div className="mb-2">
+            <span className="text-sm font-semibold">{t("classification.unsortedTray")}</span>
+            <Badge variant="outline" className="ml-2">{unsortedItems.length}</Badge>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {unsortedItems.map((item) => (
+              <DraggableItem
+                key={item.id}
+                item={item}
+                onDragStart={handleDragStart}
+                explanation={explanations[item.id] || ""}
+                onExplanationChange={handleExplanationChange}
+                showFeedback={false}
+                seedPrompts={getSeedPrompts(item.correctProcess)}
+                hint={hints[item.id]}
+              />
+            ))}
+          </div>
+        </Card>
+      )}
     </div>
   );
 }
