@@ -20,17 +20,17 @@ export function PhaseProgress({ phases, onPhaseClick }: PhaseProgressProps) {
   return (
     <div className="sticky top-0 z-50 bg-background border-b shadow-sm" data-testid="phase-progress">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 py-3 sm:py-4">
-        <div className="flex items-center justify-between gap-1 sm:gap-2 overflow-x-auto scrollbar-hide">
+        <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto scrollbar-hide">
           {phases.map((phase, index) => {
             const isClickable = onPhaseClick;
             
             return (
-              <div key={phase.id} className="flex items-center flex-1">
+              <div key={phase.id} className="flex items-center flex-shrink-0">
                 <button
                   onClick={() => isClickable && onPhaseClick(phase.id)}
                   data-testid={`phase-step-${phase.id}`}
                   className={cn(
-                    "flex items-center gap-2 sm:gap-3 flex-1 min-w-0 transition-all min-h-[44px] sm:min-h-[auto]",
+                    "flex items-center gap-2 sm:gap-3 transition-all min-h-[44px] min-w-[44px] sm:min-h-[auto] sm:min-w-0",
                     isClickable && "cursor-pointer hover-elevate active-elevate-2"
                   )}
                   aria-label={t("phaseProgress.phaseLabel", { id: phase.id, name: phase.name })}
@@ -74,7 +74,7 @@ export function PhaseProgress({ phases, onPhaseClick }: PhaseProgressProps) {
                 {index < phases.length - 1 && (
                   <div
                     className={cn(
-                      "h-0.5 flex-1 mx-1 sm:mx-2 transition-all min-w-[12px] sm:min-w-[20px]",
+                      "h-0.5 w-4 sm:w-8 mx-1 sm:mx-2 transition-all flex-shrink-0",
                       phase.completed ? "bg-primary" : "bg-border"
                     )}
                     aria-hidden="true"
