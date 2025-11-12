@@ -25,6 +25,59 @@ Key technical implementations include a deterministic execution engine for simul
 
 ## Recent Improvements (November 2024)
 
+### Mobile-Native UX Optimization & Litmus Test Enhancement (November 12, 2024)
+Implemented comprehensive mobile optimization achieving truly mobile-native experience without impacting desktop:
+
+**Mobile Touch Targets (WCAG 2.2 AA Compliant):**
+- All interactive cards: min-h-[44px] with p-4 padding ensuring ≥44px tap area
+- All buttons: min-h-[44px] on mobile, scaling back to default on desktop
+- PhaseProgress indicators: min-w-[44px] min-h-[44px] with flex-shrink-0 to prevent compression
+- Larger grip icons (w-5 h-5) and feedback icons for better visibility
+
+**Responsive Layout System:**
+- Grid breakpoints optimized: 1 column mobile (default) → 2 columns tablet (sm:640px) → 3 columns desktop (lg:1024px)
+- Progressive spacing: gap-3 sm:gap-4 lg:gap-6, p-4 sm:p-6 for natural scaling
+- Responsive typography: text-2xl sm:text-3xl for headings, text-sm sm:text-base for body text
+- Mobile padding optimization: px-4 sm:px-6 for page container
+
+**Mobile Navigation:**
+- Home button: Icon-only on mobile, text visible on desktop (hidden sm:inline)
+- Action buttons: Full-width stacked on mobile (flex-col w-full), inline on desktop (sm:flex-row sm:w-auto)
+- PhaseProgress: Compact circular indicators (w-8 h-8) on mobile, full labels on desktop
+- Horizontal scroll with scrollbar-hide utility for seamless navigation
+
+**Visual Feedback Enhancements:**
+- Grabbed drag cards scale to 105% for clear visual feedback
+- Added touch-manipulation CSS for better touch response
+- Better text wrapping with break-words and min-w-0 for overflow prevention
+- Improved spacing and padding throughout for better mobile readability
+
+**Litmus Test Improvements:**
+- Enhanced visibility: text-base font-medium text-foreground/80 (previously text-sm text-muted-foreground)
+- Removed distracting yellow hint boxes while maintaining pedagogical value
+- Questions like "Is the agent reading, listening, or sensing?" for Perception
+- Properly structured with flex layout and semantic HTML
+
+**Process Name Updates:**
+- Updated all process labels with parenthetical descriptors for clarity:
+  - "Memory (Remember/Learn)" instead of just "Learning"
+  - "Connections (People & Tools)" instead of just "Interaction"
+  - "Perception (See/Collect)", "Reasoning (Think/Explain)", "Planning (Decide/Sequence)", "Execution (Do/Perform)"
+- Translation keys remain as before (t('processes.learning') → "Memory (Remember/Learn)")
+
+**Technical Implementation:**
+- Added scrollbar-hide utility class in index.css for clean horizontal scrolling
+- Fixed PhaseProgress touch targets with flex-shrink-0 and fixed connector widths (w-4 sm:w-8)
+- Maintained full accessibility with proper ARIA labels and keyboard navigation
+- All changes verified by architect for WCAG 2.2 AA compliance
+
+**User Impact:**
+- Truly mobile-native experience with professional touch interactions
+- Desktop experience remains unchanged and optimal
+- Faster task completion on mobile devices
+- Better one-handed mobile usability
+- Smooth horizontal scrolling on PhaseProgress without layout shift
+
 ### Classification Page Simplification (November 12, 2024)
 **Removed explanation textboxes and updated all 18 classification items:**
 
