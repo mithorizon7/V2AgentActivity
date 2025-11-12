@@ -10,7 +10,6 @@ import { Primer } from "@/components/Primer";
 import { WorkedExample } from "@/components/WorkedExample";
 import { Phase1Guided } from "@/components/Phase1Guided";
 import { ClassificationActivity } from "@/components/ClassificationActivity";
-import { ConfidenceSlider } from "@/components/ConfidenceSlider";
 import { FeedbackPanel } from "@/components/FeedbackPanel";
 import { BoundaryMapCanvas } from "@/components/BoundaryMapCanvas";
 import { FixedPipelineBuilder } from "@/components/FixedPipelineBuilder";
@@ -196,7 +195,6 @@ export default function LearningPage() {
   });
 
   // Phase 1: Classification
-  const [confidenceLevel, setConfidenceLevel] = useState(50);
   const [showFeedback, setShowFeedback] = useState(false);
   const [feedbackData, setFeedbackData] = useState<any>(null);
   const [classifications, setClassifications] = useState<ClassificationSubmission[]>([]);
@@ -271,18 +269,8 @@ export default function LearningPage() {
       correctAnswers[s.itemId] = s.isCorrect;
     });
 
-    const explanationQuality = submissions.reduce((acc, s) => {
-      const wordCount = s.explanation.split(/\s+/).length;
-      return acc + Math.min((wordCount / 15) * 100, 100);
-    }, 0) / submissions.length;
-
-    const calibrationError = Math.abs(accuracy - confidenceLevel);
-    const calibration = Math.max(0, 100 - calibrationError);
-
     const feedback = {
       accuracy,
-      explanationQuality,
-      calibration,
       correctAnswers,
       feedback: submissions
         .filter((s) => !s.isCorrect)
@@ -301,7 +289,6 @@ export default function LearningPage() {
     if (sessionId) {
       classificationMutation.mutate({
         submissions,
-        confidence: confidenceLevel,
       });
     }
   };
@@ -600,12 +587,6 @@ export default function LearningPage() {
               </p>
             </div>
 
-            <ConfidenceSlider
-              value={confidenceLevel}
-              onChange={setConfidenceLevel}
-              disabled={showFeedback}
-            />
-
             <ClassificationActivity
               items={CLASSIFICATION_ITEMS}
               onSubmit={handleClassificationSubmit}
@@ -883,8 +864,6 @@ export default function LearningPage() {
         isOpen={showFeedback}
         onClose={() => setShowFeedback(false)}
         accuracy={feedbackData?.accuracy || 0}
-        explanationQuality={feedbackData?.explanationQuality || 0}
-        calibration={feedbackData?.calibration || 0}
         feedback={feedbackData?.feedback || []}
       />
       

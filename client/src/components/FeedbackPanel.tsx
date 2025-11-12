@@ -18,8 +18,8 @@ type FeedbackPanelProps = {
   isOpen: boolean;
   onClose: () => void;
   accuracy: number;
-  explanationQuality: number;
-  calibration: number;
+  explanationQuality?: number;
+  calibration?: number;
   feedback: FeedbackItem[];
 };
 
@@ -67,31 +67,35 @@ export function FeedbackPanel({
                 <Progress value={accuracy} className="h-2" />
               </div>
 
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">{t("assessment.metrics.explanationQuality")}</span>
-                  <span className="text-lg font-bold text-primary" data-testid="explanation-score">
-                    {explanationQuality}%
-                  </span>
+              {explanationQuality !== undefined && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">{t("assessment.metrics.explanationQuality")}</span>
+                    <span className="text-lg font-bold text-primary" data-testid="explanation-score">
+                      {explanationQuality}%
+                    </span>
+                  </div>
+                  <Progress value={explanationQuality} className="h-2" />
                 </div>
-                <Progress value={explanationQuality} className="h-2" />
-              </div>
+              )}
 
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">{t("assessment.metrics.calibrationScore")}</span>
-                  <span
-                    className="text-lg font-bold text-primary"
-                    data-testid="calibration-score"
-                  >
-                    {calibration}%
-                  </span>
+              {calibration !== undefined && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">{t("assessment.metrics.calibrationScore")}</span>
+                    <span
+                      className="text-lg font-bold text-primary"
+                      data-testid="calibration-score"
+                    >
+                      {calibration}%
+                    </span>
+                  </div>
+                  <Progress value={calibration} className="h-2" />
+                  <p className="text-xs text-muted-foreground">
+                    {t("feedbackPanel.calibrationDescription")}
+                  </p>
                 </div>
-                <Progress value={calibration} className="h-2" />
-                <p className="text-xs text-muted-foreground">
-                  {t("feedbackPanel.calibrationDescription")}
-                </p>
-              </div>
+              )}
             </div>
 
             <Separator />

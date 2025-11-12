@@ -6,10 +6,10 @@ export function useClassification(sessionId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ submissions, confidence }: { submissions: ClassificationSubmission[]; confidence: number }) => {
+    mutationFn: async ({ submissions, confidence }: { submissions: ClassificationSubmission[]; confidence?: number }) => {
       return await apiRequest('POST', '/api/classify', {
         submissions,
-        confidence,
+        ...(confidence !== undefined && { confidence }),
       });
     },
     onSuccess: (data) => {
