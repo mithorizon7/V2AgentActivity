@@ -1,7 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { AgentProcess, ClassificationItem, ClassificationSubmission } from "@shared/schema";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { getProcessColor } from "@/lib/processColors";
 import { cn } from "@/lib/utils";
@@ -13,8 +12,6 @@ import { useConsent, safeLocalStorage } from "@/hooks/useConsent";
 type DraggableItemProps = {
   item: ClassificationItem;
   onDragStart: (item: ClassificationItem) => void;
-  explanation: string;
-  onExplanationChange: (itemId: string, explanation: string) => void;
   showFeedback: boolean;
   isCorrect?: boolean;
   isGrabbed?: boolean;
@@ -27,8 +24,6 @@ type DraggableItemProps = {
 function DraggableItem({
   item,
   onDragStart,
-  explanation,
-  onExplanationChange,
   showFeedback,
   isCorrect,
   isGrabbed = false,
@@ -39,7 +34,6 @@ function DraggableItem({
 }: DraggableItemProps) {
   const { t } = useTranslation();
   const itemRef = useRef<HTMLDivElement>(null);
-  const [isTextareaExpanded, setIsTextareaExpanded] = useState(false);
 
   useEffect(() => {
     if (isFocused && itemRef.current) {
@@ -47,75 +41,48 @@ function DraggableItem({
     }
   }, [isFocused]);
 
-  // Auto-expand textarea if it has content
-  useEffect(() => {
-    if (explanation && explanation.length > 0) {
-      setIsTextareaExpanded(true);
-    }
-  }, [explanation]);
-
   return (
-    <div className="space-y-2" role="group" aria-label={t("classification.accessibility.card.label", { item: item.text })}>
-      <div
-        ref={itemRef}
-        draggable
-        onDragStart={() => onDragStart(item)}
-        onKeyDown={(e) => onKeyDown?.(e, item)}
-        onFocus={onFocus}
-        tabIndex={0}
-        aria-pressed={isGrabbed}
-        aria-label={
-          isGrabbed 
-            ? t("classification.accessibility.card.labelGrabbed", { 
-                item: item.text,
-                tab: t("keyboard.keyNames.tab"),
-                enter: t("keyboard.keyNames.enter"),
-                escape: t("keyboard.keyNames.escape")
-              })
-            : t("classification.accessibility.card.labelIdle", { 
-                item: item.text,
-                space: t("keyboard.keyNames.space"),
-                enter: t("keyboard.keyNames.enter")
-              })
-        }
-        className={cn(
-          "flex items-center gap-2 p-3 rounded-md border-2 cursor-move transition-all hover-elevate active-elevate-2",
-          "bg-card focus:outline-none",
-          isFocused && "ring-2 ring-primary ring-offset-2",
-          isGrabbed && "border-dashed border-primary shadow-lg",
-          showFeedback && isCorrect === true && "border-green-500 bg-green-50 dark:bg-green-950",
-          showFeedback && isCorrect === false && "border-red-500 bg-red-50 dark:bg-red-950"
-        )}
-        data-testid={`classification-item-${item.id}`}
-      >
-        <GripVertical className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-        <span className="text-sm font-medium flex-1">{item.text}</span>
-        {showFeedback && (
-          isCorrect ? (
-            <Check className="w-5 h-5 text-green-600" data-testid={`item-correct-${item.id}`} />
-          ) : (
-            <X className="w-5 h-5 text-red-600" data-testid={`item-incorrect-${item.id}`} />
-          )
-        )}
-      </div>
-      <Textarea
-        value={explanation}
-        onChange={(e) => onExplanationChange(item.id, e.target.value)}
-        onFocus={() => setIsTextareaExpanded(true)}
-        onBlur={() => {
-          // Collapse if empty to save vertical space
-          if (!explanation || explanation.trim().length === 0) {
-            setIsTextareaExpanded(false);
-          }
-        }}
-        placeholder={t("classification.explainPlaceholder")}
-        className={cn(
-          "text-sm resize-none transition-all",
-          isTextareaExpanded ? "min-h-20" : "min-h-10"
-        )}
-        data-testid={`explanation-input-${item.id}`}
-        aria-label={t("classification.accessibility.card.explanationLabel", { item: item.text })}
-      />
+    <div
+      ref={itemRef}
+      draggable
+      onDragStart={() => onDragStart(item)}
+      onKeyDown={(e) => onKeyDown?.(e, item)}
+      onFocus={onFocus}
+      tabIndex={0}
+      aria-pressed={isGrabbed}
+      aria-label={
+        isGrabbed 
+          ? t("classification.accessibility.card.labelGrabbed", { 
+              item: item.text,
+              tab: t("keyboard.keyNames.tab"),
+              enter: t("keyboard.keyNames.enter"),
+              escape: t("keyboard.keyNames.escape")
+            })
+          : t("classification.accessibility.card.labelIdle", { 
+              item: item.text,
+              space: t("keyboard.keyNames.space"),
+              enter: t("keyboard.keyNames.enter")
+            })
+      }
+      className={cn(
+        "flex items-center gap-2 p-3 rounded-md border-2 cursor-move transition-all hover-elevate active-elevate-2",
+        "bg-card focus:outline-none",
+        isFocused && "ring-2 ring-primary ring-offset-2",
+        isGrabbed && "border-dashed border-primary shadow-lg",
+        showFeedback && isCorrect === true && "border-green-500 bg-green-50 dark:bg-green-950",
+        showFeedback && isCorrect === false && "border-red-500 bg-red-50 dark:bg-red-950"
+      )}
+      data-testid={`classification-item-${item.id}`}
+    >
+      <GripVertical className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+      <span className="text-sm font-medium flex-1">{item.text}</span>
+      {showFeedback && (
+        isCorrect ? (
+          <Check className="w-5 h-5 text-green-600" data-testid={`item-correct-${item.id}`} />
+        ) : (
+          <X className="w-5 h-5 text-red-600" data-testid={`item-incorrect-${item.id}`} />
+        )
+      )}
     </div>
   );
 }
@@ -126,8 +93,6 @@ type ProcessColumnProps = {
   onDrop: (process: AgentProcess) => void;
   onDragOver: (e: React.DragEvent) => void;
   showFeedback: boolean;
-  explanations: Record<string, string>;
-  onExplanationChange: (itemId: string, explanation: string) => void;
   onDragStart: (item: ClassificationItem) => void;
   correctAnswers?: Record<string, boolean>;
   hint?: string;
@@ -144,8 +109,6 @@ function ProcessColumn({
   onDrop,
   onDragOver,
   showFeedback,
-  explanations,
-  onExplanationChange,
   onDragStart,
   correctAnswers,
   hint,
@@ -214,8 +177,6 @@ function ProcessColumn({
               key={item.id}
               item={item}
               onDragStart={onDragStart}
-              explanation={explanations[item.id] || ""}
-              onExplanationChange={onExplanationChange}
               showFeedback={showFeedback}
               isCorrect={correctAnswers?.[item.id]}
               isGrabbed={grabbedItem?.id === item.id}
@@ -294,17 +255,6 @@ export function ClassificationActivity({
   });
   
   const [draggedItem, setDraggedItem] = useState<ClassificationItem | null>(null);
-  const [explanations, setExplanations] = useState<Record<string, string>>(() => {
-    const saved = storage.getItem("classification_explanations_v1");
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        return {};
-      }
-    }
-    return {};
-  });
 
   // Dev guard: warn if cards are in correct bins before user interaction
   if (import.meta.env.DEV) {
@@ -336,10 +286,6 @@ export function ClassificationActivity({
     storage.setItem("classification_sorted_v1", JSON.stringify(itemsByProcess));
   }, [itemsByProcess, hasConsent]);
 
-  useEffect(() => {
-    storage.setItem("classification_explanations_v1", JSON.stringify(explanations));
-  }, [explanations, hasConsent]);
-
   const handleDragStart = useCallback((item: ClassificationItem) => {
     setDraggedItem(item);
   }, []);
@@ -364,10 +310,6 @@ export function ClassificationActivity({
 
     setDraggedItem(null);
   }, [draggedItem]);
-
-  const handleExplanationChange = useCallback((itemId: string, explanation: string) => {
-    setExplanations((prev) => ({ ...prev, [itemId]: explanation }));
-  }, []);
 
   const handleScramble = useCallback(() => {
     // Return ALL items to unsorted tray, shuffled
@@ -397,7 +339,7 @@ export function ClassificationActivity({
         submissions.push({
           itemId: item.id,
           selectedProcess: process as AgentProcess,
-          explanation: explanations[item.id] || "",
+          explanation: "",
           isCorrect: item.correctProcess === process,
         });
       });
@@ -602,8 +544,6 @@ export function ClassificationActivity({
                 key={item.id}
                 item={item}
                 onDragStart={handleDragStart}
-                explanation={explanations[item.id] || ""}
-                onExplanationChange={handleExplanationChange}
                 showFeedback={false}
                 isGrabbed={grabbedItem?.id === item.id}
                 isFocused={focusedItem?.id === item.id}
@@ -651,8 +591,6 @@ export function ClassificationActivity({
               onDrop={handleDrop}
               onDragOver={(e) => e.preventDefault()}
               showFeedback={showFeedback}
-              explanations={explanations}
-              onExplanationChange={handleExplanationChange}
               onDragStart={handleDragStart}
               correctAnswers={correctAnswers}
               hint={getProcessHint(process)}
