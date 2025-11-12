@@ -648,12 +648,20 @@
     }
   },
   "processes": {
-    "learning": "Learning",
-    "interaction": "Connections",
-    "perception": "Perception",
-    "reasoning": "Reasoning",
-    "planning": "Planning",
-    "execution": "Execution"
+    "learning": "Memory (Remember/Learn)",
+    "interaction": "Connections (People & Tools)",
+    "perception": "Perception (See/Collect)",
+    "reasoning": "Reasoning (Think/Explain)",
+    "planning": "Planning (Decide/Sequence)",
+    "execution": "Execution (Do/Perform)",
+    "litmusTests": {
+      "learning": "Will this be useful later?",
+      "interaction": "Is the agent reaching outside itself?",
+      "perception": "Is the agent reading, listening, or sensing?",
+      "reasoning": "Is the agent figuring something out?",
+      "planning": "Is the agent picking steps or a strategy?",
+      "execution": "Is the agent actually doing the step now?"
+    }
   },
   "glossary": {
     "feedbackLoops": {

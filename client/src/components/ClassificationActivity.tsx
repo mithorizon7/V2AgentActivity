@@ -95,7 +95,7 @@ type ProcessColumnProps = {
   showFeedback: boolean;
   onDragStart: (item: ClassificationItem) => void;
   correctAnswers?: Record<string, boolean>;
-  hint?: string;
+  litmusTest?: string;
   grabbedItem?: ClassificationItem | null;
   focusedItem?: ClassificationItem | null;
   onItemKeyDown?: (e: React.KeyboardEvent, item: ClassificationItem) => void;
@@ -111,7 +111,7 @@ function ProcessColumn({
   showFeedback,
   onDragStart,
   correctAnswers,
-  hint,
+  litmusTest,
   grabbedItem,
   focusedItem,
   onItemKeyDown,
@@ -122,17 +122,13 @@ function ProcessColumn({
   const [isDraggedOver, setIsDraggedOver] = useState(false);
   const colors = getProcessColor(process);
 
-  const hintId = hint ? `hint-${process}` : undefined;
+  const litmusId = litmusTest ? `litmus-${process}` : undefined;
 
   return (
     <Card
       role="region"
-      aria-label={
-        hint 
-          ? t("classification.accessibility.dropZone.labelWithHint", { process })
-          : t("classification.accessibility.dropZone.label", { process })
-      }
-      aria-describedby={hintId}
+      aria-label={t("classification.accessibility.dropZone.label", { process: t(`processes.${process}`) })}
+      aria-describedby={litmusId}
       className={cn(
         "flex flex-col p-4 min-h-72 transition-all",
         isDraggedOver && "ring-2 ring-primary bg-primary/5",
@@ -151,21 +147,22 @@ function ProcessColumn({
       onDragLeave={() => setIsDraggedOver(false)}
       data-testid={`drop-zone-${process}`}
     >
-      <div className="flex items-center gap-2 mb-4 pb-3 border-b">
-        <div className={cn("w-3 h-3 rounded-full", colors.bg)} />
-        <h3 className="font-semibold text-base uppercase tracking-wide">
-          {process}
-        </h3>
-        <Badge variant="secondary" className="ml-auto">
-          {items.length}
-        </Badge>
-      </div>
-      {hint && (
-        <div id={hintId} className="mb-3 p-2 rounded-md bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 flex gap-2">
-          <Info className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
-          <p className="text-xs text-amber-800 dark:text-amber-200">{hint}</p>
+      <div className="mb-4 pb-3 border-b space-y-2">
+        <div className="flex items-center gap-2">
+          <div className={cn("w-3 h-3 rounded-full", colors.bg)} />
+          <h3 className="font-semibold text-base uppercase tracking-wide">
+            {t(`processes.${process}`)}
+          </h3>
+          <Badge variant="secondary" className="ml-auto">
+            {items.length}
+          </Badge>
         </div>
-      )}
+        {litmusTest && (
+          <p id={litmusId} className="text-sm text-muted-foreground pl-5">
+            {litmusTest}
+          </p>
+        )}
+      </div>
       <div className="space-y-3 flex-1">
         {items.length === 0 ? (
           <div className="flex items-center justify-center h-32 border-2 border-dashed rounded-md text-sm text-muted-foreground">
@@ -271,10 +268,8 @@ export function ClassificationActivity({
     }
   }
 
-  const getProcessHint = (process: AgentProcess): string | undefined => {
-    if (process === "learning") return t("classification.hints.learning");
-    if (process === "interaction") return t("classification.hints.interaction");
-    return undefined;
+  const getLitmusTest = (process: AgentProcess): string => {
+    return t(`processes.litmusTests.${process}`);
   };
 
   // Persist to localStorage whenever state changes (if consent granted)
@@ -570,7 +565,7 @@ export function ClassificationActivity({
               showFeedback={showFeedback}
               onDragStart={handleDragStart}
               correctAnswers={correctAnswers}
-              hint={getProcessHint(process)}
+              litmusTest={getLitmusTest(process)}
               grabbedItem={grabbedItem}
               focusedItem={focusedItem}
               onItemKeyDown={handleItemKeyDown}
