@@ -122,7 +122,7 @@
         "badge": "Always available"
       },
       "tools": {
-        "label": "Tools & UI (Interaction)",
+        "label": "Connections (People & Tools)",
         "description": "Like a toolbox or phone to call for help — the agent can use tools or show messages at ANY point during the 4 steps",
         "badge": "Always available"
       },
@@ -220,7 +220,7 @@
       "planning": "Planning",
       "execution": "Execution",
       "learning": "Learning (Memory)",
-      "interaction": "Interaction (Tools)"
+      "interaction": "Connections (People & Tools)"
     },
     "tip": {
       "title": "Pro Tip",
@@ -253,7 +253,7 @@
       },
       "calendarNearMiss": {
         "text": "Schedule a follow-up check for tomorrow",
-        "explanation": "TRICKY! The word \"schedule\" makes you think Planning, but look closer: this is USING the calendar tool to CREATE an appointment. It's Interaction (Tools), not Planning. Planning would be DECIDING to schedule, but the actual ACT of scheduling uses a tool.",
+        "explanation": "TRICKY! The word \"schedule\" makes you think Planning, but look closer: this is USING the calendar tool to CREATE an appointment. It's Connections (People & Tools), not Planning. Planning would be DECIDING to schedule, but the actual ACT of scheduling uses a tool.",
         "nearMissExplanation": "the word 'schedule' sounds like planning"
       }
     }
@@ -280,7 +280,7 @@
       },
       "tools": {
         "icon": "🔧",
-        "title": "Tools & UI (Interaction)",
+        "title": "Connections (People & Tools)",
         "description": "How the agent acts in the world—any stage can call a tool or show something to a user",
         "badge": "calls Tool: {{tool}}"
       }
@@ -292,7 +292,7 @@
     "subtitle": "Master AI agents from core concepts to building your own—through interactive, pedagogically-designed activities",
     "understand": {
       "title": "Understand",
-      "description": "Learn the six core processes that make AI agents work: Learning, Interaction, Perception, Reasoning, Planning, and Execution"
+      "description": "Learn the six core processes that make AI agents work: Learning, Connections, Perception, Reasoning, Planning, and Execution"
     },
     "practice": {
       "title": "Practice",
@@ -335,7 +335,7 @@
     "incorrectFeedback": "Think about the core action: Is it reading, understanding, choosing, doing, remembering, or using tools?",
     "hints": {
       "learning": "Hint: Memory/Learning isn't a step in the loop — it's like a notebook any step can write in or read from",
-      "interaction": "Hint: Tools/Interaction isn't a step in the loop — it's like a toolbox any step can reach for when needed"
+      "interaction": "Hint: Tools/Connections isn't a step in the loop — it's like a toolbox any step can reach for when needed"
     },
     "accessibility": {
       "instructions": "Keyboard: {{tab}} to navigate all elements, {{arrowUpDown}} for quick navigation within sections, {{spaceEnter}} to grab/drop cards, {{escape}} to cancel",
@@ -631,7 +631,7 @@
         "q1": {
           "question": "Which activity belongs to the run loop vs the rails?",
           "prompt": "'Call Calendar API' belongs to:",
-          "answers": ["Run Loop", "Interaction Rail", "Memory Rail", "Both Rails"],
+          "answers": ["Run Loop", "Connections Rail", "Memory Rail", "Both Rails"],
           "correct": 1
         },
         "q2": {
@@ -641,7 +641,7 @@
         },
         "q3": {
           "question": "Where is the habit streak stored?",
-          "answers": ["In the run loop", "Learning (Memory)", "Interaction (Tools)", "Execution"],
+          "answers": ["In the run loop", "Learning (Memory)", "Connections (People & Tools)", "Execution"],
           "correct": 1
         }
       }
@@ -649,7 +649,7 @@
   },
   "processes": {
     "learning": "Learning",
-    "interaction": "Interaction",
+    "interaction": "Connections",
     "perception": "Perception",
     "reasoning": "Reasoning",
     "planning": "Planning",
@@ -706,7 +706,7 @@
     "tryFailure": {
       "title": "Great work!",
       "message": "You've seen how the 4-step loop handles normal operation. Try toggling failure modes to see how each step responds to errors.",
-      "tip": "Watch which steps tap into Memory 🧠 (Learning) and which call Tools 🔧 (Interaction). These supporting systems work with any step in the loop!"
+      "tip": "Watch which steps tap into Memory 🧠 (Learning) and which call Tools 🔧 (Connections). These supporting systems work with any step in the loop!"
     },
     "badge": "Guide",
     "tipLabel": "Tip"

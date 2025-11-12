@@ -12,7 +12,7 @@ Do not make changes to the `shared/runtime/` folder without explicit approval.
 Do not modify the core `Health Coach` scenario files in `shared/scenarios/health-coach/`.
 
 ## System Architecture
-The application is a React single-page application (SPA) utilizing Wouter for routing and i18next for internationalization. The UI/UX features a custom educational theme with distinct color coding for six core AI agent processes (Learning, Interaction, Perception, Reasoning, Planning, Execution) to enhance visual learning. Shadcn UI components are used and customized for an educational context.
+The application is a React single-page application (SPA) utilizing Wouter for routing and i18next for internationalization. The UI/UX features a custom educational theme with distinct color coding for six core AI agent processes (Learning, Connections, Perception, Reasoning, Planning, Execution) to enhance visual learning. Shadcn UI components are used and customized for an educational context.
 
 The learning journey is structured around five core phases:
 1.  **Classification & Explanation**: Drag-and-drop interface with confidence calibration.
@@ -94,6 +94,36 @@ Fixed critical usability issue where drag-drop boxes were too large to see targe
 - Cards are ~40px shorter when explanations not needed
 - Better drag-and-drop flow - users can see source AND target in one viewport
 - Maintains WCAG 2.2 AA compliance and keyboard navigation
+
+### Flexible Phase Navigation (November 12, 2024)
+Implemented comprehensive navigation system allowing learners to move freely between phases:
+
+**Navigation Improvements:**
+- PhaseProgress bar now clickable for ALL phases (not just completed ones) enabling direct jumps
+- Added Previous/Next buttons to ALL pages: Primer, WorkedExample, GuidedPractice, and Phases 1-5
+- Navigation handlers properly support fractional phase IDs (0, 0.5, 0.75, 1-5)
+- All user answers preserved via localStorage when jumping between phases
+
+**User Impact:**
+- Adult learners can explore content in their preferred order
+- No forced linear progression - respects user autonomy
+- Maintains pedagogical scaffolding while allowing flexibility
+- Smooth transitions with consistent button placement across all pages
+
+### Terminology Update: "Interaction" → "Connections" (November 12, 2024)
+Updated user-facing terminology to improve clarity for non-technical learners:
+
+**Changes:**
+- Renamed "Interaction (Tools)" to "Connections (People & Tools)" throughout UI
+- Updated all labels, tooltips, hints, and accessibility text (11 translation strings)
+- Maintained process color coding (cyan #0891B2) for visual consistency
+- Backend identifiers remain as "interaction" (no breaking changes)
+
+**Rationale:**
+- "Connections" clearer for learners: means "talk to people or call outside services"
+- Reduces confusion with "Execution" step
+- Better conveys the collaborative nature of the supporting system
+- Aligns with pedagogical goal of accessible, everyday language
 
 ### Pedagogical Content Enhancement
 - **Primer Phase**: Rewrote with everyday analogies (email processing metaphor) to help beginners understand the 4+2 model

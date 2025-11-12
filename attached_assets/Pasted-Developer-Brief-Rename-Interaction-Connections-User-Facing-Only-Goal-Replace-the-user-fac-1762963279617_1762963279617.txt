@@ -1,0 +1,150 @@
+Developer Brief — Rename “Interaction” → “Connections” (User-Facing Only)
+Goal
+
+Replace the user-facing term “Interaction” with “Connections” everywhere learners see it. Do not change back-end identifiers, enums, DB fields, or API names unless they are surfaced to the user.
+
+Rationale (for context only)
+
+“Connections” is clearer to non-technical learners: it means “talk to people or call outside services.” It also reduces confusion with Execution.
+
+Canonical Copy (use verbatim)
+
+Primary label: Connections
+
+Long label (where space allows): Connections (People & Tools)
+
+Tag/Chip (short form): Connections
+
+One-line description: Talk to people or use outside services (email, calendar, web) at any point.
+
+Litmus hint (tooltips/help): Is the agent reaching outside itself?
+
+“Always available” badge text: Always available
+
+Icon alt/ARIA label: Connections: people & tools
+
+Keep capitalization: capitalize Connections when listed among the 4+2 components; otherwise sentence case.
+
+Scope of Change (user-visible surfaces only)
+
+Update only what learners can read/see:
+
+UI Labels & Components
+
+Section/cards/tabs/badges/chips titled “Interaction”
+
+Category headers in the drag-and-drop activity
+
+Diagram labels (SVG text), legends, step pills
+
+Sidebars, nav items, breadcrumbs
+
+Microcopy
+
+Tooltips, hover help, empty states, hints
+
+Success/error messages referencing the category
+
+“Common mix-ups” or glossary snippets
+
+Content & Exports
+
+Printable worksheets/PDF exports
+
+Slide images embedded in the product
+
+Any in-app “copy deck” JSON used to render text
+
+Accessibility & Metadata
+
+ARIA labels, aria-describedby, and alt text
+
+Visible analytics dashboards or user-facing reports that display the label
+
+Docs & Marketing (if shown to learners)
+
+In-app help, onboarding pages, glossary
+
+Public course pages/screenshots used in the app
+
+Out of scope (leave as-is): variable names, enums, DB columns, API routes, telemetry event names, CSS class names (unless user-visible), internal docs.
+
+Minimal Copy Replacements (exact mappings)
+
+“Interaction” → “Connections”
+
+“Tools & UI (Interaction)” → “Connections (People & Tools)”
+
+“Interaction (Tools)” → “Connections (People & Tools)”
+
+“Interaction — Always available” → “Connections — Always available”
+
+Any shortened label “Interact” in UI → “Connect” only if it is a button/verb; otherwise keep the noun “Connections.”
+
+Copy Deck (drop-in text)
+
+Use these strings wherever the UI needs the category definitions:
+
+Connections
+Always available
+Description: Talk to people or use outside services (email, calendar, web) at any point.
+Hint/Litmus: Is the agent reaching outside itself?
+Alt text: Connections: people & tools
+
+Iconography (if applicable)
+
+Keep existing color and icon unless design requests a change. If you update:
+
+Preferred icon: plug or speech-bubble-with-plug.
+
+Update accessible name/alt: “Connections: people & tools.”
+
+Search/Replace Guidance
+
+Run a targeted search in UI/content layers only. Examples (adjust paths to repo):
+
+Preferred: ripgrep with file filters
+
+rg -n --glob '!**/node_modules/**' --glob '!**/dist/**' --glob '!**/build/**' \
+   --glob '!**/*.test.*' --glob '!**/*.spec.*' \
+   --glob '!**/*.ts' --glob '!**/*.tsx' --glob '!**/*.js' --glob '!**/*.jsx' \
+   -e '\bInteraction(s)?\b' ./apps/ui ./packages/content ./public
+
+
+Then replace strings in rendered copy files (React props, localization JSON, Markdown, SVG text).
+
+Do not replace in: schema files, API specs, telemetry, migrations, or any interaction_* identifiers unless those are rendered to the user.
+
+i18n/Localization
+
+Update en source strings now.
+
+If using i18n keys like labels.interaction, do not rename the key (avoid churn). Just update the value to “Connections”.
+
+Add alias in search if your in-app search indexes content; map “Interaction” → “Connections” so legacy searches still find it.
+
+QA Checklist (acceptance criteria)
+
+No user-visible “Interaction” remains in the product UI, diagrams, tooltips, PDFs, or help.
+
+The 4+2 diagram shows Connections (People & Tools) with the Always available badge.
+
+Drag-and-drop category uses Connections consistently (cards, bin label, feedback).
+
+Accessibility: screen reader reads “Connections: people & tools” where appropriate.
+
+Legacy internal identifiers continue to function; no back-end or telemetry breaks.
+
+Site/app search for “Interaction” returns results for Connections (synonym mapping).
+
+Visual regressions: layout still fits where the label length changed.
+
+Test Plan (quick)
+
+Smoke test all pages with the 4+2 component, the classification activity, and any export flows.
+
+Snapshot test key components if you have them (update snapshots that only change text).
+
+Screen-reader pass (VoiceOver): confirm the accessible names.
+
+Export one PDF and one PNG from the diagram to verify embedded text.

@@ -60,7 +60,7 @@
 ### Process Colors (Educational Coding)
 These remain vibrant for pedagogical distinction:
 - **Learning/Memory:** Purple `#7C3AED` (maintain existing)
-- **Interaction/Tools:** Cyan `#0891B2` (maintain existing)
+- **Connections (People & Tools):** Cyan `#0891B2` (maintain existing)
 - **Perception:** Green `#10B981` (maintain existing)
 - **Reasoning:** Amber `#F59E0B` (maintain existing)
 - **Planning:** Pink `#EC4899` (maintain existing)

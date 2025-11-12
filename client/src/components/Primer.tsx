@@ -47,7 +47,7 @@ export function Primer({ onComplete }: PrimerProps) {
         t("primer.check2.option3"),
         t("primer.check2.option4")
       ],
-      correctIndex: 3, // Interaction (Tools/UI)
+      correctIndex: 3, // Connections (People & Tools)
       explanation: t("primer.check2.explanation")
     }
   ];
