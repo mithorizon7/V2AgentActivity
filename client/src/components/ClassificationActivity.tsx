@@ -65,17 +65,19 @@ function DraggableItem({
             })
       }
       className={cn(
-        "flex items-center gap-2 p-3 rounded-md border-2 cursor-move transition-all hover-elevate active-elevate-2",
-        "bg-card focus:outline-none",
+        "flex items-center gap-2 p-4 min-h-[44px] rounded-md border-2 cursor-move transition-all hover-elevate active-elevate-2",
+        "bg-card focus:outline-none touch-manipulation",
         isFocused && "ring-2 ring-primary ring-offset-2",
-        isGrabbed && "border-dashed border-primary shadow-lg",
+        isGrabbed && "border-dashed border-primary shadow-lg scale-105",
         showFeedback && isCorrect === true && "border-green-500 bg-green-50 dark:bg-green-950",
         showFeedback && isCorrect === false && "border-red-500 bg-red-50 dark:bg-red-950"
       )}
       data-testid={`classification-item-${item.id}`}
     >
-      <GripVertical className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-      <span className="text-sm font-medium flex-1">{item.text}</span>
+      <GripVertical className="w-5 h-5 text-muted-foreground flex-shrink-0" aria-hidden="true" />
+      <div className="flex-1 min-w-0">
+        <p className="text-sm sm:text-base font-medium leading-snug break-words">{item.text}</p>
+      </div>
       {showFeedback && (
         isCorrect ? (
           <Check className="w-5 h-5 text-green-600" data-testid={`item-correct-${item.id}`} />
@@ -147,7 +149,7 @@ function ProcessColumn({
       onDragLeave={() => setIsDraggedOver(false)}
       data-testid={`drop-zone-${process}`}
     >
-      <div className="mb-4 pb-3 border-b space-y-2">
+      <div className="mb-4 pb-3 border-b space-y-2.5">
         <div className="flex items-center gap-2">
           <div className={cn("w-3 h-3 rounded-full", colors.bg)} />
           <h3 className="font-semibold text-base uppercase tracking-wide">
@@ -158,9 +160,11 @@ function ProcessColumn({
           </Badge>
         </div>
         {litmusTest && (
-          <p id={litmusId} className="text-sm text-muted-foreground pl-5">
-            {litmusTest}
-          </p>
+          <div id={litmusId} className="flex items-start gap-1.5 pl-5">
+            <span className="text-base leading-tight font-medium text-foreground/80">
+              {litmusTest}
+            </span>
+          </div>
         )}
       </div>
       <div className="space-y-3 flex-1">
@@ -496,11 +500,11 @@ export function ClassificationActivity({
         {ariaAnnouncement}
       </div>
       
-      <div className="flex items-center justify-between gap-4">
-        <p className="text-sm text-muted-foreground">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-0">
+        <p className="text-sm sm:text-base text-muted-foreground flex-1">
           {t("classification.dragInstruction")}
-          <br />
-          <span className="text-xs">
+          <br className="hidden sm:block" />
+          <span className="text-xs hidden sm:inline">
             {t("classification.accessibility.instructions", {
               tab: `${t("keyboard.keyNames.tab")}/${t("keyboard.keyNames.shiftTab")}`,
               arrowUpDown: `${t("keyboard.keyNames.arrowUp")}/${t("keyboard.keyNames.arrowDown")}`,
@@ -509,17 +513,19 @@ export function ClassificationActivity({
             })}
           </span>
         </p>
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-2 w-full sm:w-auto">
           <Button
             variant="outline"
             onClick={handleScramble}
             data-testid="button-scramble"
+            className="w-full sm:w-auto min-h-[44px]"
           >
             {t("classification.scramble")}
           </Button>
           <Button
             onClick={handleSubmit}
             data-testid="button-solve"
+            className="w-full sm:w-auto min-h-[44px]"
           >
             {t("classification.submitCheck")}
           </Button>
@@ -527,7 +533,7 @@ export function ClassificationActivity({
       </div>
 
       {/* Drop Zones - 6 process categories */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {processes.map((process) => (
           <div
             key={process}
@@ -578,12 +584,12 @@ export function ClassificationActivity({
 
       {/* Unsorted Tray - where all cards start */}
       {unsortedItems.length > 0 && (
-        <Card className="p-4 border-2 border-dashed">
-          <div className="mb-2">
-            <span className="text-sm font-semibold">{t("classification.unsortedTray")}</span>
-            <Badge variant="outline" className="ml-2">{unsortedItems.length}</Badge>
+        <Card className="p-4 sm:p-6 border-2 border-dashed">
+          <div className="mb-4 flex items-center gap-2">
+            <span className="text-sm sm:text-base font-semibold">{t("classification.unsortedTray")}</span>
+            <Badge variant="outline">{unsortedItems.length}</Badge>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {unsortedItems.map((item) => (
               <DraggableItem
                 key={item.id}

@@ -523,23 +523,24 @@ export default function LearningPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="fixed top-4 left-4 z-50">
+      <div className="fixed top-3 sm:top-4 left-3 sm:left-4 z-50">
         <Button 
           variant="outline" 
           size="sm"
           onClick={() => setLocation("/")}
           data-testid="button-back-home"
+          className="min-h-[44px] sm:min-h-[36px]"
         >
-          <Home className="w-4 h-4 mr-2" />
-          {t("navigation.backToHome")}
+          <Home className="w-4 h-4 sm:mr-2" />
+          <span className="hidden sm:inline">{t("navigation.backToHome")}</span>
         </Button>
       </div>
-      <div className="fixed top-4 right-4 z-50 flex gap-2">
+      <div className="fixed top-3 sm:top-4 right-3 sm:right-4 z-50 flex gap-2">
         <HighContrastToggle />
       </div>
       {currentPhase > 0 && <PhaseProgress phases={phases} onPhaseClick={(id) => setCurrentPhase(id)} />}
 
-      <div id="main-content" className="max-w-7xl mx-auto px-6 py-8">
+      <div id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {currentPhase === 0 && (
           <>
             <Primer onComplete={handlePrimerComplete} />
@@ -581,8 +582,8 @@ export default function LearningPage() {
         {currentPhase === 1 && (
           <div className="space-y-6">
             <div>
-              <h2 className="text-3xl font-bold mb-2">{t("classification.title")}</h2>
-              <p className="text-muted-foreground">
+              <h2 className="text-2xl sm:text-3xl font-bold mb-2">{t("classification.title")}</h2>
+              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                 {t("classification.independentDescription")}
               </p>
             </div>
@@ -625,8 +626,8 @@ export default function LearningPage() {
         {currentPhase === 2 && (
           <div className="space-y-6">
             <div>
-              <h2 className="text-3xl font-bold mb-2">{t("boundaryMap.title")}</h2>
-              <p className="text-muted-foreground">
+              <h2 className="text-2xl sm:text-3xl font-bold mb-2">{t("boundaryMap.title")}</h2>
+              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                 {t("boundaryMap.description")}
               </p>
             </div>
@@ -666,8 +667,8 @@ export default function LearningPage() {
         {currentPhase === 3 && (
           <div className="space-y-6">
             <div>
-              <h2 className="text-3xl font-bold mb-2">{t("circuit.title")}</h2>
-              <p className="text-muted-foreground">
+              <h2 className="text-2xl sm:text-3xl font-bold mb-2">{t("circuit.title")}</h2>
+              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                 {t("circuit.description")}
               </p>
             </div>
@@ -727,8 +728,8 @@ export default function LearningPage() {
         {currentPhase === 4 && (
           <div className="space-y-6">
             <div>
-              <h2 className="text-3xl font-bold mb-2">{t("simulation.title")}</h2>
-              <p className="text-muted-foreground">
+              <h2 className="text-2xl sm:text-3xl font-bold mb-2">{t("simulation.title")}</h2>
+              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                 {t("simulation.description")}
               </p>
             </div>
@@ -838,8 +839,8 @@ export default function LearningPage() {
         {currentPhase === 5 && (
           <div className="space-y-6">
             <div>
-              <h2 className="text-3xl font-bold mb-2">{t("assessment.title")}</h2>
-              <p className="text-muted-foreground">
+              <h2 className="text-2xl sm:text-3xl font-bold mb-2">{t("assessment.title")}</h2>
+              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                 {t("assessment.description")}
               </p>
             </div>

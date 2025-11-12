@@ -18,9 +18,9 @@ export function PhaseProgress({ phases, onPhaseClick }: PhaseProgressProps) {
   const { t } = useTranslation();
   
   return (
-    <div className="sticky top-0 z-50 bg-background border-b" data-testid="phase-progress">
-      <div className="max-w-7xl mx-auto px-6 py-4">
-        <div className="flex items-center justify-between gap-2">
+    <div className="sticky top-0 z-50 bg-background border-b shadow-sm" data-testid="phase-progress">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 py-3 sm:py-4">
+        <div className="flex items-center justify-between gap-1 sm:gap-2 overflow-x-auto scrollbar-hide">
           {phases.map((phase, index) => {
             const isClickable = onPhaseClick;
             
@@ -30,7 +30,7 @@ export function PhaseProgress({ phases, onPhaseClick }: PhaseProgressProps) {
                   onClick={() => isClickable && onPhaseClick(phase.id)}
                   data-testid={`phase-step-${phase.id}`}
                   className={cn(
-                    "flex items-center gap-3 flex-1 min-w-0 transition-all",
+                    "flex items-center gap-2 sm:gap-3 flex-1 min-w-0 transition-all min-h-[44px] sm:min-h-[auto]",
                     isClickable && "cursor-pointer hover-elevate active-elevate-2"
                   )}
                   aria-label={t("phaseProgress.phaseLabel", { id: phase.id, name: phase.name })}
@@ -38,18 +38,18 @@ export function PhaseProgress({ phases, onPhaseClick }: PhaseProgressProps) {
                 >
                   <div
                     className={cn(
-                      "flex items-center justify-center w-10 h-10 rounded-full border-2 flex-shrink-0 transition-all",
+                      "flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 flex-shrink-0 transition-all",
                       phase.completed && "bg-primary border-primary",
                       phase.current && !phase.completed && "border-primary bg-primary/10",
                       !phase.completed && !phase.current && "border-border bg-muted"
                     )}
                   >
                     {phase.completed ? (
-                      <Check className="w-5 h-5 text-primary-foreground" />
+                      <Check className="w-4 h-4 sm:w-5 sm:h-5 text-primary-foreground" />
                     ) : (
                       <span
                         className={cn(
-                          "text-sm font-semibold",
+                          "text-xs sm:text-sm font-semibold",
                           phase.current ? "text-primary" : "text-muted-foreground"
                         )}
                       >
@@ -57,7 +57,7 @@ export function PhaseProgress({ phases, onPhaseClick }: PhaseProgressProps) {
                       </span>
                     )}
                   </div>
-                  <div className="flex flex-col items-start min-w-0">
+                  <div className="hidden sm:flex flex-col items-start min-w-0">
                     <span className="text-xs text-muted-foreground uppercase tracking-wide">
                       {t("phaseProgress.phaseNumber", { id: phase.id })}
                     </span>
@@ -74,7 +74,7 @@ export function PhaseProgress({ phases, onPhaseClick }: PhaseProgressProps) {
                 {index < phases.length - 1 && (
                   <div
                     className={cn(
-                      "h-0.5 flex-1 mx-2 transition-all",
+                      "h-0.5 flex-1 mx-1 sm:mx-2 transition-all min-w-[12px] sm:min-w-[20px]",
                       phase.completed ? "bg-primary" : "bg-border"
                     )}
                     aria-hidden="true"
