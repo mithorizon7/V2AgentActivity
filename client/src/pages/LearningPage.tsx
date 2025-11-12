@@ -554,15 +554,41 @@ export default function LearningPage() {
 
       <div id="main-content" className="max-w-7xl mx-auto px-6 py-8">
         {currentPhase === 0 && (
-          <Primer onComplete={handlePrimerComplete} />
+          <>
+            <Primer onComplete={handlePrimerComplete} />
+            
+            <PhaseNavigation
+              onNext={handlePrimerComplete}
+              showPrevious={false}
+              nextLabel={t("workedExample.title")}
+            />
+          </>
         )}
 
         {currentPhase === 0.5 && (
-          <WorkedExample onComplete={handleWorkedExampleComplete} />
+          <>
+            <WorkedExample onComplete={handleWorkedExampleComplete} />
+            
+            <PhaseNavigation
+              onPrevious={navigateToPreviousPhase}
+              onNext={handleWorkedExampleComplete}
+              previousLabel={t("primer.title")}
+              nextLabel={t("phase1Guided.title")}
+            />
+          </>
         )}
 
         {currentPhase === 0.75 && (
-          <Phase1Guided items={CLASSIFICATION_ITEMS} onComplete={handleGuidedPracticeComplete} />
+          <>
+            <Phase1Guided items={CLASSIFICATION_ITEMS} onComplete={handleGuidedPracticeComplete} />
+            
+            <PhaseNavigation
+              onPrevious={navigateToPreviousPhase}
+              onNext={handleGuidedPracticeComplete}
+              previousLabel={t("workedExample.title")}
+              nextLabel={t("classification.title")}
+            />
+          </>
         )}
 
         {currentPhase === 1 && (

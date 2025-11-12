@@ -22,19 +22,16 @@ export function PhaseProgress({ phases, onPhaseClick }: PhaseProgressProps) {
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between gap-2">
           {phases.map((phase, index) => {
-            const isClickable = phase.completed && onPhaseClick;
-            const isAccessible = phase.completed || phase.current;
+            const isClickable = onPhaseClick;
             
             return (
               <div key={phase.id} className="flex items-center flex-1">
                 <button
                   onClick={() => isClickable && onPhaseClick(phase.id)}
-                  disabled={!isAccessible}
                   data-testid={`phase-step-${phase.id}`}
                   className={cn(
                     "flex items-center gap-3 flex-1 min-w-0 transition-all",
-                    isClickable && "cursor-pointer hover-elevate active-elevate-2",
-                    !isAccessible && "opacity-40 cursor-not-allowed"
+                    isClickable && "cursor-pointer hover-elevate active-elevate-2"
                   )}
                   aria-label={t("phaseProgress.phaseLabel", { id: phase.id, name: phase.name })}
                   aria-current={phase.current ? "step" : undefined}
