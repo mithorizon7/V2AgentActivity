@@ -123,7 +123,7 @@
       },
       "tools": {
         "label": "Connections (People & Tools)",
-        "description": "Like a toolbox or phone to call for help — the agent can use tools or show messages at ANY point during the 4 steps",
+        "description": "Talk to people or use outside services (email, calendar, web) at any point.",
         "badge": "Always available"
       },
       "crossCutting": {
@@ -281,7 +281,7 @@
       "tools": {
         "icon": "🔧",
         "title": "Connections (People & Tools)",
-        "description": "How the agent acts in the world—any stage can call a tool or show something to a user",
+        "description": "Talk to people or use outside services (email, calendar, web) at any point.",
         "badge": "calls Tool: {{tool}}"
       }
     },
@@ -335,7 +335,7 @@
     "incorrectFeedback": "Think about the core action: Is it reading, understanding, choosing, doing, remembering, or using tools?",
     "hints": {
       "learning": "Hint: Memory/Learning isn't a step in the loop — it's like a notebook any step can write in or read from",
-      "interaction": "Hint: Tools/Connections isn't a step in the loop — it's like a toolbox any step can reach for when needed"
+      "interaction": "Hint: Is the agent reaching outside itself?"
     },
     "accessibility": {
       "instructions": "Keyboard: {{tab}} to navigate all elements, {{arrowUpDown}} for quick navigation within sections, {{spaceEnter}} to grab/drop cards, {{escape}} to cancel",

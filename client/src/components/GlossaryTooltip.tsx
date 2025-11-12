@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { AgentProcess } from "@shared/schema";
 import { getProcessColor } from "@/lib/processColors";
 import { HelpCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 type GlossaryTooltipProps = {
   term: string;
@@ -23,6 +24,7 @@ export function GlossaryTooltip({
   example,
   children,
 }: GlossaryTooltipProps) {
+  const { t } = useTranslation();
   const colors = getProcessColor(process);
 
   return (
@@ -46,7 +48,7 @@ export function GlossaryTooltip({
             variant="secondary"
             data-testid={`process-badge-${process}`}
           >
-            {process.charAt(0).toUpperCase() + process.slice(1)}
+            {t(`processes.${process}`)}
           </Badge>
         </div>
         <p className="text-sm text-muted-foreground leading-relaxed">{definition}</p>

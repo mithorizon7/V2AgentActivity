@@ -390,7 +390,7 @@ export function BoundaryMapCanvas({
                             key={conn.id}
                             className={`${colors.bg} ${colors.text} text-xs`}
                           >
-                            {conn.process}
+                            {t(`processes.${conn.process}`)}
                           </Badge>
                         );
                       })}
@@ -431,7 +431,7 @@ export function BoundaryMapCanvas({
                   data-testid={`connect-process-${process}`}
                 >
                   <div className={cn("w-3 h-3 rounded-full", colors.bg)} />
-                  {process.charAt(0).toUpperCase() + process.slice(1)}
+                  {t(`processes.${process}`)}
                 </Button>
               );
             }
