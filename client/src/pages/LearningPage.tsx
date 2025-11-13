@@ -273,14 +273,7 @@ export default function LearningPage() {
     const feedback = {
       accuracy,
       correctAnswers,
-      feedback: submissions
-        .filter((s) => !s.isCorrect)
-        .map((s) => ({
-          type: "incorrect" as const,
-          title: t("classification.incorrectClassification"),
-          message: t("classification.incorrectFeedback"),
-          itemName: CLASSIFICATION_ITEMS.find((i) => i.id === s.itemId)?.text,
-        })),
+      feedback: [],
     };
 
     setFeedbackData(feedback);
