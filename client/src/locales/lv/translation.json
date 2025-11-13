@@ -10,38 +10,38 @@
     "error": "Radās kļūda"
   },
   "homePage": {
-    "title": "Mākslīgā Intelekta Aģentu Mācību Platforma",
-    "subtitle": "Pamata koncepcijas par MI aģentiem inteliģentu sistēmu veidošanai",
+    "title": "MI aģentu mācību platforma",
+    "subtitle": "Galvenie principi mākslīgā intelekta aģentu veidošanai",
     "understand": {
-      "title": "Izprast",
-      "description": "Apgūsti 4+2 ietvaru, kas nodrošina katru MI aģentu: 4 soļu procesu (Uztvere, Spriedumi, Plānošana, Izpilde) plus 2 atbalsta sistēmas (Atmiņa un Rīki)"
+      "title": "Izpratne",
+      "description": "Apgūstiet 4+2 modeli, kas ir pamatā katram MI aģentam: četru soļu process (Uztvere, Izpratne, Plānošana, Izpilde) un divas palīgsistēmas (Atmiņa un Rīki)"
     },
     "practice": {
-      "title": "Praktizēt",
-      "description": "Nosakiet aģenta robežas, veidojiet shēmas, izmantojot 4+2 modeli, palaidiet simulācijas un atkļūdojiet kļūmes caur praktiskiem uzdevumiem"
+      "title": "Prakse",
+      "description": "Nosakiet aģenta robežas, veidojiet shēmas ar 4+2 modeli, palaidiet simulācijas un atrodiet kļūdas praktiskos uzdevumos"
     },
     "build": {
-      "title": "Veidot",
-      "description": "Projektējiet un testējiet savu aģentu, izmantojot 4+2 ietvaru, novērtējiet tā veiktspēju un mācieties atpazīt izplatītas kļūdu shēmas"
+      "title": "Veidošana",
+      "description": "Izstrādājiet un pārbaudiet pats savu aģentu ar 4+2 modeli, izvērtējiet tā darbību un iemācieties atpazīt tipiskās problēmas"
     },
     "ready": {
-      "title": "Gatavs Sākt?",
-      "badge": "5 Interaktīvas Fāzes",
-      "description": "Šī programma ir izveidota, lai mācītu jums, kā darbojas MI aģenti, sadalot tos vienkāršās daļās. Jūs uzzināsiet, ka aģenti seko 4 soļu procesam: tie lasa ienākošo informāciju (Uztvere), nosaka, ko tā nozīmē (Spriedumi), izlemj, ko darīt (Plānošana), un pēc tam to dara (Izpilde). Pa ceļam tie izmanto divas atbalsta sistēmas: Atmiņu, lai atcerētos iepriekšējo pieredzi, un Rīkus darbībām pasaulē. Jūs izveidosiet savu vienkāršo aģentu, vērosiet tā darbību soli pa solim un mācīsieties atpazīt izplatītās problēmas, kad kaut kas noiet greizi. Programmēšana nav nepieciešama.",
-      "startButton": "Sākt Mācīties"
+      "title": "Vai esat gatavs sākt?",
+      "badge": "5 interaktīvi posmi",
+      "description": "Šis kurss jums iemācīs MI aģentu darbības principus, sadalot tos vienkāršos elementos. Jūs uzzināsiet, ka aģenti darbojas četru soļu ciklā: nolasa ievades datus (Uztvere), saprot to nozīmi (Izpratne), pieņem lēmumus (Plānošana) un veic darbības (Izpilde). Procesā tie izmanto divas palīgsistēmas: Atmiņu pieredzes saglabāšanai un Rīkus mijiedarbībai ar ārpasauli. Jūs izveidosiet vienkāršu aģentu, izsekosiet tā darbībai soli pa solim un iemācīsieties atpazīt biežākās kļūdas. Programmēšanas prasmes nav vajadzīgas.",
+      "startButton": "Sākt mācības"
     },
-    "methodology": "Izstrādāts ar kognitīvo mācekļošanu, zināšanu izgūšanas praksi un metakognitīvo kalibrāciju, lai maksimizētu mācīšanās rezultātus"
+    "methodology": "Balstīts uz kognitīvās meistarības, aktīvās atcerēšanās un metakognitīvās kalibrēšanas principiem maksimālai mācību efektivitātei"
   },
   "notFound": {
     "title": "404 Lapa Nav Atrasta",
     "message": "Vai aizmirsāt pievienot lapu maršrutētājam?"
   },
   "navigation": {
-    "backToHome": "Atpakaļ Uz Sākumlapu",
-    "previousPhase": "Iepriekšējā Fāze",
-    "nextPhase": "Nākamā Fāze",
-    "goHome": "Doties Uz Sākumlapu",
-    "phaseNavigation": "Fāžu navigācija"
+    "backToHome": "Uz sākumu",
+    "previousPhase": "Iepriekšējais posms",
+    "nextPhase": "Nākamais posms",
+    "goHome": "Uz sākumlapu",
+    "phaseNavigation": "Posmu navigācija"
   },
   "ui": {
     "sidebar": {
@@ -63,689 +63,689 @@
     "phaseNumber": "Fāze {{id}}"
   },
   "processes": {
-    "learning": "Atmiņa (Atcerēšanās/Mācīšanās)",
-    "interaction": "Savienojumi (Cilvēki un Rīki)",
-    "perception": "Uztvere (Redzēšana/Vākšana)",
-    "reasoning": "Spriedumi (Domāšana/Skaidrošana)",
-    "planning": "Plānošana (Lēmumi/Secība)",
-    "execution": "Izpilde (Darbība/Veikšana)",
+    "learning": "Atmiņa (Saglabāšana/Mācīšanās)",
+    "interaction": "Savienojumi (Cilvēki un rīki)",
+    "perception": "Uztvere (Lasīšana/Datu vākšana)",
+    "reasoning": "Izpratne (Analīze/Sapratne)",
+    "planning": "Plānošana (Izvēle/Secība)",
+    "execution": "Izpilde (Darbība/Realizācija)",
     "litmusTests": {
-      "learning": "Vai tas būs noderīgs vēlāk?",
-      "interaction": "Vai aģents sasniedz ārpus sevis?",
+      "learning": "Vai tas noderēs nākotnē?",
+      "interaction": "Vai aģents izmanto ārējos resursus?",
       "perception": "Vai aģents lasa, klausās vai uztver?",
-      "reasoning": "Vai aģents izlemj, ko tas nozīmē?",
-      "planning": "Vai aģents izvēlas, ko darīt tālāk?",
-      "execution": "Vai aģents kaut ko rada vai nosūta?"
+      "reasoning": "Vai aģents nosaka nozīmi?",
+      "planning": "Vai aģents izvēlas nākamo darbību?",
+      "execution": "Vai aģents rada vai nosūta rezultātu?"
     }
   },
   "NOTE_FOR_TRANSLATOR": "========== TRANSLATION NEEDED BELOW THIS LINE ==========",
   "confidence": {
-    "title": "[NEEDS TRANSLATION]",
-    "question": "[NEEDS TRANSLATION]",
-    "notConfident": "[NEEDS TRANSLATION]",
-    "somewhatConfident": "[NEEDS TRANSLATION]",
-    "veryConfident": "[NEEDS TRANSLATION]"
+    "title": "Pārliecības līmenis",
+    "question": "Cik pārliecināts esat par savu klasifikāciju?",
+    "notConfident": "Neesmu pārliecināts",
+    "somewhatConfident": "Daļēji pārliecināts",
+    "veryConfident": "Pilnīgi pārliecināts"
   },
   "failureInjection": {
-    "title": "[NEEDS TRANSLATION]",
-    "description": "[NEEDS TRANSLATION]",
-    "activeMessage_one": "[NEEDS TRANSLATION]",
-    "activeMessage_other": "[NEEDS TRANSLATION]"
+    "title": "Kļūdu ievadīšana",
+    "description": "Ieslēdziet kļūmes, lai redzētu, kā aģents tiek galā ar kļūdām un robežgadījumiem",
+    "activeMessage_one": "Aktīva {{count}} kļūda. Palaidiet simulāciju, lai redzētu efektu.",
+    "activeMessage_other": "Aktīvas {{count}} kļūdas. Palaidiet simulāciju, lai redzētu efektus."
   },
   "feedbackPanel": {
-    "title": "[NEEDS TRANSLATION]",
-    "closeLabel": "[NEEDS TRANSLATION]",
-    "calibrationDescription": "[NEEDS TRANSLATION]",
-    "detailedFeedback": "[NEEDS TRANSLATION]",
-    "noFeedback": "[NEEDS TRANSLATION]"
+    "title": "Atgriezeniskā saite un rezultāti",
+    "closeLabel": "Aizvērt atgriezeniskās saites paneli",
+    "calibrationDescription": "Cik labi jūsu pārliecība atbilda faktiskajiem rezultātiem",
+    "detailedFeedback": "Detalizēta atgriezeniskā saite",
+    "noFeedback": "Atgriezeniskā saite nav pieejama"
   },
   "primer": {
-    "title": "[NEEDS TRANSLATION]",
-    "subtitle": "[NEEDS TRANSLATION]",
-    "continueToDemo": "[NEEDS TRANSLATION]",
-    "continueToChecks": "[NEEDS TRANSLATION]",
+    "title": "Kā darbojas MI aģenti",
+    "subtitle": "4+2 modelis: fundamentāls princips katram MI aģentam",
+    "continueToDemo": "Redzēt darbībā",
+    "continueToChecks": "Pārbaudīt izpratni",
     "intro": {
-      "heading": "[NEEDS TRANSLATION]",
-      "description": "[NEEDS TRANSLATION]"
+      "heading": "4+2 modelis",
+      "description": "Labi MI aģenti darbojas kā gudri palīgi, atkārtojot vienu un to pašu pamata ciklu: nolasa informāciju, saprot tās nozīmi, izlemj, ko darīt, un tad to izdara. Divi galvenie elementi nodrošina šo ciklu: **atmiņas** sistēma, kas saglabā kontekstu starp mijiedarbībām, un daudzveidīgs **rīku komplekts**, ko aģents izmanto problēmu risināšanai un uzdevumu veikšanai."
     },
     "runLoop": {
-      "title": "[NEEDS TRANSLATION]",
+      "title": "4-soļu darba cikls (izpildās secīgi katru reizi)",
       "perception": {
-        "label": "[NEEDS TRANSLATION]",
-        "name": "[NEEDS TRANSLATION]",
-        "description": "[NEEDS TRANSLATION]"
+        "label": "Lasīt datus",
+        "name": "Uztvere",
+        "description": "Savāc visus pieejamos datus no lietotāja un vides, organizējot tos izmantojamā formātā."
       },
       "reasoning": {
-        "label": "[NEEDS TRANSLATION]",
-        "name": "[NEEDS TRANSLATION]",
-        "description": "[NEEDS TRANSLATION]"
+        "label": "Noteikt nozīmi",
+        "name": "Izpratne",
+        "description": "Interpretē datus, lai saprastu pamatā esošo nolūku un atjaunina savu iekšējo pasaules modeli."
       },
       "planning": {
-        "label": "[NEEDS TRANSLATION]",
-        "name": "[NEEDS TRANSLATION]",
-        "description": "[NEEDS TRANSLATION]"
+        "label": "Izveidot plānu",
+        "name": "Plānošana",
+        "description": "Formulē konkrētu operāciju un rīku izsaukumu secību mērķa sasniegšanai."
       },
       "execution": {
-        "label": "[NEEDS TRANSLATION]",
-        "name": "[NEEDS TRANSLATION]",
-        "description": "[NEEDS TRANSLATION]"
+        "label": "Veikt darbības",
+        "name": "Izpilde",
+        "description": "Īsteno plānu, lai radītu gala rezultātu vai mijiedarbotos ar vidi."
       }
     },
     "supporting": {
-      "title": "[NEEDS TRANSLATION]",
+      "title": "+ 2 palīgsistēmas (pieejamas vienmēr, nav soļi)",
       "memory": {
-        "label": "[NEEDS TRANSLATION]",
-        "description": "[NEEDS TRANSLATION]",
-        "badge": "[NEEDS TRANSLATION]"
+        "label": "Atmiņa (Mācīšanās)",
+        "description": "Kā piezīmju grāmatiņa, ko aģents nēsā līdzi — var apskatīt pagātnes informāciju vai pierakstīt jaunu JEBKURĀ brīdī 4 soļu laikā",
+        "badge": "Vienmēr pieejama"
       },
       "tools": {
-        "label": "[NEEDS TRANSLATION]",
-        "description": "[NEEDS TRANSLATION]",
-        "badge": "[NEEDS TRANSLATION]"
+        "label": "Savienojumi (Cilvēki un rīki)",
+        "description": "Sarunāties ar cilvēkiem vai izmantot ārējos pakalpojumus (e-pasts, kalendārs, tīmeklis) jebkurā brīdī.",
+        "badge": "Vienmēr pieejami"
       },
       "crossCutting": {
-        "title": "[NEEDS TRANSLATION]",
-        "description": "[NEEDS TRANSLATION]"
+        "title": "Kāpēc tie ir \"palīgi\", nevis \"soļi\"?",
+        "description": "Atmiņa un Rīki ir palīgkomponentes, nevis soļi ciklā. 4 soļi pārstāv secīgu procesu ar fiksētu kārtību, bet Atmiņa un Rīki ir resursi pēc pieprasījuma. Kā \"darba galds\" — jebkurš solis var tiem piekļūt informācijas iegūšanai vai funkcijas veikšanai."
       }
     },
     "demo": {
-      "title": "[NEEDS TRANSLATION]",
-      "subtitle": "[NEEDS TRANSLATION]",
-      "context": "[NEEDS TRANSLATION]",
+      "title": "Reāls piemērs: Veselības trenera aģents",
+      "subtitle": "Scenārijs: Ikdienas fitnesa kopsavilkums",
+      "context": "Izsekosim vienam pilnam veselības MI trenera darba ciklam.\n• Aģenta mērķis: Analizēt lietotāja ikdienas fitnesa datus un nosūtīt atbalstošu vakara kopsavilkumu.\n• Konteksts: Plkst. 20:00 sākas aģenta darba cikls. Tam jāpārbauda lietotāja fitnesa izsekotāja dati, jāsalīdzina ar mērķiem (no Atmiņas) un jānosūta ziņojums (izmantojot Rīku).\n\nTagad vērosim, kā aģents iziet cauri saviem 4 soļiem.",
       "perception": {
-        "label": "[NEEDS TRANSLATION]",
-        "example": "[NEEDS TRANSLATION]"
+        "label": "1. solis: Datu lasīšana",
+        "example": "Aģents saņem neapstrādātus sensora datus kā \"PS:72,68,75,71|SOĻI:8500\" un organizē tos: Sirds ritms = [72, 68, 75, 71 sit./min], Soļi = 8 500"
       },
       "reasoning": {
-        "label": "[NEEDS TRANSLATION]",
-        "example": "[NEEDS TRANSLATION]"
+        "label": "2. solis: Nozīmes noteikšana",
+        "example": "Aģents domā: \"Vai 71 sit./min ir veselīgi? (Jā, robežās 60-100.) Vai sasniegts 7 000 soļu mērķis? (Jā, 8 500 > 7 000.) Cilvēkam viss kārtībā!\""
       },
       "planning": {
-        "label": "[NEEDS TRANSLATION]",
-        "example": "[NEEDS TRANSLATION]"
+        "label": "3. solis: Plāna izveidošana",
+        "example": "Aģents nolemj: \"Tā kā visi rādītāji ir normāli, vajadzētu iedrošināt turpināt tāpat, nevis brīdināt par problēmām.\""
       },
       "execution": {
-        "label": "[NEEDS TRANSLATION]",
-        "example": "[NEEDS TRANSLATION]"
+        "label": "4. solis: Darbības veikšana",
+        "example": "Aģents nosūta ziņojumu: \"Lieliski pastrādāts! Jūsu sirds ritms ir stabils 71 sit./min līmenī, un jūs pārsniedzāt 7 000 soļu mērķi. Turpiniet tāpat!\""
       },
       "memory": {
-        "label": "[NEEDS TRANSLATION]",
-        "example": "[NEEDS TRANSLATION]"
+        "label": "Atmiņa (izmanto 2. solī)",
+        "example": "Nosakot datu nozīmi, aģents pārbauda savas piezīmes: \"Pagājušajā nedēļā lietotāja vidējais sirds ritms bija 65 sit./min, tāpēc 71 viņam ir normāli.\""
       },
       "tools": {
-        "label": "[NEEDS TRANSLATION]",
-        "example": "[NEEDS TRANSLATION]"
+        "label": "Rīki (izmanto 4. solī)",
+        "example": "Lai nosūtītu ziņojumu, aģents izmanto paziņojumu rīku — kā telefonu īsziņas nosūtīšanai lietotājam."
       }
     },
     "check": {
-      "badge": "[NEEDS TRANSLATION]",
-      "title": "[NEEDS TRANSLATION]",
-      "submit": "[NEEDS TRANSLATION]",
-      "correct": "[NEEDS TRANSLATION]",
-      "incorrect": "[NEEDS TRANSLATION]",
-      "tryAgain": "[NEEDS TRANSLATION]",
-      "continueAnyway": "[NEEDS TRANSLATION]"
+      "badge": "Pārbaude {{number}} no {{total}}",
+      "title": "Ātra izpratnes pārbaude",
+      "submit": "Pārbaudīt atbildi",
+      "correct": "✓ Pareizi!",
+      "incorrect": "Ne gluži — mēģiniet vēlreiz",
+      "tryAgain": "Mēģināt vēlreiz",
+      "continueAnyway": "Turpināt tāpat"
     },
     "check1": {
-      "question": "[NEEDS TRANSLATION]",
-      "option1": "[NEEDS TRANSLATION]",
-      "option2": "[NEEDS TRANSLATION]",
-      "option3": "[NEEDS TRANSLATION]",
-      "option4": "[NEEDS TRANSLATION]",
-      "explanation": "[NEEDS TRANSLATION]"
+      "question": "Mūsu veselības trenera piemērā aģents nolēma \"nosūtīt iedrošinājumu\" nevis \"nosūtīt brīdinājumu\". Kurā solī tika pieņemts šis lēmums?",
+      "option1": "Uztvere (datu lasīšana)",
+      "option2": "Izpratne (nozīmes sapratne)",
+      "option3": "Plānošana (darbības izvēle)",
+      "option4": "Izpilde (darbības veikšana)",
+      "explanation": "Pareizi! Plānošana ir 3. solis, kur aģents izvēlas KĀDU konkrētu darbību veikt. Izpratne (2. solis) noteica, ka lietotājs ir vesels, bet Plānošana (3. solis) nolēma, ka tas nozīmē iedrošinājuma, nevis brīdinājuma sūtīšanu vai bezdarbību."
     },
     "check2": {
-      "question": "[NEEDS TRANSLATION]",
-      "option1": "[NEEDS TRANSLATION]",
-      "option2": "[NEEDS TRANSLATION]",
-      "option3": "[NEEDS TRANSLATION]",
-      "option4": "[NEEDS TRANSLATION]",
-      "explanation": "[NEEDS TRANSLATION]"
+      "question": "Paziņojumu rīks, kas sūta ziņojumus lietotājiem — vai tas ir \"solis\" 4-soļu ciklā vai \"palīgsistēma\"?",
+      "option1": "Tas ir 3. solis (Plānošana)",
+      "option2": "Tas ir 4. solis (Izpilde)",
+      "option3": "Tas ir solis starp 3. un 4.",
+      "option4": "Tā ir palīgsistēma (Rīki)",
+      "explanation": "Pareizi! Paziņojumu rīks ir Rīku palīgsistēmas daļa. Tas nav pats solis — tas ir resurss, ko 4. solis (Izpilde) izmanto plānotās darbības veikšanai. Iedomājieties to kā āmuru rīku kastē: nav būvēšanas solis, bet rīks, ko izmanto būvēšanas solī."
     },
     "complete": {
-      "title": "[NEEDS TRANSLATION]",
-      "description": "[NEEDS TRANSLATION]",
+      "title": "Lieliski! Jūs saprotat 4+2 modeli",
+      "description": "Jūs uzzinājāt, kā katrs MI aģents seko vienam fundamentālam modelim",
       "remember": {
-        "title": "[NEEDS TRANSLATION]",
-        "point1": "[NEEDS TRANSLATION]",
-        "point2": "[NEEDS TRANSLATION]",
-        "point3": "[NEEDS TRANSLATION]"
+        "title": "Galvenie secinājumi:",
+        "point1": "Katrs aģents veic 4 soļus secīgi: Lasīt → Saprast → Izvēlēties → Darīt",
+        "point2": "Atmiņa un Rīki nav soļi — tie ir resursi, ko var izmantot jebkurš solis",
+        "point3": "Tagad jūs praktizēsieties reālo aģenta spēju sadalīšanā šajās kategorijās"
       },
-      "continue": "[NEEDS TRANSLATION]"
+      "continue": "Sākt praksi"
     }
   },
   "workedExample": {
-    "title": "[NEEDS TRANSLATION]",
-    "subtitle": "[NEEDS TRANSLATION]",
-    "progress": "[NEEDS TRANSLATION]",
-    "cardLabel": "[NEEDS TRANSLATION]",
-    "nearMiss": "[NEEDS TRANSLATION]",
-    "commonMistake": "[NEEDS TRANSLATION]",
-    "mightThink": "[NEEDS TRANSLATION]",
-    "because": "[NEEDS TRANSLATION]",
-    "expertClassifies": "[NEEDS TRANSLATION]",
-    "whyLabel": "[NEEDS TRANSLATION]",
-    "previous": "[NEEDS TRANSLATION]",
-    "next": "[NEEDS TRANSLATION]",
-    "startPractice": "[NEEDS TRANSLATION]",
-    "revealAnswer": "[NEEDS TRANSLATION]",
-    "answerRevealed": "[NEEDS TRANSLATION]",
-    "revealAll": "[NEEDS TRANSLATION]",
+    "title": "Mācieties no eksperta domāšanas",
+    "subtitle": "Vērojiet, kā eksperts izlemj, kurai kategorijai pieder katra spēja — un mācieties no biežākajām kļūdām",
+    "progress": "Piemērs {{current}} no {{total}}",
+    "cardLabel": "Kam aģentam jādara:",
+    "nearMiss": "Viltīgs piemērs",
+    "commonMistake": "Bieža iesācēju kļūda",
+    "mightThink": "Daudzi iesācēji kļūdaini domā, ka tas attiecas uz",
+    "because": "jo",
+    "expertClassifies": "Eksperta atbilde:",
+    "whyLabel": "Eksperta pamatojums:",
+    "previous": "Iepriekšējais",
+    "next": "Nākamais piemērs",
+    "startPractice": "Pamēģiniet paši",
+    "revealAnswer": "Noklikšķiniet atbildei",
+    "answerRevealed": "Atbilde parādīta",
+    "revealAll": "Parādīt visas atbildes",
     "processLabels": {
-      "perception": "[NEEDS TRANSLATION]",
-      "reasoning": "[NEEDS TRANSLATION]",
-      "planning": "[NEEDS TRANSLATION]",
-      "execution": "[NEEDS TRANSLATION]",
-      "learning": "[NEEDS TRANSLATION]",
-      "interaction": "[NEEDS TRANSLATION]"
+      "perception": "Uztvere",
+      "reasoning": "Izpratne",
+      "planning": "Plānošana",
+      "execution": "Izpilde",
+      "learning": "Mācīšanās (Atmiņa)",
+      "interaction": "Savienojumi (Cilvēki un rīki)"
     },
     "tip": {
-      "title": "[NEEDS TRANSLATION]",
-      "description": "[NEEDS TRANSLATION]"
+      "title": "Profesionāļa padoms",
+      "description": "Neļaujiet atslēgvārdiem sevi maldināt! Koncentrējieties uz DARBĪBU. Vai tas ir datu lasīšana? Nozīmes sapratne? Darbību izvēle? Vai tiešā izpilde?"
     },
     "cards": {
       "parseSensor": {
-        "text": "[NEEDS TRANSLATION]",
-        "explanation": "[NEEDS TRANSLATION]"
+        "text": "Analizēt datus no valkājamiem sensoriem",
+        "explanation": "\"Analizēt\" nozīmē lasīt un organizēt. Tas pārveido nejauktus sensora datus kā 'PS:72,68,75' formātā, ko aģents var saprast. Tas ir 1. solis (Uztvere) — ievades datu lasīšana un organizēšana. Padomājiet: vai tas ir datu LASĪŠANA? Jā!"
       },
       "thresholdCheck": {
-        "text": "[NEEDS TRANSLATION]",
-        "explanation": "[NEEDS TRANSLATION]"
+        "text": "Pārbaudīt, vai sirds ritms ir veselīgā diapazonā",
+        "explanation": "Tas nosaka skaitļu NOZĪMI. Vai 72 sit./min ir labi vai slikti? Nepieciešama izpratne par veselīgiem diapazoniem. Tas ir 2. solis (Izpratne) — svarīguma sapratne. Padomājiet: vai tas NOSAKA datu nozīmi? Jā!"
       },
       "chooseAction": {
-        "text": "[NEEDS TRANSLATION]",
-        "explanation": "[NEEDS TRANSLATION]"
+        "text": "Izlemt, vai iedrošināt vai brīdināt lietotāju",
+        "explanation": "Tagad aģents zina, ka lietotājs ir vesels, bet ko darīt: nosūtīt iedrošinājumu, brīdinājumu vai neko? Tas ir 3. solis (Plānošana) — izvēle, KĀDU darbību veikt. Padomājiet: vai tas ir IZVĒLE starp dažādām iespējamām darbībām? Jā!"
       },
       "sendMessage": {
-        "text": "[NEEDS TRANSLATION]",
-        "explanation": "[NEEDS TRANSLATION]"
+        "text": "Nosūtīt paziņojumu ar veselības ieteikumu",
+        "explanation": "Tas ir faktiskā ziņojuma nosūtīšana uz lietotāja telefonu. Tas ir 4. solis (Izpilde) — izvēlētās darbības realizācija. Padomājiet: vai tas ir paša uzdevuma IZPILDE? Jā!"
       },
       "storeBaseline": {
-        "text": "[NEEDS TRANSLATION]",
-        "explanation": "[NEEDS TRANSLATION]"
+        "text": "Saglabāt lietotāja bāzes sirds ritmu turpmākiem salīdzinājumiem",
+        "explanation": "\"Saglabāšana\" un \"atcerēšanās\" ir atmiņas operācijas. Tas nav solis 4-soļu ciklā — tas ir Atmiņas palīgsistēmas izmantošana (kā pierakstīšana piezīmju grāmatiņā). Jebkurš no 4 soļiem to var darīt. Padomājiet: vai tas saglabā informāciju vēlākai izmantošanai? Jā → Atmiņa!"
       },
       "callApi": {
-        "text": "[NEEDS TRANSLATION]",
-        "explanation": "[NEEDS TRANSLATION]"
+        "text": "Iegūt lietotāja kalendāru, lai netraucētu sanāksmju laikā",
+        "explanation": "\"Iegūšana\" caur API nozīmē ārēja rīka izmantošanu. Tas nav solis — tas ir Rīku palīgsistēmas izmantošana. Jebkuram no 4 soļiem var būt nepieciešami kalendāra dati. Padomājiet: vai tas izmanto ārēju pakalpojumu vai rīku? Jā → Rīki!"
       },
       "calendarNearMiss": {
-        "text": "[NEEDS TRANSLATION]",
-        "explanation": "[NEEDS TRANSLATION]",
-        "nearMissExplanation": "[NEEDS TRANSLATION]"
+        "text": "Ieplānot pārbaudi rītdienai",
+        "explanation": "VILTĪGI! Vārds \"ieplānot\" liek domāt par Plānošanu, bet paskatieties uzmanīgāk: tas IZMANTO kalendāra rīku, lai IZVEIDOTU tikšanos. Tas ir Savienojumi (Cilvēki un rīki), nevis Plānošana. Plānošana būtu LĒMUMS ieplānot, bet pašas ieplānošanas DARBĪBA izmanto rīku.",
+        "nearMissExplanation": "vārds 'ieplānot' izklausās pēc plānošanas"
       }
     }
   },
   "model": {
-    "title": "[NEEDS TRANSLATION]",
+    "title": "Kā darbojas aģenti: 4-soļu cikls + 2 palīgsistēmas (4+2)",
     "runLoop": {
-      "title": "[NEEDS TRANSLATION]",
-      "description": "[NEEDS TRANSLATION]",
+      "title": "4-soļu darba cikls",
+      "description": "Lasīt datus (Uztvere) → Saprast nozīmi (Izpratne) → Izveidot plānu (Plānošana) → Veikt darbību (Izpilde)",
       "steps": {
-        "perception": "[NEEDS TRANSLATION]",
-        "reasoning": "[NEEDS TRANSLATION]",
-        "planning": "[NEEDS TRANSLATION]",
-        "execution": "[NEEDS TRANSLATION]"
+        "perception": "Lasīt datus",
+        "reasoning": "Saprast nozīmi",
+        "planning": "Izveidot plānu",
+        "execution": "Veikt darbību"
       }
     },
     "supporting": {
-      "title": "[NEEDS TRANSLATION]",
+      "title": "2 palīgsistēmas",
       "memory": {
         "icon": "🧠",
-        "title": "[NEEDS TRANSLATION]",
-        "description": "[NEEDS TRANSLATION]",
-        "badge": "[NEEDS TRANSLATION]"
+        "title": "Atmiņa (Mācīšanās)",
+        "description": "Aģenta pieraksti — jebkurš solis var tos lasīt vai atjaunināt",
+        "badge": "izmanto Atmiņu"
       },
       "tools": {
         "icon": "🔧",
-        "title": "[NEEDS TRANSLATION]",
-        "description": "[NEEDS TRANSLATION]",
-        "badge": "[NEEDS TRANSLATION]"
+        "title": "Savienojumi (Cilvēki un rīki)",
+        "description": "Sarunāties ar cilvēkiem vai izmantot ārējos pakalpojumus (e-pasts, kalendārs, tīmeklis) jebkurā brīdī.",
+        "badge": "izsauc rīku: {{tool}}"
       }
     },
-    "crossCutting": "[NEEDS TRANSLATION]"
+    "crossCutting": "Šķērsveida: pieejamas jebkuram solim, nav soļi secībā"
   },
   "home": {
-    "title": "[NEEDS TRANSLATION]",
-    "subtitle": "[NEEDS TRANSLATION]",
+    "title": "MI aģentu mācību platforma",
+    "subtitle": "Apgūstiet MI aģentus no pamata koncepcijām līdz veidošanai — caur interaktīviem, pedagoģiski pārdomātiem vingrinājumiem",
     "understand": {
-      "title": "[NEEDS TRANSLATION]",
-      "description": "[NEEDS TRANSLATION]"
+      "title": "Izpratne",
+      "description": "Apgūstiet sešus galvenos MI aģentu darbības procesus: Mācīšanās, Savienojumi, Uztvere, Izpratne, Plānošana un Izpilde"
     },
     "practice": {
-      "title": "[NEEDS TRANSLATION]",
-      "description": "[NEEDS TRANSLATION]"
+      "title": "Prakse",
+      "description": "Nosakiet aģentu robežas, veidojiet shēmas, palaidiet simulācijas un atrodiet kļūdas praktiskos uzdevumos"
     },
     "build": {
-      "title": "[NEEDS TRANSLATION]",
-      "description": "[NEEDS TRANSLATION]"
+      "title": "Veidošana",
+      "description": "Projektējiet un konstruējiet pašu aģentus, novērtējiet to veiktspēju un uzlabojiet, pamatojoties uz reālu atgriezenisko saiti"
     },
-    "startButton": "[NEEDS TRANSLATION]"
+    "startButton": "Sākt mācības"
   },
   "phases": {
-    "phase1": "[NEEDS TRANSLATION]",
-    "phase2": "[NEEDS TRANSLATION]",
-    "phase3": "[NEEDS TRANSLATION]",
-    "phase4": "[NEEDS TRANSLATION]",
-    "phase5": "[NEEDS TRANSLATION]",
-    "perception": "[NEEDS TRANSLATION]",
-    "perceptionDual": "[NEEDS TRANSLATION]",
-    "execution": "[NEEDS TRANSLATION]",
-    "executionDual": "[NEEDS TRANSLATION]"
+    "phase1": "Klasifikācija un skaidrojums",
+    "phase2": "Robežu noteikšana",
+    "phase3": "Shēmu veidošana",
+    "phase4": "Simulācija un testēšana",
+    "phase5": "Novērtēšana un analīze",
+    "perception": "Uztvere",
+    "perceptionDual": "Lasīt datus (Uztvere)",
+    "execution": "Izpilde",
+    "executionDual": "Veikt darbības (Izpilde)"
   },
   "classification": {
-    "title": "[NEEDS TRANSLATION]",
-    "description": "[NEEDS TRANSLATION]",
-    "independentDescription": "[NEEDS TRANSLATION]",
-    "dragInstruction": "[NEEDS TRANSLATION]",
-    "unsortedTray": "[NEEDS TRANSLATION]",
-    "dragItemsHere": "[NEEDS TRANSLATION]",
-    "scramble": "[NEEDS TRANSLATION]",
-    "submitCheck": "[NEEDS TRANSLATION]",
-    "explainPlaceholder": "[NEEDS TRANSLATION]",
-    "explanationRequired": "[NEEDS TRANSLATION]",
-    "phaseComplete": "[NEEDS TRANSLATION]",
-    "continueDescription": "[NEEDS TRANSLATION]",
-    "continueToPhase2": "[NEEDS TRANSLATION]",
-    "crossCuttingHint": "[NEEDS TRANSLATION]",
-    "correct": "[NEEDS TRANSLATION]",
-    "incorrectClassification": "[NEEDS TRANSLATION]",
-    "incorrectFeedback": "[NEEDS TRANSLATION]",
+    "title": "1. fāze: Pielietojiet apgūtās zināšanas",
+    "description": "Tagad jūsu kārta! Sadaliet šīs aģenta spējas 6 kategorijās. Atcerieties: 4 soļi notiek secīgi (Uztvere → Izpratne → Plānošana → Izpilde), bet Atmiņa un Savienojumi pieejami vienmēr.",
+    "independentDescription": "Sadaliet spējas 6 procesos, velkot tās pareizajā kategorijā.",
+    "dragInstruction": "Velciet katru spēju no apakšas uz pareizo kategoriju augšā",
+    "unsortedTray": "Spējas šķirošanai",
+    "dragItemsHere": "Novietojiet spējas šeit",
+    "scramble": "Atiestatīt visu",
+    "submitCheck": "Pārbaudīt atbildes",
+    "explainPlaceholder": "Kāpēc tas pieder šeit? (Padoms: Norādiet, kāda DARBĪBA tiek veikta)",
+    "explanationRequired": "Lūdzu, paskaidrojiet katru izvēli — tas palīdz saprast KĀPĒC, nevis tikai atcerēties KUR",
+    "phaseComplete": "Lielisks darbs!",
+    "continueDescription": "Jūs esat apguvis klasifikāciju! Apskatiet rezultātus un turpiniet",
+    "continueToPhase2": "Tālāk: Robežu noteikšana",
+    "crossCuttingHint": "Atcerieties: Tas nav solis — tas ir resurss, pieejams VISIEM soļiem",
+    "correct": "Pareizi!",
+    "incorrectClassification": "Ne gluži pareizi",
+    "incorrectFeedback": "Padomājiet par galveno darbību: vai tas ir lasīšana, sapratne, izvēle, izpilde, atcerēšanās vai rīku izmantošana?",
     "hints": {
-      "learning": "[NEEDS TRANSLATION]",
-      "interaction": "[NEEDS TRANSLATION]"
+      "learning": "Padoms: Atmiņa/Mācīšanās nav cikla solis, tā ir kā piezīmju grāmatiņa, kurā jebkurš solis var ierakstīt vai no kuras nolasīt",
+      "interaction": "Padoms: Vai aģents sniedzas ārpus sevis?"
     },
     "accessibility": {
-      "instructions": "[NEEDS TRANSLATION]",
+      "instructions": "Izmantojiet bulttaustiņus, lai pārvietotos starp elementiem, atstarpi vai Enter, lai satvertu/atbrīvotu, Escape, lai atceltu vilkšanu",
       "card": {
-        "label": "[NEEDS TRANSLATION]",
-        "labelGrabbed": "[NEEDS TRANSLATION]",
-        "labelIdle": "[NEEDS TRANSLATION]",
-        "explanationLabel": "[NEEDS TRANSLATION]"
+        "label": "Aģenta spēja: {{text}}. {{status}}",
+        "labelGrabbed": "Satverts. Izmantojiet bultiņas, lai pārvietotu, atstarpi, lai novietotu",
+        "labelIdle": "Nospiediet atstarpi vai Enter, lai satvertu un pārvietotu",
+        "explanationLabel": "Skaidrojums priekš {{text}}"
       },
       "dropZone": {
-        "label": "[NEEDS TRANSLATION]",
-        "labelWithHint": "[NEEDS TRANSLATION]"
+        "label": "Nomešanas zona priekš {{process}}",
+        "labelWithHint": "Nomešanas zona priekš {{process}}. {{hint}}"
       },
       "announcements": {
-        "grabbed": "[NEEDS TRANSLATION]",
-        "droppedSameLocation": "[NEEDS TRANSLATION]",
-        "releaseFirst": "[NEEDS TRANSLATION]",
-        "dropped": "[NEEDS TRANSLATION]",
-        "cancelled": "[NEEDS TRANSLATION]",
-        "dropCancelled": "[NEEDS TRANSLATION]",
-        "navigatedToZone": "[NEEDS TRANSLATION]",
-        "focusedOnZone": "[NEEDS TRANSLATION]"
+        "grabbed": "Satverts {{item}}",
+        "droppedSameLocation": "Atbrīvots sākotnējā pozīcijā",
+        "releaseFirst": "Vispirms atbrīvojiet pašreizējo elementu",
+        "dropped": "Novietots {{item}} zonā {{zone}}",
+        "cancelled": "Vilkšana atcelta",
+        "dropCancelled": "Elements atgriezts sākotnējā pozīcijā",
+        "navigatedToZone": "Pārvietots uz {{zone}}",
+        "focusedOnZone": "Fokuss uz {{zone}}"
       }
     }
   },
   "guided": {
-    "title": "[NEEDS TRANSLATION]",
-    "description": "[NEEDS TRANSLATION]",
-    "dragInstruction": "[NEEDS TRANSLATION]",
-    "checkAnswers": "[NEEDS TRANSLATION]",
-    "sortAllItems": "[NEEDS TRANSLATION]",
-    "contrastiveHint": "[NEEDS TRANSLATION]",
+    "title": "Prakse ar vadītāju",
+    "description": "Vadītājs parādīs, kur novietot pirmos elementus. Vērojiet eksperta spriedumus.",
+    "dragInstruction": "Velciet elementus pareizajās procesu kategorijās",
+    "checkAnswers": "Pārbaudīt atbildes",
+    "sortAllItems": "Lūdzu, sašķirojiet visus elementus pirms pārbaudes",
+    "contrastiveHint": "Ievērojiet atšķirību starp {{correct}} un {{incorrect}}. {{explanation}}",
     "seedPrompts": {
       "perception": {
-        "1": "[NEEDS TRANSLATION]",
-        "2": "[NEEDS TRANSLATION]",
-        "3": "[NEEDS TRANSLATION]"
+        "1": "Tas ietver datu vākšanu, tāpēc pieder pie Uztveres",
+        "2": "Informācijas lasīšana ir Uztveres galvenā funkcija",
+        "3": "Pirmais solis vienmēr ir iegūt ievades datus caur Uztveri"
       },
       "execution": {
-        "1": "[NEEDS TRANSLATION]",
-        "2": "[NEEDS TRANSLATION]",
-        "3": "[NEEDS TRANSLATION]"
+        "1": "Gala rezultāta radīšana ir Izpilde",
+        "2": "Tiešas darbības veikšana attiecas uz Izpildi",
+        "3": "Plāna īstenošana notiek Izpildes posmā"
       }
     }
   },
   "classificationItems": {
-    "savePreferences": "[NEEDS TRANSLATION]",
-    "updateRule": "[NEEDS TRANSLATION]",
-    "storeConversation": "[NEEDS TRANSLATION]",
-    "sendMessage": "[NEEDS TRANSLATION]",
-    "callExternal": "[NEEDS TRANSLATION]",
-    "fetchLiveData": "[NEEDS TRANSLATION]",
-    "parseMessage": "[NEEDS TRANSLATION]",
-    "gatherState": "[NEEDS TRANSLATION]",
-    "assembleContext": "[NEEDS TRANSLATION]",
-    "detectProgress": "[NEEDS TRANSLATION]",
-    "interpretRequest": "[NEEDS TRANSLATION]",
-    "recallFacts": "[NEEDS TRANSLATION]",
-    "applyRules": "[NEEDS TRANSLATION]",
-    "chooseBest": "[NEEDS TRANSLATION]",
-    "decideSequence": "[NEEDS TRANSLATION]",
-    "clarifyGoal": "[NEEDS TRANSLATION]",
-    "createArtifact": "[NEEDS TRANSLATION]",
-    "formatResponse": "[NEEDS TRANSLATION]"
+    "savePreferences": "Saglabāt lietotāja preferences",
+    "updateRule": "Atjaunināt lēmumu pieņemšanas noteikumu",
+    "storeConversation": "Saglabāt sarunas vēsturi",
+    "sendMessage": "Nosūtīt ziņojumu lietotājam",
+    "callExternal": "Izsaukt ārēju API",
+    "fetchLiveData": "Iegūt aktuālos datus",
+    "parseMessage": "Analizēt ienākošo ziņojumu",
+    "gatherState": "Savākt pašreizējo stāvokli",
+    "assembleContext": "Apkopot kontekstu",
+    "detectProgress": "Noteikt progresu",
+    "interpretRequest": "Interpretēt pieprasījumu",
+    "recallFacts": "Atcerēties faktus",
+    "applyRules": "Pielietot noteikumus",
+    "chooseBest": "Izvēlēties labāko variantu",
+    "decideSequence": "Noteikt secību",
+    "clarifyGoal": "Precizēt mērķi",
+    "createArtifact": "Izveidot rezultātu",
+    "formatResponse": "Formatēt atbildi"
   },
   "feedback": {
-    "title": "[NEEDS TRANSLATION]",
-    "accuracy": "[NEEDS TRANSLATION]",
-    "explanationQuality": "[NEEDS TRANSLATION]",
-    "calibration": "[NEEDS TRANSLATION]",
-    "calibrationDescription": "[NEEDS TRANSLATION]",
-    "detailedFeedback": "[NEEDS TRANSLATION]",
-    "noFeedback": "[NEEDS TRANSLATION]"
+    "title": "Atgriezeniskā saite un rezultāti",
+    "accuracy": "Klasifikācijas precizitāte",
+    "explanationQuality": "Skaidrojumu kvalitāte",
+    "calibration": "Pārliecības kalibrēšana",
+    "calibrationDescription": "Cik labi jūsu pārliecība atbilda faktiskajiem rezultātiem",
+    "detailedFeedback": "Detalizēta atgriezeniskā saite",
+    "noFeedback": "Atgriezeniskā saite vēl nav pieejama"
   },
   "assessment": {
-    "title": "[NEEDS TRANSLATION]",
-    "description": "[NEEDS TRANSLATION]",
-    "overallProgress": "[NEEDS TRANSLATION]",
-    "phasesCompleted": "[NEEDS TRANSLATION]",
-    "target": "[NEEDS TRANSLATION]",
-    "insights": "[NEEDS TRANSLATION]",
-    "excellentCalibration": "[NEEDS TRANSLATION]",
-    "excellentCalibrationDesc": "[NEEDS TRANSLATION]",
-    "strongClassification": "[NEEDS TRANSLATION]",
-    "strongClassificationDesc": "[NEEDS TRANSLATION]",
-    "improveExplanations": "[NEEDS TRANSLATION]",
-    "improveExplanationsDesc": "[NEEDS TRANSLATION]",
+    "title": "Gala novērtējums",
+    "description": "Novērtējiet savas zināšanas par 4+2 modeli un MI aģentu procesiem",
+    "overallProgress": "Kopējais progress",
+    "phasesCompleted": "Pabeigti posmi",
+    "target": "Mērķis",
+    "insights": "Mācību analīze",
+    "excellentCalibration": "Izcila kalibrēšana",
+    "excellentCalibrationDesc": "Jūsu pārliecība labi atbilst reālajiem rezultātiem",
+    "strongClassification": "Spēcīgas klasifikācijas prasmes",
+    "strongClassificationDesc": "Jūs precīzi nosakāt MI aģentu procesus",
+    "improveExplanations": "Uzlabojiet skaidrojumus",
+    "improveExplanationsDesc": "Detalizētāki pamatojumi palīdzēs nostiprināt izpratni",
     "exitCheck": {
-      "title": "[NEEDS TRANSLATION]",
-      "description": "[NEEDS TRANSLATION]",
+      "title": "Galīgā zināšanu pārbaude",
+      "description": "Demonstrējiet izpratni par 4+2 modeli",
       "questions": {
         "q1": {
-          "question": "[NEEDS TRANSLATION]",
-          "prompt": "[NEEDS TRANSLATION]",
-          "answers": ["[NEEDS TRANSLATION]", "[NEEDS TRANSLATION]", "[NEEDS TRANSLATION]", "[NEEDS TRANSLATION]"],
+          "question": "1. jautājums: Aģenta cikls",
+          "prompt": "Kāda ir pareizā 4-soļu aģenta cikla secība?",
+          "answers": ["Uztvere → Plānošana → Izpratne → Izpilde", "Uztvere → Izpratne → Plānošana → Izpilde", "Izpratne → Uztvere → Plānošana → Izpilde", "Plānošana → Uztvere → Izpratne → Izpilde"],
           "correct": 1,
-          "explanation": "[NEEDS TRANSLATION]"
+          "explanation": "Pareizā secība: Uztvere (lasīt) → Izpratne (saprast) → Plānošana (izvēlēties) → Izpilde (darīt)"
         },
         "q2": {
-          "question": "[NEEDS TRANSLATION]",
-          "prompt": "[NEEDS TRANSLATION]",
-          "answers": ["[NEEDS TRANSLATION]", "[NEEDS TRANSLATION]", "[NEEDS TRANSLATION]", "[NEEDS TRANSLATION]"],
+          "question": "2. jautājums: Palīgsistēmas",
+          "prompt": "Kas atšķir Atmiņu un Rīkus no četriem galvenajiem soļiem?",
+          "answers": ["Tie darbojas lēnāk", "Tie ir mazāk svarīgi", "Tie ir pieejami jebkuram solim jebkurā laikā", "Tie darbojas tikai starp soļiem"],
           "correct": 2,
-          "explanation": "[NEEDS TRANSLATION]"
+          "explanation": "Atmiņa un Rīki ir palīgsistēmas, pieejamas jebkuram no 4 soļiem jebkurā brīdī"
         },
         "q3": {
-          "question": "[NEEDS TRANSLATION]",
-          "prompt": "[NEEDS TRANSLATION]",
-          "answers": ["[NEEDS TRANSLATION]", "[NEEDS TRANSLATION]"],
+          "question": "3. jautājums: Praktisks pielietojums",
+          "prompt": "Aģents atceras lietotāja preferences turpmākām mijiedarbībām. Vai tā ir Atmiņas operācija?",
+          "answers": ["Jā, tā ir Atmiņas sistēmas izmantošana", "Nē, tā ir daļa no Plānošanas soļa"],
           "correct": 0,
-          "explanation": "[NEEDS TRANSLATION]"
+          "explanation": "Pareizi! Informācijas saglabāšana vēlākai izmantošanai ir Atmiņas sistēmas funkcija, nevis atsevišķs cikla solis"
         }
       },
-      "submit": "[NEEDS TRANSLATION]",
-      "allCorrect": "[NEEDS TRANSLATION]",
-      "someIncorrect": "[NEEDS TRANSLATION]",
-      "reviewAndTryAgain": "[NEEDS TRANSLATION]",
-      "completeJourney": "[NEEDS TRANSLATION]"
+      "submit": "Iesniegt atbildes",
+      "allCorrect": "Lieliski! Visas atbildes ir pareizas",
+      "someIncorrect": "Daži atbildes jāpārskata",
+      "reviewAndTryAgain": "Pārskatiet atbildes un mēģiniet vēlreiz",
+      "completeJourney": "Pabeigt mācības"
     }
   },
   "boundaryMap": {
-    "title": "[NEEDS TRANSLATION]",
-    "description": "[NEEDS TRANSLATION]",
-    "availableElements": "[NEEDS TRANSLATION]",
-    "dragInstruction": "[NEEDS TRANSLATION]",
-    "canvasTitle": "[NEEDS TRANSLATION]",
-    "canvasDescription": "[NEEDS TRANSLATION]",
-    "aiAgent": "[NEEDS TRANSLATION]",
-    "connectToProcess": "[NEEDS TRANSLATION]",
-    "selectFirst": "[NEEDS TRANSLATION]",
-    "clickToConnect": "[NEEDS TRANSLATION]",
-    "saveMap": "[NEEDS TRANSLATION]",
+    "title": "2. fāze: Nosakiet aģenta robežas",
+    "description": "Novietojiet sistēmas elementus un savienojiet tos ar aģenta procesiem. Kas ir aģenta iekšienē, un kas ārpusē?",
+    "availableElements": "Pieejamie elementi",
+    "dragInstruction": "Velciet elementus uz audeklu un savienojiet tos ar aģenta procesiem",
+    "canvasTitle": "Sistēmas audekls",
+    "canvasDescription": "Novietojiet elementus un izveidojiet savienojumus ar aģentu",
+    "aiAgent": "MI aģents",
+    "connectToProcess": "Savienot ar procesu {{process}}",
+    "selectFirst": "Vispirms izvēlieties elementu",
+    "clickToConnect": "Noklikšķiniet uz elementa, lai savienotu",
+    "saveMap": "Saglabāt karti",
     "elements": {
-      "wearableApi": "[NEEDS TRANSLATION]",
-      "calendarApi": "[NEEDS TRANSLATION]",
-      "userMemory": "[NEEDS TRANSLATION]",
-      "notificationUi": "[NEEDS TRANSLATION]",
-      "activityLog": "[NEEDS TRANSLATION]",
-      "healthDb": "[NEEDS TRANSLATION]",
-      "sensorStream": "[NEEDS TRANSLATION]",
-      "chatInterface": "[NEEDS TRANSLATION]"
+      "wearableApi": "Valkājamo ierīču API",
+      "calendarApi": "Kalendāra API",
+      "userMemory": "Lietotāja atmiņa",
+      "notificationUi": "Paziņojumu interfeiss",
+      "activityLog": "Aktivitātes žurnāls",
+      "healthDb": "Veselības datubāze",
+      "sensorStream": "Sensoru datu plūsma",
+      "chatInterface": "Čata interfeiss"
     },
     "feedback": {
-      "needMoreElements": "[NEEDS TRANSLATION]",
-      "needMoreConnections": "[NEEDS TRANSLATION]",
-      "missingProcesses": "[NEEDS TRANSLATION]",
-      "needSensorToPerception": "[NEEDS TRANSLATION]",
-      "needExecutionToTool": "[NEEDS TRANSLATION]",
-      "success": "[NEEDS TRANSLATION]"
+      "needMoreElements": "Pievienojiet vairāk elementu audeklam",
+      "needMoreConnections": "Izveidojiet vairāk savienojumu starp elementiem un procesiem",
+      "missingProcesses": "Savienojiet elementus ar visiem atbilstošajiem procesiem",
+      "needSensorToPerception": "Sensoriem jāsavienojas ar Uztveri",
+      "needExecutionToTool": "Izpildei jāsavienojas ar izvades rīkiem",
+      "success": "Lieliski! Jūs pareizi noteicāt aģenta robežas"
     },
-    "completeRequirements": "[NEEDS TRANSLATION]",
+    "completeRequirements": "Izpildiet visas prasības, lai pabeigtu posmu",
     "keyboard": {
-      "title": "[NEEDS TRANSLATION]",
-      "navigatePalette": "[NEEDS TRANSLATION]",
-      "enterCanvas": "[NEEDS TRANSLATION]",
-      "moveCursor": "[NEEDS TRANSLATION]",
-      "fineTune": "[NEEDS TRANSLATION]",
-      "placeElement": "[NEEDS TRANSLATION]",
-      "removeElement": "[NEEDS TRANSLATION]",
-      "switchMode": "[NEEDS TRANSLATION]",
-      "save": "[NEEDS TRANSLATION]",
-      "toggleHelp": "[NEEDS TRANSLATION]",
-      "elementPlaced": "[NEEDS TRANSLATION]",
-      "elementRemoved": "[NEEDS TRANSLATION]",
-      "cursorMoved": "[NEEDS TRANSLATION]",
-      "modeCanvas": "[NEEDS TRANSLATION]",
-      "modePalette": "[NEEDS TRANSLATION]",
-      "modeProcesses": "[NEEDS TRANSLATION]",
-      "selectionCleared": "[NEEDS TRANSLATION]",
-      "mapSaved": "[NEEDS TRANSLATION]"
+      "title": "Tastatūras saīsnes",
+      "navigatePalette": "Tab/Shift+Tab: Navigācija pa paleti",
+      "enterCanvas": "Enter: Ieiet audekla režīmā",
+      "moveCursor": "Bultiņas: Kursora pārvietošana",
+      "fineTune": "Shift+Bultiņas: Precīza pozīcijas pielāgošana",
+      "placeElement": "Atstarpe: Novietot elementu",
+      "removeElement": "Delete: Dzēst elementu",
+      "switchMode": "M: Pārslēgt režīmu",
+      "save": "Ctrl+S: Saglabāt",
+      "toggleHelp": "?: Parādīt/paslēpt palīdzību",
+      "elementPlaced": "Elements novietots pozīcijā {{position}}",
+      "elementRemoved": "Elements dzēsts",
+      "cursorMoved": "Kursors pārvietots uz {{position}}",
+      "modeCanvas": "Audekla režīms aktivizēts",
+      "modePalette": "Paletes režīms aktivizēts",
+      "modeProcesses": "Procesu režīms aktivizēts",
+      "selectionCleared": "Izvēle notīrīta",
+      "mapSaved": "Karte saglabāta"
     }
   },
   "circuit": {
-    "title": "[NEEDS TRANSLATION]",
-    "description": "[NEEDS TRANSLATION]",
-    "pipelineTitle": "[NEEDS TRANSLATION]",
-    "pipelineDescription": "[NEEDS TRANSLATION]",
-    "blockPalette": "[NEEDS TRANSLATION]",
-    "dragInstruction": "[NEEDS TRANSLATION]",
-    "canvasTitle": "[NEEDS TRANSLATION]",
-    "clear": "[NEEDS TRANSLATION]",
-    "saveCircuit": "[NEEDS TRANSLATION]",
-    "connectInstructions": "[NEEDS TRANSLATION]",
-    "pipelineComplete": "[NEEDS TRANSLATION]",
-    "clickToChoose": "[NEEDS TRANSLATION]",
-    "selected": "[NEEDS TRANSLATION]",
+    "title": "3. fāze: Veidojiet aģenta cauruļvadu",
+    "description": "Izveidojiet darbojošos aģenta cauruļvadu, izvēloties pareizos blokus katram procesa solim",
+    "pipelineTitle": "4+2 aģenta cauruļvads",
+    "pipelineDescription": "Aizpildiet katru slotu ar atbilstošo procesa bloku",
+    "blockPalette": "Bloku palete",
+    "dragInstruction": "Noklikšķiniet uz blokiem zemāk, lai izvēlētos tos cauruļvada slotiem",
+    "canvasTitle": "Veidotāja audekls",
+    "clear": "Notīrīt",
+    "saveCircuit": "Saglabāt shēmu",
+    "connectInstructions": "Savienojiet blokus, lai izveidotu aģenta plūsmu",
+    "pipelineComplete": "Cauruļvads pabeigts!",
+    "clickToChoose": "Noklikšķiniet, lai izvēlētos bloku",
+    "selected": "Izvēlēts",
     "slotLabels": {
-      "perception": "[NEEDS TRANSLATION]",
-      "reasoning": "[NEEDS TRANSLATION]",
-      "planning": "[NEEDS TRANSLATION]",
-      "execution": "[NEEDS TRANSLATION]"
+      "perception": "Slots 1: Lasīšana",
+      "reasoning": "Slots 2: Sapratne",
+      "planning": "Slots 3: Lēmums",
+      "execution": "Slots 4: Darbība"
     },
     "slotLabelsFormal": {
-      "perception": "[NEEDS TRANSLATION]",
-      "reasoning": "[NEEDS TRANSLATION]",
-      "planning": "[NEEDS TRANSLATION]",
-      "execution": "[NEEDS TRANSLATION]"
+      "perception": "Uztvere",
+      "reasoning": "Izpratne",
+      "planning": "Plānošana",
+      "execution": "Izpilde"
     },
     "dialogDescriptions": {
-      "perception": "[NEEDS TRANSLATION]",
-      "reasoning": "[NEEDS TRANSLATION]",
-      "planning": "[NEEDS TRANSLATION]",
-      "execution": "[NEEDS TRANSLATION]"
+      "perception": "Uztveres bloki savāc ievades datus no lietotājiem un sensoriem",
+      "reasoning": "Izpratnes bloki interpretē datus un nosaka to nozīmi",
+      "planning": "Plānošanas bloki izvēlas labāko darbības virzienu",
+      "execution": "Izpildes bloki realizē plānu un rada rezultātus"
     },
-    "dialogPrompt": "[NEEDS TRANSLATION]",
-    "readyToTest": "[NEEDS TRANSLATION]",
-    "readyToTestDescription": "[NEEDS TRANSLATION]",
-    "testYourAgent": "[NEEDS TRANSLATION]",
+    "dialogPrompt": "Izvēlieties {{process}} bloku slotam {{slot}}",
+    "readyToTest": "Gatavs testēšanai",
+    "readyToTestDescription": "Jūsu aģenta cauruļvads ir pabeigts. Palaidiet simulāciju, lai redzētu to darbībā!",
+    "testYourAgent": "Testēt aģentu",
     "blocks": {
       "perception": {
-        "label": "[NEEDS TRANSLATION]",
-        "description": "[NEEDS TRANSLATION]"
+        "label": "Uztveres bloks",
+        "description": "Lasa un organizē ienākošos datus"
       },
       "learning": {
-        "label": "[NEEDS TRANSLATION]",
-        "description": "[NEEDS TRANSLATION]"
+        "label": "Atmiņas bloks",
+        "description": "Saglabā un izgūst informāciju"
       },
       "reasoning": {
-        "label": "[NEEDS TRANSLATION]",
-        "description": "[NEEDS TRANSLATION]"
+        "label": "Izpratnes bloks",
+        "description": "Analizē un interpretē datus"
       },
       "planning": {
-        "label": "[NEEDS TRANSLATION]",
-        "description": "[NEEDS TRANSLATION]"
+        "label": "Plānošanas bloks",
+        "description": "Nosaka darbības un secību"
       },
       "execution": {
-        "label": "[NEEDS TRANSLATION]",
-        "description": "[NEEDS TRANSLATION]"
+        "label": "Izpildes bloks",
+        "description": "Veic ieplānotās darbības"
       },
       "interaction": {
-        "label": "[NEEDS TRANSLATION]",
-        "description": "[NEEDS TRANSLATION]"
+        "label": "Savienojumu bloks",
+        "description": "Mijiedarbojas ar ārējām sistēmām"
       }
     },
     "keyboard": {
-      "title": "[NEEDS TRANSLATION]",
-      "navigatePalette": "[NEEDS TRANSLATION]",
-      "addNode": "[NEEDS TRANSLATION]",
-      "moveNode": "[NEEDS TRANSLATION]",
-      "removeNode": "[NEEDS TRANSLATION]",
-      "clearSelection": "[NEEDS TRANSLATION]",
-      "save": "[NEEDS TRANSLATION]",
-      "toggleHelp": "[NEEDS TRANSLATION]",
-      "nodeAdded": "[NEEDS TRANSLATION]",
-      "nodeRemoved": "[NEEDS TRANSLATION]",
-      "nodeMoved": "[NEEDS TRANSLATION]",
-      "selectionCleared": "[NEEDS TRANSLATION]",
-      "circuitSaved": "[NEEDS TRANSLATION]"
+      "title": "Tastatūras komandas",
+      "navigatePalette": "Tab: Navigācija pa bloku paleti",
+      "addNode": "Enter: Pievienot izvēlēto bloku",
+      "moveNode": "Bultiņas: Pārvietot bloku",
+      "removeNode": "Delete: Dzēst bloku",
+      "clearSelection": "Escape: Notīrīt izvēli",
+      "save": "Ctrl+S: Saglabāt shēmu",
+      "toggleHelp": "?: Pārslēgt palīdzību",
+      "nodeAdded": "Bloks pievienots audeklam",
+      "nodeRemoved": "Bloks dzēsts",
+      "nodeMoved": "Bloks pārvietots",
+      "selectionCleared": "Izvēle notīrīta",
+      "circuitSaved": "Shēma saglabāta"
     }
   },
   "simulation": {
-    "title": "[NEEDS TRANSLATION]",
-    "description": "[NEEDS TRANSLATION]",
-    "execution": "[NEEDS TRANSLATION]",
-    "run": "[NEEDS TRANSLATION]",
-    "runDemo": "[NEEDS TRANSLATION]",
-    "runAgain": "[NEEDS TRANSLATION]",
-    "pause": "[NEEDS TRANSLATION]",
-    "reset": "[NEEDS TRANSLATION]",
-    "resetToClean": "[NEEDS TRANSLATION]",
-    "executionLog": "[NEEDS TRANSLATION]",
-    "noLogs": "[NEEDS TRANSLATION]",
-    "buildCircuitFirst": "[NEEDS TRANSLATION]",
-    "testScenario": "[NEEDS TRANSLATION]",
-    "step": "[NEEDS TRANSLATION]",
-    "input": "[NEEDS TRANSLATION]",
-    "output": "[NEEDS TRANSLATION]",
+    "title": "4. fāze: Palaidiet un izsekojiet izpildi",
+    "description": "Palaidiet savu aģentu ar reāliem testa datiem un vērojiet, kā tas iet cauri 4-soļu ciklam",
+    "execution": "Simulācijas izpilde",
+    "run": "Palaist",
+    "runDemo": "Palaist demo",
+    "runAgain": "Palaist vēlreiz",
+    "pause": "Pauze",
+    "reset": "Atiestatīt",
+    "resetToClean": "Atiestatīt uz tīru stāvokli",
+    "executionLog": "Izpildes žurnāls",
+    "noLogs": "Žurnāls parādīsies pēc palaišanas",
+    "buildCircuitFirst": "Vispirms izveidojiet shēmu 3. fāzē",
+    "testScenario": "Testa scenārijs",
+    "step": "Solis {{number}}",
+    "input": "Ievade",
+    "output": "Izvade",
     "metrics": {
-      "result": "[NEEDS TRANSLATION]",
-      "steps": "[NEEDS TRANSLATION]",
-      "toolCalls": "[NEEDS TRANSLATION]",
-      "success": "[NEEDS TRANSLATION]",
-      "failed": "[NEEDS TRANSLATION]"
+      "result": "Rezultāts",
+      "steps": "Izpildīti soļi",
+      "toolCalls": "Rīku izsaukumi",
+      "success": "Veiksmīgi",
+      "failed": "Neveiksmīgi"
     },
-    "completePhase": "[NEEDS TRANSLATION]"
+    "completePhase": "Pabeigt fāzi"
   },
   "failures": {
-    "title": "[NEEDS TRANSLATION]",
-    "description": "[NEEDS TRANSLATION]",
-    "activeFailures": "[NEEDS TRANSLATION]",
+    "title": "Kļūdu režīmi",
+    "description": "Ieviesiet kļūdas, lai redzētu, kā aģents tiek galā ar problēmām",
+    "activeFailures": "Aktīvās kļūdas",
     "modes": {
       "noisyInput": {
-        "name": "[NEEDS TRANSLATION]",
-        "description": "[NEEDS TRANSLATION]",
-        "tooltip": "[NEEDS TRANSLATION]"
+        "name": "Trokšņaini ievades dati",
+        "description": "Pievieno troksni sensoru datiem",
+        "tooltip": "Simulē neprecīzus vai izkropļotus ievades datus"
       },
       "reducedActivity": {
-        "name": "[NEEDS TRANSLATION]",
-        "description": "[NEEDS TRANSLATION]",
-        "tooltip": "[NEEDS TRANSLATION]"
+        "name": "Samazināta aktivitāte",
+        "description": "Samazina lietotāja soļu skaitu",
+        "tooltip": "Testē aģenta reakciju uz zemu aktivitāti"
       },
       "missingTool": {
-        "name": "[NEEDS TRANSLATION]",
-        "description": "[NEEDS TRANSLATION]",
-        "tooltip": "[NEEDS TRANSLATION]"
+        "name": "Trūkstošs rīks",
+        "description": "Atspējo paziņojumu rīku",
+        "tooltip": "Kas notiek, ja kritisks rīks nav pieejams?"
       },
       "staleMemory": {
-        "name": "[NEEDS TRANSLATION]",
-        "description": "[NEEDS TRANSLATION]",
-        "tooltip": "[NEEDS TRANSLATION]"
+        "name": "Novecojusi atmiņa",
+        "description": "Izmanto novecojušus atmiņas datus",
+        "tooltip": "Testē darbu ar neaktuālu informāciju"
       }
     }
   },
   "healthCoach": {
-    "scenarioName": "[NEEDS TRANSLATION]",
-    "agentName": "[NEEDS TRANSLATION]",
-    "description": "[NEEDS TRANSLATION]",
+    "scenarioName": "Veselības trenera scenārijs",
+    "agentName": "Fitnesa trenera aģents",
+    "description": "MI treneris analizē ikdienas aktivitāti un sniedz personalizētus ieteikumus",
     "dataLabels": {
-      "heartRate": "[NEEDS TRANSLATION]",
-      "steps": "[NEEDS TRANSLATION]",
-      "avgHeartRate": "[NEEDS TRANSLATION]",
-      "stepGoal": "[NEEDS TRANSLATION]"
+      "heartRate": "Sirds ritms",
+      "steps": "Soļi",
+      "avgHeartRate": "Vidējais sirds ritms",
+      "stepGoal": "Soļu mērķis"
     },
     "testData": {
       "default": {
-        "name": "[NEEDS TRANSLATION]",
-        "description": "[NEEDS TRANSLATION]"
+        "name": "Parasta diena",
+        "description": "Tipiska aktivitāte un veselības rādītāji"
       },
       "elevated": {
-        "name": "[NEEDS TRANSLATION]",
-        "description": "[NEEDS TRANSLATION]"
+        "name": "Paaugstināts pulss",
+        "description": "Paaugstināts sirds ritms prasa uzmanību"
       },
       "borderline": {
-        "name": "[NEEDS TRANSLATION]",
-        "description": "[NEEDS TRANSLATION]"
+        "name": "Pie mērķa robežas",
+        "description": "Gandrīz sasniegts soļu mērķis"
       },
       "excellent": {
-        "name": "[NEEDS TRANSLATION]",
-        "description": "[NEEDS TRANSLATION]"
+        "name": "Izcili rādītāji",
+        "description": "Pārsniegts aktivitātes mērķis"
       }
     },
     "runtime": {
       "perception": {
         "parse": {
-          "action": "[NEEDS TRANSLATION]"
+          "action": "Sensoru datu parsēšana: HR un soļi izgūti"
         },
         "smooth": {
-          "action": "[NEEDS TRANSLATION]"
+          "action": "Datu izlīdzināšana: noņemti novirzes punkti"
         }
       },
       "reasoning": {
         "threshold": {
-          "action": "[NEEDS TRANSLATION]"
+          "action": "Sliekšņu pārbaude: sirds ritms {{status}}, soļi {{stepStatus}}"
         },
         "classify": {
-          "action": "[NEEDS TRANSLATION]"
+          "action": "Aktivitātes klasifikācija: līmenis '{{level}}'"
         }
       },
       "planning": {
         "daily": {
-          "action": "[NEEDS TRANSLATION]",
+          "action": "Ikdienas ziņojuma plānošana",
           "message": {
-            "excellent": "[NEEDS TRANSLATION]",
-            "active": "[NEEDS TRANSLATION]",
-            "nudge": "[NEEDS TRANSLATION]"
+            "excellent": "🌟 Izcili! Jūs šodien pārsniedzāt visus mērķus!",
+            "active": "💪 Lielisks darbs! Turpiniet tāpat!",
+            "nudge": "📊 Gandrīz pie mērķa! Vēl nedaudz aktivitātes palīdzēs to sasniegt."
           }
         },
         "safety": {
-          "action": "[NEEDS TRANSLATION]",
+          "action": "Veselības drošības pārbaude",
           "message": {
-            "rest": "[NEEDS TRANSLATION]",
-            "lightActivity": "[NEEDS TRANSLATION]",
-            "congratulate": "[NEEDS TRANSLATION]",
-            "encourage": "[NEEDS TRANSLATION]"
+            "rest": "⚠️ Jūsu pulss ir paaugstināts. Ieteicams atpūsties.",
+            "lightActivity": "💭 Apsveriet vieglu aktivitāti šodien",
+            "congratulate": "🎉 Apsveicam ar mērķa sasniegšanu!",
+            "encourage": "🚶 Kustēsimies! Katrs solis ir svarīgs."
           }
         }
       },
       "execution": {
         "notify": {
-          "action": "[NEEDS TRANSLATION]",
-          "defaultMessage": "[NEEDS TRANSLATION]",
-          "error": "[NEEDS TRANSLATION]",
-          "errorDetails": "[NEEDS TRANSLATION]"
+          "action": "Paziņojuma sūtīšana lietotājam",
+          "defaultMessage": "Veselības kopsavilkums gatavs",
+          "error": "Neizdevās nosūtīt paziņojumu",
+          "errorDetails": "Paziņojumu rīks nav pieejams"
         },
         "streak": {
-          "actionIncremented": "[NEEDS TRANSLATION]",
-          "actionReset": "[NEEDS TRANSLATION]"
+          "actionIncremented": "Aktivitātes sērija palielināta uz {{days}} dienām",
+          "actionReset": "Aktivitātes sērija atiestatīta"
         }
       }
     }
   },
   "consent": {
-    "title": "[NEEDS TRANSLATION]",
-    "description": "[NEEDS TRANSLATION]",
-    "whatWeStore": "[NEEDS TRANSLATION]",
-    "storeItem1": "[NEEDS TRANSLATION]",
-    "storeItem2": "[NEEDS TRANSLATION]",
-    "storeItem3": "[NEEDS TRANSLATION]",
-    "noPersonalData": "[NEEDS TRANSLATION]",
-    "yourChoice": "[NEEDS TRANSLATION]",
-    "saveProgress": "[NEEDS TRANSLATION]",
-    "noThanks": "[NEEDS TRANSLATION]",
-    "managePreferences": "[NEEDS TRANSLATION]"
+    "title": "Jūsu progresa saglabāšana",
+    "description": "Mēs varam saglabāt jūsu progresu lokāli, lai jūs varētu turpināt no vietas, kur pārtraucāt",
+    "whatWeStore": "Ko mēs saglabājam:",
+    "storeItem1": "Jūsu progresu fāzēs",
+    "storeItem2": "Pabeigtie vingrinājumi",
+    "storeItem3": "Valodas iestatījumi",
+    "noPersonalData": "Mēs NESAVĀCAM personīgos datus un nesūtām informāciju uz ārējiem serveriem",
+    "yourChoice": "Jūsu izvēle:",
+    "saveProgress": "Jā, saglabāt manu progresu",
+    "noThanks": "Nē, paldies",
+    "managePreferences": "Pārvaldīt iestatījumus"
   },
   "keyboard": {
     "keyNames": {
