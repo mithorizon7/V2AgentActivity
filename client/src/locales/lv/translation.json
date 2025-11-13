@@ -78,7 +78,62 @@
       "execution": "Vai aģents rada vai nosūta rezultātu?"
     }
   },
-  "NOTE_FOR_TRANSLATOR": "========== TRANSLATION NEEDED BELOW THIS LINE ==========",
+  "glossary": {
+    "feedbackLoops": {
+      "term": "Atgriezeniskās saites",
+      "definition": "Mehānismi, kas ļauj aģentam mācīties no rezultātiem un pielāgot turpmāko uzvedību",
+      "example": "Pēc neveiksmīgas darbības aģents atjaunina savu stratēģiju līdzīgām situācijām"
+    },
+    "adaptation": {
+      "term": "Adaptācija",
+      "definition": "Aģenta spēja mainīt savu uzvedību, balstoties uz jaunu informāciju vai mainīgiem apstākļiem",
+      "example": "Ieteikumu pielāgošana, kad mainās lietotāja preferences"
+    },
+    "memory": {
+      "term": "Atmiņa",
+      "definition": "Pagātnes mijiedarbību, lēmumu un iemācīto modeļu glabāšana un izgūšana",
+      "example": "Lietotāja preferenču atcerēšanās starp sesijām"
+    }
+  },
+  "guidedCoach": {
+    "welcome": {
+      "title": "Jūsu pirmais aģents ir gatavs!",
+      "message": "Lieliski! Cauruļvads rāda strādājošu veselības trenera aģentu. Noklikšķiniet «Palaist demo», lai redzētu, kā tas palīdz reālam lietotājam ar fitnesa datiem.",
+      "tip": "Darbības laikā jūs redzēsiet, kā tieši 4 soļi strādā kopā, kā arī kad tiek izmantota Atmiņa 🧠 vai Rīki 🔧"
+    },
+    "firstRun": {
+      "title": "Laiks pirmajam palaidienam!",
+      "message": "Jūsu veselības treneris ir ideāli iestatīts. Noklikšķiniet «Palaist demo» un uzmanīgi vērojiet, kā tas iet cauri katram solim ar reāliem fitnesa datiem.",
+      "tip": "Sekojiet līdzi: 1. solis lasa neapstrādātus datus → 2. solis tos saprot → 3. solis izvēlas darbību → 4. solis to veic. Ikonas parāda, kad tiek izmantota Atmiņa 🧠 vai Rīki 🔧!"
+    },
+    "successFirst": {
+      "title": "🎉 Veiksme! Jūsu aģents kādam palīdzēja!",
+      "message": "Perfekti! Aģents nolasīja fitnesa datus, saprata, ka lietotājs ir vesels, un nosūtīja iedrošinājumu. Vai pamanījāt 🧠 un 🔧 ikonas, kas parāda, kad tika izmantota Atmiņa un Rīki?",
+      "tip": "Tagad eksperimentējiet: mainiet blokus, lai redzētu, kā tie dažādi apstrādā datus. Katrs bloks ir kā atšķirīga stratēģija — daži ir stingrāki, citi elastīgāki!"
+    },
+    "changeBlock": {
+      "title": "Eksperimentu laiks!",
+      "message": "Katrs bloks izmanto atšķirīgu loģiku. Mēģiniet tos mainīt, lai uzzinātu kompromisus — piemēram, kā «Noteikumu klasifikators» ir stingrāks par «Sliekšņa pārbaudi».",
+      "tip": "Vērojiet, kas mainās: Vai tas saglabā citas lietas Atmiņā 🧠? Vai izsauc citus Rīkus 🔧? Tas māca, kā mazas izmaiņas ietekmē visu sistēmu!"
+    },
+    "failureRecovery": {
+      "title": "Mācīšanās no kļūdām",
+      "message": "Aģents saskārās ar problēmu — tas ir vērtīgi! Pārbaudiet kļūdas ziņojumu, lai redzētu, tieši kurš solis neizdevās un kāpēc.",
+      "tip": "Atkļūdošana kā profesionālis: Kurš solis neizdevās? Ko tas mēģināja darīt? Vai trūka datu no Atmiņas 🧠 vai nevarēja atrast Rīku 🔧? Tas māca īstu atkļūdošanu!"
+    },
+    "withFailures": {
+      "title": "Reālu problēmu testēšana",
+      "message": "Gudri! Jūs pārbaudāt, kā jūsu aģents tiek galā ar reālām problēmām, piemēram, salauztem sensoriem vai trūkstošiem rīkiem. Vērojiet, kā tas pielāgojas (vai nepielāgojas)!",
+      "tip": "Katra kļūme testē dažādas daļas: trokšņaini dati testē 1. soli (Uztvere), trūkstoši rīki testē 4. soli (Izpilde), novecojusi atmiņa testē Atmiņas sistēmu 🧠!"
+    },
+    "tryFailure": {
+      "title": "Lielisks darbs!",
+      "message": "Jūs redzējāt, kā 4-soļu cikls darbojas normālā režīmā. Mēģiniet pārslēgt kļūmju režīmus, lai redzētu, kā katrs solis reaģē uz kļūdām.",
+      "tip": "Vērojiet, kuri soļi izmanto Atmiņu 🧠 (Mācīšanos) un kuri izsauc Rīkus 🔧 (Savienojumus). Šīs palīgsistēmas darbojas ar jebkuru cikla soli!"
+    },
+    "badge": "Ceļvedis",
+    "tipLabel": "Padoms"
+  },
   "confidence": {
     "title": "Pārliecības līmenis",
     "question": "Cik pārliecināts esat par savu klasifikāciju?",
@@ -660,6 +715,62 @@
     "scenarioName": "Veselības trenera scenārijs",
     "agentName": "Fitnesa trenera aģents",
     "description": "MI treneris analizē ikdienas aktivitāti un sniedz personalizētus ieteikumus",
+    "fixtures": {
+      "normalDay": {
+        "name": "Parasta aktīva diena",
+        "description": "Veselīgs aktivitātes līmenis ar tīriem sensoru datiem"
+      },
+      "borderlineActivity": {
+        "name": "Robežaktivitāte",
+        "description": "Tieši zem aktivitātes sliekšņa — testē robežgadījumus"
+      },
+      "noisySensors": {
+        "name": "Trokšņaini sensori",
+        "description": "Dati ar mērījumu kļūdām — testē noturību"
+      }
+    },
+    "blocks": {
+      "perception": {
+        "parse": {
+          "name": "Valkājamo ierīču parsēšana",
+          "description": "Iegūt neapstrādātus sirds ritma un soļu skaita datus no sensoru datiem"
+        },
+        "smooth": {
+          "name": "Valkājamo datu izlīdzināšana",
+          "description": "Vidējie rādījumi, lai samazinātu sensoru troksni un novirzes"
+        }
+      },
+      "reasoning": {
+        "threshold": {
+          "name": "Sliekšņa pārbaude",
+          "description": "Vienkāršs noteikums: Aktīvs, ja soļi ≥ 8000 un sirds ritms ≥ 90"
+        },
+        "ruleBased": {
+          "name": "Noteikumu klasifikators",
+          "description": "Stingri kritēriji: soļi ≥ 10000 un sirds ritms ≥ 100 aktīvam statusam"
+        }
+      },
+      "planning": {
+        "daily": {
+          "name": "Ikdienas plānotājs",
+          "description": "Izveidot šodienas atbildi: apsveikt, ja aktīvs, pagrūst, ja nav"
+        },
+        "weekly": {
+          "name": "Nedēļas plānotājs",
+          "description": "Plānot nedēļas tendences un ieteikt ilgtermiņa paradumus"
+        }
+      },
+      "execution": {
+        "notify": {
+          "name": "Nosūtīt paziņojumu",
+          "description": "Piegādāt push paziņojumu ar iedrošinājumu vai pagrūdienu"
+        },
+        "followup": {
+          "name": "Ieplānot pārbaudi",
+          "description": "Rezervēt atgādinājumu pārbaudei rītdienai"
+        }
+      }
+    },
     "dataLabels": {
       "heartRate": "Sirds ritms",
       "steps": "Soļi",
