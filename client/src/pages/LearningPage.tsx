@@ -19,6 +19,7 @@ import { AssessmentDashboard } from "@/components/AssessmentDashboard";
 import { GuidedCoachPanel } from "@/components/GuidedCoachPanel";
 import { ConsentManager } from "@/components/ConsentManager";
 import { HighContrastToggle } from "@/components/HighContrastToggle";
+import { LanguageSelector } from "@/components/LanguageSelector";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import MITOpenLearningLogo from "@assets/Open-Learning-logo-revised copy_1762811060793.png";
@@ -536,6 +537,7 @@ export default function LearningPage() {
         </Button>
       </div>
       <div className="fixed top-3 sm:top-4 right-3 sm:right-4 z-50 flex gap-2">
+        <LanguageSelector />
         <HighContrastToggle />
       </div>
       {currentPhase > 0 && <PhaseProgress phases={phases} onPhaseClick={(id) => setCurrentPhase(id)} />}

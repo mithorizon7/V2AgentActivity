@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ConsentManager } from "@/components/ConsentManager";
 import { HighContrastToggle } from "@/components/HighContrastToggle";
+import { LanguageSelector } from "@/components/LanguageSelector";
 import { ArrowRight } from "lucide-react";
 import ProgramLogo from "@assets/LogoRealv2_1762811142025.png";
 import UnderstandIcon from "@assets/Understand_1762809751241.png";
@@ -19,6 +20,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
       <div className="fixed top-4 right-4 z-50 flex gap-2">
+        <LanguageSelector />
         <HighContrastToggle />
       </div>
       <div id="main-content" className="max-w-7xl mx-auto px-6 py-12">
