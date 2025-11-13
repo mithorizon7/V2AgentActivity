@@ -401,6 +401,26 @@
     "createArtifact": "Create or update an artifact (file, calendar event, record).",
     "formatResponse": "Format and assemble the response content for delivery."
   },
+  "classificationHints": {
+    "save_preferences": "This keeps information for later use across sessions. Which system stores things to remember?",
+    "update_rule": "Changing how you make decisions requires updating stored knowledge. What system manages this?",
+    "store_conversation": "Keeping track of past interactions helps with continuity. Which system handles remembering?",
+    "send_message": "Getting information to users requires reaching outside the agent. Which system does this?",
+    "call_external": "Weather APIs, calendars, and external services—these are outside resources. Which system accesses them?",
+    "fetch_live_data": "Getting real-time information requires connecting to external sources. What handles these connections?",
+    "parse_message": "Breaking down raw input into understandable pieces is the first step. Which step reads data?",
+    "gather_state": "Collecting current system information is about reading what's there now. Which step does this?",
+    "assemble_context": "Bringing together all available information is like organizing data for use. Which step collects it?",
+    "detect_progress": "Tracking how far along a task is requires reading current status. Which step reads information?",
+    "interpret_request": "Understanding what something means comes after reading it. Which step figures out meaning?",
+    "recall_facts": "Looking up stored knowledge to understand a situation uses what was remembered. Which step thinks about meaning?",
+    "apply_rules": "Using logic to make sense of data is about understanding, not deciding what to do. Which step analyzes?",
+    "choose_best": "Selecting one approach from several options is a decision. Which step makes choices?",
+    "decide_sequence": "Determining the order of actions is about organizing next steps. Which step creates the plan?",
+    "clarify_goal": "Defining what you're trying to achieve sets the direction. Which step decides objectives?",
+    "create_artifact": "Generating output or producing results is the final action. Which step does things?",
+    "format_response": "Preparing the final output for delivery is the last action. Which step produces results?"
+  },
   "confidence": {
     "title": "Confidence Level",
     "question": "How confident are you in your classifications?",

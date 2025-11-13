@@ -473,6 +473,26 @@
     "createArtifact": "Izveidot rezultātu",
     "formatResponse": "Formatēt atbildi"
   },
+  "classificationHints": {
+    "save_preferences": "Tas saglabā informāciju izmantošanai starp sesijām. Kura sistēma uzglabā lietas, kas jāatceras?",
+    "update_rule": "Lēmumu pieņemšanas veida maiņa prasa saglabāto zināšanu atjaunināšanu. Kura sistēma to pārvalda?",
+    "store_conversation": "Iepriekšējo mijiedarbību izsekošana palīdz uzturēt nepārtrauktību. Kura sistēma atbild par atcerēšanos?",
+    "send_message": "Informācijas nodošana lietotājiem prasa iziešanu ārpus aģenta. Kura sistēma to dara?",
+    "call_external": "Laika prognozes API, kalendāri un ārējie servisi — tie ir ārējie resursi. Kura sistēma tiem piekļūst?",
+    "fetch_live_data": "Reāllaika informācijas iegūšana prasa savienošanos ar ārējiem avotiem. Kas apstrādā šos savienojumus?",
+    "parse_message": "Neapstrādātas ievades sadalīšana saprotamās daļās ir pirmais solis. Kurš solis lasa datus?",
+    "gather_state": "Pašreizējās sistēmas informācijas vākšana ir par to, kas ir tagad. Kurš solis to dara?",
+    "assemble_context": "Visas pieejamās informācijas apvienošana ir kā datu organizēšana izmantošanai. Kurš solis to savāc?",
+    "detect_progress": "Uzdevuma izpildes gaitas izsekošana prasa pašreizējā statusa nolasīšanu. Kurš solis lasa informāciju?",
+    "interpret_request": "Kaut kā nozīmes sapratne notiek pēc nolasīšanas. Kurš solis nosaka nozīmi?",
+    "recall_facts": "Saglabāto zināšanu meklēšana situācijas sapratnei izmanto to, kas tika atcerēts. Kurš solis pārdomā nozīmi?",
+    "apply_rules": "Loģikas izmantošana datu izpratnei ir saprašana, nevis lēmums par darbību. Kurš solis analizē?",
+    "choose_best": "Viena pieejā izvēle no vairākām iespējām ir lēmums. Kurš solis izvēlas?",
+    "decide_sequence": "Darbību secības noteikšana ir nākamo soļu organizēšana. Kurš solis izveido plānu?",
+    "clarify_goal": "Tā, ko cenšaties sasniegt, definēšana nosaka virzienu. Kurš solis izlemj mērķus?",
+    "create_artifact": "Rezultāta ģenerēšana vai izvades radīšana ir galīgā darbība. Kurš solis ko izdara?",
+    "format_response": "Galīgā rezultāta sagatavošana piegādei ir pēdējā darbība. Kurš solis rada rezultātus?"
+  },
   "feedback": {
     "title": "Atgriezeniskā saite un rezultāti",
     "accuracy": "Klasifikācijas precizitāte",
