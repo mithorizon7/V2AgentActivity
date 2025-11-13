@@ -1,0 +1,776 @@
+{
+  "common": {
+    "save": "Saglabāt",
+    "cancel": "Atcelt",
+    "continue": "Turpināt",
+    "submit": "Iesniegt",
+    "reset": "Atiestatīt",
+    "close": "Aizvērt",
+    "loading": "Ielādē...",
+    "error": "Radās kļūda"
+  },
+  "homePage": {
+    "title": "Mākslīgā Intelekta Aģentu Mācību Platforma",
+    "subtitle": "Pamata koncepcijas par MI aģentiem inteliģentu sistēmu veidošanai",
+    "understand": {
+      "title": "Izprast",
+      "description": "Apgūsti 4+2 ietvaru, kas nodrošina katru MI aģentu: 4 soļu procesu (Uztvere, Spriedumi, Plānošana, Izpilde) plus 2 atbalsta sistēmas (Atmiņa un Rīki)"
+    },
+    "practice": {
+      "title": "Praktizēt",
+      "description": "Nosakiet aģenta robežas, veidojiet shēmas, izmantojot 4+2 modeli, palaidiet simulācijas un atkļūdojiet kļūmes caur praktiskiem uzdevumiem"
+    },
+    "build": {
+      "title": "Veidot",
+      "description": "Projektējiet un testējiet savu aģentu, izmantojot 4+2 ietvaru, novērtējiet tā veiktspēju un mācieties atpazīt izplatītas kļūdu shēmas"
+    },
+    "ready": {
+      "title": "Gatavs Sākt?",
+      "badge": "5 Interaktīvas Fāzes",
+      "description": "Šī programma ir izveidota, lai mācītu jums, kā darbojas MI aģenti, sadalot tos vienkāršās daļās. Jūs uzzināsiet, ka aģenti seko 4 soļu procesam: tie lasa ienākošo informāciju (Uztvere), nosaka, ko tā nozīmē (Spriedumi), izlemj, ko darīt (Plānošana), un pēc tam to dara (Izpilde). Pa ceļam tie izmanto divas atbalsta sistēmas: Atmiņu, lai atcerētos iepriekšējo pieredzi, un Rīkus darbībām pasaulē. Jūs izveidosiet savu vienkāršo aģentu, vērosiet tā darbību soli pa solim un mācīsieties atpazīt izplatītās problēmas, kad kaut kas noiet greizi. Programmēšana nav nepieciešama.",
+      "startButton": "Sākt Mācīties"
+    },
+    "methodology": "Izstrādāts ar kognitīvo mācekļošanu, zināšanu izgūšanas praksi un metakognitīvo kalibrāciju, lai maksimizētu mācīšanās rezultātus"
+  },
+  "notFound": {
+    "title": "404 Lapa Nav Atrasta",
+    "message": "Vai aizmirsāt pievienot lapu maršrutētājam?"
+  },
+  "navigation": {
+    "backToHome": "Atpakaļ Uz Sākumlapu",
+    "previousPhase": "Iepriekšējā Fāze",
+    "nextPhase": "Nākamā Fāze",
+    "goHome": "Doties Uz Sākumlapu",
+    "phaseNavigation": "Fāžu navigācija"
+  },
+  "ui": {
+    "sidebar": {
+      "title": "Sānu josla",
+      "description": "Rāda mobilo sānu joslu.",
+      "toggleLabel": "Pārslēgt sānu joslu"
+    },
+    "pagination": {
+      "label": "lappušu numerācija",
+      "previous": "Iepriekšējā",
+      "next": "Nākamā",
+      "previousLabel": "Doties uz iepriekšējo lapu",
+      "nextLabel": "Doties uz nākamo lapu",
+      "morePages": "Vairāk lapu"
+    }
+  },
+  "phaseProgress": {
+    "phaseLabel": "Fāze {{id}}: {{name}}",
+    "phaseNumber": "Fāze {{id}}"
+  },
+  "processes": {
+    "learning": "Atmiņa (Atcerēšanās/Mācīšanās)",
+    "interaction": "Savienojumi (Cilvēki un Rīki)",
+    "perception": "Uztvere (Redzēšana/Vākšana)",
+    "reasoning": "Spriedumi (Domāšana/Skaidrošana)",
+    "planning": "Plānošana (Lēmumi/Secība)",
+    "execution": "Izpilde (Darbība/Veikšana)",
+    "litmusTests": {
+      "learning": "Vai tas būs noderīgs vēlāk?",
+      "interaction": "Vai aģents sasniedz ārpus sevis?",
+      "perception": "Vai aģents lasa, klausās vai uztver?",
+      "reasoning": "Vai aģents izlemj, ko tas nozīmē?",
+      "planning": "Vai aģents izvēlas, ko darīt tālāk?",
+      "execution": "Vai aģents kaut ko rada vai nosūta?"
+    }
+  },
+  "NOTE_FOR_TRANSLATOR": "========== TRANSLATION NEEDED BELOW THIS LINE ==========",
+  "confidence": {
+    "title": "[NEEDS TRANSLATION]",
+    "question": "[NEEDS TRANSLATION]",
+    "notConfident": "[NEEDS TRANSLATION]",
+    "somewhatConfident": "[NEEDS TRANSLATION]",
+    "veryConfident": "[NEEDS TRANSLATION]"
+  },
+  "failureInjection": {
+    "title": "[NEEDS TRANSLATION]",
+    "description": "[NEEDS TRANSLATION]",
+    "activeMessage_one": "[NEEDS TRANSLATION]",
+    "activeMessage_other": "[NEEDS TRANSLATION]"
+  },
+  "feedbackPanel": {
+    "title": "[NEEDS TRANSLATION]",
+    "closeLabel": "[NEEDS TRANSLATION]",
+    "calibrationDescription": "[NEEDS TRANSLATION]",
+    "detailedFeedback": "[NEEDS TRANSLATION]",
+    "noFeedback": "[NEEDS TRANSLATION]"
+  },
+  "primer": {
+    "title": "[NEEDS TRANSLATION]",
+    "subtitle": "[NEEDS TRANSLATION]",
+    "continueToDemo": "[NEEDS TRANSLATION]",
+    "continueToChecks": "[NEEDS TRANSLATION]",
+    "intro": {
+      "heading": "[NEEDS TRANSLATION]",
+      "description": "[NEEDS TRANSLATION]"
+    },
+    "runLoop": {
+      "title": "[NEEDS TRANSLATION]",
+      "perception": {
+        "label": "[NEEDS TRANSLATION]",
+        "name": "[NEEDS TRANSLATION]",
+        "description": "[NEEDS TRANSLATION]"
+      },
+      "reasoning": {
+        "label": "[NEEDS TRANSLATION]",
+        "name": "[NEEDS TRANSLATION]",
+        "description": "[NEEDS TRANSLATION]"
+      },
+      "planning": {
+        "label": "[NEEDS TRANSLATION]",
+        "name": "[NEEDS TRANSLATION]",
+        "description": "[NEEDS TRANSLATION]"
+      },
+      "execution": {
+        "label": "[NEEDS TRANSLATION]",
+        "name": "[NEEDS TRANSLATION]",
+        "description": "[NEEDS TRANSLATION]"
+      }
+    },
+    "supporting": {
+      "title": "[NEEDS TRANSLATION]",
+      "memory": {
+        "label": "[NEEDS TRANSLATION]",
+        "description": "[NEEDS TRANSLATION]",
+        "badge": "[NEEDS TRANSLATION]"
+      },
+      "tools": {
+        "label": "[NEEDS TRANSLATION]",
+        "description": "[NEEDS TRANSLATION]",
+        "badge": "[NEEDS TRANSLATION]"
+      },
+      "crossCutting": {
+        "title": "[NEEDS TRANSLATION]",
+        "description": "[NEEDS TRANSLATION]"
+      }
+    },
+    "demo": {
+      "title": "[NEEDS TRANSLATION]",
+      "subtitle": "[NEEDS TRANSLATION]",
+      "context": "[NEEDS TRANSLATION]",
+      "perception": {
+        "label": "[NEEDS TRANSLATION]",
+        "example": "[NEEDS TRANSLATION]"
+      },
+      "reasoning": {
+        "label": "[NEEDS TRANSLATION]",
+        "example": "[NEEDS TRANSLATION]"
+      },
+      "planning": {
+        "label": "[NEEDS TRANSLATION]",
+        "example": "[NEEDS TRANSLATION]"
+      },
+      "execution": {
+        "label": "[NEEDS TRANSLATION]",
+        "example": "[NEEDS TRANSLATION]"
+      },
+      "memory": {
+        "label": "[NEEDS TRANSLATION]",
+        "example": "[NEEDS TRANSLATION]"
+      },
+      "tools": {
+        "label": "[NEEDS TRANSLATION]",
+        "example": "[NEEDS TRANSLATION]"
+      }
+    },
+    "check": {
+      "badge": "[NEEDS TRANSLATION]",
+      "title": "[NEEDS TRANSLATION]",
+      "submit": "[NEEDS TRANSLATION]",
+      "correct": "[NEEDS TRANSLATION]",
+      "incorrect": "[NEEDS TRANSLATION]",
+      "tryAgain": "[NEEDS TRANSLATION]",
+      "continueAnyway": "[NEEDS TRANSLATION]"
+    },
+    "check1": {
+      "question": "[NEEDS TRANSLATION]",
+      "option1": "[NEEDS TRANSLATION]",
+      "option2": "[NEEDS TRANSLATION]",
+      "option3": "[NEEDS TRANSLATION]",
+      "option4": "[NEEDS TRANSLATION]",
+      "explanation": "[NEEDS TRANSLATION]"
+    },
+    "check2": {
+      "question": "[NEEDS TRANSLATION]",
+      "option1": "[NEEDS TRANSLATION]",
+      "option2": "[NEEDS TRANSLATION]",
+      "option3": "[NEEDS TRANSLATION]",
+      "option4": "[NEEDS TRANSLATION]",
+      "explanation": "[NEEDS TRANSLATION]"
+    },
+    "complete": {
+      "title": "[NEEDS TRANSLATION]",
+      "description": "[NEEDS TRANSLATION]",
+      "remember": {
+        "title": "[NEEDS TRANSLATION]",
+        "point1": "[NEEDS TRANSLATION]",
+        "point2": "[NEEDS TRANSLATION]",
+        "point3": "[NEEDS TRANSLATION]"
+      },
+      "continue": "[NEEDS TRANSLATION]"
+    }
+  },
+  "workedExample": {
+    "title": "[NEEDS TRANSLATION]",
+    "subtitle": "[NEEDS TRANSLATION]",
+    "progress": "[NEEDS TRANSLATION]",
+    "cardLabel": "[NEEDS TRANSLATION]",
+    "nearMiss": "[NEEDS TRANSLATION]",
+    "commonMistake": "[NEEDS TRANSLATION]",
+    "mightThink": "[NEEDS TRANSLATION]",
+    "because": "[NEEDS TRANSLATION]",
+    "expertClassifies": "[NEEDS TRANSLATION]",
+    "whyLabel": "[NEEDS TRANSLATION]",
+    "previous": "[NEEDS TRANSLATION]",
+    "next": "[NEEDS TRANSLATION]",
+    "startPractice": "[NEEDS TRANSLATION]",
+    "revealAnswer": "[NEEDS TRANSLATION]",
+    "answerRevealed": "[NEEDS TRANSLATION]",
+    "revealAll": "[NEEDS TRANSLATION]",
+    "processLabels": {
+      "perception": "[NEEDS TRANSLATION]",
+      "reasoning": "[NEEDS TRANSLATION]",
+      "planning": "[NEEDS TRANSLATION]",
+      "execution": "[NEEDS TRANSLATION]",
+      "learning": "[NEEDS TRANSLATION]",
+      "interaction": "[NEEDS TRANSLATION]"
+    },
+    "tip": {
+      "title": "[NEEDS TRANSLATION]",
+      "description": "[NEEDS TRANSLATION]"
+    },
+    "cards": {
+      "parseSensor": {
+        "text": "[NEEDS TRANSLATION]",
+        "explanation": "[NEEDS TRANSLATION]"
+      },
+      "thresholdCheck": {
+        "text": "[NEEDS TRANSLATION]",
+        "explanation": "[NEEDS TRANSLATION]"
+      },
+      "chooseAction": {
+        "text": "[NEEDS TRANSLATION]",
+        "explanation": "[NEEDS TRANSLATION]"
+      },
+      "sendMessage": {
+        "text": "[NEEDS TRANSLATION]",
+        "explanation": "[NEEDS TRANSLATION]"
+      },
+      "storeBaseline": {
+        "text": "[NEEDS TRANSLATION]",
+        "explanation": "[NEEDS TRANSLATION]"
+      },
+      "callApi": {
+        "text": "[NEEDS TRANSLATION]",
+        "explanation": "[NEEDS TRANSLATION]"
+      },
+      "calendarNearMiss": {
+        "text": "[NEEDS TRANSLATION]",
+        "explanation": "[NEEDS TRANSLATION]",
+        "nearMissExplanation": "[NEEDS TRANSLATION]"
+      }
+    }
+  },
+  "model": {
+    "title": "[NEEDS TRANSLATION]",
+    "runLoop": {
+      "title": "[NEEDS TRANSLATION]",
+      "description": "[NEEDS TRANSLATION]",
+      "steps": {
+        "perception": "[NEEDS TRANSLATION]",
+        "reasoning": "[NEEDS TRANSLATION]",
+        "planning": "[NEEDS TRANSLATION]",
+        "execution": "[NEEDS TRANSLATION]"
+      }
+    },
+    "supporting": {
+      "title": "[NEEDS TRANSLATION]",
+      "memory": {
+        "icon": "🧠",
+        "title": "[NEEDS TRANSLATION]",
+        "description": "[NEEDS TRANSLATION]",
+        "badge": "[NEEDS TRANSLATION]"
+      },
+      "tools": {
+        "icon": "🔧",
+        "title": "[NEEDS TRANSLATION]",
+        "description": "[NEEDS TRANSLATION]",
+        "badge": "[NEEDS TRANSLATION]"
+      }
+    },
+    "crossCutting": "[NEEDS TRANSLATION]"
+  },
+  "home": {
+    "title": "[NEEDS TRANSLATION]",
+    "subtitle": "[NEEDS TRANSLATION]",
+    "understand": {
+      "title": "[NEEDS TRANSLATION]",
+      "description": "[NEEDS TRANSLATION]"
+    },
+    "practice": {
+      "title": "[NEEDS TRANSLATION]",
+      "description": "[NEEDS TRANSLATION]"
+    },
+    "build": {
+      "title": "[NEEDS TRANSLATION]",
+      "description": "[NEEDS TRANSLATION]"
+    },
+    "startButton": "[NEEDS TRANSLATION]"
+  },
+  "phases": {
+    "phase1": "[NEEDS TRANSLATION]",
+    "phase2": "[NEEDS TRANSLATION]",
+    "phase3": "[NEEDS TRANSLATION]",
+    "phase4": "[NEEDS TRANSLATION]",
+    "phase5": "[NEEDS TRANSLATION]",
+    "perception": "[NEEDS TRANSLATION]",
+    "perceptionDual": "[NEEDS TRANSLATION]",
+    "execution": "[NEEDS TRANSLATION]",
+    "executionDual": "[NEEDS TRANSLATION]"
+  },
+  "classification": {
+    "title": "[NEEDS TRANSLATION]",
+    "description": "[NEEDS TRANSLATION]",
+    "independentDescription": "[NEEDS TRANSLATION]",
+    "dragInstruction": "[NEEDS TRANSLATION]",
+    "unsortedTray": "[NEEDS TRANSLATION]",
+    "dragItemsHere": "[NEEDS TRANSLATION]",
+    "scramble": "[NEEDS TRANSLATION]",
+    "submitCheck": "[NEEDS TRANSLATION]",
+    "explainPlaceholder": "[NEEDS TRANSLATION]",
+    "explanationRequired": "[NEEDS TRANSLATION]",
+    "phaseComplete": "[NEEDS TRANSLATION]",
+    "continueDescription": "[NEEDS TRANSLATION]",
+    "continueToPhase2": "[NEEDS TRANSLATION]",
+    "crossCuttingHint": "[NEEDS TRANSLATION]",
+    "correct": "[NEEDS TRANSLATION]",
+    "incorrectClassification": "[NEEDS TRANSLATION]",
+    "incorrectFeedback": "[NEEDS TRANSLATION]",
+    "hints": {
+      "learning": "[NEEDS TRANSLATION]",
+      "interaction": "[NEEDS TRANSLATION]"
+    },
+    "accessibility": {
+      "instructions": "[NEEDS TRANSLATION]",
+      "card": {
+        "label": "[NEEDS TRANSLATION]",
+        "labelGrabbed": "[NEEDS TRANSLATION]",
+        "labelIdle": "[NEEDS TRANSLATION]",
+        "explanationLabel": "[NEEDS TRANSLATION]"
+      },
+      "dropZone": {
+        "label": "[NEEDS TRANSLATION]",
+        "labelWithHint": "[NEEDS TRANSLATION]"
+      },
+      "announcements": {
+        "grabbed": "[NEEDS TRANSLATION]",
+        "droppedSameLocation": "[NEEDS TRANSLATION]",
+        "releaseFirst": "[NEEDS TRANSLATION]",
+        "dropped": "[NEEDS TRANSLATION]",
+        "cancelled": "[NEEDS TRANSLATION]",
+        "dropCancelled": "[NEEDS TRANSLATION]",
+        "navigatedToZone": "[NEEDS TRANSLATION]",
+        "focusedOnZone": "[NEEDS TRANSLATION]"
+      }
+    }
+  },
+  "guided": {
+    "title": "[NEEDS TRANSLATION]",
+    "description": "[NEEDS TRANSLATION]",
+    "dragInstruction": "[NEEDS TRANSLATION]",
+    "checkAnswers": "[NEEDS TRANSLATION]",
+    "sortAllItems": "[NEEDS TRANSLATION]",
+    "contrastiveHint": "[NEEDS TRANSLATION]",
+    "seedPrompts": {
+      "perception": {
+        "1": "[NEEDS TRANSLATION]",
+        "2": "[NEEDS TRANSLATION]",
+        "3": "[NEEDS TRANSLATION]"
+      },
+      "execution": {
+        "1": "[NEEDS TRANSLATION]",
+        "2": "[NEEDS TRANSLATION]",
+        "3": "[NEEDS TRANSLATION]"
+      }
+    }
+  },
+  "classificationItems": {
+    "savePreferences": "[NEEDS TRANSLATION]",
+    "updateRule": "[NEEDS TRANSLATION]",
+    "storeConversation": "[NEEDS TRANSLATION]",
+    "sendMessage": "[NEEDS TRANSLATION]",
+    "callExternal": "[NEEDS TRANSLATION]",
+    "fetchLiveData": "[NEEDS TRANSLATION]",
+    "parseMessage": "[NEEDS TRANSLATION]",
+    "gatherState": "[NEEDS TRANSLATION]",
+    "assembleContext": "[NEEDS TRANSLATION]",
+    "detectProgress": "[NEEDS TRANSLATION]",
+    "interpretRequest": "[NEEDS TRANSLATION]",
+    "recallFacts": "[NEEDS TRANSLATION]",
+    "applyRules": "[NEEDS TRANSLATION]",
+    "chooseBest": "[NEEDS TRANSLATION]",
+    "decideSequence": "[NEEDS TRANSLATION]",
+    "clarifyGoal": "[NEEDS TRANSLATION]",
+    "createArtifact": "[NEEDS TRANSLATION]",
+    "formatResponse": "[NEEDS TRANSLATION]"
+  },
+  "feedback": {
+    "title": "[NEEDS TRANSLATION]",
+    "accuracy": "[NEEDS TRANSLATION]",
+    "explanationQuality": "[NEEDS TRANSLATION]",
+    "calibration": "[NEEDS TRANSLATION]",
+    "calibrationDescription": "[NEEDS TRANSLATION]",
+    "detailedFeedback": "[NEEDS TRANSLATION]",
+    "noFeedback": "[NEEDS TRANSLATION]"
+  },
+  "assessment": {
+    "title": "[NEEDS TRANSLATION]",
+    "description": "[NEEDS TRANSLATION]",
+    "overallProgress": "[NEEDS TRANSLATION]",
+    "phasesCompleted": "[NEEDS TRANSLATION]",
+    "target": "[NEEDS TRANSLATION]",
+    "insights": "[NEEDS TRANSLATION]",
+    "excellentCalibration": "[NEEDS TRANSLATION]",
+    "excellentCalibrationDesc": "[NEEDS TRANSLATION]",
+    "strongClassification": "[NEEDS TRANSLATION]",
+    "strongClassificationDesc": "[NEEDS TRANSLATION]",
+    "improveExplanations": "[NEEDS TRANSLATION]",
+    "improveExplanationsDesc": "[NEEDS TRANSLATION]",
+    "exitCheck": {
+      "title": "[NEEDS TRANSLATION]",
+      "description": "[NEEDS TRANSLATION]",
+      "questions": {
+        "q1": {
+          "question": "[NEEDS TRANSLATION]",
+          "prompt": "[NEEDS TRANSLATION]",
+          "answers": ["[NEEDS TRANSLATION]", "[NEEDS TRANSLATION]", "[NEEDS TRANSLATION]", "[NEEDS TRANSLATION]"],
+          "correct": 1,
+          "explanation": "[NEEDS TRANSLATION]"
+        },
+        "q2": {
+          "question": "[NEEDS TRANSLATION]",
+          "prompt": "[NEEDS TRANSLATION]",
+          "answers": ["[NEEDS TRANSLATION]", "[NEEDS TRANSLATION]", "[NEEDS TRANSLATION]", "[NEEDS TRANSLATION]"],
+          "correct": 2,
+          "explanation": "[NEEDS TRANSLATION]"
+        },
+        "q3": {
+          "question": "[NEEDS TRANSLATION]",
+          "prompt": "[NEEDS TRANSLATION]",
+          "answers": ["[NEEDS TRANSLATION]", "[NEEDS TRANSLATION]"],
+          "correct": 0,
+          "explanation": "[NEEDS TRANSLATION]"
+        }
+      },
+      "submit": "[NEEDS TRANSLATION]",
+      "allCorrect": "[NEEDS TRANSLATION]",
+      "someIncorrect": "[NEEDS TRANSLATION]",
+      "reviewAndTryAgain": "[NEEDS TRANSLATION]",
+      "completeJourney": "[NEEDS TRANSLATION]"
+    }
+  },
+  "boundaryMap": {
+    "title": "[NEEDS TRANSLATION]",
+    "description": "[NEEDS TRANSLATION]",
+    "availableElements": "[NEEDS TRANSLATION]",
+    "dragInstruction": "[NEEDS TRANSLATION]",
+    "canvasTitle": "[NEEDS TRANSLATION]",
+    "canvasDescription": "[NEEDS TRANSLATION]",
+    "aiAgent": "[NEEDS TRANSLATION]",
+    "connectToProcess": "[NEEDS TRANSLATION]",
+    "selectFirst": "[NEEDS TRANSLATION]",
+    "clickToConnect": "[NEEDS TRANSLATION]",
+    "saveMap": "[NEEDS TRANSLATION]",
+    "elements": {
+      "wearableApi": "[NEEDS TRANSLATION]",
+      "calendarApi": "[NEEDS TRANSLATION]",
+      "userMemory": "[NEEDS TRANSLATION]",
+      "notificationUi": "[NEEDS TRANSLATION]",
+      "activityLog": "[NEEDS TRANSLATION]",
+      "healthDb": "[NEEDS TRANSLATION]",
+      "sensorStream": "[NEEDS TRANSLATION]",
+      "chatInterface": "[NEEDS TRANSLATION]"
+    },
+    "feedback": {
+      "needMoreElements": "[NEEDS TRANSLATION]",
+      "needMoreConnections": "[NEEDS TRANSLATION]",
+      "missingProcesses": "[NEEDS TRANSLATION]",
+      "needSensorToPerception": "[NEEDS TRANSLATION]",
+      "needExecutionToTool": "[NEEDS TRANSLATION]",
+      "success": "[NEEDS TRANSLATION]"
+    },
+    "completeRequirements": "[NEEDS TRANSLATION]",
+    "keyboard": {
+      "title": "[NEEDS TRANSLATION]",
+      "navigatePalette": "[NEEDS TRANSLATION]",
+      "enterCanvas": "[NEEDS TRANSLATION]",
+      "moveCursor": "[NEEDS TRANSLATION]",
+      "fineTune": "[NEEDS TRANSLATION]",
+      "placeElement": "[NEEDS TRANSLATION]",
+      "removeElement": "[NEEDS TRANSLATION]",
+      "switchMode": "[NEEDS TRANSLATION]",
+      "save": "[NEEDS TRANSLATION]",
+      "toggleHelp": "[NEEDS TRANSLATION]",
+      "elementPlaced": "[NEEDS TRANSLATION]",
+      "elementRemoved": "[NEEDS TRANSLATION]",
+      "cursorMoved": "[NEEDS TRANSLATION]",
+      "modeCanvas": "[NEEDS TRANSLATION]",
+      "modePalette": "[NEEDS TRANSLATION]",
+      "modeProcesses": "[NEEDS TRANSLATION]",
+      "selectionCleared": "[NEEDS TRANSLATION]",
+      "mapSaved": "[NEEDS TRANSLATION]"
+    }
+  },
+  "circuit": {
+    "title": "[NEEDS TRANSLATION]",
+    "description": "[NEEDS TRANSLATION]",
+    "pipelineTitle": "[NEEDS TRANSLATION]",
+    "pipelineDescription": "[NEEDS TRANSLATION]",
+    "blockPalette": "[NEEDS TRANSLATION]",
+    "dragInstruction": "[NEEDS TRANSLATION]",
+    "canvasTitle": "[NEEDS TRANSLATION]",
+    "clear": "[NEEDS TRANSLATION]",
+    "saveCircuit": "[NEEDS TRANSLATION]",
+    "connectInstructions": "[NEEDS TRANSLATION]",
+    "pipelineComplete": "[NEEDS TRANSLATION]",
+    "clickToChoose": "[NEEDS TRANSLATION]",
+    "selected": "[NEEDS TRANSLATION]",
+    "slotLabels": {
+      "perception": "[NEEDS TRANSLATION]",
+      "reasoning": "[NEEDS TRANSLATION]",
+      "planning": "[NEEDS TRANSLATION]",
+      "execution": "[NEEDS TRANSLATION]"
+    },
+    "slotLabelsFormal": {
+      "perception": "[NEEDS TRANSLATION]",
+      "reasoning": "[NEEDS TRANSLATION]",
+      "planning": "[NEEDS TRANSLATION]",
+      "execution": "[NEEDS TRANSLATION]"
+    },
+    "dialogDescriptions": {
+      "perception": "[NEEDS TRANSLATION]",
+      "reasoning": "[NEEDS TRANSLATION]",
+      "planning": "[NEEDS TRANSLATION]",
+      "execution": "[NEEDS TRANSLATION]"
+    },
+    "dialogPrompt": "[NEEDS TRANSLATION]",
+    "readyToTest": "[NEEDS TRANSLATION]",
+    "readyToTestDescription": "[NEEDS TRANSLATION]",
+    "testYourAgent": "[NEEDS TRANSLATION]",
+    "blocks": {
+      "perception": {
+        "label": "[NEEDS TRANSLATION]",
+        "description": "[NEEDS TRANSLATION]"
+      },
+      "learning": {
+        "label": "[NEEDS TRANSLATION]",
+        "description": "[NEEDS TRANSLATION]"
+      },
+      "reasoning": {
+        "label": "[NEEDS TRANSLATION]",
+        "description": "[NEEDS TRANSLATION]"
+      },
+      "planning": {
+        "label": "[NEEDS TRANSLATION]",
+        "description": "[NEEDS TRANSLATION]"
+      },
+      "execution": {
+        "label": "[NEEDS TRANSLATION]",
+        "description": "[NEEDS TRANSLATION]"
+      },
+      "interaction": {
+        "label": "[NEEDS TRANSLATION]",
+        "description": "[NEEDS TRANSLATION]"
+      }
+    },
+    "keyboard": {
+      "title": "[NEEDS TRANSLATION]",
+      "navigatePalette": "[NEEDS TRANSLATION]",
+      "addNode": "[NEEDS TRANSLATION]",
+      "moveNode": "[NEEDS TRANSLATION]",
+      "removeNode": "[NEEDS TRANSLATION]",
+      "clearSelection": "[NEEDS TRANSLATION]",
+      "save": "[NEEDS TRANSLATION]",
+      "toggleHelp": "[NEEDS TRANSLATION]",
+      "nodeAdded": "[NEEDS TRANSLATION]",
+      "nodeRemoved": "[NEEDS TRANSLATION]",
+      "nodeMoved": "[NEEDS TRANSLATION]",
+      "selectionCleared": "[NEEDS TRANSLATION]",
+      "circuitSaved": "[NEEDS TRANSLATION]"
+    }
+  },
+  "simulation": {
+    "title": "[NEEDS TRANSLATION]",
+    "description": "[NEEDS TRANSLATION]",
+    "execution": "[NEEDS TRANSLATION]",
+    "run": "[NEEDS TRANSLATION]",
+    "runDemo": "[NEEDS TRANSLATION]",
+    "runAgain": "[NEEDS TRANSLATION]",
+    "pause": "[NEEDS TRANSLATION]",
+    "reset": "[NEEDS TRANSLATION]",
+    "resetToClean": "[NEEDS TRANSLATION]",
+    "executionLog": "[NEEDS TRANSLATION]",
+    "noLogs": "[NEEDS TRANSLATION]",
+    "buildCircuitFirst": "[NEEDS TRANSLATION]",
+    "testScenario": "[NEEDS TRANSLATION]",
+    "step": "[NEEDS TRANSLATION]",
+    "input": "[NEEDS TRANSLATION]",
+    "output": "[NEEDS TRANSLATION]",
+    "metrics": {
+      "result": "[NEEDS TRANSLATION]",
+      "steps": "[NEEDS TRANSLATION]",
+      "toolCalls": "[NEEDS TRANSLATION]",
+      "success": "[NEEDS TRANSLATION]",
+      "failed": "[NEEDS TRANSLATION]"
+    },
+    "completePhase": "[NEEDS TRANSLATION]"
+  },
+  "failures": {
+    "title": "[NEEDS TRANSLATION]",
+    "description": "[NEEDS TRANSLATION]",
+    "activeFailures": "[NEEDS TRANSLATION]",
+    "modes": {
+      "noisyInput": {
+        "name": "[NEEDS TRANSLATION]",
+        "description": "[NEEDS TRANSLATION]",
+        "tooltip": "[NEEDS TRANSLATION]"
+      },
+      "reducedActivity": {
+        "name": "[NEEDS TRANSLATION]",
+        "description": "[NEEDS TRANSLATION]",
+        "tooltip": "[NEEDS TRANSLATION]"
+      },
+      "missingTool": {
+        "name": "[NEEDS TRANSLATION]",
+        "description": "[NEEDS TRANSLATION]",
+        "tooltip": "[NEEDS TRANSLATION]"
+      },
+      "staleMemory": {
+        "name": "[NEEDS TRANSLATION]",
+        "description": "[NEEDS TRANSLATION]",
+        "tooltip": "[NEEDS TRANSLATION]"
+      }
+    }
+  },
+  "healthCoach": {
+    "scenarioName": "[NEEDS TRANSLATION]",
+    "agentName": "[NEEDS TRANSLATION]",
+    "description": "[NEEDS TRANSLATION]",
+    "dataLabels": {
+      "heartRate": "[NEEDS TRANSLATION]",
+      "steps": "[NEEDS TRANSLATION]",
+      "avgHeartRate": "[NEEDS TRANSLATION]",
+      "stepGoal": "[NEEDS TRANSLATION]"
+    },
+    "testData": {
+      "default": {
+        "name": "[NEEDS TRANSLATION]",
+        "description": "[NEEDS TRANSLATION]"
+      },
+      "elevated": {
+        "name": "[NEEDS TRANSLATION]",
+        "description": "[NEEDS TRANSLATION]"
+      },
+      "borderline": {
+        "name": "[NEEDS TRANSLATION]",
+        "description": "[NEEDS TRANSLATION]"
+      },
+      "excellent": {
+        "name": "[NEEDS TRANSLATION]",
+        "description": "[NEEDS TRANSLATION]"
+      }
+    },
+    "runtime": {
+      "perception": {
+        "parse": {
+          "action": "[NEEDS TRANSLATION]"
+        },
+        "smooth": {
+          "action": "[NEEDS TRANSLATION]"
+        }
+      },
+      "reasoning": {
+        "threshold": {
+          "action": "[NEEDS TRANSLATION]"
+        },
+        "classify": {
+          "action": "[NEEDS TRANSLATION]"
+        }
+      },
+      "planning": {
+        "daily": {
+          "action": "[NEEDS TRANSLATION]",
+          "message": {
+            "excellent": "[NEEDS TRANSLATION]",
+            "active": "[NEEDS TRANSLATION]",
+            "nudge": "[NEEDS TRANSLATION]"
+          }
+        },
+        "safety": {
+          "action": "[NEEDS TRANSLATION]",
+          "message": {
+            "rest": "[NEEDS TRANSLATION]",
+            "lightActivity": "[NEEDS TRANSLATION]",
+            "congratulate": "[NEEDS TRANSLATION]",
+            "encourage": "[NEEDS TRANSLATION]"
+          }
+        }
+      },
+      "execution": {
+        "notify": {
+          "action": "[NEEDS TRANSLATION]",
+          "defaultMessage": "[NEEDS TRANSLATION]",
+          "error": "[NEEDS TRANSLATION]",
+          "errorDetails": "[NEEDS TRANSLATION]"
+        },
+        "streak": {
+          "actionIncremented": "[NEEDS TRANSLATION]",
+          "actionReset": "[NEEDS TRANSLATION]"
+        }
+      }
+    }
+  },
+  "consent": {
+    "title": "[NEEDS TRANSLATION]",
+    "description": "[NEEDS TRANSLATION]",
+    "whatWeStore": "[NEEDS TRANSLATION]",
+    "storeItem1": "[NEEDS TRANSLATION]",
+    "storeItem2": "[NEEDS TRANSLATION]",
+    "storeItem3": "[NEEDS TRANSLATION]",
+    "noPersonalData": "[NEEDS TRANSLATION]",
+    "yourChoice": "[NEEDS TRANSLATION]",
+    "saveProgress": "[NEEDS TRANSLATION]",
+    "noThanks": "[NEEDS TRANSLATION]",
+    "managePreferences": "[NEEDS TRANSLATION]"
+  },
+  "keyboard": {
+    "keyNames": {
+      "tab": "Tab",
+      "shiftTab": "Shift+Tab",
+      "space": "Atstarpe",
+      "enter": "Enter",
+      "escape": "Escape",
+      "arrowUp": "Bultiņa Augšup",
+      "arrowDown": "Bultiņa Lejup",
+      "arrowLeft": "Bultiņa Pa Kreisi",
+      "arrowRight": "Bultiņa Pa Labi",
+      "home": "Home",
+      "end": "End"
+    }
+  },
+  "accessibility": {
+    "skipLinks": {
+      "skipToMainContent": "Pāriet uz galveno saturu",
+      "skipToNavigation": "Pāriet uz navigāciju"
+    },
+    "highContrast": {
+      "toggle": "Pārslēgt augsta kontrasta režīmu",
+      "enabled": "Augsta kontrasta režīms ieslēgts",
+      "disabled": "Augsta kontrasta režīms izslēgts"
+    }
+  }
+}
