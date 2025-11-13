@@ -405,6 +405,8 @@
     "correct": "Pareizi!",
     "incorrectClassification": "Ne gluži pareizi",
     "incorrectFeedback": "Padomājiet par galveno darbību: vai tas ir lasīšana, sapratne, izvēle, izpilde, atcerēšanās vai rīku izmantošana?",
+    "hintButton": "Saņemt padomu par {{item}}",
+    "hintTitle": "Padoms",
     "hints": {
       "learning": "Padoms: Atmiņa/Mācīšanās nav cikla solis, tā ir kā piezīmju grāmatiņa, kurā jebkurš solis var ierakstīt vai no kuras nolasīt",
       "interaction": "Padoms: Vai aģents sniedzas ārpus sevis?"

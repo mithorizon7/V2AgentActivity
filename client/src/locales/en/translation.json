@@ -333,6 +333,8 @@
     "correct": "Correct!",
     "incorrectClassification": "Not quite right",
     "incorrectFeedback": "Think about the core action: Is it reading, understanding, choosing, doing, remembering, or using tools?",
+    "hintButton": "Get a hint for {{item}}",
+    "hintTitle": "Hint",
     "hints": {
       "learning": "Hint: Memory/Learning isn't a step in the loop — it's like a notebook any step can write in or read from",
       "interaction": "Hint: Is the agent reaching outside itself?"

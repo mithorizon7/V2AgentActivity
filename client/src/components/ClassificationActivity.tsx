@@ -6,6 +6,7 @@ import { getProcessColor } from "@/lib/processColors";
 import { cn } from "@/lib/utils";
 import { GripVertical, Check, X, Info } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useTranslation } from "react-i18next";
 import { useConsent, safeLocalStorage } from "@/hooks/useConsent";
 
@@ -34,12 +35,16 @@ function DraggableItem({
 }: DraggableItemProps) {
   const { t } = useTranslation();
   const itemRef = useRef<HTMLDivElement>(null);
+  const [hintOpen, setHintOpen] = useState(false);
 
   useEffect(() => {
     if (isFocused && itemRef.current) {
       itemRef.current.focus();
     }
   }, [isFocused]);
+
+  const hintText = t(`classificationHints.${item.id}`);
+  const showHint = showFeedback && isCorrect === false;
 
   return (
     <div
@@ -82,7 +87,37 @@ function DraggableItem({
         isCorrect ? (
           <Check className="w-5 h-5 text-green-600" data-testid={`item-correct-${item.id}`} />
         ) : (
-          <X className="w-5 h-5 text-red-600" data-testid={`item-incorrect-${item.id}`} />
+          <>
+            <X className="w-5 h-5 text-red-600" data-testid={`item-incorrect-${item.id}`} />
+            <Popover open={hintOpen} onOpenChange={setHintOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="flex-shrink-0"
+                  aria-label={t("classification.hintButton", { item: item.text })}
+                  data-testid={`hint-button-${item.id}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  <Info className="w-4 h-4" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent
+                className="w-80"
+                aria-describedby={`hint-content-${item.id}`}
+                data-testid={`hint-popover-${item.id}`}
+              >
+                <div className="space-y-2">
+                  <h4 className="font-medium text-sm">{t("classification.hintTitle")}</h4>
+                  <p id={`hint-content-${item.id}`} className="text-sm text-muted-foreground">
+                    {hintText}
+                  </p>
+                </div>
+              </PopoverContent>
+            </Popover>
+          </>
         )
       )}
     </div>
