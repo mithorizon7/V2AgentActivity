@@ -11,6 +11,9 @@ I prefer detailed explanations for complex concepts but concise summaries for fa
 Do not make changes to the `shared/runtime/` folder without explicit approval.
 Do not modify the core `Health Coach` scenario files in `shared/scenarios/health-coach/`.
 
+## Translation Workflow
+**CRITICAL**: Whenever any changes are made to English text in `client/src/locales/en/translation.json`, the corresponding Russian (`client/src/locales/ru/translation.json`) and Latvian (`client/src/locales/lv/translation.json`) translations MUST be updated immediately with the highest quality, native-speaker-level translations. This ensures complete internationalization parity across all three languages at all times.
+
 ## System Architecture
 The application is a React single-page application (SPA) utilizing Wouter for routing and i18next for internationalization. The UI/UX features a custom educational theme with distinct color coding for six core AI agent processes (Learning, Connections, Perception, Reasoning, Planning, Execution) to enhance visual learning. Shadcn UI components are used and customized for an educational context, ensuring WCAG compliance and keyboard navigation.
 
