@@ -639,12 +639,15 @@ export default function LearningPage() {
                       <Box className="w-5 h-5 text-primary" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-base sm:text-lg mb-2">
+                      <h3 className="font-semibold text-base sm:text-lg mb-3">
                         {t("boundaryMap.sectionTitle1")}
                       </h3>
-                      <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-                        {t("boundaryMap.intro1")}
-                      </p>
+                      <div className="space-y-3 text-sm sm:text-base text-muted-foreground leading-relaxed">
+                        <p dangerouslySetInnerHTML={{ __html: t("boundaryMap.intro1_p1") }} />
+                        <p dangerouslySetInnerHTML={{ __html: t("boundaryMap.intro1_p2") }} />
+                        <p dangerouslySetInnerHTML={{ __html: t("boundaryMap.intro1_p3") }} />
+                        <p dangerouslySetInnerHTML={{ __html: t("boundaryMap.intro1_p4") }} />
+                      </div>
                     </div>
                   </div>
                 </Card>
@@ -655,12 +658,15 @@ export default function LearningPage() {
                       <MapPin className="w-5 h-5 text-primary" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-base sm:text-lg mb-2">
+                      <h3 className="font-semibold text-base sm:text-lg mb-3">
                         {t("boundaryMap.sectionTitle2")}
                       </h3>
-                      <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-                        {t("boundaryMap.intro2")}
-                      </p>
+                      <div className="space-y-3 text-sm sm:text-base text-muted-foreground leading-relaxed">
+                        <p dangerouslySetInnerHTML={{ __html: t("boundaryMap.intro2_p1") }} />
+                        <p dangerouslySetInnerHTML={{ __html: t("boundaryMap.intro2_p2") }} />
+                        <p dangerouslySetInnerHTML={{ __html: t("boundaryMap.intro2_p3") }} />
+                        <p dangerouslySetInnerHTML={{ __html: t("boundaryMap.intro2_p4") }} />
+                      </div>
                     </div>
                   </div>
                 </Card>
