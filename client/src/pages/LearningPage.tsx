@@ -622,78 +622,152 @@ export default function LearningPage() {
         {currentPhase === 2 && (
           <div className="space-y-8">
             {/* Hero Section */}
-            <div className="space-y-6">
-              <div className="space-y-3">
-                <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
-                  {t("boundaryMap.title")}
-                </h2>
-                <p className="text-lg sm:text-xl text-muted-foreground font-medium max-w-3xl">
-                  {t("boundaryMap.description")}
-                </p>
-              </div>
+            <div className="space-y-3">
+              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
+                {t("boundaryMap.title")}
+              </h2>
+              <p className="text-lg sm:text-xl text-muted-foreground font-medium max-w-3xl">
+                {t("boundaryMap.description")}
+              </p>
+            </div>
 
-              {/* Conceptual Foundation Cards */}
-              <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
-                <Card className="p-6 space-y-4 hover-elevate transition-all duration-200">
-                  <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <Box className="w-5 h-5 text-primary" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-base sm:text-lg mb-3">
-                        {t("boundaryMap.sectionTitle1")}
-                      </h3>
-                      <div className="space-y-3 text-sm sm:text-base text-muted-foreground leading-relaxed">
-                        <p dangerouslySetInnerHTML={{ __html: t("boundaryMap.intro1_p1") }} />
-                        <p dangerouslySetInnerHTML={{ __html: t("boundaryMap.intro1_p2") }} />
-                        <p dangerouslySetInnerHTML={{ __html: t("boundaryMap.intro1_p3") }} />
-                        <p dangerouslySetInnerHTML={{ __html: t("boundaryMap.intro1_p4") }} />
-                      </div>
-                    </div>
+            {/* Section 1: Understanding Agent Boundaries */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <Box className="w-5 h-5 text-primary" aria-hidden="true" />
+                <h3 className="text-xl sm:text-2xl font-bold">
+                  {t("boundaryMap.sectionTitle1")}
+                </h3>
+              </div>
+              
+              <div className="grid gap-6 lg:grid-cols-2">
+                {/* Left sub-card: Core concept */}
+                <Card className="p-6 space-y-3" data-testid="card-boundaries-overview">
+                  <div className="space-y-3 text-sm sm:text-base text-muted-foreground leading-relaxed">
+                    <p dangerouslySetInnerHTML={{ __html: t("boundaryMap.intro1_p1") }} />
+                    <p dangerouslySetInnerHTML={{ __html: t("boundaryMap.intro1_p2") }} />
+                    <p dangerouslySetInnerHTML={{ __html: t("boundaryMap.intro1_p4") }} />
                   </div>
                 </Card>
 
-                <Card className="p-6 space-y-4 hover-elevate transition-all duration-200">
-                  <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <MapPin className="w-5 h-5 text-primary" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-base sm:text-lg mb-3">
-                        {t("boundaryMap.sectionTitle2")}
-                      </h3>
-                      <div className="space-y-3 text-sm sm:text-base text-muted-foreground leading-relaxed">
-                        <p dangerouslySetInnerHTML={{ __html: t("boundaryMap.intro2_p1") }} />
-                        <p dangerouslySetInnerHTML={{ __html: t("boundaryMap.intro2_p2") }} />
-                        <p dangerouslySetInnerHTML={{ __html: t("boundaryMap.intro2_p3") }} />
-                        <p dangerouslySetInnerHTML={{ __html: t("boundaryMap.intro2_p4") }} />
+                {/* Right sub-card: Visual capability list */}
+                <Card className="p-6 space-y-4" data-testid="list-agent-capabilities">
+                  <h4 className="font-semibold text-base">
+                    Agent capabilities are defined by:
+                  </h4>
+                  <ul className="space-y-3" aria-label="Agent capability boundaries">
+                    <li className="flex items-start gap-3 p-3 rounded-md border-2 border-green-500/30 bg-green-50 dark:bg-green-950/20">
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-green-500 flex items-center justify-center text-white text-xs font-bold">
+                        1
                       </div>
-                    </div>
-                  </div>
+                      <div className="flex-1">
+                        <p className="font-medium text-sm text-green-900 dark:text-green-100">
+                          What data comes in
+                        </p>
+                        <p className="text-xs text-green-700 dark:text-green-300 mt-0.5">
+                          Perception: Inputs the agent can receive
+                        </p>
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-3 p-3 rounded-md border-2 border-purple-500/30 bg-purple-50 dark:bg-purple-950/20">
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-500 flex items-center justify-center text-white text-xs font-bold">
+                        2
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium text-sm text-purple-900 dark:text-purple-100">
+                          What it can remember
+                        </p>
+                        <p className="text-xs text-purple-700 dark:text-purple-300 mt-0.5">
+                          Memory: Past experiences and learned patterns
+                        </p>
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-3 p-3 rounded-md border-2 border-cyan-500/30 bg-cyan-50 dark:bg-cyan-950/20">
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-cyan-500 flex items-center justify-center text-white text-xs font-bold">
+                        3
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium text-sm text-cyan-900 dark:text-cyan-100">
+                          What it can send out
+                        </p>
+                        <p className="text-xs text-cyan-700 dark:text-cyan-300 mt-0.5">
+                          Connections: Communication with external systems
+                        </p>
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-3 p-3 rounded-md border-2 border-orange-500/30 bg-orange-50 dark:bg-orange-950/20">
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center text-white text-xs font-bold">
+                        4
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium text-sm text-orange-900 dark:text-orange-100">
+                          Which external tools it can call
+                        </p>
+                        <p className="text-xs text-orange-700 dark:text-orange-300 mt-0.5">
+                          Execution: Actions it can perform in the world
+                        </p>
+                      </div>
+                    </li>
+                  </ul>
                 </Card>
               </div>
+            </div>
 
-              {/* Three Key Questions - Prominent Callout */}
-              <Card className="relative overflow-hidden border-2 border-primary/30 bg-gradient-to-br from-primary/5 via-primary/3 to-transparent">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl" />
-                <div className="relative p-6 sm:p-8">
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0">
-                      <div className="w-12 h-12 rounded-xl bg-primary/15 flex items-center justify-center ring-4 ring-primary/10">
-                        <Lightbulb className="w-6 h-6 text-primary" />
+            {/* Section 2: Your Task */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <MapPin className="w-5 h-5 text-primary" aria-hidden="true" />
+                <h3 className="text-xl sm:text-2xl font-bold">
+                  {t("boundaryMap.sectionTitle2")}
+                </h3>
+              </div>
+
+              <div className="grid gap-6 lg:grid-cols-2">
+                {/* Left sub-card: Activity description */}
+                <Card className="p-6 space-y-3" data-testid="card-task-overview">
+                  <div className="space-y-3 text-sm sm:text-base text-muted-foreground leading-relaxed">
+                    <p dangerouslySetInnerHTML={{ __html: t("boundaryMap.intro2_p1") }} />
+                    <p dangerouslySetInnerHTML={{ __html: t("boundaryMap.intro2_p2") }} />
+                    <p dangerouslySetInnerHTML={{ __html: t("boundaryMap.intro2_p4") }} />
+                  </div>
+                </Card>
+
+                {/* Right sub-card: Three key questions */}
+                <Card className="p-6 space-y-4 relative overflow-hidden border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-transparent" data-testid="list-key-questions">
+                  <div className="flex items-center gap-2">
+                    <Lightbulb className="w-5 h-5 text-primary" aria-hidden="true" />
+                    <h4 className="font-semibold text-base text-primary">
+                      {t("boundaryMap.sectionTitle3")}
+                    </h4>
+                  </div>
+                  <ol className="space-y-3" aria-label="Three key questions to answer">
+                    <li className="flex items-start gap-3">
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center">
+                        <CheckCircle2 className="w-4 h-4 text-primary" aria-hidden="true" />
                       </div>
-                    </div>
-                    <div className="flex-1 space-y-3">
-                      <h3 className="font-bold text-lg sm:text-xl text-primary">
-                        {t("boundaryMap.sectionTitle3")}
-                      </h3>
-                      <p className="text-base sm:text-lg font-medium leading-relaxed">
-                        {t("boundaryMap.threeQuestions")}
+                      <p className="flex-1 text-sm font-medium leading-relaxed">
+                        What information can reach the agent?
                       </p>
-                    </div>
-                  </div>
-                </div>
-              </Card>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center">
+                        <CheckCircle2 className="w-4 h-4 text-primary" aria-hidden="true" />
+                      </div>
+                      <p className="flex-1 text-sm font-medium leading-relaxed">
+                        What can it remember and work with internally?
+                      </p>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center">
+                        <CheckCircle2 className="w-4 h-4 text-primary" aria-hidden="true" />
+                      </div>
+                      <p className="flex-1 text-sm font-medium leading-relaxed">
+                        How can it affect the outside world?
+                      </p>
+                    </li>
+                  </ol>
+                </Card>
+              </div>
             </div>
 
             <BoundaryMapCanvas 
