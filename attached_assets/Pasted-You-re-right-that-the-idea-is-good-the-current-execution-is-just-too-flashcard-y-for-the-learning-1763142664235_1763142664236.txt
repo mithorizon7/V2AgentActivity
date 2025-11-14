@@ -1,0 +1,189 @@
+You’re right that the idea is good; the current execution is just too “flashcard-y” for the learning goal.
+
+Here’s how I see it.
+
+---
+
+## 1. What this activity is trying to do
+
+In plain terms, this screen is trying to teach learners to:
+
+1. **Classify agent capabilities into the right internal process**
+   – Perception vs. Reasoning vs. Planning (and later Execution, etc.).
+
+2. **Use a simple rule-of-thumb to do that classification**
+   – *Is this step reading input?* → Perception
+   – *Is it understanding meaning?* → Reasoning
+   – *Is it choosing what to do?* → Planning
+   – *Is it actually doing it?* → Execution
+
+3. **See the steps as a pipeline, not random labels**
+   You’re walking through one health-coach scenario:
+
+   * Parse sensor data → Perception
+   * Check if HR is healthy → Reasoning
+   * Decide whether to encourage or alert → Planning
+     so they see how the same data flows through different stages.
+
+4. **Expose “expert thinking” so learners can borrow the mental model**
+   The “Expert’s reasoning” is meant to show *how* an expert reasons, not just *what* answer they pick.
+
+5. **Guard them against a specific class of mistakes**
+   The “Pro Tip” is basically: *Ignore fancy words and focus on the underlying action.*
+   That’s the misconception you’re trying to kill.
+
+All of that is the right learning target.
+
+---
+
+## 2. Why it isn’t yet giving learners what they need
+
+Right now, a few things are working against you:
+
+1. **It’s largely passive.**
+   The learner doesn’t have to make a choice or prediction. They just click “Reveal Answer” and read. Worked examples are great, but they only really pay off when anchored to a prior attempt or prediction.
+
+2. **The promise (“learn from common mistakes”) isn’t fulfilled.**
+   The UI text says they’ll “learn from common mistakes,” but the examples don’t show:
+
+   * what the common wrong answer is, or
+   * why that wrong answer is tempting but incorrect.
+     So they never really see the *border* between categories—only the correct side.
+
+3. **The rule-of-thumb is off to the side and easy to skim past.**
+   The Pro Tip at the bottom *is* the core decision rule:
+
+   > Focus on the ACTION. Is it reading input? Understanding meaning? Choosing what to do? Or actually doing it?
+   > But it’s visually and cognitively disconnected from the example; it reads like “extra info” instead of “the main lens you should practice using.”
+
+4. **The pipeline structure is implicit, not explicit.**
+   The examples are clearly step 1 → step 2 → step 3 of the same agent, but the interface never says:
+
+   > “We’re walking through this pipeline: first the agent reads data, then understands it, then chooses an action…”
+   > so a novice can experience this as, “Random tasks with labels,” rather than “Ah, this is the *flow* an agent follows.”
+
+5. **No synthesis or self-explanation is required.**
+   After seven examples, there’s no “Now you write the rule in your own words” or “Summarize how to spot Perception vs. Reasoning vs. Planning.” The expert explanation is good, but the learner never has to compress it into their own mental model.
+
+---
+
+## 3. Concrete improvements (without throwing away the structure)
+
+### A. Add a “make a guess” step before reveal
+
+Even if you don’t change the UI drastically, you can introduce a lightweight, active step:
+
+* **Tiny instruction above the card:**
+
+  > *Before you click “Reveal Answer”, decide which process you think this belongs to: Perception, Reasoning, Planning, or Execution.*
+
+Better (if you’re willing to add real interaction):
+
+* Replace the blurred “Expert’s answer” bar with **4–6 clickable process options**.
+* Once they click one, *then* reveal:
+
+  * Correct/incorrect status
+  * Expert’s answer
+  * Expert’s reasoning
+
+This turns the example into:
+
+> Predict → Get feedback → See expert reasoning,
+> instead of
+> Read → Reveal → Read.
+
+### B. Explicitly show the pipeline
+
+At the top or right under the title, show the four-step pipeline you’re teaching:
+
+> **The core pipeline**
+>
+> 1. *Perception* – reading / collecting input
+> 2. *Reasoning* – understanding what it means
+> 3. *Planning* – choosing what to do
+> 4. *Execution* – actually doing it
+
+Then, on each example, highlight the current step:
+
+* A small pill or breadcrumb:
+
+  > **This example is about:** Perception (Step 1 – reading input)
+
+This makes the scenario feel like an ordered walk through a system, not just seven unrelated trivia items.
+
+### C. Bring the rule-of-thumb into the main box, not just the Pro Tip
+
+Instead of a generic Pro Tip repeated unchanged, integrate the rule into each example’s explanation:
+
+For example 1 (Perception):
+
+> **Expert’s reasoning:**
+> “Parse” means to read and organize. This step is just taking messy sensor data and turning it into clean numbers the agent can understand. That’s *Perception* — **reading and organizing input.**
+> **Check with the rule-of-thumb:** Is it **reading input** (Perception), **understanding meaning** (Reasoning), **choosing what to do** (Planning), or **actually doing it** (Execution)? Here it’s clearly reading input → Perception.
+
+Then you can simplify the Pro Tip to a short reminder or even remove it; the rule is already front and center in the reasoning box.
+
+### D. Actually show the “common mistake” and contrast it
+
+Since your header promises learning from mistakes, use a tiny “If you picked X…” line:
+
+For the “Parse wearable sensor data” example:
+
+> **Common wrong answer:** Reasoning
+> It’s tempting to pick Reasoning because it sounds like “understanding data,” but here we’re *not* deciding what the numbers *mean* yet. We’re just cleaning and reading them—that’s Perception.
+
+For the “Check if heart rate is within healthy range” example:
+
+> **Common wrong answer:** Perception
+> You might think this is just reading numbers, but the key action is asking “Is this good or bad?” That’s **understanding what the numbers mean**, so it’s Reasoning.
+
+This is where the *boundaries* between categories really become sharp in the learner’s mind.
+
+### E. Add a short synthesis prompt at the end of the sequence
+
+After the last example, show a recap card:
+
+> **Your turn: Summarize the rules**
+> In your own words, how would you tell a friend to spot the difference between:
+>
+> * Perception vs. Reasoning
+> * Reasoning vs. Planning
+> * Planning vs. Execution
+
+Even if it’s just a free-text box with no grading, the act of writing that rule once cements the pattern.
+
+You could then show a short “expert summary” they can compare to:
+
+> * Perception = reading / collecting input
+> * Reasoning = deciding what the input *means*
+> * Planning = choosing which action to take
+> * Execution = carrying out the chosen action
+
+### F. Minor wording tweaks for clarity
+
+* Title and subtitle are strong; I’d only add one orienting line above the first example:
+
+  > *We’ll walk through one fitness-coach agent and show which step each task belongs to in the Perception → Reasoning → Planning → Execution pipeline.*
+
+* In the “Expert’s reasoning” text, keep using consistent phrasing:
+
+  * “Is it **reading input**?” → Perception
+  * “Is it **deciding what the data means**?” → Reasoning
+  * “Is it **choosing between possible actions**?” → Planning
+  * “Is it **actually doing the action**?” → Execution
+
+  That repetition is what builds the mental decision tree.
+
+---
+
+## 4. Bottom line
+
+* The core idea is right: use a single scenario to walk learners through Perception → Reasoning → Planning (→ Execution), with expert explanations.
+* What’s missing is **active prediction**, **explicit contrast with common mistakes**, and **a clear, repeated decision rule** tied into each example instead of sitting in a Pro Tip box.
+
+Add a tiny bit of interaction (guess before reveal), surface the “wrong but tempting” alternative, and hammer the input/meaning/choice/action rule inside each explanation, and this sequence will start pulling real conceptual weight.
+
+**Confidence:**
+
+* High that I’ve correctly inferred the learning goal and main weaknesses.
+* High that the suggested changes (guess step, explicit pipeline, contrastive “if you picked X,” integrated rule-of-thumb, final synthesis) would significantly improve learning outcomes.
