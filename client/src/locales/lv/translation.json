@@ -581,7 +581,7 @@
     "intro1_p2": "Jūs izvēlaties tā robežas, nosakot, kas atrodas <strong>iekšienē</strong> (tā pamata procesi: Uztvere, Izpratne, Plānošana, Izpilde, plus Atmiņa un Savienojumi) un kas paliek <strong>ārpusē</strong> kā rīki, pakalpojumi un datu avoti.",
     "intro1_p3": "Praksē tā spējas nosaka <em>kādi dati ienāk</em>, <em>ko tas var atcerēties</em>, <em>ko tas var nosūtīt</em> un <em>kurus ārējos rīkus tas var izsaukt</em>.",
     "intro1_p4": "Tas nozīmē, ka jūs ne tikai rakstāt uzvednes. Jūs rīkojaties kā <strong>sistēmu arhitekts</strong>, projektējot skaidras komponentes un savienojumus. Šajā skatījumā konteksts ir visa reālās pasaules struktūra — lietotnes, ierīces, datubāzes un interfeisi, kas apņem aģentu.",
-    "intro2_p1": "2. fāze ir vieta, kur jūs dodat savam aģentam pasauli, kurā dzīvot.",
+    "intro2_p1": "<strong>2. fāze ir vieta, kur jūs dodat savam aģentam pasauli, kurā dzīvot.</strong>",
     "intro2_p2": "Šajā aktivitātē jūs izveidosiet vienkāršu robežu karti, kas parāda <strong>kas atrodas iekšienē</strong> (kā tas redz, domā, plāno un rīkojas) un <strong>kas dzīvo ārpusē</strong> (lietotnes, ierīces, datu avoti un lietotāji, ar kuriem tas mijiedarbojas).",
     "intro2_p3": "Koncentrējieties uz trim galvenajiem jautājumiem: <strong>Kāda informācija var sasniegt aģentu?</strong> <strong>Ko tas var atcerēties un ar ko strādāt iekšēji?</strong> <strong>Kā tas var ietekmēt ārējo pasauli?</strong>",
     "intro2_p4": "2. fāzes beigās jums būs skaidrs priekšstats par sava aģenta robežām: ko tas var redzēt, ko var uzglabāt, ko var darīt un no kādiem ārējiem rīkiem tas ir atkarīgs, lai būtu noderīgs.",

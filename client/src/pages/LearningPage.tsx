@@ -726,7 +726,7 @@ export default function LearningPage() {
                 {/* Left sub-card: Activity description */}
                 <Card className="p-6 space-y-3" data-testid="card-task-overview">
                   <div className="space-y-3 text-sm sm:text-base text-muted-foreground leading-relaxed">
-                    <p dangerouslySetInnerHTML={{ __html: t("boundaryMap.intro2_p1") }} />
+                    <p className="text-center" dangerouslySetInnerHTML={{ __html: t("boundaryMap.intro2_p1") }} />
                     <p dangerouslySetInnerHTML={{ __html: t("boundaryMap.intro2_p2") }} />
                     <p dangerouslySetInnerHTML={{ __html: t("boundaryMap.intro2_p4") }} />
                   </div>
