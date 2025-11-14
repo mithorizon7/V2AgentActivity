@@ -856,12 +856,14 @@ export default function LearningPage() {
         </div>
       </div>
 
-      <FeedbackPanel
-        isOpen={showFeedback}
-        onClose={() => setShowFeedback(false)}
-        accuracy={feedbackData?.accuracy || 0}
-        feedback={feedbackData?.feedback || []}
-      />
+      {currentPhase !== 1 && currentPhase !== 0.75 && (
+        <FeedbackPanel
+          isOpen={showFeedback}
+          onClose={() => setShowFeedback(false)}
+          accuracy={feedbackData?.accuracy || 0}
+          feedback={feedbackData?.feedback || []}
+        />
+      )}
       
       <div className="fixed bottom-4 right-4">
         <ConsentManager />
