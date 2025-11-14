@@ -133,8 +133,8 @@ export default function LearningPage() {
   ], [t]);
   
   const { sessionId, progress, isLoading: sessionLoading } = useSession();
-  const classificationMutation = useClassification(sessionId || "");
-  const boundaryMapMutation = useBoundaryMap(sessionId || "");
+  const classificationMutation = useClassification(sessionId);
+  const boundaryMapMutation = useBoundaryMap(sessionId);
   
   // Phase 0: Primer (teach before practice) - persisted in localStorage
   const [primerComplete, setPrimerComplete] = useState(() => {
@@ -653,7 +653,7 @@ export default function LearningPage() {
                 {/* Right sub-card: Visual capability list */}
                 <Card className="p-6 space-y-4" data-testid="list-agent-capabilities">
                   <h4 className="font-semibold text-base">
-                    Agent capabilities are defined by:
+                    {t("boundaryMap.capabilitiesTitle")}
                   </h4>
                   <ul className="space-y-3" aria-label="Agent capability boundaries">
                     <li className="flex items-start gap-3 p-3 rounded-md border-2 border-green-500/30 bg-green-50 dark:bg-green-950/20">
@@ -662,10 +662,10 @@ export default function LearningPage() {
                       </div>
                       <div className="flex-1">
                         <p className="font-medium text-sm text-green-900 dark:text-green-100">
-                          What data comes in
+                          {t("boundaryMap.capability1Title")}
                         </p>
                         <p className="text-xs text-green-700 dark:text-green-300 mt-0.5">
-                          Perception: Inputs the agent can receive
+                          {t("boundaryMap.capability1Description")}
                         </p>
                       </div>
                     </li>
@@ -675,10 +675,10 @@ export default function LearningPage() {
                       </div>
                       <div className="flex-1">
                         <p className="font-medium text-sm text-purple-900 dark:text-purple-100">
-                          What it can remember
+                          {t("boundaryMap.capability2Title")}
                         </p>
                         <p className="text-xs text-purple-700 dark:text-purple-300 mt-0.5">
-                          Memory: Past experiences and learned patterns
+                          {t("boundaryMap.capability2Description")}
                         </p>
                       </div>
                     </li>
@@ -688,10 +688,10 @@ export default function LearningPage() {
                       </div>
                       <div className="flex-1">
                         <p className="font-medium text-sm text-cyan-900 dark:text-cyan-100">
-                          What it can send out
+                          {t("boundaryMap.capability3Title")}
                         </p>
                         <p className="text-xs text-cyan-700 dark:text-cyan-300 mt-0.5">
-                          Connections: Communication with external systems
+                          {t("boundaryMap.capability3Description")}
                         </p>
                       </div>
                     </li>
@@ -701,10 +701,10 @@ export default function LearningPage() {
                       </div>
                       <div className="flex-1">
                         <p className="font-medium text-sm text-orange-900 dark:text-orange-100">
-                          Which external tools it can call
+                          {t("boundaryMap.capability4Title")}
                         </p>
                         <p className="text-xs text-orange-700 dark:text-orange-300 mt-0.5">
-                          Execution: Actions it can perform in the world
+                          {t("boundaryMap.capability4Description")}
                         </p>
                       </div>
                     </li>
@@ -746,7 +746,7 @@ export default function LearningPage() {
                         <CheckCircle2 className="w-4 h-4 text-primary" aria-hidden="true" />
                       </div>
                       <p className="flex-1 text-sm font-medium leading-relaxed">
-                        What information can reach the agent?
+                        {t("boundaryMap.question1")}
                       </p>
                     </li>
                     <li className="flex items-start gap-3">
@@ -754,7 +754,7 @@ export default function LearningPage() {
                         <CheckCircle2 className="w-4 h-4 text-primary" aria-hidden="true" />
                       </div>
                       <p className="flex-1 text-sm font-medium leading-relaxed">
-                        What can it remember and work with internally?
+                        {t("boundaryMap.question2")}
                       </p>
                     </li>
                     <li className="flex items-start gap-3">
@@ -762,7 +762,7 @@ export default function LearningPage() {
                         <CheckCircle2 className="w-4 h-4 text-primary" aria-hidden="true" />
                       </div>
                       <p className="flex-1 text-sm font-medium leading-relaxed">
-                        How can it affect the outside world?
+                        {t("boundaryMap.question3")}
                       </p>
                     </li>
                   </ol>

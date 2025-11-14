@@ -28,6 +28,12 @@ export function useSession() {
       setSessionId(data.sessionId);
       storage.setItem('agentLearningSessionId', data.sessionId);
       queryClient.setQueryData(['/api/progress', data.sessionId], data.progress);
+      
+      // Clear legacy global classification state when new session starts
+      storage.removeItem('classification_unsorted_v1');
+      storage.removeItem('classification_sorted_v1');
+      storage.removeItem('guided_unsorted_v1');
+      storage.removeItem('guided_sorted_v1');
     },
   });
 

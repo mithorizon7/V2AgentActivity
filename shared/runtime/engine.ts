@@ -118,21 +118,29 @@ export function applyFailures(
   return ctx;
 }
 
+// Development-only runtime logger
+function runtimeLog(...args: any[]) {
+  // Use import.meta.env for Vite compatibility (works in both browser and server)
+  if (import.meta.env?.DEV) {
+    console.log(...args);
+  }
+}
+
 export function createInitialContext(input: any): RuntimeCtx {
   return {
     input,
     state: {},
     tools: {
       sendNotification: (args: { type: string; message?: string }) => {
-        console.log('[TOOL] sendNotification:', args);
+        runtimeLog('[TOOL] sendNotification:', args);
         return { sent: true, type: args.type };
       },
       readSteps: () => {
-        console.log('[TOOL] readSteps');
+        runtimeLog('[TOOL] readSteps');
         return { steps: input.steps || 0 };
       },
       readHeartRate: () => {
-        console.log('[TOOL] readHeartRate');
+        runtimeLog('[TOOL] readHeartRate');
         return { heartRate: input.heartRate || [] };
       },
     },
