@@ -1,0 +1,78 @@
+3. Where else I’d change the screen microcopy
+
+Looking at the screenshot, here are the places I’d sync with the intro and make things clearer for true beginners:
+
+a) Subtitle under “Phase 2: Boundary Mapping”
+
+Current:
+
+Map the agent's environment, tools, and data flows to understand system boundaries
+
+Suggested (aligns with your intro’s language about inside vs. outside):
+
+Map what’s inside your agent versus the tools and data around it.
+
+or
+
+Map your agent’s world: what it can see, remember, and do.
+
+Either one reinforces the “world/boundary” mental model before they even see the instructions.
+
+b) Left panel: “Available Elements”
+
+Current:
+
+Title: Available Elements
+
+Subtext: Drag elements onto the canvas
+
+I’d make the subtext tell them what these things are in plain language:
+
+Available Elements
+Things in your agent’s world (APIs, UIs, logs, databases). Drag an element onto the canvas to add it to your map.
+
+That ties directly to your “world” wording and to the three guiding questions.
+
+c) Center panel: “Boundary Map Canvas” helper text
+
+Current:
+
+Place elements and connect them to processes by clicking an element, then clicking a process
+
+This is technically correct but a little abstract. For beginners, I’d echo the physical panels:
+
+Boundary Map Canvas
+
+Drag elements from Available Elements onto this canvas.
+
+Click an element on the canvas, then choose which internal process uses it on the right.
+
+That’s exactly what they see and mirrors your “inputs → processes → outputs” framing.
+
+d) Right panel: “Connect to Process”
+
+Current:
+
+Title: Connect to Process
+
+Subtext: Select an element on the canvas first
+
+I’d make this explicitly about “inside the agent” so it ties back to your intro:
+
+Connect to Process
+These are the processes inside your agent.
+
+Click an element on the canvas.
+
+Then click one or more processes it should connect to.
+
+You can keep the existing labels like Memory (Remember/Learn) etc.—they already match your conceptual description well.
+
+e) Optional: add a tiny “Your map should answer…” hint
+
+If you can spare one extra line somewhere (even as a small hint under the canvas), I’d surface your three questions there, because they are pedagogically gold:
+
+Your map should answer:
+What can reach the agent? What can it remember? How does it act on the world?
+
+That links the manipulations directly to the conceptual goal.

@@ -620,11 +620,24 @@ export default function LearningPage() {
 
         {currentPhase === 2 && (
           <div className="space-y-6">
-            <div>
-              <h2 className="text-2xl sm:text-3xl font-bold mb-2">{t("boundaryMap.title")}</h2>
-              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-                {t("boundaryMap.description")}
-              </p>
+            <div className="space-y-4">
+              <div>
+                <h2 className="text-2xl sm:text-3xl font-bold mb-2">{t("boundaryMap.title")}</h2>
+                <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+                  {t("boundaryMap.description")}
+                </p>
+              </div>
+              
+              <div className="space-y-3 text-sm sm:text-base leading-relaxed">
+                <p>{t("boundaryMap.intro1")}</p>
+                <p>{t("boundaryMap.intro2")}</p>
+              </div>
+              
+              <Card className="p-4 bg-primary/5 border-primary/20">
+                <p className="text-sm font-medium text-primary">
+                  {t("boundaryMap.threeQuestions")}
+                </p>
+              </Card>
             </div>
 
             <BoundaryMapCanvas 
