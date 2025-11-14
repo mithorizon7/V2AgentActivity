@@ -453,6 +453,9 @@
   "boundaryMap": {
     "title": "Phase 2: Boundary Mapping",
     "description": "Map your agent's world: what it can see, remember, and do",
+    "sectionTitle1": "Understanding Agent Boundaries",
+    "sectionTitle2": "Your Task: Map the World",
+    "sectionTitle3": "Three Guiding Questions",
     "intro1": "An AI agent is not magic; it can only know and do things through the specific inputs and outputs you give it. You choose its boundaries by deciding what lives inside the agent—its core processes (Perception, Reasoning, Planning, Execution) plus Memory and Connections—and what stays outside as tools, services, and data sources. In practice, its capabilities are defined by what data comes in, what it can remember, what it can send out, and which external tools it can call. That means you're not just writing prompts; you're acting as a systems architect, designing clear components and connections. In that view, \"context\" is not just text you feed the model, but the whole real-world structure of apps, devices, databases, and interfaces that surround the agent.",
     "intro2": "Phase 2 is where you give your agent a world to live in. In this activity, you'll build a simple boundary map that shows what belongs inside your AI agent (how it sees, thinks, plans, and acts) and what lives outside the agent (apps, devices, data sources, and users it interacts with), focusing on three key questions: What information can reach the agent? What can it remember and work with internally? How can it affect the outside world? By the end of Phase 2, you'll have a clear picture of your agent's boundaries: what it can see, what it can store, what it can do, and which external tools (APIs, databases, UIs, devices) it depends on to be useful.",
     "threeQuestions": "Your map should answer: What can reach the agent? What can it remember? How does it act on the world?",

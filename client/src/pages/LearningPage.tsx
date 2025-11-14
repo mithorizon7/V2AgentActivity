@@ -39,7 +39,7 @@ import {
   FailureMode,
   SimulationStep,
 } from "@shared/schema";
-import { ArrowRight, ArrowLeft, CheckCircle2, Play, Sparkles, Home } from "lucide-react";
+import { ArrowRight, ArrowLeft, CheckCircle2, Play, Sparkles, Home, Box, MapPin, Lightbulb } from "lucide-react";
 import { Block, Process, RuntimeCtx, Fixture, FailureConfig } from "@shared/runtime/types";
 import { runPipeline, applyFailures, createInitialContext } from "@shared/runtime/engine";
 import { cn } from "@/lib/utils";
@@ -619,24 +619,73 @@ export default function LearningPage() {
         )}
 
         {currentPhase === 2 && (
-          <div className="space-y-6">
-            <div className="space-y-4">
-              <div>
-                <h2 className="text-2xl sm:text-3xl font-bold mb-2">{t("boundaryMap.title")}</h2>
-                <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+          <div className="space-y-8">
+            {/* Hero Section */}
+            <div className="space-y-6">
+              <div className="space-y-3">
+                <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
+                  {t("boundaryMap.title")}
+                </h2>
+                <p className="text-lg sm:text-xl text-muted-foreground font-medium max-w-3xl">
                   {t("boundaryMap.description")}
                 </p>
               </div>
-              
-              <div className="space-y-3 text-sm sm:text-base leading-relaxed">
-                <p>{t("boundaryMap.intro1")}</p>
-                <p>{t("boundaryMap.intro2")}</p>
+
+              {/* Conceptual Foundation Cards */}
+              <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
+                <Card className="p-6 space-y-4 hover-elevate transition-all duration-200">
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Box className="w-5 h-5 text-primary" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-base sm:text-lg mb-2">
+                        {t("boundaryMap.sectionTitle1")}
+                      </h3>
+                      <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+                        {t("boundaryMap.intro1")}
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+
+                <Card className="p-6 space-y-4 hover-elevate transition-all duration-200">
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <MapPin className="w-5 h-5 text-primary" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-base sm:text-lg mb-2">
+                        {t("boundaryMap.sectionTitle2")}
+                      </h3>
+                      <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+                        {t("boundaryMap.intro2")}
+                      </p>
+                    </div>
+                  </div>
+                </Card>
               </div>
-              
-              <Card className="p-4 bg-primary/5 border-primary/20">
-                <p className="text-sm font-medium text-primary">
-                  {t("boundaryMap.threeQuestions")}
-                </p>
+
+              {/* Three Key Questions - Prominent Callout */}
+              <Card className="relative overflow-hidden border-2 border-primary/30 bg-gradient-to-br from-primary/5 via-primary/3 to-transparent">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl" />
+                <div className="relative p-6 sm:p-8">
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-12 h-12 rounded-xl bg-primary/15 flex items-center justify-center ring-4 ring-primary/10">
+                        <Lightbulb className="w-6 h-6 text-primary" />
+                      </div>
+                    </div>
+                    <div className="flex-1 space-y-3">
+                      <h3 className="font-bold text-lg sm:text-xl text-primary">
+                        {t("boundaryMap.sectionTitle3")}
+                      </h3>
+                      <p className="text-base sm:text-lg font-medium leading-relaxed">
+                        {t("boundaryMap.threeQuestions")}
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </Card>
             </div>
 

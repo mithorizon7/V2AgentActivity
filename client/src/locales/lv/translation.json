@@ -553,6 +553,9 @@
   "boundaryMap": {
     "title": "2. fāze: Robežu kartēšana",
     "description": "Kartējiet sava aģenta pasauli: ko tas var redzēt, atcerēties un darīt",
+    "sectionTitle1": "Aģenta robežu izpratne",
+    "sectionTitle2": "Jūsu uzdevums: Kartēt pasauli",
+    "sectionTitle3": "Trīs galvenie jautājumi",
     "intro1": "MI aģents nav maģija; tas var zināt un darīt tikai to, kam jūs esat nodrošinājis konkrētus ievades un izvades. Jūs izvēlaties tā robežas, nosakot, kas atrodas aģenta iekšienē — tā pamata procesi (Uztvere, Izpratne, Plānošana, Izpilde) plus Atmiņa un Savienojumi — un kas paliek ārpusē kā rīki, pakalpojumi un datu avoti. Praksē tā spējas nosaka tas, kādi dati ienāk, ko tas var atcerēties, ko tas var nosūtīt un kurus ārējos rīkus tas var izsaukt. Tas nozīmē, ka jūs ne tikai rakstāt uzvednes; jūs rīkojaties kā sistēmu arhitekts, projektējot skaidras komponentes un savienojumus. Šajā skatījumā \"konteksts\" nav tikai teksts, ko jūs padodat modelim, bet visa reālās pasaules struktūra — lietotnes, ierīces, datubāzes un interfeisi, kas apņem aģentu.",
     "intro2": "2. fāze ir vieta, kur jūs dodat savam aģentam pasauli, kurā dzīvot. Šajā aktivitātē jūs izveidosiet vienkāršu robežu karti, kas parāda, kas atrodas jūsu MI aģenta iekšienē (kā tas redz, domā, plāno un rīkojas) un kas dzīvo ārpus aģenta (lietotnes, ierīces, datu avoti un lietotāji, ar kuriem tas mijiedarbojas), koncentrējoties uz trim galvenajiem jautājumiem: Kāda informācija var sasniegt aģentu? Ko tas var atcerēties un ar ko strādāt iekšēji? Kā tas var ietekmēt ārējo pasauli? 2. fāzes beigās jums būs skaidrs priekšstats par sava aģenta robežām: ko tas var redzēt, ko var uzglabāt, ko var darīt un no kādiem ārējiem rīkiem (API, datubāzēm, saskarnēm, ierīcēm) tas ir atkarīgs, lai būtu noderīgs.",
     "threeQuestions": "Jūsu kartei jāatbild uz jautājumiem: Kas var sasniegt aģentu? Ko tas var atcerēties? Kā tas iedarbojas uz pasauli?",
