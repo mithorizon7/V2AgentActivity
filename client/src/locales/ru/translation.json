@@ -583,6 +583,7 @@
     "completeRequirements": "Выполните все требования для завершения этапа",
     "keyboard": {
       "title": "Клавиатурные сочетания",
+      "showShortcuts": "Показать клавиатурные сочетания",
       "navigatePalette": "Tab/Shift+Tab: Навигация по палитре",
       "enterCanvas": "Enter: Войти в режим холста",
       "moveCursor": "Стрелки: Перемещение курсора",

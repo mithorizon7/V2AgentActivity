@@ -483,6 +483,7 @@
     "completeRequirements": "Complete the mapping requirements above to continue to Phase 3",
     "keyboard": {
       "title": "Keyboard Shortcuts",
+      "showShortcuts": "Show Keyboard Shortcuts",
       "navigatePalette": "Navigate element palette",
       "enterCanvas": "Enter canvas mode",
       "moveCursor": "Move cursor (grid snap)",

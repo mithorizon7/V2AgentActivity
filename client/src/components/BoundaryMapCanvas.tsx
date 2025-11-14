@@ -56,7 +56,7 @@ export function BoundaryMapCanvas({
   const [selectedPaletteIndex, setSelectedPaletteIndex] = useState(0);
   const [focusMode, setFocusMode] = useState<"palette" | "canvas" | "processes">("palette");
   const [announcement, setAnnouncement] = useState("");
-  const [showInstructions, setShowInstructions] = useState(true);
+  const [showInstructions, setShowInstructions] = useState(false);
   const GRID_SIZE = 32;
   const CANVAS_WIDTH = 384;
   const CANVAS_HEIGHT = 384;
@@ -246,6 +246,21 @@ export function BoundaryMapCanvas({
       <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
         {announcement}
       </div>
+
+      {!showInstructions && (
+        <div className="mb-4">
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => setShowInstructions(true)}
+            data-testid="button-show-keyboard-help"
+            className="gap-2"
+          >
+            <Keyboard className="w-4 h-4" />
+            {t("boundaryMap.keyboard.showShortcuts")}
+          </Button>
+        </div>
+      )}
 
       {showInstructions && (
         <Card className="p-4 mb-4 bg-muted/50">

@@ -583,6 +583,7 @@
     "completeRequirements": "Izpildiet visas prasības, lai pabeigtu posmu",
     "keyboard": {
       "title": "Tastatūras saīsnes",
+      "showShortcuts": "Parādīt tastatūras saīsnes",
       "navigatePalette": "Tab/Shift+Tab: Navigācija pa paleti",
       "enterCanvas": "Enter: Ieiet audekla režīmā",
       "moveCursor": "Bultiņas: Kursora pārvietošana",
