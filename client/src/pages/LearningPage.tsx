@@ -610,11 +610,12 @@ export default function LearningPage() {
               </Card>
             )}
 
-            <PhaseNavigation
-              onPrevious={navigateToPreviousPhase}
-              onNext={showFeedback ? navigateToNextPhase : undefined}
-              showNext={showFeedback}
-            />
+            {!showFeedback && (
+              <PhaseNavigation
+                onPrevious={navigateToPreviousPhase}
+                showNext={false}
+              />
+            )}
           </div>
         )}
 
