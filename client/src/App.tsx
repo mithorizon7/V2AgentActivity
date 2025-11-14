@@ -8,6 +8,7 @@ import LearningPage from "@/pages/LearningPage";
 import NotFound from "@/pages/not-found";
 import { ConsentBanner } from "@/components/ConsentBanner";
 import { ConsentProvider } from "@/contexts/ConsentContext";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { useTranslation } from "react-i18next";
 import "./lib/i18n";
 
@@ -39,16 +40,18 @@ function SkipLinks() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ConsentProvider>
-        <TooltipProvider>
-          <SkipLinks />
-          <ConsentBanner />
-          <Toaster />
-          <Router />
-        </TooltipProvider>
-      </ConsentProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <ConsentProvider>
+          <TooltipProvider>
+            <SkipLinks />
+            <ConsentBanner />
+            <Toaster />
+            <Router />
+          </TooltipProvider>
+        </ConsentProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 

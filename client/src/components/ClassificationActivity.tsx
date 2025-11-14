@@ -291,21 +291,28 @@ export function ClassificationActivity({
   });
   
   const [draggedItem, setDraggedItem] = useState<ClassificationItem | null>(null);
+  const hasWarnedRef = useRef(false);
 
   // Dev guard: warn if cards are in correct bins before user interaction
-  if (import.meta.env.DEV) {
-    const autoPlaced: string[] = [];
-    Object.entries(itemsByProcess).forEach(([process, processItems]) => {
-      processItems.forEach(item => {
-        if (item.correctProcess === process) {
-          autoPlaced.push(`${item.id} → ${process}`);
-        }
+  // Only warn once on initial render to catch hardcoded pre-sorting bugs
+  // Suppressed for legitimate localStorage restoration regardless of consent status
+  useEffect(() => {
+    if (import.meta.env.DEV && !hasWarnedRef.current) {
+      const hasSavedState = storage.getItem("classification_sorted_v1");
+      const autoPlaced: string[] = [];
+      Object.entries(itemsByProcess).forEach(([process, processItems]) => {
+        processItems.forEach(item => {
+          if (item.correctProcess === process) {
+            autoPlaced.push(`${item.id} → ${process}`);
+          }
+        });
       });
-    });
-    if (autoPlaced.length > 0 && !showFeedback) {
-      console.warn("⚠️ PRE-SORTED BUG:", autoPlaced);
+      if (autoPlaced.length > 0 && !showFeedback && !hasSavedState) {
+        console.warn("⚠️ PRE-SORTED BUG:", autoPlaced);
+      }
+      hasWarnedRef.current = true;
     }
-  }
+  }, []);
 
   const getLitmusTest = (process: AgentProcess): string => {
     return t(`processes.litmusTests.${process}`);
