@@ -271,62 +271,83 @@
   },
   "workedExample": {
     "title": "Mācieties no eksperta domāšanas",
-    "subtitle": "Vērojiet, kā eksperts izlemj, kurai kategorijai pieder katra spēja — un mācieties no biežākajām kļūdām",
+    "subtitle": "Mēs izskatīsim vienu veselības trenera aģentu, parādot, kuram procesam pieder katra uzdevums konvejerā",
     "progress": "Piemērs {{current}} no {{total}}",
+    "instruction": "Pirms atbildes parādīšanas, paredziet, kuram procesam pieder šis uzdevums:",
     "cardLabel": "Kam aģentam jādara:",
-    "nearMiss": "Viltīgs piemērs",
-    "commonMistake": "Bieža iesācēju kļūda",
-    "mightThink": "Daudzi iesācēji kļūdaini domā, ka tas attiecas uz",
-    "because": "jo",
-    "expertClassifies": "Eksperta atbilde:",
-    "whyLabel": "Eksperta pamatojums:",
+    "yourGuess": "Jūsu prognoze:",
+    "selectProcess": "Atlasiet, kuram procesam pieder šis uzdevums",
+    "expertAnswer": "Eksperta atbilde:",
+    "expertReasoning": "Eksperta pamatojums:",
+    "correct": "Pareizi!",
+    "incorrect": "Ne visai",
+    "correctFeedback": "Jūs pareizi noteicāt to kā {{process}}.",
+    "incorrectFeedback": "Jūs izvēlējāties {{guess}}, bet patiesībā tas ir {{correct}}.",
+    "commonMistakeTitle": "Bieža kļūda",
     "previous": "Iepriekšējais",
     "next": "Nākamais piemērs",
-    "startPractice": "Pamēģiniet paši",
-    "revealAnswer": "Noklikšķiniet atbildei",
-    "answerRevealed": "Atbilde parādīta",
-    "revealAll": "Parādīt visas atbildes",
+    "readyToSummarize": "Apkopojiet, ko esat iemācījies",
+    "pipeline": {
+      "title": "Pamata 4-soļu konveiers",
+      "supportingLabel": "Pieejams jebkurā laikā (nav konveiera soļi):"
+    },
+    "synthesis": {
+      "title": "Tagad jūsu kārta",
+      "subtitle": "Apkopojiet lēmumu noteikumus saviem vārdiem, lai nostiprinātu izpratni",
+      "prompt": "Saviem vārdiem, kā jūs izskaidrotu draugam, kā atšķirt četrus konveiera soļus?",
+      "placeholder": "Piemēram: Uztvere ir, kad jūs lasāt vai vācat datus. Izpratne ir...",
+      "characterCount": "{{count}} rakstzīmes",
+      "expertSummaryTitle": "Eksperta kopsavilkums (salīdziniet ar savu)",
+      "perceptionRule": "Uztvere = Ievades datu lasīšana vai vākšana",
+      "reasoningRule": "Izpratne = Ievades datu nozīmes noteikšana",
+      "planningRule": "Plānošana = Darbības izvēle",
+      "executionRule": "Izpilde = Izvēlētās darbības veikšana",
+      "supportingNote": "Atmiņa un Savienojumi ir pieejami jebkuram solim, tie nav soļi paši par sevi.",
+      "continue": "Sākt praksi"
+    },
     "processLabels": {
       "perception": "Uztvere",
       "reasoning": "Izpratne",
       "planning": "Plānošana",
       "execution": "Izpilde",
-      "learning": "Mācīšanās (Atmiņa)",
-      "interaction": "Savienojumi (Cilvēki un rīki)"
-    },
-    "tip": {
-      "title": "Profesionāļa padoms",
-      "description": "Neļaujiet atslēgvārdiem sevi maldināt! Koncentrējieties uz DARBĪBU. Vai tas ir datu lasīšana? Nozīmes sapratne? Darbību izvēle? Vai tiešā izpilde?"
+      "learning": "Atmiņa",
+      "interaction": "Savienojumi"
     },
     "cards": {
       "parseSensor": {
         "text": "Analizēt datus no valkājamiem sensoriem",
-        "explanation": "\"Analizēt\" nozīmē lasīt un organizēt. Tas pārveido nejauktus sensora datus kā 'PS:72,68,75' formātā, ko aģents var saprast. Tas ir 1. solis (Uztvere) — ievades datu lasīšana un organizēšana. Padomājiet: vai tas ir datu LASĪŠANA? Jā!"
+        "explanation": "\"Analizēt\" nozīmē lasīt un organizēt. Tas pārveido nekārtīgus sensora datus kā 'PS:72,68,75' saprotamos skaitļos. <strong>Pārbaudiet pēc noteikuma:</strong> <em>Vai tas ir ievades datu lasīšana?</em> Jā! Tā ir Uztvere.",
+        "commonMistakeReason": "Ir kārdinoši izvēlēties Izpratni, jo \"apstrāde\" izklausās pēc \"sapratnes\", bet šeit mēs vēl neizlemjam, ko skaitļi <em>nozīmē</em>, bet tikai attīrām un organizējam tos."
       },
       "thresholdCheck": {
         "text": "Pārbaudīt, vai sirds ritms ir veselīgā diapazonā",
-        "explanation": "Tas nosaka skaitļu NOZĪMI. Vai 72 sit./min ir labi vai slikti? Nepieciešama izpratne par veselīgiem diapazoniem. Tas ir 2. solis (Izpratne) — svarīguma sapratne. Padomājiet: vai tas NOSAKA datu nozīmi? Jā!"
+        "explanation": "Tas nosaka, ko skaitļi <strong>nozīmē</strong>. Vai 72 sit./min ir labi vai slikti? <strong>Pārbaudiet pēc noteikuma:</strong> <em>Vai tas nosaka datu nozīmi?</em> Jā! Tā ir Izpratne.",
+        "commonMistakeReason": "Jūs varētu domāt, ka tas ir tikai skaitļu lasīšana (Uztvere), bet galvenā darbība ir jautājums \"Vai tas ir labi vai slikti?\" Tā ir nozīmes sapratne, ne tikai lasīšana."
       },
       "chooseAction": {
         "text": "Izlemt, vai iedrošināt vai brīdināt lietotāju",
-        "explanation": "Tagad aģents zina, ka lietotājs ir vesels, bet ko darīt: nosūtīt iedrošinājumu, brīdinājumu vai neko? Tas ir 3. solis (Plānošana) — izvēle, KĀDU darbību veikt. Padomājiet: vai tas ir IZVĒLE starp dažādām iespējamām darbībām? Jā!"
+        "explanation": "Aģents zina, ka lietotājs ir vesels (no Izpratnes), bet ko darīt: nosūtīt iedrošinājumu, brīdinājumu vai neko? <strong>Pārbaudiet pēc noteikuma:</strong> <em>Vai tas ir izvēle starp iespējamām darbībām?</em> Jā! Tā ir Plānošana.",
+        "commonMistakeReason": "Tas var šķist kā Izpratne, jo mēs \"lemjam\", bet Izpratne jau noteica veselības stāvokli. Tagad mēs izvēlamies <em>kādu darbību</em> veikt, balstoties uz šo sapratni."
       },
       "sendMessage": {
         "text": "Nosūtīt paziņojumu ar veselības ieteikumu",
-        "explanation": "Tas ir faktiskā ziņojuma nosūtīšana uz lietotāja telefonu. Tas ir 4. solis (Izpilde) — izvēlētās darbības realizācija. Padomājiet: vai tas ir paša uzdevuma IZPILDE? Jā!"
+        "explanation": "Tas ir faktiskās ziņojuma nosūtīšana uz lietotāja telefonu. <strong>Pārbaudiet pēc noteikuma:</strong> <em>Vai tas ir tiešas darbības veikšana?</em> Jā! Tā ir Izpilde.",
+        "commonMistakeReason": "Ir viegli sajaukt to ar Plānošanu, bet Plānošana <em>izvēlējās</em> nosūtīt iedrošinājumu. Izpilde ir <em>faktiskās nosūtīšanas</em> akts."
       },
       "storeBaseline": {
         "text": "Saglabāt lietotāja bāzes sirds ritmu turpmākiem salīdzinājumiem",
-        "explanation": "\"Saglabāšana\" un \"atcerēšanās\" ir atmiņas operācijas. Tas nav solis 4-soļu ciklā — tas ir Atmiņas palīgsistēmas izmantošana (kā pierakstīšana piezīmju grāmatiņā). Jebkurš no 4 soļiem to var darīt. Padomājiet: vai tas saglabā informāciju vēlākai izmantošanai? Jā → Atmiņa!"
+        "explanation": "\"Saglabāšana\" un \"atcerēšanās\" ir atmiņas operācijas. Tas nav solis 4-soļu konvejerā. <strong>Pārbaudiet pēc noteikuma:</strong> <em>Vai tas saglabā informāciju vēlākai izmantošanai?</em> Jā! Tā ir Atmiņa (pieejama jebkuram solim).",
+        "commonMistakeReason": "Jūs varētu domāt, ka datu lasīšana un saglabāšana ir Uztvere, bet Uztvere ir <em>ievade no pasaules</em>. Atmiņa ir iekšējais krātuve, ko var izmantot jebkurš solis, kā pierakstīšana piezīmju grāmatiņā."
       },
       "callApi": {
         "text": "Iegūt lietotāja kalendāru, lai netraucētu sanāksmju laikā",
-        "explanation": "\"Iegūšana\" caur API nozīmē ārēja rīka izmantošanu. Tas nav solis — tas ir Rīku palīgsistēmas izmantošana. Jebkuram no 4 soļiem var būt nepieciešami kalendāra dati. Padomājiet: vai tas izmanto ārēju pakalpojumu vai rīku? Jā → Rīki!"
+        "explanation": "\"Iegūšana\" caur API nozīmē ārēja rīka izmantošanu. Tas nav konveiera solis. <strong>Pārbaudiet pēc noteikuma:</strong> <em>Vai tas izmanto ārēju pakalpojumu vai rīku?</em> Jā! Tie ir Savienojumi (pieejami jebkuram solim).",
+        "commonMistakeReason": "Tas var šķist kā Izpilde, jo mēs \"kaut ko darām\", bet Savienojumi attiecas uz <em>ārējo rīku izmantošanu</em> jebkurā konveiera punktā. Jebkuram no 4 soļiem var būt nepieciešami kalendāra dati."
       },
-      "calendarNearMiss": {
+      "calendarSchedule": {
         "text": "Ieplānot pārbaudi rītdienai",
-        "explanation": "VILTĪGI! Vārds \"ieplānot\" liek domāt par Plānošanu, bet paskatieties uzmanīgāk: tas IZMANTO kalendāra rīku, lai IZVEIDOTU tikšanos. Tas ir Savienojumi (Cilvēki un rīki), nevis Plānošana. Plānošana būtu LĒMUMS ieplānot, bet pašas ieplānošanas DARBĪBA izmanto rīku.",
-        "nearMissExplanation": "vārds 'ieplānot' izklausās pēc plānošanas"
+        "explanation": "VILTĪGI! Vārds \"ieplānot\" liek domāt par Plānošanu, bet paskatieties uzmanīgāk: tas <strong>izmanto kalendāra rīku</strong>, lai izveidotu tikšanos. <strong>Pārbaudiet pēc noteikuma:</strong> <em>Vai tas izmanto ārēju rīku?</em> Jā! Tie ir Savienojumi. Plānošana būtu <em>lēmums</em> ieplānot, bet pati ieplānošanas darbība izmanto rīku.",
+        "commonMistakeReason": "Vārds \"ieplānot\" spēcīgi norāda uz Plānošanu (darbības izvēle), bet tas ir par <em>ieplānošanas darbību</em> caur kalendāra API, kas ir Savienojums ar ārēju rīku."
       }
     }
   },
