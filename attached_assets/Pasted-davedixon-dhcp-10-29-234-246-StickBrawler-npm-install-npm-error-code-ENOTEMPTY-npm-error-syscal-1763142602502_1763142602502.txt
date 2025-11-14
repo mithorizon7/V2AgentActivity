@@ -1,0 +1,109 @@
+davedixon@dhcp-10-29-234-246 StickBrawler %   npm install
+
+npm error code ENOTEMPTY
+npm error syscall rename
+npm error path /Users/davedixon/Documents/GitHub/StickBrawler/node_modules/pixi.js
+npm error dest /Users/davedixon/Documents/GitHub/StickBrawler/node_modules/.pixi.js-h7ZmyRdx
+npm error errno -66
+npm error ENOTEMPTY: directory not empty, rename '/Users/davedixon/Documents/GitHub/StickBrawler/node_modules/pixi.js' -> '/Users/davedixon/Documents/GitHub/StickBrawler/node_modules/.pixi.js-h7ZmyRdx'
+npm error A complete log of this run can be found in: /Users/davedixon/.npm/_logs/2025-11-14T17_49_05_635Z-debug-0.log
+davedixon@dhcp-10-29-234-246 StickBrawler % npm test
+
+> rest-express@1.0.0 test
+> node --test --import tsx tests/**/*.test.ts
+
+✘ [ERROR] Cannot start service: Host version "0.23.1" does not match binary version "0.25.0"
+
+1 error
+
+node:internal/modules/run_main:122
+    triggerUncaughtException(
+    ^
+Error [TransformError]: The service was stopped
+    at /Users/davedixon/Documents/GitHub/StickBrawler/node_modules/tsx/node_modules/esbuild/lib/main.js:737:38
+    at responseCallbacks.<computed> (/Users/davedixon/Documents/GitHub/StickBrawler/node_modules/tsx/node_modules/esbuild/lib/main.js:622:9)
+    at Socket.afterClose (/Users/davedixon/Documents/GitHub/StickBrawler/node_modules/tsx/node_modules/esbuild/lib/main.js:613:28)
+    at Socket.emit (node:events:530:35)
+    at endReadableNT (node:internal/streams/readable:1698:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+
+Node.js v22.14.0
+✖ tests/engine/engine.test.ts (116.838333ms)
+✘ [ERROR] Cannot start service: Host version "0.23.1" does not match binary version "0.25.0"
+
+1 error
+
+node:internal/modules/run_main:122
+    triggerUncaughtException(
+    ^
+Error [TransformError]: The service was stopped
+    at /Users/davedixon/Documents/GitHub/StickBrawler/node_modules/tsx/node_modules/esbuild/lib/main.js:737:38
+    at responseCallbacks.<computed> (/Users/davedixon/Documents/GitHub/StickBrawler/node_modules/tsx/node_modules/esbuild/lib/main.js:622:9)
+    at Socket.afterClose (/Users/davedixon/Documents/GitHub/StickBrawler/node_modules/tsx/node_modules/esbuild/lib/main.js:613:28)
+    at Socket.emit (node:events:530:35)
+    at endReadableNT (node:internal/streams/readable:1698:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+
+Node.js v22.14.0
+✖ tests/server/economy.test.ts (115.449625ms)
+✘ [ERROR] Cannot start service: Host version "0.23.1" does not match binary version "0.25.0"
+
+1 error
+
+node:internal/modules/run_main:122
+    triggerUncaughtException(
+    ^
+Error [TransformError]: The service was stopped
+    at /Users/davedixon/Documents/GitHub/StickBrawler/node_modules/tsx/node_modules/esbuild/lib/main.js:737:38
+    at responseCallbacks.<computed> (/Users/davedixon/Documents/GitHub/StickBrawler/node_modules/tsx/node_modules/esbuild/lib/main.js:622:9)
+    at Socket.afterClose (/Users/davedixon/Documents/GitHub/StickBrawler/node_modules/tsx/node_modules/esbuild/lib/main.js:613:28)
+    at Socket.emit (node:events:530:35)
+    at endReadableNT (node:internal/streams/readable:1698:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+
+Node.js v22.14.0
+✖ tests/server/runtime.test.ts (114.980417ms)
+✘ [ERROR] Cannot start service: Host version "0.23.1" does not match binary version "0.25.0"
+
+1 error
+
+node:internal/modules/run_main:122
+    triggerUncaughtException(
+    ^
+Error [TransformError]: The service was stopped
+    at /Users/davedixon/Documents/GitHub/StickBrawler/node_modules/tsx/node_modules/esbuild/lib/main.js:737:38
+    at responseCallbacks.<computed> (/Users/davedixon/Documents/GitHub/StickBrawler/node_modules/tsx/node_modules/esbuild/lib/main.js:622:9)
+    at Socket.afterClose (/Users/davedixon/Documents/GitHub/StickBrawler/node_modules/tsx/node_modules/esbuild/lib/main.js:613:28)
+    at Socket.emit (node:events:530:35)
+    at endReadableNT (node:internal/streams/readable:1698:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+
+Node.js v22.14.0
+✖ tests/server/scores.test.ts (113.749625ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 0
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 120.653667
+
+✖ failing tests:
+
+test at tests/engine/engine.test.ts:1:1
+✖ tests/engine/engine.test.ts (116.838333ms)
+  'test failed'
+
+test at tests/server/economy.test.ts:1:1
+✖ tests/server/economy.test.ts (115.449625ms)
+  'test failed'
+
+test at tests/server/runtime.test.ts:1:1
+✖ tests/server/runtime.test.ts (114.980417ms)
+  'test failed'
+
+test at tests/server/scores.test.ts:1:1
+✖ tests/server/scores.test.ts (113.749625ms)
+  'test failed'
+davedixon@dhcp-10-29-234-246 StickBrawler % 

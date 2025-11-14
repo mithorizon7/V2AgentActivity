@@ -199,62 +199,83 @@
   },
   "workedExample": {
     "title": "Learn From an Expert's Thinking",
-    "subtitle": "Watch how an expert decides where each capability belongs — and learn from common mistakes",
+    "subtitle": "We'll walk through one health coach agent, showing which process each task belongs to in the pipeline",
     "progress": "Example {{current}} of {{total}}",
+    "instruction": "Before revealing the answer, predict which process this task belongs to:",
     "cardLabel": "What the agent needs to do:",
-    "nearMiss": "Tricky example",
-    "commonMistake": "Common Beginner Mistake",
-    "mightThink": "Many beginners incorrectly think this goes in",
-    "because": "because",
-    "expertClassifies": "Expert's answer:",
-    "whyLabel": "Expert's reasoning:",
+    "yourGuess": "Your prediction:",
+    "selectProcess": "Select which process this task belongs to",
+    "expertAnswer": "Expert's answer:",
+    "expertReasoning": "Expert's reasoning:",
+    "correct": "Correct!",
+    "incorrect": "Not quite",
+    "correctFeedback": "You correctly identified this as {{process}}.",
+    "incorrectFeedback": "You chose {{guess}}, but this is actually {{correct}}.",
+    "commonMistakeTitle": "Common mistake",
     "previous": "Previous",
     "next": "Next Example",
-    "startPractice": "Try It Yourself",
-    "revealAnswer": "Click to Reveal Answer",
-    "answerRevealed": "Answer revealed",
-    "revealAll": "Reveal All Answers",
+    "readyToSummarize": "Summarize What You Learned",
+    "pipeline": {
+      "title": "The Core 4-Step Pipeline",
+      "supportingLabel": "Available anytime (not pipeline steps):"
+    },
+    "synthesis": {
+      "title": "Now It's Your Turn",
+      "subtitle": "Summarize the decision rules in your own words to cement your understanding",
+      "prompt": "In your own words, how would you explain to a friend how to tell the difference between the four pipeline steps?",
+      "placeholder": "For example: Perception is when you're reading or collecting data. Reasoning is...",
+      "characterCount": "{{count}} characters",
+      "expertSummaryTitle": "Expert Summary (Compare With Yours)",
+      "perceptionRule": "Perception = Reading or collecting input",
+      "reasoningRule": "Reasoning = Deciding what the input means",
+      "planningRule": "Planning = Choosing which action to take",
+      "executionRule": "Execution = Carrying out the chosen action",
+      "supportingNote": "Memory and Connections are available to any step, not steps themselves.",
+      "continue": "Start Practice"
+    },
     "processLabels": {
       "perception": "Perception",
       "reasoning": "Reasoning",
       "planning": "Planning",
       "execution": "Execution",
-      "learning": "Learning (Memory)",
-      "interaction": "Connections (People & Tools)"
-    },
-    "tip": {
-      "title": "Pro Tip",
-      "description": "Don't get fooled by keywords! Focus on the ACTION. Is it reading input? Understanding meaning? Choosing what to do? Or actually doing it?"
+      "learning": "Memory",
+      "interaction": "Connections"
     },
     "cards": {
       "parseSensor": {
         "text": "Parse wearable sensor data",
-        "explanation": "\"Parse\" means to read and organize. This takes messy sensor data like 'HR:72,68,75' and turns it into clean numbers the agent can understand. That's Step 1 (Perception) — reading and organizing input. Think: Is it READING data? Yes!"
+        "explanation": "\"Parse\" means to read and organize. This takes messy sensor data like 'HR:72,68,75' and turns it into clean numbers. <strong>Check the rule:</strong> <em>Is it reading input?</em> Yes! That's Perception.",
+        "commonMistakeReason": "It's tempting to pick Reasoning because processing sounds like \"understanding,\" but here we're not deciding what the numbers <em>mean</em> yet, just cleaning and organizing them."
       },
       "thresholdCheck": {
         "text": "Check if heart rate is within healthy range",
-        "explanation": "This is figuring out what the numbers MEAN. Is 72 BPM good or bad? That requires understanding health ranges. That's Step 2 (Reasoning) — understanding the significance. Think: Is it DECIDING what the data means? Yes!"
+        "explanation": "This is figuring out what the numbers <strong>mean</strong>. Is 72 BPM good or bad? <strong>Check the rule:</strong> <em>Is it deciding what the data means?</em> Yes! That's Reasoning.",
+        "commonMistakeReason": "You might think this is just reading numbers (Perception), but the key action is asking \"Is this good or bad?\" That's understanding meaning, not just reading."
       },
       "chooseAction": {
         "text": "Decide whether to encourage or alert the user",
-        "explanation": "Now the agent knows the user is healthy, but should it send encouragement, a warning, or stay quiet? This is Step 3 (Planning) — choosing WHICH action to take. Think: Is it CHOOSING between different possible actions? Yes!"
+        "explanation": "The agent knows the user is healthy (from Reasoning), but should it send encouragement, a warning, or stay quiet? <strong>Check the rule:</strong> <em>Is it choosing between possible actions?</em> Yes! That's Planning.",
+        "commonMistakeReason": "This might seem like Reasoning since we're \"deciding,\" but Reasoning already figured out the health status. Now we're choosing <em>which action</em> to take based on that understanding."
       },
       "sendMessage": {
         "text": "Send notification with health recommendation",
-        "explanation": "This is actually sending the message to the user's phone. It's Step 4 (Execution) — carrying out the chosen action. Think: Is it DOING the actual task? Yes!"
+        "explanation": "This is actually sending the message to the user's phone. <strong>Check the rule:</strong> <em>Is it actually doing the action?</em> Yes! That's Execution.",
+        "commonMistakeReason": "It's easy to confuse this with Planning, but Planning <em>chose</em> to send encouragement. Execution is the act of <em>actually sending it</em>."
       },
       "storeBaseline": {
         "text": "Remember user's baseline heart rate for future comparisons",
-        "explanation": "\"Storing\" and \"remembering\" are memory operations. This isn't a step in the 4-step loop — it's using the Memory supporting system (like writing in a notebook). Any of the 4 steps could do this. Think: Is it storing information for later? Yes → Memory!"
+        "explanation": "\"Storing\" and \"remembering\" are memory operations. This isn't a step in the 4-step pipeline. <strong>Check the rule:</strong> <em>Is it storing information for later?</em> Yes! That's Memory (available to any step).",
+        "commonMistakeReason": "You might think reading and storing data is Perception, but Perception is about <em>input from the world</em>. Memory is internal storage that any step can use, like writing in a notebook."
       },
       "callApi": {
         "text": "Fetch user's calendar to avoid alerts during meetings",
-        "explanation": "\"Fetching\" from an API means using an external tool. This isn't a step — it's using the Tools supporting system. Any of the 4 steps might need calendar data. Think: Is it using an external service or tool? Yes → Tools!"
+        "explanation": "\"Fetching\" from an API means using an external tool. This isn't a pipeline step. <strong>Check the rule:</strong> <em>Is it using an external service or tool?</em> Yes! That's Connections (available to any step).",
+        "commonMistakeReason": "This might seem like Execution because it's \"doing something,\" but Connections refers to <em>using external tools</em> at any point in the pipeline. Any of the 4 steps might need calendar data."
       },
-      "calendarNearMiss": {
+      "calendarSchedule": {
         "text": "Schedule a follow-up check for tomorrow",
-        "explanation": "TRICKY! The word \"schedule\" makes you think Planning, but look closer: this is USING the calendar tool to CREATE an appointment. It's Connections (People & Tools), not Planning. Planning would be DECIDING to schedule, but the actual ACT of scheduling uses a tool.",
-        "nearMissExplanation": "the word 'schedule' sounds like planning"
+        "explanation": "TRICKY! The word \"schedule\" makes you think Planning, but look closer: this is <strong>using the calendar tool</strong> to create an appointment. <strong>Check the rule:</strong> <em>Is it using an external tool?</em> Yes! That's Connections. Planning would be <em>deciding</em> to schedule, but the actual act of scheduling uses a tool.",
+        "commonMistakeReason": "The word \"schedule\" strongly suggests Planning (choosing what to do), but this is about the <em>action of scheduling</em> using the calendar API, which is a Connection to an external tool."
       }
     }
   },
