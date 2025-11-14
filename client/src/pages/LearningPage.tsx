@@ -851,8 +851,9 @@ export default function LearningPage() {
           </div>
         )}
 
-        <div className="mt-12 mb-6 flex justify-center">
+        <div className="mt-12 mb-6 flex flex-col items-center gap-4">
           <img src={MITOpenLearningLogo} alt="MIT Open Learning" className="h-12 opacity-80" />
+          <ConsentManager />
         </div>
       </div>
 
@@ -864,10 +865,6 @@ export default function LearningPage() {
           feedback={feedbackData?.feedback || []}
         />
       )}
-      
-      <div className="fixed bottom-4 right-4">
-        <ConsentManager />
-      </div>
     </div>
   );
 }
