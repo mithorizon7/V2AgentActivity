@@ -1,0 +1,55 @@
+Part 1: Developer Report (Prioritized)
+To: Development Team From: QA / Product Review Subject: Prioritized Fixes & Issues for V2AgentActivity
+
+The following issues were identified in the latest build and need attention. Priority 0 items are blockers for deployment/testing. Priority 1 items are critical for the user experience.
+
+🔴 Priority 0: Critical Blockers (Build & Test)
+esbuild Version Mismatch causing Test Failures
+
+Location: package-lock.json / Environment
+
+Issue: The logs show a critical error: Cannot start service: Host version "0.23.1" does not match binary version "0.25.0". This is preventing npm test from running (failing engine.test.ts, economy.test.ts, etc.).
+
+Fix: Run npm install to harmonize the lockfile with the installed binary, or explicitly pin the esbuild version in package.json. Ensure the CI/CD environment clears its cache.
+
+Missing Translations for Russian (RU) and Latvian (LV)
+
+Location: client/src/locales/ru/translation.json, client/src/locales/lv/translation.json
+
+Issue: The file scripts/compare-translations.js and the generated missing-ru.txt / missing-lv.txt indicate substantial missing keys, particularly for the Health Coach scenario (healthCoach.blocks.*, healthCoach.runtime.*). Users in these locales will see raw keys (e.g., healthCoach.blocks.perception.parse.name) or fallback English.
+
+Fix: Immediate translation required for all keys listed in the missing-*.txt files.
+
+🟠 Priority 1: Logic & State Integrity
+Safety of localStorage State Restoration
+
+Location: client/src/components/ClassificationActivity.tsx, Phase1Guided.tsx
+
+Issue: The components attempt to JSON.parse data from localStorage. While there is a try/catch, if the schema of the saved data changes (e.g., you add a new field to ClassificationItem but the user has old data), the component might render with undefined values or crash.
+
+Fix: Add a version suffix to the storage keys (e.g., classification_state_v2) OR implement a Zod schema validation step during hydration to ensure the loaded state matches the current application shape. If validation fails, clear storage and start fresh.
+
+Race Condition in Phase Navigation
+
+Location: client/src/pages/LearningPage.tsx
+
+Issue: The navigation logic handles fractional phases (0.5, 0.75) manually. If a user manually changes the URL or if localStorage gets out of sync with the currentPhase state, the user might get stuck in a loop between Primer and WorkedExample.
+
+Fix: Ensure handlePrimerComplete and handleWorkedExampleComplete explicitly set the next integer phase completion flag in localStorage immediately, rather than relying solely on setCurrentPhase.
+
+🟡 Priority 2: UI/UX Polish
+"Interaction" vs "Connections" Consistency
+
+Location: client/src/components/CircuitBuilder.tsx & SimulationTracer.tsx
+
+Issue: The internal ID is interaction, but the label is "Connections". While the text is updated, ensure the Icon used (MessageCircle) still makes sense for "Connections". The design brief suggests a "plug" icon, but the code imports MessageCircle.
+
+Fix: Swap MessageCircle for Plug or Link icon in PROCESS_ICONS map to visually reinforce the "Connection" metaphor.
+
+Hardcoded Process Colors in Tailwind Config
+
+Location: tailwind.config.ts
+
+Issue: The process colors are hardcoded. If you need to change the "Perception" color for accessibility, you have to do it in the config and check processColors.ts.
+
+Fix: Ensure lib/processColors.ts references the CSS variables (e.g., var(--process-perception)) rather than duplicating hex/HSL values, or strictly relies on the Tailwind utility classes.
