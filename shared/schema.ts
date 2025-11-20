@@ -38,11 +38,12 @@ export const classificationItemSchema = z.object({
   category: z.enum(["generic", "health-coach"]).optional(),
 });
 
-// Zod schema for localStorage state validation
-export const classificationStateSchema = z.object({
-  unsorted: z.array(classificationItemSchema),
-  sorted: z.record(agentProcessSchema, z.array(classificationItemSchema)),
-});
+// Zod schemas for localStorage state validation
+export const classificationUnsortedSchema = z.array(classificationItemSchema);
+export const classificationSortedSchema = z.record(
+  z.enum(["learning", "interaction", "perception", "reasoning", "planning", "execution"]),
+  z.array(classificationItemSchema)
+);
 
 // Input type for classification evaluation (before correctness is determined)
 export type ClassificationInput = {

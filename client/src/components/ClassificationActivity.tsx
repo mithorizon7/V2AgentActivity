@@ -1,5 +1,11 @@
 import { useState, useCallback, useEffect, useRef } from "react";
-import { AgentProcess, ClassificationItem, ClassificationSubmission, classificationItemSchema } from "@shared/schema";
+import { 
+  AgentProcess, 
+  ClassificationItem, 
+  ClassificationSubmission, 
+  classificationUnsortedSchema, 
+  classificationSortedSchema 
+} from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { getProcessColor } from "@/lib/processColors";
@@ -9,7 +15,6 @@ import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useTranslation } from "react-i18next";
 import { useConsent, safeLocalStorage } from "@/hooks/useConsent";
-import { z } from "zod";
 
 type DraggableItemProps = {
   item: ClassificationItem;
@@ -264,7 +269,7 @@ export function ClassificationActivity({
       try {
         const parsed = JSON.parse(saved);
         // Validate with Zod schema - if validation fails, clear and start fresh
-        const validated = z.array(classificationItemSchema).safeParse(parsed);
+        const validated = classificationUnsortedSchema.safeParse(parsed);
         if (validated.success) {
           return validated.data;
         } else {
@@ -285,8 +290,7 @@ export function ClassificationActivity({
       try {
         const parsed = JSON.parse(saved);
         // Validate with Zod schema - if validation fails, clear and start fresh
-        const sortedSchema = z.record(z.enum(["learning", "interaction", "perception", "reasoning", "planning", "execution"]), z.array(classificationItemSchema));
-        const validated = sortedSchema.safeParse(parsed);
+        const validated = classificationSortedSchema.safeParse(parsed);
         if (validated.success) {
           return validated.data as Record<AgentProcess, ClassificationItem[]>;
         } else {

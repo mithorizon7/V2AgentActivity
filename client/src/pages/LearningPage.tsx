@@ -159,16 +159,11 @@ export default function LearningPage() {
     const savedExample = storage.getItem("workedExampleComplete");
     const savedGuided = storage.getItem("guidedPracticeComplete");
     
-    // Proper sequential logic to prevent race conditions
-    if (savedPrimer !== "true") {
-      return 0; // Start at primer
-    } else if (savedExample !== "true") {
-      return 0.5; // Primer done, go to worked example
-    } else if (savedGuided !== "true") {
-      return 0.75; // Example done, go to guided practice
-    } else {
-      return 1; // All intro phases done, start main Phase 1
-    }
+    // Sequential initialization prevents race conditions
+    if (savedPrimer !== "true") return 0;
+    if (savedExample !== "true") return 0.5;
+    if (savedGuided !== "true") return 0.75;
+    return 1;
   });
 
   const FAILURE_MODES: FailureMode[] = [
