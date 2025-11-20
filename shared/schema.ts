@@ -20,12 +20,29 @@ export type User = typeof users.$inferSelect;
 export const agentProcesses = ["learning", "interaction", "perception", "reasoning", "planning", "execution"] as const;
 export type AgentProcess = typeof agentProcesses[number];
 
+// Zod schema for AgentProcess validation
+export const agentProcessSchema = z.enum(agentProcesses);
+
 export type ClassificationItem = {
   id: string;
   text: string;
   correctProcess: AgentProcess;
   category?: "generic" | "health-coach";
 };
+
+// Zod schema for ClassificationItem validation
+export const classificationItemSchema = z.object({
+  id: z.string(),
+  text: z.string(),
+  correctProcess: agentProcessSchema,
+  category: z.enum(["generic", "health-coach"]).optional(),
+});
+
+// Zod schema for localStorage state validation
+export const classificationStateSchema = z.object({
+  unsorted: z.array(classificationItemSchema),
+  sorted: z.record(agentProcessSchema, z.array(classificationItemSchema)),
+});
 
 // Input type for classification evaluation (before correctness is determined)
 export type ClassificationInput = {

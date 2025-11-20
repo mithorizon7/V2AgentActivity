@@ -9,7 +9,7 @@ import { getProcessColor } from "@/lib/processColors";
 import { cn } from "@/lib/utils";
 import {
   Brain,
-  MessageCircle,
+  Plug,
   Eye,
   Lightbulb,
   Target,
@@ -20,7 +20,7 @@ import {
 
 const PROCESS_ICONS: Record<AgentProcess, React.ComponentType<{ className?: string }>> = {
   learning: Brain,
-  interaction: MessageCircle,
+  interaction: Plug,
   perception: Eye,
   reasoning: Lightbulb,
   planning: Target,
