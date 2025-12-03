@@ -935,6 +935,20 @@
       "toggle": "Toggle High Contrast Mode",
       "enabled": "High contrast mode enabled",
       "disabled": "High contrast mode disabled"
+    },
+    "languageSelector": {
+      "currentLanguage": "Current language: {{language}}. Click to change language."
+    },
+    "images": {
+      "platformLogo": "AI Agents Learning Platform Logo",
+      "mitOpenLearning": "MIT Open Learning",
+      "understandIcon": "Understand concept icon",
+      "practiceIcon": "Practice concept icon",
+      "buildIcon": "Build concept icon"
+    },
+    "lists": {
+      "agentCapabilities": "Agent capability boundaries",
+      "keyQuestions": "Three key questions to answer"
     }
   }
 }

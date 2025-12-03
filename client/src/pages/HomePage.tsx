@@ -26,9 +26,9 @@ export default function HomePage() {
       <div id="main-content" className="max-w-7xl mx-auto px-6 py-12">
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-4 mb-4">
-            <img src={ProgramLogo} alt="AI Agents Learning Platform Logo" className="w-20 h-20" />
+            <img src={ProgramLogo} alt={t("accessibility.images.platformLogo")} className="w-20 h-20" />
             <h1 className="text-4xl font-bold">{t("homePage.title")}</h1>
-            <img src={ProgramLogo} alt="AI Agents Learning Platform Logo" className="w-20 h-20 scale-x-[-1]" />
+            <img src={ProgramLogo} alt={t("accessibility.images.platformLogo")} className="w-20 h-20 scale-x-[-1]" />
           </div>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             {t("homePage.subtitle")}
@@ -38,7 +38,7 @@ export default function HomePage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           <Card className="p-6 space-y-3 hover-elevate transition-all">
             <div className="w-16 h-16 flex items-center justify-center">
-              <img src={UnderstandIcon} alt="Understand" className="w-full h-full object-contain" />
+              <img src={UnderstandIcon} alt={t("accessibility.images.understandIcon")} className="w-full h-full object-contain" />
             </div>
             <h3 className="font-semibold text-lg">{t("homePage.understand.title")}</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
@@ -48,7 +48,7 @@ export default function HomePage() {
 
           <Card className="p-6 space-y-3 hover-elevate transition-all">
             <div className="w-16 h-16 flex items-center justify-center">
-              <img src={PracticeIcon} alt="Practice" className="w-full h-full object-contain" />
+              <img src={PracticeIcon} alt={t("accessibility.images.practiceIcon")} className="w-full h-full object-contain" />
             </div>
             <h3 className="font-semibold text-lg">{t("homePage.practice.title")}</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
@@ -58,7 +58,7 @@ export default function HomePage() {
 
           <Card className="p-6 space-y-3 hover-elevate transition-all">
             <div className="w-16 h-16 flex items-center justify-center">
-              <img src={BuildIcon} alt="Build" className="w-full h-full object-contain" />
+              <img src={BuildIcon} alt={t("accessibility.images.buildIcon")} className="w-full h-full object-contain" />
             </div>
             <h3 className="font-semibold text-lg">{t("homePage.build.title")}</h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
@@ -91,7 +91,7 @@ export default function HomePage() {
         </Card>
 
         <div className="mt-12 flex justify-center">
-          <img src={MITOpenLearningLogo} alt="MIT Open Learning" className="h-12 opacity-80" />
+          <img src={MITOpenLearningLogo} alt={t("accessibility.images.mitOpenLearning")} className="h-12 opacity-80" />
         </div>
 
         <div className="mt-6 flex justify-center">

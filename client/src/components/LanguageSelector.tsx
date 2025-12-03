@@ -16,7 +16,7 @@ const languages = [
 ] as const;
 
 export function LanguageSelector() {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const currentLanguage = languages.find((lang) => lang.code === i18n.language) || languages[0];
 
   const handleLanguageChange = (langCode: string) => {
@@ -31,7 +31,7 @@ export function LanguageSelector() {
           size="icon"
           className="min-h-[44px] min-w-[44px] sm:min-h-[auto] sm:min-w-[auto]"
           data-testid="button-language-selector"
-          aria-label={`Current language: ${currentLanguage.nativeName}. Click to change language.`}
+          aria-label={t("accessibility.languageSelector.currentLanguage", { language: currentLanguage.nativeName })}
         >
           <Globe className="w-5 h-5" />
           <span className="sr-only">

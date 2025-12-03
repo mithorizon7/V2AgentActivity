@@ -954,6 +954,20 @@
       "toggle": "Pārslēgt augsta kontrasta režīmu",
       "enabled": "Augsta kontrasta režīms ieslēgts",
       "disabled": "Augsta kontrasta režīms izslēgts"
+    },
+    "languageSelector": {
+      "currentLanguage": "Pašreizējā valoda: {{language}}. Noklikšķiniet, lai mainītu valodu."
+    },
+    "images": {
+      "platformLogo": "MI aģentu mācību platformas logotips",
+      "mitOpenLearning": "MIT Open Learning",
+      "understandIcon": "Koncepta «Saprast» ikona",
+      "practiceIcon": "Koncepta «Praktizēt» ikona",
+      "buildIcon": "Koncepta «Veidot» ikona"
+    },
+    "lists": {
+      "agentCapabilities": "Aģenta spēju robežas",
+      "keyQuestions": "Trīs galvenie jautājumi, uz kuriem jāatbild"
     }
   }
 }

@@ -652,7 +652,7 @@ export default function LearningPage() {
                   <h4 className="font-semibold text-base">
                     {t("boundaryMap.capabilitiesTitle")}
                   </h4>
-                  <ul className="space-y-3" aria-label="Agent capability boundaries">
+                  <ul className="space-y-3" aria-label={t("accessibility.lists.agentCapabilities")}>
                     <li className="flex items-start gap-3 p-3 rounded-md border-2 border-green-500/30 bg-green-50 dark:bg-green-950/20">
                       <div className="flex-shrink-0 w-6 h-6 rounded-full bg-green-500 flex items-center justify-center text-white text-xs font-bold">
                         1
@@ -737,7 +737,7 @@ export default function LearningPage() {
                       {t("boundaryMap.sectionTitle3")}
                     </h4>
                   </div>
-                  <ol className="space-y-3" aria-label="Three key questions to answer">
+                  <ol className="space-y-3" aria-label={t("accessibility.lists.keyQuestions")}>
                     <li className="flex items-start gap-3">
                       <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center">
                         <CheckCircle2 className="w-4 h-4 text-primary" aria-hidden="true" />
@@ -992,7 +992,7 @@ export default function LearningPage() {
         )}
 
         <div className="mt-12 mb-6 flex flex-col items-center gap-4">
-          <img src={MITOpenLearningLogo} alt="MIT Open Learning" className="h-12 opacity-80" />
+          <img src={MITOpenLearningLogo} alt={t("accessibility.images.mitOpenLearning")} className="h-12 opacity-80" />
           <ConsentManager />
         </div>
       </div>
