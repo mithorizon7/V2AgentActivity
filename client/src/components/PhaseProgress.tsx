@@ -7,6 +7,7 @@ export type Phase = {
   name: string;
   completed: boolean;
   current: boolean;
+  canProceed?: boolean; // Optional: controls connector line, defaults to `completed`
 };
 
 type PhaseProgressProps = {
@@ -75,7 +76,7 @@ export function PhaseProgress({ phases, onPhaseClick }: PhaseProgressProps) {
                   <div
                     className={cn(
                       "h-0.5 w-4 sm:w-8 mx-1 sm:mx-2 transition-all flex-shrink-0",
-                      phase.completed ? "bg-primary" : "bg-border"
+                      (phase.canProceed ?? phase.completed) ? "bg-primary" : "bg-border"
                     )}
                     aria-hidden="true"
                   />

@@ -259,8 +259,10 @@ export default function LearningPage() {
     {
       id: 2,
       name: t("phases.phase2"),
-      // Phase 2's connector line shows as complete only after bridge stages are done
-      completed: phaseCompletion["2"] && bridgeStagesComplete,
+      // Phase 2 checkmark: boundary map validated
+      // Connector to Phase 3: requires bridge stages complete
+      completed: phaseCompletion["2"],
+      canProceed: bridgeStagesComplete,
       current: currentStage === 2 || isBridgeStage(currentStage),
     },
     {
@@ -578,7 +580,13 @@ export default function LearningPage() {
         <LanguageSelector />
         <HighContrastToggle />
       </div>
-      {isMainPhase(currentStage) && <PhaseProgress phases={phases} onPhaseClick={(id) => setCurrentStage(id as LearningStage)} />}
+      {isMainPhase(currentStage) && <PhaseProgress phases={phases} onPhaseClick={(id) => {
+        // Gate Phase 3: requires bridge stages complete
+        if (id === 3 && !bridgeStagesComplete) {
+          return; // Silently ignore - UI should show connector as incomplete
+        }
+        setCurrentStage(id as LearningStage);
+      }} />}
 
       <div id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {currentStage === 'primer' && (
