@@ -950,5 +950,12 @@
       "agentCapabilities": "Agent capability boundaries",
       "keyQuestions": "Three key questions to answer"
     }
+  },
+  "footer": {
+    "copyright": "© 2025 All rights reserved.",
+    "orgName": "MIT Open Learning",
+    "institution": "Massachusetts Institute of Technology",
+    "location": "Cambridge, MA 02139",
+    "accessibilityLink": "Accessibility"
   }
 }

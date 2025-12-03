@@ -969,5 +969,12 @@
       "agentCapabilities": "Aģenta spēju robežas",
       "keyQuestions": "Trīs galvenie jautājumi, uz kuriem jāatbild"
     }
+  },
+  "footer": {
+    "copyright": "© 2025 Visas tiesības aizsargātas.",
+    "orgName": "MIT Open Learning",
+    "institution": "Masačūsetsas Tehnoloģiju institūts",
+    "location": "Kembridža, MA 02139",
+    "accessibilityLink": "Pieejamība"
   }
 }

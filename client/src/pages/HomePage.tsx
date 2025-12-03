@@ -90,13 +90,32 @@ export default function HomePage() {
           </div>
         </Card>
 
-        <div className="mt-12 flex justify-center">
-          <img src={MITOpenLearningLogo} alt={t("accessibility.images.mitOpenLearning")} className="h-12 opacity-80" />
-        </div>
+        <footer className="mt-16 pt-8 border-t border-border/40">
+          <div className="flex flex-col items-center gap-6 text-center">
+            <img src={MITOpenLearningLogo} alt={t("accessibility.images.mitOpenLearning")} className="h-12 opacity-80" />
+            
+            <div className="text-sm text-muted-foreground space-y-1">
+              <p>{t("footer.copyright")}</p>
+              <p className="font-medium">{t("footer.orgName")}</p>
+              <p>{t("footer.institution")}</p>
+              <p>{t("footer.location")}</p>
+            </div>
 
-        <div className="mt-6 flex justify-center">
-          <ConsentManager />
-        </div>
+            <div className="flex items-center gap-4">
+              <a 
+                href="https://accessibility.mit.edu" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-sm text-muted-foreground hover:text-foreground underline-offset-4 hover:underline transition-colors"
+                data-testid="link-accessibility"
+              >
+                {t("footer.accessibilityLink")}
+              </a>
+              <span className="text-muted-foreground/50">|</span>
+              <ConsentManager />
+            </div>
+          </div>
+        </footer>
       </div>
     </div>
   );

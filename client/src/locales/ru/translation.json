@@ -969,5 +969,12 @@
       "agentCapabilities": "Границы возможностей агента",
       "keyQuestions": "Три ключевых вопроса для ответа"
     }
+  },
+  "footer": {
+    "copyright": "© 2025 Все права защищены.",
+    "orgName": "MIT Open Learning",
+    "institution": "Массачусетский технологический институт",
+    "location": "Кембридж, Массачусетс 02139",
+    "accessibilityLink": "Доступность"
   }
 }
