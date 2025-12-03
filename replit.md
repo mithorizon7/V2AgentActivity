@@ -14,6 +14,23 @@ Do not modify the core `Health Coach` scenario files in `shared/scenarios/health
 ## Translation Workflow
 **CRITICAL**: Whenever any changes are made to English text in `client/src/locales/en/translation.json`, the corresponding Russian (`client/src/locales/ru/translation.json`) and Latvian (`client/src/locales/lv/translation.json`) translations MUST be updated immediately with the highest quality, native-speaker-level translations. This ensures complete internationalization parity across all three languages at all times.
 
+## Recent Changes (December 2024)
+
+### Phase Navigation Refactoring
+- **Type-safe learning stages**: Replaced fractional phase numbers (0, 0.5, 0.75) with a type-safe `LearningStage` union type defined in `shared/learningTypes.ts`
+- **Stage types**: Pre-phase stages (`'primer'`, `'workedExample'`, `'guidedPractice'`) and main phases (`1`, `2`, `3`, `4`, `5`)
+- **Helper functions**: `isPrePhase()`, `isMainPhase()`, `getNextStage()`, `getPreviousStage()` for clean navigation logic
+- **Benefits**: Cleaner code, better TypeScript type safety, easier to understand and maintain
+
+### Shared Classification Data
+- Created `shared/classificationData.ts` to centralize classification items used by both frontend and backend
+- Eliminates sync issues between the 12 classification items across the codebase
+
+### Phase Completion/Navigation Decoupling
+- `markPhaseComplete(phase)`: Marks a phase complete without advancing (for re-saves, replays)
+- `handlePhaseComplete()`: Marks complete AND advances to next phase (for explicit Continue actions)
+- Allows users to revisit completed phases and perform actions without being auto-advanced
+
 ## System Architecture
 The application is a React single-page application (SPA) utilizing Wouter for routing and i18next for internationalization. The UI/UX features a custom educational theme with distinct color coding for six core AI agent processes (Learning, Connections, Perception, Reasoning, Planning, Execution) to enhance visual learning. Shadcn UI components are used and customized for an educational context, ensuring WCAG compliance and keyboard navigation.
 

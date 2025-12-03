@@ -456,6 +456,9 @@
       }
     }
   },
+  "phase1Guided": {
+    "title": "Vadīta prakse"
+  },
   "guided": {
     "title": "Prakse ar vadītāju",
     "description": "Vadītājs parādīs, kur novietot pirmos elementus. Vērojiet eksperta spriedumus.",

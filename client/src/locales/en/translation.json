@@ -384,6 +384,9 @@
       }
     }
   },
+  "phase1Guided": {
+    "title": "Guided Practice"
+  },
   "guided": {
     "title": "Practice with Help: Start Simple",
     "description": "Let's practice with just 2 processes that are opposites: Perception (reading input) vs Execution (taking action). These are the easiest to tell apart!",

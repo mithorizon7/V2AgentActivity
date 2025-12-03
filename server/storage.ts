@@ -10,6 +10,7 @@ import {
   type SimulationStep,
   type FailureMode,
 } from "@shared/schema";
+import { getClassificationAnswer } from "@shared/classificationData";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -86,29 +87,8 @@ export class MemStorage implements IStorage {
     return updated;
   }
 
-  private classificationAnswers: Map<string, any> = new Map([
-    ["feedback_loops", { correctProcess: "learning", explanation: "Feedback loops enable the agent to learn from outcomes and adjust behavior" }],
-    ["adaptation", { correctProcess: "learning", explanation: "Adaptation is the core of learning - modifying behavior based on new information" }],
-    ["memory", { correctProcess: "learning", explanation: "Memory stores past interactions and learned patterns for future use" }],
-    ["communication", { correctProcess: "interaction", explanation: "Communication is how the agent exchanges information with users and systems" }],
-    ["api_integration", { correctProcess: "interaction", explanation: "APIs are the primary interaction mechanism with external systems" }],
-    ["output_generation", { correctProcess: "interaction", explanation: "Generating outputs is the final step of interaction with users" }],
-    ["input_processing", { correctProcess: "perception", explanation: "Processing inputs is how perception turns raw data into usable information" }],
-    ["context_understanding", { correctProcess: "perception", explanation: "Understanding context is key to perception - making sense of the environment" }],
-    ["state_tracking", { correctProcess: "perception", explanation: "Tracking state allows perception to maintain awareness of current conditions" }],
-    ["logical_interface", { correctProcess: "reasoning", explanation: "Logical inference is the core of reasoning - drawing conclusions from data" }],
-    ["knowledge_base", { correctProcess: "reasoning", explanation: "Knowledge bases provide the facts and rules needed for reasoning" }],
-    ["heuristics", { correctProcess: "reasoning", explanation: "Heuristics are reasoning shortcuts that enable faster decision-making" }],
-    ["optimization", { correctProcess: "planning", explanation: "Optimization finds the best strategy among possible plans" }],
-    ["strategy", { correctProcess: "planning", explanation: "Strategy is the essence of planning - determining how to achieve goals" }],
-    ["goal_setting", { correctProcess: "planning", explanation: "Setting goals is the first step in planning - defining what to achieve" }],
-    ["monitoring", { correctProcess: "execution", explanation: "Monitoring ensures execution is proceeding as planned" }],
-    ["tool_usage", { correctProcess: "execution", explanation: "Using tools is how execution carries out planned actions" }],
-    ["action_selection", { correctProcess: "execution", explanation: "Selecting actions is the core of execution - choosing what to do next" }],
-  ]);
-
   evaluateClassification(submission: ClassificationInput): { isCorrect: boolean; feedback: string } {
-    const correctAnswer = this.classificationAnswers.get(submission.itemId);
+    const correctAnswer = getClassificationAnswer(submission.itemId);
     
     if (!correctAnswer) {
       return { isCorrect: false, feedback: "Unknown item" };

@@ -49,6 +49,14 @@ import {
   PLANNING_BLOCKS,
   EXECUTION_BLOCKS,
 } from "@shared/scenarios/health-coach/blocks";
+import { CLASSIFICATION_ITEMS_DATA } from "@shared/classificationData";
+import { 
+  LearningStage, 
+  isPrePhase, 
+  isMainPhase,
+  getNextStage,
+  getPreviousStage,
+} from "@shared/learningTypes";
 import fixturesData from "@shared/scenarios/health-coach/fixtures.json";
 
 const FIXTURES: Fixture[] = fixturesData as Fixture[];
@@ -110,61 +118,51 @@ export default function LearningPage() {
   const { hasConsent } = useConsent();
   const storage = safeLocalStorage(hasConsent);
 
-  // Memoize classification items to prevent recreation on every render
-  const CLASSIFICATION_ITEMS: ClassificationItem[] = useMemo(() => [
-    { id: "save_preferences", text: t("classificationItems.savePreferences"), correctProcess: "learning" },
-    { id: "update_rule", text: t("classificationItems.updateRule"), correctProcess: "learning" },
-    { id: "store_conversation", text: t("classificationItems.storeConversation"), correctProcess: "learning" },
-    { id: "send_message", text: t("classificationItems.sendMessage"), correctProcess: "interaction" },
-    { id: "call_external", text: t("classificationItems.callExternal"), correctProcess: "interaction" },
-    { id: "fetch_live_data", text: t("classificationItems.fetchLiveData"), correctProcess: "interaction" },
-    { id: "parse_message", text: t("classificationItems.parseMessage"), correctProcess: "perception" },
-    { id: "gather_state", text: t("classificationItems.gatherState"), correctProcess: "perception" },
-    { id: "assemble_context", text: t("classificationItems.assembleContext"), correctProcess: "perception" },
-    { id: "detect_progress", text: t("classificationItems.detectProgress"), correctProcess: "perception" },
-    { id: "interpret_request", text: t("classificationItems.interpretRequest"), correctProcess: "reasoning" },
-    { id: "recall_facts", text: t("classificationItems.recallFacts"), correctProcess: "reasoning" },
-    { id: "apply_rules", text: t("classificationItems.applyRules"), correctProcess: "reasoning" },
-    { id: "choose_best", text: t("classificationItems.chooseBest"), correctProcess: "planning" },
-    { id: "decide_sequence", text: t("classificationItems.decideSequence"), correctProcess: "planning" },
-    { id: "clarify_goal", text: t("classificationItems.clarifyGoal"), correctProcess: "planning" },
-    { id: "create_artifact", text: t("classificationItems.createArtifact"), correctProcess: "execution" },
-    { id: "format_response", text: t("classificationItems.formatResponse"), correctProcess: "execution" },
-  ], [t]);
+  // Build classification items from shared data with translated text
+  const CLASSIFICATION_ITEMS: ClassificationItem[] = useMemo(() => 
+    CLASSIFICATION_ITEMS_DATA.map(item => ({
+      id: item.id,
+      text: t(`classificationItems.${item.feedbackKey}`),
+      correctProcess: item.correctProcess,
+    })),
+  [t]);
   
   const { sessionId, progress, isLoading: sessionLoading } = useSession();
   const classificationMutation = useClassification(sessionId);
   const boundaryMapMutation = useBoundaryMap(sessionId);
   
-  // Phase 0: Primer (teach before practice) - persisted in localStorage
-  const [primerComplete, setPrimerComplete] = useState(() => {
-    const saved = storage.getItem("primerComplete");
-    return saved === "true";
-  });
-  
-  // Worked Example (model before practice) - persisted in localStorage
-  const [workedExampleComplete, setWorkedExampleComplete] = useState(() => {
-    const saved = storage.getItem("workedExampleComplete");
-    return saved === "true";
-  });
-  
-  // Guided Practice (2-bin practice) - persisted in localStorage
-  const [guidedPracticeComplete, setGuidedPracticeComplete] = useState(() => {
-    const saved = storage.getItem("guidedPracticeComplete");
-    return saved === "true";
-  });
-  
-  const [currentPhase, setCurrentPhase] = useState(() => {
+  // Current learning stage - either a pre-phase stage or main phase number
+  // Persist both pre-phase completion and current stage for full state restoration
+  const [currentStage, setCurrentStage] = useState<LearningStage>(() => {
+    // First check if there's a saved current stage
+    const savedStage = storage.getItem("currentStage");
+    if (savedStage) {
+      // Parse the saved stage (could be a string or number)
+      const parsed = parseInt(savedStage, 10);
+      if (!isNaN(parsed) && parsed >= 1 && parsed <= 5) {
+        return parsed as LearningStage;
+      }
+      // Check if it's a valid pre-phase stage string
+      if (savedStage === 'primer' || savedStage === 'workedExample' || savedStage === 'guidedPractice') {
+        return savedStage;
+      }
+    }
+    
+    // Fallback: Determine starting stage based on completion state
     const savedPrimer = storage.getItem("primerComplete");
     const savedExample = storage.getItem("workedExampleComplete");
     const savedGuided = storage.getItem("guidedPracticeComplete");
     
-    // Sequential initialization prevents race conditions
-    if (savedPrimer !== "true") return 0;
-    if (savedExample !== "true") return 0.5;
-    if (savedGuided !== "true") return 0.75;
+    if (savedPrimer !== "true") return 'primer';
+    if (savedExample !== "true") return 'workedExample';
+    if (savedGuided !== "true") return 'guidedPractice';
     return 1;
   });
+
+  // Persist stage changes to localStorage
+  useEffect(() => {
+    storage.setItem("currentStage", String(currentStage));
+  }, [currentStage, storage]);
 
   const FAILURE_MODES: FailureMode[] = [
     {
@@ -189,13 +187,23 @@ export default function LearningPage() {
       affectedProcess: "reasoning",
     },
   ];
-  const [phaseCompletion, setPhaseCompletion] = useState<Record<string, boolean>>({
-    "1": false,
-    "2": false,
-    "3": false,
-    "4": false,
-    "5": false,
-  });
+  // Phase completion state - persisted to localStorage
+  const [phaseCompletion, setPhaseCompletion] = useState<Record<string, boolean>>(() => ({
+    "1": storage.getItem("phase1Complete") === "true",
+    "2": storage.getItem("phase2Complete") === "true",
+    "3": storage.getItem("phase3Complete") === "true",
+    "4": storage.getItem("phase4Complete") === "true",
+    "5": storage.getItem("phase5Complete") === "true",
+  }));
+
+  // Persist phase completion to localStorage
+  useEffect(() => {
+    Object.entries(phaseCompletion).forEach(([phase, completed]) => {
+      if (completed) {
+        storage.setItem(`phase${phase}Complete`, "true");
+      }
+    });
+  }, [phaseCompletion, storage]);
 
   // Phase 1: Classification
   const [showFeedback, setShowFeedback] = useState(false);
@@ -229,31 +237,31 @@ export default function LearningPage() {
       id: 1,
       name: t("phases.phase1"),
       completed: phaseCompletion["1"],
-      current: currentPhase === 1,
+      current: currentStage === 1,
     },
     {
       id: 2,
       name: t("phases.phase2"),
       completed: phaseCompletion["2"],
-      current: currentPhase === 2,
+      current: currentStage === 2,
     },
     {
       id: 3,
       name: t("phases.phase3"),
       completed: phaseCompletion["3"],
-      current: currentPhase === 3,
+      current: currentStage === 3,
     },
     {
       id: 4,
       name: t("phases.phase4"),
       completed: phaseCompletion["4"],
-      current: currentPhase === 4,
+      current: currentStage === 4,
     },
     {
       id: 5,
       name: t("phases.phase5"),
       completed: phaseCompletion["5"],
-      current: currentPhase === 5,
+      current: currentStage === 5,
     },
   ];
 
@@ -290,59 +298,54 @@ export default function LearningPage() {
   };
 
   const handlePrimerComplete = () => {
-    setPrimerComplete(true);
     storage.setItem("primerComplete", "true");
-    setCurrentPhase(0.5); // Go to worked example
+    setCurrentStage('workedExample');
   };
 
   const handleWorkedExampleComplete = () => {
-    setWorkedExampleComplete(true);
     storage.setItem("workedExampleComplete", "true");
-    setCurrentPhase(0.75); // Go to guided practice
+    setCurrentStage('guidedPractice');
   };
 
   const handleGuidedPracticeComplete = () => {
-    setGuidedPracticeComplete(true);
     storage.setItem("guidedPracticeComplete", "true");
-    setCurrentPhase(1); // Go to independent practice
+    setCurrentStage(1);
   };
 
+  // Mark a phase as complete without advancing (for re-saves, replays, etc.)
+  const markPhaseComplete = (phase: number) => {
+    setPhaseCompletion((prev) => ({ ...prev, [phase]: true }));
+  };
+
+  // Handle explicit "Continue to next phase" action - marks complete AND advances
   const handlePhaseComplete = () => {
-    setPhaseCompletion((prev) => ({ ...prev, [currentPhase]: true }));
-    if (currentPhase < 5) {
-      setCurrentPhase(currentPhase + 1);
+    if (isMainPhase(currentStage)) {
+      markPhaseComplete(currentStage);
+      const nextStage = getNextStage(currentStage);
+      if (nextStage) {
+        setCurrentStage(nextStage);
+      }
     }
     setShowFeedback(false);
   };
 
-  // Helper function to navigate to previous phase, handling all states including fractional ones
-  const navigateToPreviousPhase = () => {
-    if (currentPhase === 0.5) {
-      setCurrentPhase(0); // Worked example → Primer
-    } else if (currentPhase === 0.75) {
-      setCurrentPhase(0.5); // Guided practice → Worked example
-    } else if (currentPhase === 1) {
-      setCurrentPhase(0.75); // Phase 1 → Guided practice
-    } else if (currentPhase === 2) {
-      setCurrentPhase(1);
-    } else if (currentPhase === 3) {
-      setCurrentPhase(2);
-    } else if (currentPhase === 4) {
-      setCurrentPhase(3);
-    } else if (currentPhase === 5) {
-      setCurrentPhase(4);
+  // Navigate to previous stage using the type-safe helper
+  const navigateToPreviousStage = () => {
+    const prevStage = getPreviousStage(currentStage);
+    if (prevStage) {
+      setCurrentStage(prevStage);
     }
   };
 
-  // Helper function to navigate to next phase, handling fractional states properly
-  const navigateToNextPhase = () => {
-    if (currentPhase === 0) {
+  // Navigate to next stage - handles pre-phase completion and main phase progression
+  const navigateToNextStage = () => {
+    if (currentStage === 'primer') {
       handlePrimerComplete();
-    } else if (currentPhase === 0.5) {
+    } else if (currentStage === 'workedExample') {
       handleWorkedExampleComplete();
-    } else if (currentPhase === 0.75) {
+    } else if (currentStage === 'guidedPractice') {
       handleGuidedPracticeComplete();
-    } else if (currentPhase >= 1 && currentPhase < 5) {
+    } else if (isMainPhase(currentStage) && currentStage < 5) {
       handlePhaseComplete();
     }
   };
@@ -416,7 +419,13 @@ export default function LearningPage() {
       });
     }
     
-    handlePhaseComplete();
+    // Mark phase 2 as complete, but only auto-advance if not already completed
+    // This allows users to revisit and re-save without being forced to advance
+    if (!phaseCompletion["2"]) {
+      handlePhaseComplete();
+    } else {
+      markPhaseComplete(2);
+    }
   };
 
   const handleBlockSelect = (process: Process, block: Block) => {
@@ -424,7 +433,12 @@ export default function LearningPage() {
   };
 
   const handleCircuitComplete = () => {
-    handlePhaseComplete();
+    // Only auto-advance if phase 3 is not already completed
+    if (!phaseCompletion["3"]) {
+      handlePhaseComplete();
+    } else {
+      markPhaseComplete(3);
+    }
   };
 
   const handleSimulationRun = async () => {
@@ -535,10 +549,10 @@ export default function LearningPage() {
         <LanguageSelector />
         <HighContrastToggle />
       </div>
-      {currentPhase > 0 && <PhaseProgress phases={phases} onPhaseClick={(id) => setCurrentPhase(id)} />}
+      {isMainPhase(currentStage) && <PhaseProgress phases={phases} onPhaseClick={(id) => setCurrentStage(id as LearningStage)} />}
 
       <div id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        {currentPhase === 0 && (
+        {currentStage === 'primer' && (
           <>
             <Primer onComplete={handlePrimerComplete} />
             
@@ -550,12 +564,12 @@ export default function LearningPage() {
           </>
         )}
 
-        {currentPhase === 0.5 && (
+        {currentStage === 'workedExample' && (
           <>
             <WorkedExample onComplete={handleWorkedExampleComplete} />
             
             <PhaseNavigation
-              onPrevious={navigateToPreviousPhase}
+              onPrevious={navigateToPreviousStage}
               onNext={handleWorkedExampleComplete}
               previousLabel={t("primer.title")}
               nextLabel={t("phase1Guided.title")}
@@ -563,12 +577,12 @@ export default function LearningPage() {
           </>
         )}
 
-        {currentPhase === 0.75 && (
+        {currentStage === 'guidedPractice' && (
           <>
             <Phase1Guided items={CLASSIFICATION_ITEMS} onComplete={handleGuidedPracticeComplete} />
             
             <PhaseNavigation
-              onPrevious={navigateToPreviousPhase}
+              onPrevious={navigateToPreviousStage}
               onNext={handleGuidedPracticeComplete}
               previousLabel={t("workedExample.title")}
               nextLabel={t("classification.title")}
@@ -576,7 +590,7 @@ export default function LearningPage() {
           </>
         )}
 
-        {currentPhase === 1 && (
+        {currentStage === 1 && (
           <div className="space-y-6">
             <div>
               <h2 className="text-2xl sm:text-3xl font-bold mb-2">{t("classification.title")}</h2>
@@ -614,14 +628,14 @@ export default function LearningPage() {
 
             {!showFeedback && (
               <PhaseNavigation
-                onPrevious={navigateToPreviousPhase}
+                onPrevious={navigateToPreviousStage}
                 showNext={false}
               />
             )}
           </div>
         )}
 
-        {currentPhase === 2 && (
+        {currentStage === 2 && (
           <div className="space-y-8">
             {/* Hero Section */}
             <div className="space-y-3">
@@ -797,14 +811,14 @@ export default function LearningPage() {
             )}
 
             <PhaseNavigation
-              onPrevious={navigateToPreviousPhase}
-              onNext={!boundaryMapFeedback ? navigateToNextPhase : undefined}
+              onPrevious={navigateToPreviousStage}
+              onNext={!boundaryMapFeedback ? navigateToNextStage : undefined}
               showNext={!boundaryMapFeedback}
             />
           </div>
         )}
 
-        {currentPhase === 3 && (
+        {currentStage === 3 && (
           <div className="space-y-6">
             <div>
               <h2 className="text-2xl sm:text-3xl font-bold mb-2">{t("circuit.title")}</h2>
@@ -858,14 +872,14 @@ export default function LearningPage() {
             )}
 
             <PhaseNavigation
-              onPrevious={navigateToPreviousPhase}
-              onNext={pipelineComplete ? navigateToNextPhase : undefined}
+              onPrevious={navigateToPreviousStage}
+              onNext={pipelineComplete ? navigateToNextStage : undefined}
               showNext={pipelineComplete}
             />
           </div>
         )}
 
-        {currentPhase === 4 && (
+        {currentStage === 4 && (
           <div className="space-y-6">
             <div>
               <h2 className="text-2xl sm:text-3xl font-bold mb-2">{t("simulation.title")}</h2>
@@ -970,13 +984,13 @@ export default function LearningPage() {
             </Card>
 
             <PhaseNavigation
-              onPrevious={navigateToPreviousPhase}
-              onNext={navigateToNextPhase}
+              onPrevious={navigateToPreviousStage}
+              onNext={navigateToNextStage}
             />
           </div>
         )}
 
-        {currentPhase === 5 && (
+        {currentStage === 5 && (
           <div className="space-y-6">
             <div>
               <h2 className="text-2xl sm:text-3xl font-bold mb-2">{t("assessment.title")}</h2>
@@ -988,7 +1002,7 @@ export default function LearningPage() {
             <AssessmentDashboard metrics={assessmentMetrics} phaseCompletion={phaseCompletion} />
 
             <PhaseNavigation
-              onPrevious={navigateToPreviousPhase}
+              onPrevious={navigateToPreviousStage}
               onNext={() => setLocation("/")}
               nextLabel={t("navigation.backToHome")}
               showNext={true}
@@ -1002,7 +1016,7 @@ export default function LearningPage() {
         </div>
       </div>
 
-      {currentPhase !== 1 && currentPhase !== 0.75 && (
+      {currentStage !== 1 && currentStage !== 'guidedPractice' && (
         <FeedbackPanel
           isOpen={showFeedback}
           onClose={() => setShowFeedback(false)}
