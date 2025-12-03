@@ -90,30 +90,29 @@ export default function HomePage() {
           </div>
         </Card>
 
-        <footer className="mt-16 pt-8 border-t border-border/40">
-          <div className="flex flex-col items-center gap-6 text-center">
-            <img src={MITOpenLearningLogo} alt={t("accessibility.images.mitOpenLearning")} className="h-12 opacity-80" />
-            
-            <div className="text-sm text-muted-foreground space-y-1">
-              <p>{t("footer.copyright")}</p>
-              <p className="font-medium">{t("footer.orgName")}</p>
-              <p>{t("footer.institution")}</p>
-              <p>{t("footer.location")}</p>
-            </div>
-
+        <footer className="mt-16 pt-6 border-t border-border/40">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <a 
-                href="https://accessibility.mit.edu" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-sm text-muted-foreground hover:text-foreground underline-offset-4 hover:underline transition-colors"
-                data-testid="link-accessibility"
-              >
-                {t("footer.accessibilityLink")}
-              </a>
-              <span className="text-muted-foreground/50">|</span>
-              <ConsentManager />
+              <img src={MITOpenLearningLogo} alt={t("accessibility.images.mitOpenLearning")} className="h-10 opacity-80" />
+              <div className="flex items-center gap-3">
+                <a 
+                  href="https://accessibility.mit.edu" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-sm text-muted-foreground hover:text-foreground underline-offset-4 hover:underline transition-colors"
+                  data-testid="link-accessibility"
+                >
+                  {t("footer.accessibilityLink")}
+                </a>
+                <span className="text-muted-foreground/30">|</span>
+                <ConsentManager />
+              </div>
             </div>
+            
+            <p className="text-[10px] text-muted-foreground/70 text-right leading-tight">
+              {t("footer.copyright")} {t("footer.orgName")}<br />
+              {t("footer.institution")}, {t("footer.location")}
+            </p>
           </div>
         </footer>
       </div>
