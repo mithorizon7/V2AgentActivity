@@ -6,8 +6,118 @@
     "submit": "Iesniegt",
     "reset": "Atiestatīt",
     "close": "Aizvērt",
+    "back": "Atpakaļ",
     "loading": "Ielādē...",
     "error": "Radās kļūda"
+  },
+  "bridge": {
+    "title": "No vides uz apstrādi",
+    "subtitle": "Jūs iezīmējāt KO jūsu aģents redz un dara. Tagad veidosim KĀ tas domā un rīkojas.",
+    "whatYouDid": "Ko jūs paveicāt",
+    "boundaryMapPhase": "2. fāze: Robežu noteikšana",
+    "boundaryMapSummary": "Jūs iezīmējāt aģenta vidi — visu, ar ko tas mijiedarbojas:",
+    "identified": {
+      "inputs": "Ievades dati, ko aģents saņem (lietotāju ziņas, dati, notikumi)",
+      "outputs": "Darbības, ko aģents var veikt (atbildes, API izsaukumi, atjauninājumi)",
+      "environment": "Ārējās sistēmas un rīki, ar kuriem aģents sadarbojas"
+    },
+    "whatComesNext": "Kas nāk tālāk",
+    "circuitPhase": "3. fāze: Shēmas veidošana",
+    "circuitPreview": "Tagad jūs definēsiet iekšējo apstrādi — kā aģents pārvērš ievades izvadēs:",
+    "willDo": {
+      "perception": "Izvēlieties, kā lasīt un interpretēt ienākošo informāciju",
+      "reasoning": "Nosakiet, kā analizēt un saprast tās nozīmi",
+      "planning": "Izlemiet, kā izvēlēties labāko darbību",
+      "execution": "Norādiet, kā izpildīt izvēlēto darbību"
+    },
+    "seeConnection": "Redzēt saistību",
+    "connectionTitle": "Kā jūsu karte kļūst par shēmu",
+    "connectionSubtitle": "Katrs jūsu kartētais elements saistās ar apstrādes soli.",
+    "boundaryElement": "Robežas elements",
+    "pipelineStep": "Cauruļvada solis",
+    "steps": {
+      "perception": {
+        "name": "Uztvere",
+        "connection": "Nolasa jūsu kartētos ievades datus (lietotāju vaicājumi, sensoru dati, API atbildes)"
+      },
+      "reasoning": {
+        "name": "Izpratne",
+        "connection": "Interpretē šo ievades datu nozīmi, izmantojot kontekstu un zināšanas"
+      },
+      "planning": {
+        "name": "Plānošana",
+        "connection": "Izvēlas, kuru izvades darbību veikt, pamatojoties uz analīzi"
+      },
+      "execution": {
+        "name": "Izpilde",
+        "connection": "Veic jūsu kartētās izvades darbības (sūta atbildes, izsauc API)"
+      }
+    },
+    "keyInsight": "Galvenā atziņa",
+    "keyInsightText": "Jūsu robežu karte parāda KO (vidi). Shēma, ko veidosiet, parāda KĀ (apstrādi). Kopā tās veido pilnīgu aģentu!",
+    "imReady": "Saprotu",
+    "readyTitle": "Gatavs veidot shēmu!",
+    "readySubtitle": "Tagad jūs saprotat, kā robežu elementi saistās ar apstrādes soļiem.",
+    "nextSteps": "Ko darīsiet tālāk",
+    "nextStepsDescription": "Vispirms jūs praktizēsiet ar Atmiņu un Savienojumiem — divām palīgsistēmām, kas palīdz aģentam atcerēties un izmantot rīkus. Pēc tam veidosiet četru soļu cauruļvadu.",
+    "reviewConnection": "Pārskatīt saistību",
+    "startCircuit": "Uz Atmiņas praksi"
+  },
+  "memoryPractice": {
+    "title": "Atmiņas un Savienojumu prakse",
+    "subtitle": "Pirms cauruļvada veidošanas praktizēsim ar divām palīgsistēmām, kas padara aģentus spēcīgus.",
+    "introTitle": "Divas palīgsistēmas",
+    "introDescription": "Kamēr četru soļu cauruļvads apstrādā informāciju, šīs divas sistēmas ir pieejamas jebkurā solī:",
+    "memoryTitle": "Atmiņa (Mācīšanās)",
+    "memoryDescription": "Saglabā un izgūst informāciju starp mijiedarbībām. Palīdz aģentam atcerēties kontekstu, mācīties no modeļiem un uzlaboties laika gaitā.",
+    "connectionsTitle": "Savienojumi (Rīki)",
+    "connectionsDescription": "Nodrošina piekļuvi ārējām sistēmām un iespējām. Ietver API, datubāzes, lietotāju saskarnes un citus pakalpojumus.",
+    "scenario": {
+      "title": "Prakses scenārijs: Veselības konsultants",
+      "description": "Palīdziet veselības konsultanta aģentam pieņemt pareizos lēmumus par to, ko atcerēties un kādus rīkus izmantot.",
+      "context": "Lietotājs jautā: \"Pēdējā laikā jūtos noguris. Ko man darīt?\""
+    },
+    "exercise1": {
+      "title": "1. uzdevums: Ko aģentam vajadzētu atcerēties?",
+      "question": "Aģents atklāja, ka lietotājs pagājušajā nedēļā minēja stresu darbā. Vai saglabāt šo saistību?",
+      "options": {
+        "yes": "Jā, saglabāt Atmiņā",
+        "no": "Nē, nesaglabāt"
+      },
+      "correctFeedback": "Pareizi! Stresa-noguruma saistības saglabāšana palīdzēs aģentam sniegt labākus, personalizētus padomus nākotnē.",
+      "incorrectFeedback": "Ne gluži. Šī saistība starp stresu un nogurumu ir vērtīgs konteksts, kas uzlabos nākotnes ieteikumus."
+    },
+    "exercise2": {
+      "title": "2. uzdevums: Kādu rīku izmantot?",
+      "question": "Aģentam jāatrod ieteicamās miega stundas lietotāja vecumam. Kādu savienojumu izmantot?",
+      "options": {
+        "userDatabase": "Lietotāju profilu datubāze",
+        "healthApi": "Veselības vadlīniju API",
+        "chatHistory": "Sarunu vēsture"
+      },
+      "correctFeedback": "Pareizi! Veselības vadlīniju API nodrošina autoritatīvu informāciju par ieteicamajām miega stundām.",
+      "incorrectFeedback": "Padomājiet vēlreiz. Veselības ieteikumiem — kāds avots satur autoritatīvu medicīnisku informāciju?"
+    },
+    "exercise3": {
+      "title": "3. uzdevums: Izgūšana no atmiņas",
+      "question": "Pirms padoma sniegšanas, vai aģentam jāpārbauda, vai tam ir iepriekšēja veselības informācija par šo lietotāju?",
+      "options": {
+        "yes": "Jā, izgūt no Atmiņas",
+        "no": "Nē, sākt no jauna"
+      },
+      "correctFeedback": "Pareizi! Atmiņas pārbaude iepriekšējam veselības kontekstam ļauj sniegt personalizētākus un konsekventākus padomus.",
+      "incorrectFeedback": "Patiesībā, iepriekšējās veselības informācijas izgūšana palīdz sniegt atbilstošākus, personalizētākus ieteikumus."
+    },
+    "complete": {
+      "title": "Lielisks darbs!",
+      "description": "Jūs praktizējāt galvenos lēmumus, ko aģenti pieņem par Atmiņu un Savienojumiem. Tagad jūs saprotat, kā šīs palīgsistēmas uzlabo četru soļu cauruļvadu.",
+      "keyTakeaways": "Galvenās atziņas",
+      "takeaway1": "Atmiņa palīdz aģentiem mācīties un personalizēt laika gaitā",
+      "takeaway2": "Savienojumi ļauj aģentiem piekļūt ārējām iespējām un datiem",
+      "takeaway3": "Abas sistēmas ir pieejamas jebkurā cauruļvada solī",
+      "continueButton": "Veidot cauruļvadu"
+    },
+    "progress": "{{current}}. uzdevums no {{total}}"
   },
   "homePage": {
     "title": "MI aģentu mācību platforma",

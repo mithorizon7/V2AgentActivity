@@ -54,9 +54,12 @@ import {
   LearningStage, 
   isPrePhase, 
   isMainPhase,
+  isBridgeStage,
   getNextStage,
   getPreviousStage,
 } from "@shared/learningTypes";
+import { CircuitBridge } from "@/components/CircuitBridge";
+import { MemoryConnectionsPractice } from "@/components/MemoryConnectionsPractice";
 import fixturesData from "@shared/scenarios/health-coach/fixtures.json";
 
 const FIXTURES: Fixture[] = fixturesData as Fixture[];
@@ -131,8 +134,8 @@ export default function LearningPage() {
   const classificationMutation = useClassification(sessionId);
   const boundaryMapMutation = useBoundaryMap(sessionId);
   
-  // Current learning stage - either a pre-phase stage or main phase number
-  // Persist both pre-phase completion and current stage for full state restoration
+  // Current learning stage - either a pre-phase stage, bridge stage, or main phase number
+  // Persist both pre-phase/bridge completion and current stage for full state restoration
   const [currentStage, setCurrentStage] = useState<LearningStage>(() => {
     // First check if there's a saved current stage
     const savedStage = storage.getItem("currentStage");
@@ -144,6 +147,10 @@ export default function LearningPage() {
       }
       // Check if it's a valid pre-phase stage string
       if (savedStage === 'primer' || savedStage === 'workedExample' || savedStage === 'guidedPractice') {
+        return savedStage;
+      }
+      // Check if it's a valid bridge stage string
+      if (savedStage === 'circuitBridge' || savedStage === 'memoryConnectionsPractice') {
         return savedStage;
       }
     }
@@ -187,20 +194,30 @@ export default function LearningPage() {
       affectedProcess: "reasoning",
     },
   ];
-  // Phase completion state - persisted to localStorage
+  // Phase and bridge stage completion state - persisted to localStorage
   const [phaseCompletion, setPhaseCompletion] = useState<Record<string, boolean>>(() => ({
     "1": storage.getItem("phase1Complete") === "true",
     "2": storage.getItem("phase2Complete") === "true",
+    "circuitBridge": storage.getItem("circuitBridgeComplete") === "true",
+    "memoryConnectionsPractice": storage.getItem("memoryConnectionsPracticeComplete") === "true",
     "3": storage.getItem("phase3Complete") === "true",
     "4": storage.getItem("phase4Complete") === "true",
     "5": storage.getItem("phase5Complete") === "true",
   }));
 
+  // Check if bridge stages are complete (needed for Phase 3 accessibility)
+  const bridgeStagesComplete = phaseCompletion["circuitBridge"] && phaseCompletion["memoryConnectionsPractice"];
+
   // Persist phase completion to localStorage
   useEffect(() => {
-    Object.entries(phaseCompletion).forEach(([phase, completed]) => {
+    Object.entries(phaseCompletion).forEach(([key, completed]) => {
       if (completed) {
-        storage.setItem(`phase${phase}Complete`, "true");
+        // Handle both numeric phases and string bridge stages
+        if (/^\d+$/.test(key)) {
+          storage.setItem(`phase${key}Complete`, "true");
+        } else {
+          storage.setItem(`${key}Complete`, "true");
+        }
       }
     });
   }, [phaseCompletion, storage]);
@@ -242,8 +259,9 @@ export default function LearningPage() {
     {
       id: 2,
       name: t("phases.phase2"),
-      completed: phaseCompletion["2"],
-      current: currentStage === 2,
+      // Phase 2's connector line shows as complete only after bridge stages are done
+      completed: phaseCompletion["2"] && bridgeStagesComplete,
+      current: currentStage === 2 || isBridgeStage(currentStage),
     },
     {
       id: 3,
@@ -312,14 +330,23 @@ export default function LearningPage() {
     setCurrentStage(1);
   };
 
-  // Mark a phase as complete without advancing (for re-saves, replays, etc.)
-  const markPhaseComplete = (phase: number) => {
-    setPhaseCompletion((prev) => ({ ...prev, [phase]: true }));
+  // Mark a phase/stage as complete without advancing (for re-saves, replays, etc.)
+  const markPhaseComplete = (stage: LearningStage) => {
+    if (isMainPhase(stage) || isBridgeStage(stage)) {
+      const key = String(stage);
+      setPhaseCompletion((prev) => ({ ...prev, [key]: true }));
+      // Immediately persist to localStorage (useEffect is async)
+      if (/^\d+$/.test(key)) {
+        storage.setItem(`phase${key}Complete`, "true");
+      } else {
+        storage.setItem(`${key}Complete`, "true");
+      }
+    }
   };
 
   // Handle explicit "Continue to next phase" action - marks complete AND advances
   const handlePhaseComplete = () => {
-    if (isMainPhase(currentStage)) {
+    if (isMainPhase(currentStage) || isBridgeStage(currentStage)) {
       markPhaseComplete(currentStage);
       const nextStage = getNextStage(currentStage);
       if (nextStage) {
@@ -337,7 +364,7 @@ export default function LearningPage() {
     }
   };
 
-  // Navigate to next stage - handles pre-phase completion and main phase progression
+  // Navigate to next stage - handles pre-phase completion, bridge stages, and main phase progression
   const navigateToNextStage = () => {
     if (currentStage === 'primer') {
       handlePrimerComplete();
@@ -345,6 +372,8 @@ export default function LearningPage() {
       handleWorkedExampleComplete();
     } else if (currentStage === 'guidedPractice') {
       handleGuidedPracticeComplete();
+    } else if (isBridgeStage(currentStage)) {
+      handlePhaseComplete();
     } else if (isMainPhase(currentStage) && currentStage < 5) {
       handlePhaseComplete();
     }
@@ -568,6 +597,28 @@ export default function LearningPage() {
             items={CLASSIFICATION_ITEMS} 
             onComplete={handleGuidedPracticeComplete}
             onBack={navigateToPreviousStage}
+          />
+        )}
+
+        {currentStage === 'circuitBridge' && (
+          <CircuitBridge
+            onComplete={() => {
+              markPhaseComplete('circuitBridge');
+              setCurrentStage('memoryConnectionsPractice');
+            }}
+            onBack={navigateToPreviousStage}
+            isAlreadyComplete={phaseCompletion['circuitBridge']}
+          />
+        )}
+
+        {currentStage === 'memoryConnectionsPractice' && (
+          <MemoryConnectionsPractice
+            onComplete={() => {
+              markPhaseComplete('memoryConnectionsPractice');
+              setCurrentStage(3);
+            }}
+            onBack={navigateToPreviousStage}
+            isAlreadyComplete={phaseCompletion['memoryConnectionsPractice']}
           />
         )}
 

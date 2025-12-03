@@ -6,8 +6,118 @@
     "submit": "Submit",
     "reset": "Reset",
     "close": "Close",
+    "back": "Back",
     "loading": "Loading...",
     "error": "An error occurred"
+  },
+  "bridge": {
+    "title": "From Environment to Processing",
+    "subtitle": "You've mapped WHAT your agent sees and does. Now let's build HOW it thinks and acts.",
+    "whatYouDid": "What You Accomplished",
+    "boundaryMapPhase": "Phase 2: Boundary Mapping",
+    "boundaryMapSummary": "You mapped the agent's environment—everything it interacts with:",
+    "identified": {
+      "inputs": "Inputs the agent receives (user messages, data, events)",
+      "outputs": "Actions the agent can take (responses, API calls, updates)",
+      "environment": "External systems and tools the agent connects to"
+    },
+    "whatComesNext": "What Comes Next",
+    "circuitPhase": "Phase 3: Circuit Building",
+    "circuitPreview": "Now you'll define the internal processing—how the agent transforms inputs into outputs:",
+    "willDo": {
+      "perception": "Choose how to read and interpret incoming information",
+      "reasoning": "Select how to analyze and understand what it means",
+      "planning": "Decide how to choose the best action",
+      "execution": "Pick how to carry out the chosen action"
+    },
+    "seeConnection": "See the Connection",
+    "connectionTitle": "How Your Map Becomes a Circuit",
+    "connectionSubtitle": "Each element you mapped connects to a step in the processing pipeline.",
+    "boundaryElement": "Boundary Element",
+    "pipelineStep": "Pipeline Step",
+    "steps": {
+      "perception": {
+        "name": "Perception",
+        "connection": "Reads the inputs you mapped (user queries, sensor data, API responses)"
+      },
+      "reasoning": {
+        "name": "Reasoning",
+        "connection": "Interprets what those inputs mean using context and knowledge"
+      },
+      "planning": {
+        "name": "Planning",
+        "connection": "Chooses which output action to take based on the analysis"
+      },
+      "execution": {
+        "name": "Execution",
+        "connection": "Performs the output actions you mapped (sends responses, calls APIs)"
+      }
+    },
+    "keyInsight": "Key Insight",
+    "keyInsightText": "Your boundary map shows the WHAT (environment). The circuit you'll build shows the HOW (processing). Together, they form a complete agent!",
+    "imReady": "I Understand",
+    "readyTitle": "Ready to Build Your Circuit!",
+    "readySubtitle": "You now understand how boundary elements connect to processing steps.",
+    "nextSteps": "What You'll Do Next",
+    "nextStepsDescription": "First, you'll practice with Memory and Connections—the two support systems that help your agent remember and use tools. Then you'll build the 4-step processing pipeline.",
+    "reviewConnection": "Review Connection",
+    "startCircuit": "Continue to Memory Practice"
+  },
+  "memoryPractice": {
+    "title": "Memory & Connections Practice",
+    "subtitle": "Before building the pipeline, let's practice using the two support systems that make agents powerful.",
+    "introTitle": "The Two Support Rails",
+    "introDescription": "While the 4-step pipeline processes information, these two systems are available at any step:",
+    "memoryTitle": "Memory (Learning)",
+    "memoryDescription": "Stores and retrieves information across interactions. Helps the agent remember context, learn patterns, and improve over time.",
+    "connectionsTitle": "Connections (Tools)",
+    "connectionsDescription": "Accesses external systems and capabilities. Includes APIs, databases, user interfaces, and other services.",
+    "scenario": {
+      "title": "Practice Scenario: Health Coach",
+      "description": "Help the Health Coach agent make the right decisions about what to remember and which tools to use.",
+      "context": "A user asks: \"I've been feeling tired lately. What should I do?\""
+    },
+    "exercise1": {
+      "title": "Exercise 1: What Should the Agent Remember?",
+      "question": "The agent found that the user mentioned being stressed at work last week. Should it store this connection?",
+      "options": {
+        "yes": "Yes, store in Memory",
+        "no": "No, don't store"
+      },
+      "correctFeedback": "Correct! Storing the stress-fatigue connection helps the agent provide better, personalized advice in the future.",
+      "incorrectFeedback": "Not quite. This connection between stress and fatigue is valuable context that can improve future recommendations."
+    },
+    "exercise2": {
+      "title": "Exercise 2: Which Tool Should It Use?",
+      "question": "The agent needs to look up recommended sleep hours for the user's age. Which connection should it use?",
+      "options": {
+        "userDatabase": "User Profile Database",
+        "healthApi": "Health Guidelines API",
+        "chatHistory": "Conversation History"
+      },
+      "correctFeedback": "Correct! The Health Guidelines API provides authoritative information about recommended sleep hours.",
+      "incorrectFeedback": "Think again. For health guidelines and recommendations, which source would have authoritative medical information?"
+    },
+    "exercise3": {
+      "title": "Exercise 3: Memory Retrieval",
+      "question": "Before giving advice, should the agent check if it has any previous health information about this user?",
+      "options": {
+        "yes": "Yes, retrieve from Memory",
+        "no": "No, start fresh"
+      },
+      "correctFeedback": "Correct! Checking memory for previous health context allows for more personalized and consistent advice.",
+      "incorrectFeedback": "Actually, retrieving previous health information helps provide more relevant, personalized recommendations."
+    },
+    "complete": {
+      "title": "Great Work!",
+      "description": "You've practiced the key decisions agents make about Memory and Connections. Now you understand how these support systems enhance the 4-step pipeline.",
+      "keyTakeaways": "Key Takeaways",
+      "takeaway1": "Memory helps agents learn and personalize over time",
+      "takeaway2": "Connections let agents access external capabilities and data",
+      "takeaway3": "Both systems are available at any step of the pipeline",
+      "continueButton": "Build the Pipeline"
+    },
+    "progress": "Exercise {{current}} of {{total}}"
   },
   "homePage": {
     "title": "AI Agents Learning Platform",

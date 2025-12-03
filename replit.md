@@ -26,9 +26,18 @@ Do not modify the core `Health Coach` scenario files in `shared/scenarios/health
 
 ### Phase Navigation Refactoring
 - **Type-safe learning stages**: Replaced fractional phase numbers (0, 0.5, 0.75) with a type-safe `LearningStage` union type defined in `shared/learningTypes.ts`
-- **Stage types**: Pre-phase stages (`'primer'`, `'workedExample'`, `'guidedPractice'`) and main phases (`1`, `2`, `3`, `4`, `5`)
-- **Helper functions**: `isPrePhase()`, `isMainPhase()`, `getNextStage()`, `getPreviousStage()` for clean navigation logic
+- **Stage types**: 
+  - Pre-phase stages: `'primer'`, `'workedExample'`, `'guidedPractice'`
+  - Bridge stages (Phase 2→3 transition): `'circuitBridge'`, `'memoryConnectionsPractice'`
+  - Main phases: `1`, `2`, `3`, `4`, `5`
+- **Helper functions**: `isPrePhase()`, `isBridgeStage()`, `isMainPhase()`, `getNextStage()`, `getPreviousStage()` for clean navigation logic
 - **Benefits**: Cleaner code, better TypeScript type safety, easier to understand and maintain
+
+### Bridge Stage Components (Phase 2→3 Transition)
+- **CircuitBridge** (`client/src/components/CircuitBridge.tsx`): Explains the conceptual shift from boundary mapping (WHAT) to circuit building (HOW). Shows visual mapping between boundary elements and 4-step pipeline slots.
+- **MemoryConnectionsPractice** (`client/src/components/MemoryConnectionsPractice.tsx`): Interactive exercises for Memory & Connections (the two support "rails"). Three scenarios testing memory storage/retrieval and tool selection decisions.
+- **Learning flow**: After completing Phase 2, users go through `circuitBridge` → `memoryConnectionsPractice` → Phase 3
+- **Translation parity**: All new content available in EN, RU, and LV
 
 ### Shared Classification Data
 - Created `shared/classificationData.ts` to centralize classification items used by both frontend and backend
