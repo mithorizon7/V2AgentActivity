@@ -414,6 +414,7 @@
     "description": "Tagad jūsu kārta! Sadaliet šīs aģenta spējas 6 kategorijās. Atcerieties: 4 soļi notiek secīgi (Uztvere → Izpratne → Plānošana → Izpilde), bet Atmiņa un Savienojumi pieejami vienmēr.",
     "independentDescription": "Sadaliet spējas 6 procesos, velkot tās pareizajā kategorijā.",
     "dragInstruction": "Velciet katru spēju no apakšas uz pareizo kategoriju augšā",
+    "touchInstruction": "Pieskarieties kartītei, lai atlasītu, pēc tam pieskarieties kategorijai, lai novietotu",
     "unsortedTray": "Spējas šķirošanai",
     "dragItemsHere": "Novietojiet spējas šeit",
     "scramble": "Atiestatīt visu",

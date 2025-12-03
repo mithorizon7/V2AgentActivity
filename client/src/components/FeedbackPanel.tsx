@@ -37,7 +37,7 @@ export function FeedbackPanel({
 
   return (
     <div
-      className="fixed right-0 top-0 h-screen w-96 bg-card border-l shadow-2xl z-40 animate-in slide-in-from-right"
+      className="fixed right-0 top-0 h-screen w-full sm:w-96 bg-card border-l shadow-2xl z-40 animate-in slide-in-from-right"
       data-testid="feedback-panel"
     >
       <div className="flex flex-col h-full">

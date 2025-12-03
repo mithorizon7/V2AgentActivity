@@ -268,9 +268,9 @@ export function CircuitBuilder({
             <Button 
               variant="ghost" 
               size="icon" 
-              className="h-6 w-6"
               onClick={() => setShowInstructions(false)}
               data-testid="button-hide-circuit-help"
+              aria-label={t("common.close")}
             >
               ×
             </Button>
@@ -296,9 +296,27 @@ export function CircuitBuilder({
                 aria-selected={isKeyboardSelected}
                 draggable
                 onDragStart={(e) => handleDragStart(e, item)}
-                onClick={() => setSelectedPaletteIndex(index)}
+                onClick={() => {
+                  setSelectedPaletteIndex(index);
+                  if (window.matchMedia('(pointer: coarse)').matches) {
+                    const position = { x: 100 + nodes.length * 50, y: 100 + nodes.length * 30 };
+                    const newNode: Node = {
+                      id: `${item.process}-${Date.now()}`,
+                      type: "processNode",
+                      position,
+                      data: {
+                        id: `${item.process}-${Date.now()}`,
+                        process: item.process,
+                        label: t(`circuit.blocks.${item.process}.label`),
+                        description: t(`circuit.blocks.${item.process}.description`),
+                      },
+                    };
+                    setNodes((nds) => [...nds, newNode]);
+                    announce(t("circuit.keyboard.nodeAdded", { process: item.process }));
+                  }
+                }}
                 className={cn(
-                  "p-3 rounded-md border-2 cursor-move transition-all hover-elevate active-elevate-2",
+                  "p-3 min-h-[44px] rounded-md border-2 cursor-move transition-all hover-elevate active-elevate-2 touch-manipulation select-none",
                   colors.bg,
                   colors.text,
                   isKeyboardSelected && "ring-2 ring-primary"
@@ -343,10 +361,16 @@ export function CircuitBuilder({
           <p className="text-sm text-muted-foreground">
             {t("circuit.connectInstructions")}
           </p>
-          <div className="h-96 border-2 rounded-md">
+          <div className="h-72 sm:h-96 border-2 rounded-md touch-manipulation">
             <ReactFlow
               nodes={nodes}
               edges={edges}
+              panOnDrag={true}
+              panOnScroll={true}
+              zoomOnScroll={true}
+              zoomOnPinch={true}
+              zoomOnDoubleClick={true}
+              selectNodesOnDrag={false}
               onNodesChange={(changes) => {
                 setNodes((nds) => {
                   const newNodes = [...nds];

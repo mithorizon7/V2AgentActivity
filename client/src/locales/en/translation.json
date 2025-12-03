@@ -342,6 +342,7 @@
     "description": "Now it's your turn! Sort these agent capabilities into the 6 categories. Remember: 4 steps happen in order (Perception → Reasoning → Planning → Execution), while Memory and Connections are available anytime.",
     "independentDescription": "Sort capabilities into the 6 processes by dragging them to the correct category.",
     "dragInstruction": "Drag each capability from below into the correct category above",
+    "touchInstruction": "Tap a card to select it, then tap a category to place it",
     "unsortedTray": "Capabilities to Sort",
     "dragItemsHere": "Drop capabilities here",
     "scramble": "Reset All",

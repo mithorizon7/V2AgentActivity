@@ -32,10 +32,10 @@ export function ConsentBanner({ isOpen, onClose }: ConsentBannerProps = {}) {
 
   return (
     <div 
-      className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto"
       data-testid="consent-banner-overlay"
     >
-      <Card className="max-w-lg w-full p-6 space-y-4">
+      <Card className="max-w-lg w-full p-4 sm:p-6 space-y-4 my-auto max-h-[90vh] overflow-y-auto">
         <div className="flex items-start gap-3">
           <div className="p-2 bg-primary/10 rounded-lg">
             <BookOpen className="w-6 h-6 text-primary" />
@@ -75,7 +75,7 @@ export function ConsentBanner({ isOpen, onClose }: ConsentBannerProps = {}) {
           </div>
         </div>
 
-        <div className="flex gap-3 justify-end">
+        <div className="flex flex-col-reverse sm:flex-row gap-3 justify-end">
           <Button
             variant="outline"
             onClick={handleDeny}

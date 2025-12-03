@@ -19,6 +19,7 @@ import { useConsent, safeLocalStorage } from "@/hooks/useConsent";
 type DraggableItemProps = {
   item: ClassificationItem;
   onDragStart: (item: ClassificationItem) => void;
+  onTouchSelect: (item: ClassificationItem) => void;
   showFeedback: boolean;
   isCorrect?: boolean;
   isGrabbed?: boolean;
@@ -31,6 +32,7 @@ type DraggableItemProps = {
 function DraggableItem({
   item,
   onDragStart,
+  onTouchSelect,
   showFeedback,
   isCorrect,
   isGrabbed = false,
@@ -52,14 +54,23 @@ function DraggableItem({
   const hintText = t(`classificationHints.${item.id}`);
   const showHint = showFeedback && isCorrect === false;
 
+  const handleClick = (e: React.MouseEvent | React.TouchEvent) => {
+    if ('touches' in e || window.matchMedia('(pointer: coarse)').matches) {
+      e.preventDefault();
+      onTouchSelect(item);
+    }
+  };
+
   return (
     <div
       ref={itemRef}
       draggable
       onDragStart={() => onDragStart(item)}
+      onClick={handleClick}
       onKeyDown={(e) => onKeyDown?.(e, item)}
       onFocus={onFocus}
       tabIndex={0}
+      role="button"
       aria-pressed={isGrabbed}
       aria-label={
         isGrabbed 
@@ -77,9 +88,9 @@ function DraggableItem({
       }
       className={cn(
         "flex items-center gap-2 p-4 min-h-[44px] rounded-md border-2 cursor-move transition-all hover-elevate active-elevate-2",
-        "bg-card focus:outline-none touch-manipulation",
+        "bg-card focus:outline-none touch-manipulation select-none",
         isFocused && "ring-2 ring-primary ring-offset-2",
-        isGrabbed && "border-dashed border-primary shadow-lg scale-105",
+        isGrabbed && "border-dashed border-primary shadow-lg scale-105 bg-primary/5",
         showFeedback && isCorrect === true && "border-green-500 bg-green-50 dark:bg-green-950",
         showFeedback && isCorrect === false && "border-red-500 bg-red-50 dark:bg-red-950"
       )}
@@ -135,8 +146,10 @@ type ProcessColumnProps = {
   items: ClassificationItem[];
   onDrop: (process: AgentProcess) => void;
   onDragOver: (e: React.DragEvent) => void;
+  onTouchDrop: (process: AgentProcess) => void;
   showFeedback: boolean;
   onDragStart: (item: ClassificationItem) => void;
+  onTouchSelect: (item: ClassificationItem) => void;
   correctAnswers?: Record<string, boolean>;
   litmusTest?: string;
   grabbedItem?: ClassificationItem | null;
@@ -151,8 +164,10 @@ function ProcessColumn({
   items,
   onDrop,
   onDragOver,
+  onTouchDrop,
   showFeedback,
   onDragStart,
+  onTouchSelect,
   correctAnswers,
   litmusTest,
   grabbedItem,
@@ -167,6 +182,12 @@ function ProcessColumn({
 
   const litmusId = litmusTest ? `litmus-${process}` : undefined;
 
+  const handleTouchDrop = () => {
+    if (grabbedItem && window.matchMedia('(pointer: coarse)').matches) {
+      onTouchDrop(process);
+    }
+  };
+
   return (
     <Card
       role="region"
@@ -175,8 +196,10 @@ function ProcessColumn({
       className={cn(
         "flex flex-col p-4 min-h-72 transition-all",
         isDraggedOver && "ring-2 ring-primary bg-primary/5",
-        isKeyboardFocused && grabbedItem && "ring-2 ring-primary"
+        isKeyboardFocused && grabbedItem && "ring-2 ring-primary",
+        grabbedItem && "cursor-pointer"
       )}
+      onClick={handleTouchDrop}
       onDrop={(e) => {
         e.preventDefault();
         setIsDraggedOver(false);
@@ -219,6 +242,7 @@ function ProcessColumn({
               key={item.id}
               item={item}
               onDragStart={onDragStart}
+              onTouchSelect={onTouchSelect}
               showFeedback={showFeedback}
               isCorrect={correctAnswers?.[item.id]}
               isGrabbed={grabbedItem?.id === item.id}
@@ -568,7 +592,8 @@ export function ClassificationActivity({
       
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-0">
         <p className="text-sm sm:text-base text-muted-foreground flex-1">
-          {t("classification.dragInstruction")}
+          <span className="hidden sm:inline">{t("classification.dragInstruction")}</span>
+          <span className="sm:hidden">{t("classification.touchInstruction")}</span>
           <br className="hidden sm:block" />
           <span className="text-xs hidden sm:inline">
             {t("classification.accessibility.instructions", {
@@ -634,8 +659,10 @@ export function ClassificationActivity({
               items={itemsByProcess[process]}
               onDrop={handleDrop}
               onDragOver={(e) => e.preventDefault()}
+              onTouchDrop={handleKeyboardDrop}
               showFeedback={showFeedback}
               onDragStart={handleDragStart}
+              onTouchSelect={handleKeyboardGrab}
               correctAnswers={correctAnswers}
               litmusTest={getLitmusTest(process)}
               grabbedItem={grabbedItem}
@@ -661,6 +688,7 @@ export function ClassificationActivity({
                 key={item.id}
                 item={item}
                 onDragStart={handleDragStart}
+                onTouchSelect={handleKeyboardGrab}
                 showFeedback={false}
                 isGrabbed={grabbedItem?.id === item.id}
                 isFocused={focusedItem?.id === item.id}
