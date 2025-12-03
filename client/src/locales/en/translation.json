@@ -215,6 +215,7 @@
     "previous": "Previous",
     "next": "Next Example",
     "readyToSummarize": "Summarize What You Learned",
+    "backToExamples": "Back to Examples",
     "pipeline": {
       "title": "The Core 4-Step Pipeline",
       "supportingLabel": "Available anytime (not pipeline steps):"

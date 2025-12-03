@@ -10,6 +10,7 @@ import type { AgentProcess } from "@shared/schema";
 
 type WorkedExampleProps = {
   onComplete: () => void;
+  onBack?: () => void;
 };
 
 type ExampleCard = {
@@ -34,7 +35,7 @@ const PROCESS_COLORS: Record<AgentProcess, string> = {
 const PIPELINE_PROCESSES: AgentProcess[] = ["perception", "reasoning", "planning", "execution"];
 const SUPPORTING_PROCESSES: AgentProcess[] = ["learning", "interaction"];
 
-export function WorkedExample({ onComplete }: WorkedExampleProps) {
+export function WorkedExample({ onComplete, onBack }: WorkedExampleProps) {
   const { t } = useTranslation();
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [userGuess, setUserGuess] = useState<AgentProcess | null>(null);
@@ -125,6 +126,8 @@ export function WorkedExample({ onComplete }: WorkedExampleProps) {
     if (currentCardIndex > 0) {
       setCurrentCardIndex((prev) => prev - 1);
       setUserGuess(null); // Reset guess
+    } else if (onBack) {
+      onBack(); // Go back to previous stage (primer)
     }
   };
 
@@ -183,7 +186,15 @@ export function WorkedExample({ onComplete }: WorkedExampleProps) {
               </div>
             </div>
 
-            <div className="flex justify-center pt-4">
+            <div className="flex justify-between items-center pt-4 border-t">
+              <Button 
+                onClick={() => setShowSynthesis(false)} 
+                variant="outline" 
+                data-testid="button-back-to-examples"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                {t("workedExample.backToExamples")}
+              </Button>
               <Button onClick={handleNext} size="lg" data-testid="button-complete-synthesis">
                 {t("workedExample.synthesis.continue")}
                 <ArrowRight className="w-4 h-4 ml-2" />
@@ -396,12 +407,12 @@ export function WorkedExample({ onComplete }: WorkedExampleProps) {
           <div className="flex justify-between items-center pt-4 border-t">
             <Button
               onClick={handlePrevious}
-              disabled={currentCardIndex === 0}
+              disabled={currentCardIndex === 0 && !onBack}
               variant="outline"
               data-testid="button-previous-example"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              {t("workedExample.previous")}
+              {currentCardIndex === 0 && onBack ? t("primer.title") : t("workedExample.previous")}
             </Button>
 
             <Button

@@ -169,9 +169,10 @@ function ProcessColumn({
 type Phase1GuidedProps = {
   items: ClassificationItem[];
   onComplete: () => void;
+  onBack?: () => void;
 };
 
-export function Phase1Guided({ items, onComplete }: Phase1GuidedProps) {
+export function Phase1Guided({ items, onComplete, onBack }: Phase1GuidedProps) {
   const { t } = useTranslation();
   const { hasConsent } = useConsent();
   const storage = safeLocalStorage(hasConsent);
@@ -379,10 +380,21 @@ export function Phase1Guided({ items, onComplete }: Phase1GuidedProps) {
         <p className="text-muted-foreground">{t("guided.description")}</p>
       </div>
 
-      <div className="flex items-center justify-between gap-4">
-        <p className="text-sm text-muted-foreground">
-          {t("guided.dragInstruction")}
-        </p>
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <div className="flex items-center gap-2">
+          {onBack && (
+            <Button
+              variant="outline"
+              onClick={onBack}
+              data-testid="button-back-to-examples"
+            >
+              {t("workedExample.title")}
+            </Button>
+          )}
+          <p className="text-sm text-muted-foreground">
+            {t("guided.dragInstruction")}
+          </p>
+        </div>
         <div className="flex gap-2">
           <Button
             variant="outline"
