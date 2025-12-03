@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Brain, Wrench, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Brain, Wrench, AlertCircle, CheckCircle2, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useConsent, safeLocalStorage } from "@/hooks/useConsent";
 
@@ -388,6 +388,7 @@ export function Phase1Guided({ items, onComplete, onBack }: Phase1GuidedProps) {
               onClick={onBack}
               data-testid="button-back-to-examples"
             >
+              <ArrowLeft className="w-4 h-4 mr-2" />
               {t("workedExample.title")}
             </Button>
           )}
