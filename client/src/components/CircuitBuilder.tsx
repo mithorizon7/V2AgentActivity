@@ -110,17 +110,18 @@ export function CircuitBuilder({
       if (!data) return;
 
       const item: { process: AgentProcess; label: string; description: string } = JSON.parse(data);
+      const nodeId = `${item.process}-${Date.now()}`;
       const position = {
         x: event.clientX - 350,
         y: event.clientY - 200,
       };
 
       const newNode: Node = {
-        id: `${item.process}-${Date.now()}`,
+        id: nodeId,
         type: "processNode",
         position,
         data: {
-          id: `${item.process}-${Date.now()}`,
+          id: nodeId,
           process: item.process,
           label: item.label,
           description: item.description,
@@ -150,13 +151,14 @@ export function CircuitBuilder({
     const item = BLOCK_PALETTE[selectedPaletteIndex];
     if (!item) return;
 
+    const nodeId = `${item.process}-${Date.now()}`;
     const position = { x: 100 + nodes.length * 50, y: 100 + nodes.length * 30 };
     const newNode: Node = {
-      id: `${item.process}-${Date.now()}`,
+      id: nodeId,
       type: "processNode",
       position,
       data: {
-        id: `${item.process}-${Date.now()}`,
+        id: nodeId,
         process: item.process,
         label: t(`circuit.blocks.${item.process}.label`),
         description: t(`circuit.blocks.${item.process}.description`),
@@ -299,13 +301,14 @@ export function CircuitBuilder({
                 onClick={() => {
                   setSelectedPaletteIndex(index);
                   if (window.matchMedia('(pointer: coarse)').matches) {
+                    const nodeId = `${item.process}-${Date.now()}`;
                     const position = { x: 100 + nodes.length * 50, y: 100 + nodes.length * 30 };
                     const newNode: Node = {
-                      id: `${item.process}-${Date.now()}`,
+                      id: nodeId,
                       type: "processNode",
                       position,
                       data: {
-                        id: `${item.process}-${Date.now()}`,
+                        id: nodeId,
                         process: item.process,
                         label: t(`circuit.blocks.${item.process}.label`),
                         description: t(`circuit.blocks.${item.process}.description`),

@@ -16,6 +16,14 @@ Do not modify the core `Health Coach` scenario files in `shared/scenarios/health
 
 ## Recent Changes (December 2024)
 
+### Mobile Accessibility Improvements (WCAG 2.1 AA Compliance)
+- **Touch targets**: All interactive elements now meet 44×44px minimum (WCAG 2.5.5) including buttons, dialog close buttons, draggable cards
+- **Circuit Builder mobile support**: Added tap-to-add blocks for touch devices, pinch-to-zoom, pan gestures via React Flow configuration
+- **Classification Activity**: Mobile-specific instructions ("Tap to select, tap to place") shown on touch devices instead of drag instructions
+- **Responsive panels**: FeedbackPanel now full-width on mobile (w-full sm:w-96)
+- **Touch-manipulation CSS**: Applied to all interactive draggable/pannable elements for better touch response
+- **Translation parity**: All new mobile instructions available in EN, RU, and LV
+
 ### Phase Navigation Refactoring
 - **Type-safe learning stages**: Replaced fractional phase numbers (0, 0.5, 0.75) with a type-safe `LearningStage` union type defined in `shared/learningTypes.ts`
 - **Stage types**: Pre-phase stages (`'primer'`, `'workedExample'`, `'guidedPractice'`) and main phases (`1`, `2`, `3`, `4`, `5`)
