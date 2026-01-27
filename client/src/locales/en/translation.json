@@ -285,7 +285,7 @@
       "option2": "Reasoning (understanding meaning)",
       "option3": "Planning (choosing action)",
       "option4": "Execution (doing action)",
-      "explanation": "Correct! Planning is Step 3, where the agent chooses WHICH specific action to take. Reasoning (Step 2) figured out the user was healthy, but Planning (Step 3) decided that meant sending encouragement rather than a warning or doing nothing."
+      "explanation": "Planning is Step 3, where the agent chooses WHICH specific action to take. Reasoning (Step 2) figured out the user was healthy, but Planning (Step 3) decided that meant sending encouragement rather than a warning or doing nothing."
     },
     "check2": {
       "question": "The notification tool that sends messages to users — is this a \"step\" in the 4-step loop, or a \"supporting system\"?",
@@ -293,7 +293,7 @@
       "option2": "It's Step 4 (Execution)",
       "option3": "It's a step between 3 and 4",
       "option4": "It's a supporting system (Tools)",
-      "explanation": "Right! The notification tool is part of the Tools supporting system. It's not a step itself — it's a resource that Step 4 (Execution) uses to carry out the planned action. Think of it like a hammer in a toolbox: not a step in building, but a tool you use during the building step."
+      "explanation": "The notification tool is part of the Tools supporting system. It's not a step itself — it's a resource that Step 4 (Execution) uses to carry out the planned action. Think of it like a hammer in a toolbox: not a step in building, but a tool you use during the building step."
     },
     "complete": {
       "title": "Perfect! You Understand the 4+2 Model",

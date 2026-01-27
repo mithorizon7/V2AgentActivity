@@ -369,9 +369,10 @@ export function WorkedExample({ onComplete, onBack }: WorkedExampleProps) {
                       <p className="font-semibold text-sm text-amber-900 dark:text-amber-100">
                         {t("workedExample.commonMistakeTitle")}
                       </p>
-                      <p className="text-sm text-amber-800 dark:text-amber-200">
-                        {currentCard.commonMistakeReason}
-                      </p>
+                      <p 
+                        className="text-sm text-amber-800 dark:text-amber-200"
+                        dangerouslySetInnerHTML={{ __html: currentCard.commonMistakeReason.replace(/<\/?em>/g, (m) => m === '<em>' ? '<span class="italic">' : '</span>').replace(/<\/?strong>/g, (m) => m === '<strong>' ? '<span class="font-semibold">' : '</span>') }}
+                      />
                     </div>
                   </div>
                 </div>
@@ -397,7 +398,10 @@ export function WorkedExample({ onComplete, onBack }: WorkedExampleProps) {
                   <span className="text-sm font-semibold">{t("workedExample.expertReasoning")}</span>
                 </div>
                 <div className="p-4 rounded-lg bg-muted/50">
-                  <p className="text-sm leading-relaxed">{currentCard.explanation}</p>
+                  <p 
+                    className="text-sm leading-relaxed"
+                    dangerouslySetInnerHTML={{ __html: currentCard.explanation.replace(/<\/?em>/g, (m) => m === '<em>' ? '<span class="italic">' : '</span>').replace(/<\/?strong>/g, (m) => m === '<strong>' ? '<span class="font-semibold">' : '</span>') }}
+                  />
                 </div>
               </div>
             </div>
