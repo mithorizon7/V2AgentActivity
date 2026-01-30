@@ -10,11 +10,12 @@ export function useBoundaryMap(sessionId: string | null) {
       if (!sessionId) {
         throw new Error('Session ID is required');
       }
-      return await apiRequest('POST', '/api/boundary-map', {
+      const res = await apiRequest('POST', '/api/boundary-map', {
         sessionId,
         elements,
         connections,
       });
+      return await res.json();
     },
     onSuccess: () => {
       if (sessionId) {

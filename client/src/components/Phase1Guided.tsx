@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Brain, Wrench, AlertCircle, CheckCircle2, ArrowLeft } from "lucide-react";
+import { Brain, Wrench, AlertCircle, CheckCircle2, ArrowLeft, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useConsent, safeLocalStorage } from "@/hooks/useConsent";
 
@@ -85,6 +85,12 @@ function DraggableItem({
         <div className="mt-2 flex items-center gap-1 text-sm text-green-600 dark:text-green-400">
           <CheckCircle2 className="h-4 w-4" />
           <span>{t("classification.correct")}</span>
+        </div>
+      )}
+      {showFeedback && isCorrect === false && (
+        <div className="mt-2 flex items-center gap-1 text-sm text-red-600 dark:text-red-400">
+          <XCircle className="h-4 w-4" />
+          <span>{t("classification.incorrectClassification")}</span>
         </div>
       )}
     </Card>

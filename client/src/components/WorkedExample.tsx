@@ -41,6 +41,8 @@ export function WorkedExample({ onComplete, onBack }: WorkedExampleProps) {
   const [userGuess, setUserGuess] = useState<AgentProcess | null>(null);
   const [showSynthesis, setShowSynthesis] = useState(false);
   const [synthesisText, setSynthesisText] = useState("");
+  const [synthesisSubmitted, setSynthesisSubmitted] = useState(false);
+  const [synthesisError, setSynthesisError] = useState("");
 
   const exampleCards: ExampleCard[] = [
     {
@@ -139,6 +141,15 @@ export function WorkedExample({ onComplete, onBack }: WorkedExampleProps) {
     return t(`workedExample.processLabels.${process}`);
   };
 
+  const handleSynthesisSubmit = () => {
+    if (!synthesisText.trim()) {
+      setSynthesisError(t("workedExample.synthesis.required"));
+      return;
+    }
+    setSynthesisError("");
+    setSynthesisSubmitted(true);
+  };
+
   if (showSynthesis) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -160,7 +171,12 @@ export function WorkedExample({ onComplete, onBack }: WorkedExampleProps) {
               <div className="space-y-2">
                 <Textarea
                   value={synthesisText}
-                  onChange={(e) => setSynthesisText(e.target.value)}
+                  onChange={(e) => {
+                    setSynthesisText(e.target.value);
+                    if (synthesisError && e.target.value.trim()) {
+                      setSynthesisError("");
+                    }
+                  }}
                   placeholder={t("workedExample.synthesis.placeholder")}
                   className="min-h-[150px] resize-none"
                   data-testid="input-synthesis"
@@ -169,36 +185,59 @@ export function WorkedExample({ onComplete, onBack }: WorkedExampleProps) {
                 <p className="text-xs text-muted-foreground">
                   {t("workedExample.synthesis.characterCount", { count: synthesisText.length })}
                 </p>
+                {synthesisError && (
+                  <p className="text-xs text-red-600" data-testid="synthesis-error">
+                    {synthesisError}
+                  </p>
+                )}
               </div>
             </div>
 
-            <div className="p-4 sm:p-6 rounded-lg bg-muted/50 space-y-3">
-              <h4 className="font-semibold flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-primary" />
-                {t("workedExample.synthesis.expertSummaryTitle")}
-              </h4>
-              <div className="space-y-2 text-sm">
-                <p><strong>{t("workedExample.synthesis.perceptionRule")}</strong></p>
-                <p><strong>{t("workedExample.synthesis.reasoningRule")}</strong></p>
-                <p><strong>{t("workedExample.synthesis.planningRule")}</strong></p>
-                <p><strong>{t("workedExample.synthesis.executionRule")}</strong></p>
-                <p className="text-muted-foreground italic pt-2">{t("workedExample.synthesis.supportingNote")}</p>
+            {synthesisSubmitted && (
+              <div className="p-4 sm:p-6 rounded-lg bg-muted/50 space-y-3">
+                <h4 className="font-semibold flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-primary" />
+                  {t("workedExample.synthesis.expertSummaryTitle")}
+                </h4>
+                <div className="space-y-2 text-sm">
+                  <p><strong>{t("workedExample.synthesis.perceptionRule")}</strong></p>
+                  <p><strong>{t("workedExample.synthesis.reasoningRule")}</strong></p>
+                  <p><strong>{t("workedExample.synthesis.planningRule")}</strong></p>
+                  <p><strong>{t("workedExample.synthesis.executionRule")}</strong></p>
+                  <p className="text-muted-foreground italic pt-2">{t("workedExample.synthesis.supportingNote")}</p>
+                </div>
               </div>
-            </div>
+            )}
 
             <div className="flex justify-between items-center pt-4 border-t">
-              <Button 
-                onClick={() => setShowSynthesis(false)} 
-                variant="outline" 
+              <Button
+                onClick={() => {
+                  setShowSynthesis(false);
+                  setSynthesisSubmitted(false);
+                  setSynthesisError("");
+                }}
+                variant="outline"
                 data-testid="button-back-to-examples"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 {t("workedExample.backToExamples")}
               </Button>
-              <Button onClick={handleNext} size="lg" data-testid="button-complete-synthesis">
-                {t("workedExample.synthesis.continue")}
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
+              <div className="flex gap-2">
+                {!synthesisSubmitted && (
+                  <Button
+                    onClick={handleSynthesisSubmit}
+                    size="lg"
+                    variant="outline"
+                    data-testid="button-compare-expert"
+                  >
+                    {t("workedExample.synthesis.compare")}
+                  </Button>
+                )}
+                <Button onClick={handleNext} size="lg" data-testid="button-complete-synthesis">
+                  {t("workedExample.synthesis.continue")}
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </div>
             </div>
           </Card>
         </div>

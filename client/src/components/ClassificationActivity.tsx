@@ -8,13 +8,16 @@ import {
 } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { getProcessColor } from "@/lib/processColors";
 import { cn } from "@/lib/utils";
-import { GripVertical, Check, X, Info } from "lucide-react";
+import { GripVertical, Check, X, Info, AlertCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useTranslation } from "react-i18next";
 import { useConsent, safeLocalStorage } from "@/hooks/useConsent";
+import { ConfidenceSlider } from "@/components/ConfidenceSlider";
 
 type DraggableItemProps = {
   item: ClassificationItem;
@@ -22,6 +25,9 @@ type DraggableItemProps = {
   onTouchSelect: (item: ClassificationItem) => void;
   showFeedback: boolean;
   isCorrect?: boolean;
+  explanation?: string;
+  onExplanationChange?: (itemId: string, explanation: string) => void;
+  showExplanation?: boolean;
   isGrabbed?: boolean;
   isFocused?: boolean;
   onKeyboardGrab?: (item: ClassificationItem) => void;
@@ -35,6 +41,9 @@ function DraggableItem({
   onTouchSelect,
   showFeedback,
   isCorrect,
+  explanation = "",
+  onExplanationChange,
+  showExplanation = false,
   isGrabbed = false,
   isFocused = false,
   onKeyboardGrab,
@@ -52,7 +61,6 @@ function DraggableItem({
   }, [isFocused]);
 
   const hintText = t(`classificationHints.${item.id}`);
-  const showHint = showFeedback && isCorrect === false;
 
   const handleClick = (e: React.MouseEvent | React.TouchEvent) => {
     if ('touches' in e || window.matchMedia('(pointer: coarse)').matches) {
@@ -87,7 +95,7 @@ function DraggableItem({
             })
       }
       className={cn(
-        "flex items-center gap-2 p-4 min-h-[44px] rounded-md border-2 cursor-move transition-all hover-elevate active-elevate-2",
+        "flex items-start gap-2 p-4 min-h-[44px] rounded-md border-2 cursor-move transition-all hover-elevate active-elevate-2",
         "bg-card focus:outline-none touch-manipulation select-none",
         isFocused && "ring-2 ring-primary ring-offset-2",
         isGrabbed && "border-dashed border-primary shadow-lg scale-105 bg-primary/5",
@@ -96,46 +104,64 @@ function DraggableItem({
       )}
       data-testid={`classification-item-${item.id}`}
     >
-      <GripVertical className="w-5 h-5 text-muted-foreground flex-shrink-0" aria-hidden="true" />
-      <div className="flex-1 min-w-0">
+      <GripVertical className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" aria-hidden="true" />
+      <div className="flex-1 min-w-0 space-y-2">
         <p className="text-sm sm:text-base font-medium leading-snug break-words">{item.text}</p>
+        {showExplanation && (
+          <Textarea
+            placeholder={t("classification.explainPlaceholder")}
+            value={explanation}
+            onChange={(e) => onExplanationChange?.(item.id, e.target.value)}
+            className="text-sm min-h-20"
+            aria-label={t("classification.accessibility.card.explanationLabel", { item: item.text })}
+            data-testid={`input-explanation-${item.id}`}
+          />
+        )}
+        {showFeedback && (
+          <div
+            className={cn(
+              "inline-flex items-center gap-1 text-xs font-semibold",
+              isCorrect ? "text-green-700 dark:text-green-300" : "text-red-700 dark:text-red-300"
+            )}
+          >
+            {isCorrect ? (
+              <Check className="w-4 h-4" data-testid={`item-correct-${item.id}`} />
+            ) : (
+              <X className="w-4 h-4" data-testid={`item-incorrect-${item.id}`} />
+            )}
+            <span>{isCorrect ? t("classification.correct") : t("classification.incorrectClassification")}</span>
+          </div>
+        )}
       </div>
-      {showFeedback && (
-        isCorrect ? (
-          <Check className="w-5 h-5 text-green-600" data-testid={`item-correct-${item.id}`} />
-        ) : (
-          <>
-            <X className="w-5 h-5 text-red-600" data-testid={`item-incorrect-${item.id}`} />
-            <Popover open={hintOpen} onOpenChange={setHintOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="flex-shrink-0"
-                  aria-label={t("classification.hintButton", { item: item.text })}
-                  data-testid={`hint-button-${item.id}`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
-                >
-                  <Info className="w-4 h-4" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent
-                className="w-80"
-                aria-describedby={`hint-content-${item.id}`}
-                data-testid={`hint-popover-${item.id}`}
-              >
-                <div className="space-y-2">
-                  <h4 className="font-medium text-sm">{t("classification.hintTitle")}</h4>
-                  <p id={`hint-content-${item.id}`} className="text-sm text-muted-foreground">
-                    {hintText}
-                  </p>
-                </div>
-              </PopoverContent>
-            </Popover>
-          </>
-        )
+      {showFeedback && !isCorrect && (
+        <Popover open={hintOpen} onOpenChange={setHintOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="flex-shrink-0"
+              aria-label={t("classification.hintButton", { item: item.text })}
+              data-testid={`hint-button-${item.id}`}
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              <Info className="w-4 h-4" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent
+            className="w-80"
+            aria-describedby={`hint-content-${item.id}`}
+            data-testid={`hint-popover-${item.id}`}
+          >
+            <div className="space-y-2">
+              <h4 className="font-medium text-sm">{t("classification.hintTitle")}</h4>
+              <p id={`hint-content-${item.id}`} className="text-sm text-muted-foreground">
+                {hintText}
+              </p>
+            </div>
+          </PopoverContent>
+        </Popover>
       )}
     </div>
   );
@@ -150,6 +176,8 @@ type ProcessColumnProps = {
   showFeedback: boolean;
   onDragStart: (item: ClassificationItem) => void;
   onTouchSelect: (item: ClassificationItem) => void;
+  explanations?: Record<string, string>;
+  onExplanationChange?: (itemId: string, explanation: string) => void;
   correctAnswers?: Record<string, boolean>;
   litmusTest?: string;
   grabbedItem?: ClassificationItem | null;
@@ -168,6 +196,8 @@ function ProcessColumn({
   showFeedback,
   onDragStart,
   onTouchSelect,
+  explanations,
+  onExplanationChange,
   correctAnswers,
   litmusTest,
   grabbedItem,
@@ -245,6 +275,9 @@ function ProcessColumn({
               onTouchSelect={onTouchSelect}
               showFeedback={showFeedback}
               isCorrect={correctAnswers?.[item.id]}
+              showExplanation={true}
+              explanation={explanations?.[item.id] || ""}
+              onExplanationChange={onExplanationChange}
               isGrabbed={grabbedItem?.id === item.id}
               isFocused={focusedItem?.id === item.id}
               onKeyDown={onItemKeyDown}
@@ -259,7 +292,7 @@ function ProcessColumn({
 
 type ClassificationActivityProps = {
   items: ClassificationItem[];
-  onSubmit: (submissions: ClassificationSubmission[]) => void;
+  onSubmit: (submissions: ClassificationSubmission[], confidence: number) => void;
   onScramble?: () => void;
   showFeedback?: boolean;
   correctAnswers?: Record<string, boolean>;
@@ -340,6 +373,34 @@ export function ClassificationActivity({
   
   const [draggedItem, setDraggedItem] = useState<ClassificationItem | null>(null);
   const hasWarnedRef = useRef(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [confidence, setConfidence] = useState<number>(() => {
+    const saved = storage.getItem("classification_confidence_v1");
+    if (saved) {
+      const parsed = Number(saved);
+      if (!Number.isNaN(parsed)) return parsed;
+    }
+    return 50;
+  });
+  const [explanations, setExplanations] = useState<Record<string, string>>(() => {
+    const saved = storage.getItem("classification_explanations_v1");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.warn("Failed to parse explanations - clearing storage");
+        storage.removeItem("classification_explanations_v1");
+      }
+    }
+    return {};
+  });
+
+  const handleExplanationChange = useCallback((itemId: string, explanation: string) => {
+    setExplanations((prev) => ({ ...prev, [itemId]: explanation }));
+    if (submitError) {
+      setSubmitError(null);
+    }
+  }, [submitError]);
 
   // Dev guard: warn if cards are in correct bins before user interaction
   // Only warn once on initial render to catch hardcoded pre-sorting bugs
@@ -375,6 +436,14 @@ export function ClassificationActivity({
     storage.setItem("classification_sorted_v1", JSON.stringify(itemsByProcess));
   }, [itemsByProcess, hasConsent]);
 
+  useEffect(() => {
+    storage.setItem("classification_explanations_v1", JSON.stringify(explanations));
+  }, [explanations, hasConsent]);
+
+  useEffect(() => {
+    storage.setItem("classification_confidence_v1", String(confidence));
+  }, [confidence, hasConsent]);
+
   const handleDragStart = useCallback((item: ClassificationItem) => {
     setDraggedItem(item);
   }, []);
@@ -397,6 +466,7 @@ export function ClassificationActivity({
       return newState;
     });
 
+    setSubmitError(null);
     setDraggedItem(null);
   }, [draggedItem]);
 
@@ -418,22 +488,38 @@ export function ClassificationActivity({
       execution: [],
     });
     
+    setSubmitError(null);
     if (onScramble) onScramble();
   }, [unsortedItems, itemsByProcess, onScramble]);
 
   const handleSubmit = () => {
+    const totalPlaced = Object.values(itemsByProcess).reduce((sum, processItems) => sum + processItems.length, 0);
+    if (totalPlaced !== items.length) {
+      setSubmitError(t("classification.sortAllItems"));
+      return;
+    }
+
+    const missingExplanation = Object.values(itemsByProcess).some((processItems) =>
+      processItems.some((item) => !explanations[item.id]?.trim())
+    );
+    if (missingExplanation) {
+      setSubmitError(t("classification.explanationRequired"));
+      return;
+    }
+
     const submissions: ClassificationSubmission[] = [];
     Object.entries(itemsByProcess).forEach(([process, processItems]) => {
       processItems.forEach((item) => {
         submissions.push({
           itemId: item.id,
           selectedProcess: process as AgentProcess,
-          explanation: "",
+          explanation: explanations[item.id]?.trim() || "",
           isCorrect: item.correctProcess === process,
         });
       });
     });
-    onSubmit(submissions);
+    setSubmitError(null);
+    onSubmit(submissions, confidence);
   };
 
   const announce = (message: string) => {
@@ -623,6 +709,21 @@ export function ClassificationActivity({
         </div>
       </div>
 
+      <ConfidenceSlider
+        value={confidence}
+        onChange={setConfidence}
+        disabled={showFeedback}
+      />
+
+      {submitError && (
+        <Alert className="border-amber-500 bg-amber-50 dark:bg-amber-950/20">
+          <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+          <AlertDescription className="text-sm text-amber-700 dark:text-amber-300">
+            {submitError}
+          </AlertDescription>
+        </Alert>
+      )}
+
       {/* Drop Zones - 6 process categories */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {processes.map((process) => (
@@ -670,6 +771,8 @@ export function ClassificationActivity({
               onItemKeyDown={handleItemKeyDown}
               onItemFocus={setFocusedItem}
               isKeyboardFocused={focusedProcess === process}
+              explanations={explanations}
+              onExplanationChange={handleExplanationChange}
             />
           </div>
         ))}
@@ -690,6 +793,7 @@ export function ClassificationActivity({
                 onDragStart={handleDragStart}
                 onTouchSelect={handleKeyboardGrab}
                 showFeedback={false}
+                showExplanation={false}
                 isGrabbed={grabbedItem?.id === item.id}
                 isFocused={focusedItem?.id === item.id}
                 onKeyDown={handleItemKeyDown}

@@ -36,7 +36,7 @@ export default function HomePage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <Card className="p-6 space-y-3 hover-elevate transition-all">
+          <Card className="p-6 space-y-3">
             <div className="w-16 h-16 flex items-center justify-center">
               <img src={UnderstandIcon} alt={t("accessibility.images.understandIcon")} className="w-full h-full object-contain" />
             </div>
@@ -46,7 +46,7 @@ export default function HomePage() {
             </p>
           </Card>
 
-          <Card className="p-6 space-y-3 hover-elevate transition-all">
+          <Card className="p-6 space-y-3">
             <div className="w-16 h-16 flex items-center justify-center">
               <img src={PracticeIcon} alt={t("accessibility.images.practiceIcon")} className="w-full h-full object-contain" />
             </div>
@@ -56,7 +56,7 @@ export default function HomePage() {
             </p>
           </Card>
 
-          <Card className="p-6 space-y-3 hover-elevate transition-all">
+          <Card className="p-6 space-y-3">
             <div className="w-16 h-16 flex items-center justify-center">
               <img src={BuildIcon} alt={t("accessibility.images.buildIcon")} className="w-full h-full object-contain" />
             </div>

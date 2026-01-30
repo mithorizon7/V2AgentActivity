@@ -47,7 +47,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/classify", async (req, res) => {
     try {
       const validated = classifyRequestSchema.parse(req.body);
-      const { submissions, confidence } = validated;
+      const { submissions, confidence, sessionId } = validated;
 
       const evaluations = submissions.map((submission) => {
         const classificationResult = storage.evaluateClassification(submission);
@@ -70,6 +70,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
         : 0;
       
       const calibration = storage.calculateCalibration(confidence, accuracy);
+
+      const progress = await storage.getProgress(sessionId);
+      if (!progress) {
+        return res.status(404).json({ error: "Session not found" });
+      }
+
+      const submissionsWithCorrectness = submissions.map((submission) => {
+        const evaluation = evaluations.find((e) => e.itemId === submission.itemId);
+        return {
+          ...submission,
+          isCorrect: evaluation?.isCorrect ?? false,
+        };
+      });
+
+      await storage.updateProgress(sessionId, {
+        classifications: submissionsWithCorrectness,
+        confidenceLevel: confidence,
+        assessmentScores: {
+          ...progress.assessmentScores,
+          classificationAccuracy: accuracy,
+          explanationQuality: avgExplanationScore,
+          calibration,
+        },
+      });
 
       res.json({
         accuracy,

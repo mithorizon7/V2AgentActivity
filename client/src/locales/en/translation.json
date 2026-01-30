@@ -276,6 +276,7 @@
       "submit": "Check My Answer",
       "correct": "✓ Correct!",
       "incorrect": "Not quite—try again",
+      "continue": "Continue",
       "tryAgain": "Try Again",
       "continueAnyway": "Continue Anyway"
     },
@@ -285,7 +286,7 @@
       "option2": "Reasoning (understanding meaning)",
       "option3": "Planning (choosing action)",
       "option4": "Execution (doing action)",
-      "explanation": "Planning is Step 3, where the agent chooses WHICH specific action to take. Reasoning (Step 2) figured out the user was healthy, but Planning (Step 3) decided that meant sending encouragement rather than a warning or doing nothing."
+      "explanation": "Correct answer: Planning is Step 3, where the agent chooses WHICH specific action to take. Reasoning (Step 2) figured out the user was healthy, but Planning (Step 3) decided that meant sending encouragement rather than a warning or doing nothing."
     },
     "check2": {
       "question": "The notification tool that sends messages to users — is this a \"step\" in the 4-step loop, or a \"supporting system\"?",
@@ -293,7 +294,7 @@
       "option2": "It's Step 4 (Execution)",
       "option3": "It's a step between 3 and 4",
       "option4": "It's a supporting system (Tools)",
-      "explanation": "The notification tool is part of the Tools supporting system. It's not a step itself — it's a resource that Step 4 (Execution) uses to carry out the planned action. Think of it like a hammer in a toolbox: not a step in building, but a tool you use during the building step."
+      "explanation": "Correct answer: The notification tool is part of the Tools supporting system. It's not a step itself — it's a resource that Step 4 (Execution) uses to carry out the planned action. Think of it like a hammer in a toolbox: not a step in building, but a tool you use during the building step."
     },
     "complete": {
       "title": "Perfect! You Understand the 4+2 Model",
@@ -335,6 +336,7 @@
       "subtitle": "Summarize the decision rules in your own words to cement your understanding",
       "prompt": "In your own words, how would you explain to a friend how to tell the difference between the four pipeline steps?",
       "placeholder": "For example: Perception is when you're reading or collecting data. Reasoning is...",
+      "required": "Please write your own summary before comparing with the expert.",
       "characterCount": "{{count}} characters",
       "expertSummaryTitle": "Expert Summary (Compare With Yours)",
       "perceptionRule": "Perception = Reading or collecting input",
@@ -342,6 +344,7 @@
       "planningRule": "Planning = Choosing which action to take",
       "executionRule": "Execution = Carrying out the chosen action",
       "supportingNote": "Memory and Connections are available to any step, not steps themselves.",
+      "compare": "Compare With Expert",
       "continue": "Start Practice"
     },
     "processLabels": {
@@ -462,6 +465,10 @@
     "phaseComplete": "Excellent Work!",
     "continueDescription": "You've mastered classification! Review your results and continue",
     "continueToPhase2": "Next: Boundary Mapping",
+    "needsReviewTitle": "Not quite right",
+    "needsReviewDescription": "Review your classifications and try again, or continue when you're ready.",
+    "tryAgain": "Try Again",
+    "continueAnyway": "Continue Anyway",
     "crossCuttingHint": "Remember: This isn't a step — it's a resource available to ALL steps",
     "correct": "Correct!",
     "incorrectClassification": "Not quite right",
@@ -559,13 +566,6 @@
     "create_artifact": "Generating output or producing results is the final action. Which step does things?",
     "format_response": "Preparing the final output for delivery is the last action. Which step produces results?"
   },
-  "confidence": {
-    "title": "Confidence Level",
-    "question": "How confident are you in your classifications?",
-    "notConfident": "Not confident",
-    "somewhatConfident": "Somewhat confident",
-    "veryConfident": "Very confident"
-  },
   "feedback": {
     "title": "Feedback & Results",
     "accuracy": "Classification Accuracy",
@@ -574,17 +574,6 @@
     "calibrationDescription": "How well your confidence matched your actual performance",
     "detailedFeedback": "Detailed Feedback",
     "noFeedback": "No feedback available"
-  },
-  "assessment": {
-    "overallProgress": "Overall Progress",
-    "phasesCompleted": "{{completed}} of {{total}} phases completed",
-    "metrics": {
-      "classificationAccuracy": "Classification Accuracy",
-      "explanationQuality": "Explanation Quality",
-      "boundaryMapCompleteness": "Boundary Map Completeness",
-      "circuitCorrectness": "Circuit Correctness",
-      "calibrationScore": "Calibration Score"
-    }
   },
   "boundaryMap": {
     "title": "Phase 2: Boundary Mapping",
@@ -799,6 +788,13 @@
     "description": "Review your performance across all phases and identify areas for growth",
     "overallProgress": "Overall Progress",
     "phasesCompleted": "{{completed}} of {{total}} phases completed",
+    "metrics": {
+      "classificationAccuracy": "Classification Accuracy",
+      "explanationQuality": "Explanation Quality",
+      "boundaryMapCompleteness": "Boundary Map Completeness",
+      "circuitCorrectness": "Circuit Correctness",
+      "calibrationScore": "Calibration Score"
+    },
     "target": "Target: {{value}}%",
     "insights": "Learning Insights",
     "excellentCalibration": "Excellent Calibration",
@@ -807,6 +803,7 @@
     "strongClassificationDesc": "You've demonstrated solid understanding of the six agent processes.",
     "improveExplanations": "Improve Explanations",
     "improveExplanationsDesc": "Try to provide more detailed reasoning that connects the item to the process's core function.",
+    "improveExplanationsCta": "Review Phase 1",
     "exitCheck": {
       "title": "Final Understanding Check",
       "description": "Answer these questions to confirm your grasp of the 4+2 model",

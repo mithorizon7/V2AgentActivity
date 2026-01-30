@@ -1,8 +1,9 @@
 import { useTranslation } from "react-i18next";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp, TrendingDown, Minus, Target, Brain, CheckCircle2 } from "lucide-react";
+import { Target, Brain, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Metric = {
@@ -21,16 +22,22 @@ type AssessmentDashboardProps = {
     calibration: number;
   };
   phaseCompletion: Record<string, boolean>;
+  onImproveExplanations?: () => void;
 };
 
 export function AssessmentDashboard({
   metrics,
   phaseCompletion,
+  onImproveExplanations,
 }: AssessmentDashboardProps) {
   const { t } = useTranslation();
-  const completedPhases = Object.values(phaseCompletion).filter(Boolean).length;
-  const totalPhases = Object.keys(phaseCompletion).length;
-  const overallProgress = (completedPhases / totalPhases) * 100;
+  const numericPhaseKeys = Object.keys(phaseCompletion).filter((key) => /^\d+$/.test(key));
+  const completedPhases = numericPhaseKeys.filter((key) => phaseCompletion[key]).length;
+  const totalPhases = numericPhaseKeys.length;
+  const overallProgress = totalPhases > 0 ? (completedPhases / totalPhases) * 100 : 0;
+
+  const clampPercent = (value: number) => Math.min(100, Math.max(0, value));
+  const formatPercent = (value: number) => Math.round(clampPercent(value));
 
   const metricCards: Metric[] = [
     {
@@ -86,6 +93,10 @@ export function AssessmentDashboard({
           const isClose = metric.target
             ? metric.value >= metric.target - 10 && metric.value < metric.target
             : false;
+          const displayValue = formatPercent(metric.value);
+          const targetValue = metric.target ?? 100;
+          const progressValue = Math.min(100, (clampPercent(metric.value) / targetValue) * 100);
+          const delta = displayValue - targetValue;
 
           return (
             <Card key={index} className="p-6 space-y-3" data-testid={`metric-card-${index}`}>
@@ -94,7 +105,7 @@ export function AssessmentDashboard({
                   <p className="text-sm font-medium text-muted-foreground">{metric.label}</p>
                   <div className="flex items-baseline gap-2">
                     <span className="text-3xl font-bold" data-testid={`metric-value-${index}`}>
-                      {metric.value}
+                      {displayValue}
                     </span>
                     <span className="text-muted-foreground">%</span>
                   </div>
@@ -120,13 +131,11 @@ export function AssessmentDashboard({
                         !meetsTarget && !isClose && "text-muted-foreground"
                       )}
                     >
-                      {metric.value >= metric.target
-                        ? `+${metric.value - metric.target}%`
-                        : `-${metric.target - metric.value}%`}
+                      {delta >= 0 ? `+${delta}%` : `${delta}%`}
                     </span>
                   </div>
                   <Progress
-                    value={(metric.value / metric.target) * 100}
+                    value={progressValue}
                     className={cn(
                       "h-2",
                       meetsTarget && "[&>div]:bg-green-600",
@@ -181,6 +190,18 @@ export function AssessmentDashboard({
                 <p className="text-xs text-amber-700 dark:text-amber-300">
                   {t("assessment.improveExplanationsDesc")}
                 </p>
+                {onImproveExplanations && (
+                  <div className="mt-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={onImproveExplanations}
+                      data-testid="button-improve-explanations"
+                    >
+                      {t("assessment.improveExplanationsCta")}
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           )}

@@ -9,11 +9,12 @@ export function useCircuitBuilder(sessionId: string | null) {
       if (!sessionId) {
         throw new Error('Session ID is required');
       }
-      return await apiRequest('POST', '/api/circuit', {
+      const res = await apiRequest('POST', '/api/circuit', {
         sessionId,
         blocks,
         connections,
       });
+      return await res.json();
     },
     onSuccess: () => {
       if (sessionId) {

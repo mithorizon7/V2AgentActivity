@@ -6,6 +6,7 @@ import { useSession } from "@/hooks/useSession";
 import { useConsent, safeLocalStorage } from "@/hooks/useConsent";
 import { useClassification } from "@/hooks/useClassification";
 import { useBoundaryMap } from "@/hooks/useBoundaryMap";
+import { useCircuitBuilder } from "@/hooks/useCircuitBuilder";
 import { Primer } from "@/components/Primer";
 import { WorkedExample } from "@/components/WorkedExample";
 import { Phase1Guided } from "@/components/Phase1Guided";
@@ -39,7 +40,7 @@ import {
   FailureMode,
   SimulationStep,
 } from "@shared/schema";
-import { ArrowRight, ArrowLeft, CheckCircle2, Play, Sparkles, Home, Box, MapPin, Lightbulb } from "lucide-react";
+import { ArrowRight, ArrowLeft, CheckCircle2, Play, Sparkles, Home, Box, MapPin, Lightbulb, AlertTriangle } from "lucide-react";
 import { Block, Process, RuntimeCtx, Fixture, FailureConfig } from "@shared/runtime/types";
 import { runPipeline, applyFailures, createInitialContext } from "@shared/runtime/engine";
 import { cn } from "@/lib/utils";
@@ -63,6 +64,21 @@ import { MemoryConnectionsPractice } from "@/components/MemoryConnectionsPractic
 import fixturesData from "@shared/scenarios/health-coach/fixtures.json";
 
 const FIXTURES: Fixture[] = fixturesData as Fixture[];
+
+type FeedbackItem = {
+  type: "correct" | "incorrect" | "hint" | "confusion";
+  title: string;
+  message: string;
+  itemName?: string;
+};
+
+type ClassificationFeedbackData = {
+  accuracy: number;
+  correctAnswers: Record<string, boolean>;
+  explanationQuality: number;
+  calibration: number;
+  feedback: FeedbackItem[];
+};
 
 // Phase Navigation Component with semantic HTML and ARIA support
 function PhaseNavigation({ 
@@ -133,6 +149,7 @@ export default function LearningPage() {
   const { sessionId, progress, isLoading: sessionLoading } = useSession();
   const classificationMutation = useClassification(sessionId);
   const boundaryMapMutation = useBoundaryMap(sessionId);
+  const circuitBuilderMutation = useCircuitBuilder(sessionId);
   
   // Current learning stage - either a pre-phase stage, bridge stage, or main phase number
   // Persist both pre-phase/bridge completion and current stage for full state restoration
@@ -224,7 +241,7 @@ export default function LearningPage() {
 
   // Phase 1: Classification
   const [showFeedback, setShowFeedback] = useState(false);
-  const [feedbackData, setFeedbackData] = useState<any>(null);
+  const [feedbackData, setFeedbackData] = useState<ClassificationFeedbackData | null>(null);
   const [classifications, setClassifications] = useState<ClassificationSubmission[]>([]);
 
   // Phase 2: Boundary Mapping
@@ -292,29 +309,67 @@ export default function LearningPage() {
     }
   }, [FAILURE_MODES, failureModes.length]);
 
-  const handleClassificationSubmit = (submissions: ClassificationSubmission[]) => {
+  const handleClassificationSubmit = async (submissions: ClassificationSubmission[], confidence: number) => {
     setClassifications(submissions);
-    const accuracy = (submissions.filter((s) => s.isCorrect).length / submissions.length) * 100;
-    const correctAnswers: Record<string, boolean> = {};
+
+    const correctAnswersFallback: Record<string, boolean> = {};
     submissions.forEach((s) => {
-      correctAnswers[s.itemId] = s.isCorrect;
+      correctAnswersFallback[s.itemId] = s.isCorrect;
     });
 
-    const feedback = {
-      accuracy,
-      correctAnswers,
-      feedback: [],
-    };
+    const accuracyFallback = submissions.length > 0
+      ? (submissions.filter((s) => s.isCorrect).length / submissions.length) * 100
+      : 0;
+    const calibrationFallback = Math.max(0, 100 - Math.abs(confidence - accuracyFallback));
 
-    setFeedbackData(feedback);
-    setShowFeedback(true);
-
-    // Persist to server
-    if (sessionId) {
-      classificationMutation.mutate({
+    try {
+      const response = await classificationMutation.mutateAsync({
         submissions,
+        confidence,
+      });
+
+      const evaluations = response?.evaluations || [];
+      const correctAnswers: Record<string, boolean> = evaluations.length > 0
+        ? evaluations.reduce((acc: Record<string, boolean>, item: any) => {
+            acc[item.itemId] = item.isCorrect;
+            return acc;
+          }, {})
+        : correctAnswersFallback;
+
+      const itemNameById = new Map(CLASSIFICATION_ITEMS.map((item) => [item.id, item.text]));
+      const normalizeFeedbackType = (type: string): FeedbackItem["type"] => {
+        if (type === "correct" || type === "incorrect" || type === "hint" || type === "confusion") {
+          return type;
+        }
+        return "incorrect";
+      };
+
+      const feedbackItems: FeedbackItem[] = (response?.feedback ?? []).map((item: any) => ({
+        type: normalizeFeedbackType(item.type),
+        title: item.title,
+        message: item.message,
+        itemName: item.itemId ? itemNameById.get(item.itemId) : undefined,
+      }));
+
+      setFeedbackData({
+        accuracy: response?.accuracy ?? accuracyFallback,
+        explanationQuality: response?.explanationQuality ?? 0,
+        calibration: response?.calibration ?? calibrationFallback,
+        correctAnswers,
+        feedback: feedbackItems,
+      });
+    } catch (error) {
+      console.warn("Classification request failed, using local scoring.", error);
+      setFeedbackData({
+        accuracy: accuracyFallback,
+        explanationQuality: 0,
+        calibration: calibrationFallback,
+        correctAnswers: correctAnswersFallback,
+        feedback: [],
       });
     }
+
+    setShowFeedback(true);
   };
 
   const handlePrimerComplete = () => {
@@ -330,6 +385,10 @@ export default function LearningPage() {
   const handleGuidedPracticeComplete = () => {
     storage.setItem("guidedPracticeComplete", "true");
     setCurrentStage(1);
+  };
+
+  const handleClassificationRetry = () => {
+    setShowFeedback(false);
   };
 
   // Mark a phase/stage as complete without advancing (for re-saves, replays, etc.)
@@ -357,6 +416,12 @@ export default function LearningPage() {
     }
     setShowFeedback(false);
   };
+
+  useEffect(() => {
+    if (currentStage === 5 && !phaseCompletion["5"]) {
+      markPhaseComplete(5);
+    }
+  }, [currentStage, phaseCompletion, markPhaseComplete]);
 
   // Navigate to previous stage using the type-safe helper
   const navigateToPreviousStage = () => {
@@ -464,6 +529,38 @@ export default function LearningPage() {
   };
 
   const handleCircuitComplete = () => {
+    const orderedProcesses: Process[] = ["perception", "reasoning", "planning", "execution"];
+    const blocks = orderedProcesses.map((process, index) => {
+      const block = selectedBlocks[process];
+      if (!block) return null;
+      return {
+        id: block.id,
+        type: process,
+        label: block.label,
+        x: index * 200,
+        y: 0,
+        inputs: [],
+        outputs: [],
+      };
+    }).filter(Boolean);
+
+    const connections = orderedProcesses.slice(0, -1).map((process, index) => {
+      const fromBlock = selectedBlocks[process];
+      const toBlock = selectedBlocks[orderedProcesses[index + 1]];
+      return {
+        id: `${fromBlock?.id || process}-${toBlock?.id || orderedProcesses[index + 1]}`,
+        from: fromBlock?.id || "",
+        to: toBlock?.id || "",
+      };
+    });
+
+    if (blocks.length === orderedProcesses.length) {
+      circuitBuilderMutation.mutate({
+        blocks,
+        connections,
+      });
+    }
+
     // Only auto-advance if phase 3 is not already completed
     if (!phaseCompletion["3"]) {
       handlePhaseComplete();
@@ -554,13 +651,16 @@ export default function LearningPage() {
 
   const pipelineComplete = Object.values(selectedBlocks).every((block) => block !== null);
 
+  const assessmentScores = progress?.assessmentScores;
   const assessmentMetrics = {
-    classificationAccuracy: feedbackData?.accuracy || 0,
-    explanationQuality: feedbackData?.explanationQuality || 0,
-    boundaryMapCompleteness: phaseCompletion["2"] ? 85 : 0,
-    circuitCorrectness: phaseCompletion["3"] ? 90 : 0,
-    calibration: feedbackData?.calibration || 0,
+    classificationAccuracy: assessmentScores?.classificationAccuracy ?? feedbackData?.accuracy ?? 0,
+    explanationQuality: assessmentScores?.explanationQuality ?? feedbackData?.explanationQuality ?? 0,
+    boundaryMapCompleteness: assessmentScores?.boundaryMapCompleteness ?? 0,
+    circuitCorrectness: assessmentScores?.circuitCorrectness ?? 0,
+    calibration: assessmentScores?.calibration ?? feedbackData?.calibration ?? 0,
   };
+  const classificationAccuracy = feedbackData?.accuracy ?? 0;
+  const classificationMastered = classificationAccuracy >= 80;
 
   return (
     <div className="min-h-screen bg-background">
@@ -648,20 +748,43 @@ export default function LearningPage() {
 
             {showFeedback && (
               <Card className="p-6">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
-                    <CheckCircle2 className="w-6 h-6 text-green-600" />
+                    {classificationMastered ? (
+                      <CheckCircle2 className="w-6 h-6 text-green-600" />
+                    ) : (
+                      <AlertTriangle className="w-6 h-6 text-amber-600" />
+                    )}
                     <div>
-                      <h3 className="font-semibold">{t("classification.phaseComplete")}</h3>
+                      <h3 className="font-semibold">
+                        {classificationMastered
+                          ? t("classification.phaseComplete")
+                          : t("classification.needsReviewTitle")}
+                      </h3>
                       <p className="text-sm text-muted-foreground">
-                        {t("classification.continueDescription")}
+                        {classificationMastered
+                          ? t("classification.continueDescription")
+                          : t("classification.needsReviewDescription")}
                       </p>
                     </div>
                   </div>
-                  <Button onClick={handlePhaseComplete} data-testid="button-next-phase">
-                    {t("classification.continueToPhase2")}
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    {!classificationMastered && (
+                      <Button
+                        variant="outline"
+                        onClick={handleClassificationRetry}
+                        data-testid="button-retry-classification"
+                      >
+                        {t("classification.tryAgain")}
+                      </Button>
+                    )}
+                    <Button onClick={handlePhaseComplete} data-testid="button-next-phase">
+                      {classificationMastered
+                        ? t("classification.continueToPhase2")
+                        : t("classification.continueAnyway")}
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  </div>
                 </div>
               </Card>
             )}
@@ -1039,7 +1162,14 @@ export default function LearningPage() {
               </p>
             </div>
 
-            <AssessmentDashboard metrics={assessmentMetrics} phaseCompletion={phaseCompletion} />
+            <AssessmentDashboard
+              metrics={assessmentMetrics}
+              phaseCompletion={phaseCompletion}
+              onImproveExplanations={() => {
+                setShowFeedback(false);
+                setCurrentStage(1);
+              }}
+            />
 
             <PhaseNavigation
               onPrevious={navigateToPreviousStage}

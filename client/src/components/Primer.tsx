@@ -55,25 +55,11 @@ export function Primer({ onComplete }: PrimerProps) {
   const handleCheck1Submit = () => {
     setShowCheck1Feedback(true);
     setCheck1Attempts(prev => prev + 1);
-    if (check1Answer === microChecks[0].correctIndex) {
-      setTimeout(() => {
-        setCurrentStep("check2");
-        setShowCheck1Feedback(false);
-        setCheck1Answer(null);
-      }, 2000);
-    }
   };
 
   const handleCheck2Submit = () => {
     setShowCheck2Feedback(true);
     setCheck2Attempts(prev => prev + 1);
-    if (check2Answer === microChecks[1].correctIndex) {
-      setTimeout(() => {
-        setCurrentStep("complete");
-        setShowCheck2Feedback(false);
-        setCheck2Answer(null);
-      }, 2000);
-    }
   };
 
   const handleCheck1Retry = () => {
@@ -144,7 +130,7 @@ export function Primer({ onComplete }: PrimerProps) {
               { key: "execution", color: "bg-red-500/10 border-red-500/20", icon: "4" }
             ].flatMap((step, idx) => {
               const elements = [
-                <Card key={step.key} className={cn("p-6 border-2 flex-1 min-w-[240px] transition-all hover-elevate", step.color)}>
+                <Card key={step.key} className={cn("p-6 border-2 flex-1 min-w-[240px]", step.color)}>
                   <div className="space-y-3">
                     <div className="text-base font-bold tracking-tight">{t(`primer.runLoop.${step.key}.name`)}</div>
                     <div className="font-medium text-sm text-foreground/60">{t(`primer.runLoop.${step.key}.label`)}</div>
@@ -173,7 +159,7 @@ export function Primer({ onComplete }: PrimerProps) {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="p-6 border-2 bg-purple-500/5 border-purple-500/20 transition-all hover-elevate">
+            <Card className="p-6 border-2 bg-purple-500/5 border-purple-500/20">
               <div className="flex items-center gap-3 mb-3">
                 <div className="p-2 rounded-lg bg-purple-500/10">
                   <Brain className="w-6 h-6 text-purple-600" />
@@ -186,7 +172,7 @@ export function Primer({ onComplete }: PrimerProps) {
               <div className="text-sm text-muted-foreground leading-relaxed">{t("primer.supporting.memory.description")}</div>
             </Card>
 
-            <Card className="p-6 border-2 bg-blue-500/5 border-blue-500/20 transition-all hover-elevate">
+            <Card className="p-6 border-2 bg-blue-500/5 border-blue-500/20">
               <div className="flex items-center gap-3 mb-3">
                 <div className="p-2 rounded-lg bg-blue-500/10">
                   <Wrench className="w-6 h-6 text-blue-600" />
@@ -251,7 +237,7 @@ export function Primer({ onComplete }: PrimerProps) {
             { step: 3, process: "planning", accentColor: "border-pink-500/30", bgColor: "bg-pink-500/5" },
             { step: 4, process: "execution", accentColor: "border-red-500/30", bgColor: "bg-red-500/5" }
           ].map(({ step, process, accentColor, bgColor }) => (
-            <div key={process} className={cn("relative p-6 rounded-md border-2 transition-all hover-elevate", accentColor, bgColor, "space-y-3")}>
+            <div key={process} className={cn("relative p-6 rounded-md border-2", accentColor, bgColor, "space-y-3")}>
               <div className="flex items-center gap-3">
                 <Badge variant="outline" className="px-3 py-1 text-sm font-bold">{step}</Badge>
                 <span className="font-bold text-base">{t(`primer.demo.${process}.label`)}</span>
@@ -263,7 +249,7 @@ export function Primer({ onComplete }: PrimerProps) {
 
         {/* Supporting systems with improved visual design */}
         <div className="pt-8 border-t border-border/50 space-y-5">
-          <div className="p-6 rounded-lg bg-purple-500/5 border-2 border-purple-500/10 transition-all hover-elevate">
+          <div className="p-6 rounded-lg bg-purple-500/5 border-2 border-purple-500/10">
             <div className="flex items-start gap-4">
               <div className="p-2.5 rounded-lg bg-purple-500/10 flex-shrink-0">
                 <Brain className="w-6 h-6 text-purple-600" />
@@ -275,7 +261,7 @@ export function Primer({ onComplete }: PrimerProps) {
             </div>
           </div>
           
-          <div className="p-6 rounded-lg bg-blue-500/5 border-2 border-blue-500/10 transition-all hover-elevate">
+          <div className="p-6 rounded-lg bg-blue-500/5 border-2 border-blue-500/10">
             <div className="flex items-start gap-4">
               <div className="p-2.5 rounded-lg bg-blue-500/10 flex-shrink-0">
                 <Wrench className="w-6 h-6 text-blue-600" />
@@ -372,7 +358,9 @@ export function Primer({ onComplete }: PrimerProps) {
                 <p className="text-base font-bold mb-2">
                   {isCorrect ? t("primer.check.correct") : t("primer.check.incorrect")}
                 </p>
-                <p className="text-sm text-muted-foreground leading-relaxed">{check.explanation}</p>
+                {(isCorrect || attempts >= 2) && (
+                  <p className="text-sm text-muted-foreground leading-relaxed">{check.explanation}</p>
+                )}
               </div>
             )}
           </div>
@@ -388,7 +376,16 @@ export function Primer({ onComplete }: PrimerProps) {
               >
                 {t("primer.check.submit")}
               </Button>
-            ) : !isCorrect ? (
+            ) : isCorrect ? (
+              <Button
+                onClick={handleContinue}
+                size="lg"
+                className="min-w-48"
+                data-testid={`button-continue-check${checkIndex + 1}`}
+              >
+                {t("primer.check.continue")}
+              </Button>
+            ) : (
               <>
                 <Button
                   onClick={handleRetry}
@@ -410,7 +407,7 @@ export function Primer({ onComplete }: PrimerProps) {
                   </Button>
                 )}
               </>
-            ) : null}
+            )}
           </div>
         </Card>
       </div>

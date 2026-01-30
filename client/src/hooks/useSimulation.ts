@@ -10,11 +10,12 @@ export function useSimulation(sessionId: string | null) {
       if (!sessionId) {
         throw new Error('Session ID is required');
       }
-      return await apiRequest('POST', '/api/simulate', {
+      const res = await apiRequest('POST', '/api/simulate', {
         sessionId,
         circuit,
         failureModes,
       });
+      return await res.json();
     },
     onSuccess: () => {
       if (sessionId) {

@@ -57,9 +57,11 @@ export function BoundaryMapCanvas({
   const [focusMode, setFocusMode] = useState<"palette" | "canvas" | "processes">("palette");
   const [announcement, setAnnouncement] = useState("");
   const [showInstructions, setShowInstructions] = useState(false);
+  const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
   const GRID_SIZE = 32;
-  const CANVAS_WIDTH = 384;
-  const CANVAS_HEIGHT = 384;
+  const CANVAS_FALLBACK = 384;
+  const ELEMENT_WIDTH = 192;
+  const ELEMENT_HEIGHT = 80;
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -70,17 +72,44 @@ export function BoundaryMapCanvas({
     const rect = canvasRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
+    const maxX = Math.max(0, (canvasSize.width || CANVAS_FALLBACK) - ELEMENT_WIDTH);
+    const maxY = Math.max(0, (canvasSize.height || CANVAS_FALLBACK) - ELEMENT_HEIGHT);
+    const clampedX = Math.max(0, Math.min(x, maxX));
+    const clampedY = Math.max(0, Math.min(y, maxY));
 
     const newElement: BoundaryElement = {
       id: `${element.id}-${Date.now()}`,
       label: t(element.labelKey),
       type: element.type,
-      x,
-      y,
+      x: clampedX,
+      y: clampedY,
     };
 
     setPlacedElements((prev) => [...prev, newElement]);
-  }, [t]);
+  }, [t, canvasSize.width, canvasSize.height, ELEMENT_WIDTH, ELEMENT_HEIGHT, CANVAS_FALLBACK]);
+
+  useEffect(() => {
+    if (!canvasRef.current) return;
+    const updateSize = () => {
+      const rect = canvasRef.current?.getBoundingClientRect();
+      if (rect) {
+        setCanvasSize({ width: rect.width, height: rect.height });
+      }
+    };
+    updateSize();
+    const observer = new ResizeObserver(updateSize);
+    observer.observe(canvasRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const canvasWidth = canvasSize.width || CANVAS_FALLBACK;
+    const canvasHeight = canvasSize.height || CANVAS_FALLBACK;
+    const maxX = Math.max(0, canvasWidth - ELEMENT_WIDTH);
+    const maxY = Math.max(0, canvasHeight - ELEMENT_HEIGHT);
+    setCursorX((prev) => Math.min(prev, maxX));
+    setCursorY((prev) => Math.min(prev, maxY));
+  }, [canvasSize.width, canvasSize.height, CANVAS_FALLBACK, ELEMENT_WIDTH, ELEMENT_HEIGHT]);
 
   const handleElementClick = useCallback((elementId: string) => {
     setSelectedElement(elementId);
@@ -126,17 +155,24 @@ export function BoundaryMapCanvas({
     const element = AVAILABLE_ELEMENTS[selectedPaletteIndex];
     if (!element) return;
 
+    const canvasWidth = canvasSize.width || CANVAS_FALLBACK;
+    const canvasHeight = canvasSize.height || CANVAS_FALLBACK;
+    const maxX = Math.max(0, canvasWidth - ELEMENT_WIDTH);
+    const maxY = Math.max(0, canvasHeight - ELEMENT_HEIGHT);
+    const clampedX = Math.max(0, Math.min(cursorX, maxX));
+    const clampedY = Math.max(0, Math.min(cursorY, maxY));
+
     const newElement: BoundaryElement = {
       id: `${element.id}-${Date.now()}`,
       label: t(element.labelKey),
       type: element.type,
-      x: cursorX,
-      y: cursorY,
+      x: clampedX,
+      y: clampedY,
     };
 
     setPlacedElements((prev) => [...prev, newElement]);
-    announce(t("boundaryMap.keyboard.elementPlaced", { element: newElement.label, x: cursorX, y: cursorY }));
-  }, [selectedPaletteIndex, cursorX, cursorY, t, announce]);
+    announce(t("boundaryMap.keyboard.elementPlaced", { element: newElement.label, x: clampedX, y: clampedY }));
+  }, [selectedPaletteIndex, cursorX, cursorY, t, announce, canvasSize.width, canvasSize.height, ELEMENT_WIDTH, ELEMENT_HEIGHT, CANVAS_FALLBACK]);
 
   const removeSelectedElement = useCallback(() => {
     if (!selectedElement) return;
@@ -171,10 +207,15 @@ export function BoundaryMapCanvas({
           announce(t("boundaryMap.keyboard.modeCanvas"));
         }
       } else if (focusMode === "canvas") {
+        const canvasWidth = canvasSize.width || CANVAS_FALLBACK;
+        const canvasHeight = canvasSize.height || CANVAS_FALLBACK;
+        const maxX = Math.max(0, canvasWidth - ELEMENT_WIDTH);
+        const maxY = Math.max(0, canvasHeight - ELEMENT_HEIGHT);
+
         if (e.key === "ArrowRight") {
           e.preventDefault();
           const shift = e.shiftKey ? 4 : GRID_SIZE;
-          const newX = Math.min(cursorX + shift, CANVAS_WIDTH - 192);
+          const newX = Math.min(cursorX + shift, maxX);
           setCursorX(newX);
           announce(t("boundaryMap.keyboard.cursorMoved", { x: newX, y: cursorY }));
         } else if (e.key === "ArrowLeft") {
@@ -186,7 +227,7 @@ export function BoundaryMapCanvas({
         } else if (e.key === "ArrowDown") {
           e.preventDefault();
           const shift = e.shiftKey ? 4 : GRID_SIZE;
-          const newY = Math.min(cursorY + shift, CANVAS_HEIGHT - 100);
+          const newY = Math.min(cursorY + shift, maxY);
           setCursorY(newY);
           announce(t("boundaryMap.keyboard.cursorMoved", { x: cursorX, y: newY }));
         } else if (e.key === "ArrowUp") {
@@ -238,7 +279,24 @@ export function BoundaryMapCanvas({
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [focusMode, selectedPaletteIndex, cursorX, cursorY, selectedElement, showInstructions, placeElementAtCursor, removeSelectedElement, handleSave, announce, t]);
+  }, [
+    focusMode,
+    selectedPaletteIndex,
+    cursorX,
+    cursorY,
+    selectedElement,
+    showInstructions,
+    placeElementAtCursor,
+    removeSelectedElement,
+    handleSave,
+    announce,
+    t,
+    canvasSize.width,
+    canvasSize.height,
+    ELEMENT_WIDTH,
+    ELEMENT_HEIGHT,
+    CANVAS_FALLBACK,
+  ]);
 
 
   return (

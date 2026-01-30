@@ -348,6 +348,7 @@
       "submit": "Pārbaudīt atbildi",
       "correct": "✓ Pareizi!",
       "incorrect": "Ne gluži — mēģiniet vēlreiz",
+      "continue": "Turpināt",
       "tryAgain": "Mēģināt vēlreiz",
       "continueAnyway": "Turpināt tāpat"
     },
@@ -357,7 +358,7 @@
       "option2": "Izpratne (nozīmes sapratne)",
       "option3": "Plānošana (darbības izvēle)",
       "option4": "Izpilde (darbības veikšana)",
-      "explanation": "Plānošana ir 3. solis, kur aģents izvēlas KĀDU konkrētu darbību veikt. Izpratne (2. solis) noteica, ka lietotājs ir vesels, bet Plānošana (3. solis) nolēma, ka tas nozīmē iedrošinājuma, nevis brīdinājuma sūtīšanu vai bezdarbību."
+      "explanation": "Pareizā atbilde: Plānošana ir 3. solis, kur aģents izvēlas KĀDU konkrētu darbību veikt. Izpratne (2. solis) noteica, ka lietotājs ir vesels, bet Plānošana (3. solis) nolēma, ka tas nozīmē iedrošinājuma, nevis brīdinājuma sūtīšanu vai bezdarbību."
     },
     "check2": {
       "question": "Paziņojumu rīks, kas sūta ziņojumus lietotājiem — vai tas ir \"solis\" 4-soļu ciklā vai \"palīgsistēma\"?",
@@ -365,7 +366,7 @@
       "option2": "Tas ir 4. solis (Izpilde)",
       "option3": "Tas ir solis starp 3. un 4.",
       "option4": "Tā ir palīgsistēma (Rīki)",
-      "explanation": "Paziņojumu rīks ir Rīku palīgsistēmas daļa. Tas nav pats solis — tas ir resurss, ko 4. solis (Izpilde) izmanto plānotās darbības veikšanai. Iedomājieties to kā āmuru rīku kastē: nav būvēšanas solis, bet rīks, ko izmanto būvēšanas solī."
+      "explanation": "Pareizā atbilde: Paziņojumu rīks ir Rīku palīgsistēmas daļa. Tas nav pats solis — tas ir resurss, ko 4. solis (Izpilde) izmanto plānotās darbības veikšanai. Iedomājieties to kā āmuru rīku kastē: nav būvēšanas solis, bet rīks, ko izmanto būvēšanas solī."
     },
     "complete": {
       "title": "Lieliski! Jūs saprotat 4+2 modeli",
@@ -407,6 +408,7 @@
       "subtitle": "Apkopojiet lēmumu noteikumus saviem vārdiem, lai nostiprinātu izpratni",
       "prompt": "Saviem vārdiem, kā jūs izskaidrotu draugam, kā atšķirt četrus konveiera soļus?",
       "placeholder": "Piemēram: Uztvere ir, kad jūs lasāt vai vācat datus. Izpratne ir...",
+      "required": "Lūdzu, uzrakstiet savu kopsavilkumu pirms salīdzināšanas ar ekspertu.",
       "characterCount": "{{count}} rakstzīmes",
       "expertSummaryTitle": "Eksperta kopsavilkums (salīdziniet ar savu)",
       "perceptionRule": "Uztvere = Ievades datu lasīšana vai vākšana",
@@ -414,6 +416,7 @@
       "planningRule": "Plānošana = Darbības izvēle",
       "executionRule": "Izpilde = Izvēlētās darbības veikšana",
       "supportingNote": "Atmiņa un Savienojumi ir pieejami jebkuram solim, tie nav soļi paši par sevi.",
+      "compare": "Salīdzināt ar ekspertu",
       "continue": "Sākt praksi"
     },
     "processLabels": {
@@ -534,6 +537,10 @@
     "phaseComplete": "Lielisks darbs!",
     "continueDescription": "Jūs esat apguvis klasifikāciju! Apskatiet rezultātus un turpiniet",
     "continueToPhase2": "Tālāk: Robežu noteikšana",
+    "needsReviewTitle": "Ne gluži pareizi",
+    "needsReviewDescription": "Pārskatiet klasifikācijas un mēģiniet vēlreiz vai turpiniet, kad esat gatavs.",
+    "tryAgain": "Mēģināt vēlreiz",
+    "continueAnyway": "Turpināt tik un tā",
     "crossCuttingHint": "Atcerieties: Tas nav solis — tas ir resurss, pieejams VISIEM soļiem",
     "correct": "Pareizi!",
     "incorrectClassification": "Ne gluži pareizi",
@@ -644,8 +651,15 @@
     "title": "Gala novērtējums",
     "description": "Novērtējiet savas zināšanas par 4+2 modeli un MI aģentu procesiem",
     "overallProgress": "Kopējais progress",
-    "phasesCompleted": "Pabeigti posmi",
-    "target": "Mērķis",
+    "phasesCompleted": "{{completed}} no {{total}} posmiem pabeigti",
+    "metrics": {
+      "classificationAccuracy": "Klasifikācijas precizitāte",
+      "explanationQuality": "Skaidrojumu kvalitāte",
+      "boundaryMapCompleteness": "Robežu kartes pilnīgums",
+      "circuitCorrectness": "Shēmas pareizība",
+      "calibrationScore": "Pārliecības kalibrācija"
+    },
+    "target": "Mērķis: {{value}}%",
     "insights": "Mācību analīze",
     "excellentCalibration": "Izcila kalibrēšana",
     "excellentCalibrationDesc": "Jūsu pārliecība labi atbilst reālajiem rezultātiem",
@@ -653,6 +667,7 @@
     "strongClassificationDesc": "Jūs precīzi nosakāt MI aģentu procesus",
     "improveExplanations": "Uzlabojiet skaidrojumus",
     "improveExplanationsDesc": "Detalizētāki pamatojumi palīdzēs nostiprināt izpratni",
+    "improveExplanationsCta": "Atkārtot 1. fāzi",
     "exitCheck": {
       "title": "Galīgā zināšanu pārbaude",
       "description": "Demonstrējiet izpratni par 4+2 modeli",

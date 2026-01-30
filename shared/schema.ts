@@ -203,6 +203,7 @@ export const failureModeSchema = z.object({
 
 // API request schemas
 export const classifyRequestSchema = z.object({
+  sessionId: z.string().min(1, "Session ID is required"),
   submissions: z.array(z.object({
     itemId: z.string().min(1),
     selectedProcess: z.enum(agentProcesses),
