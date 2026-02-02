@@ -62,6 +62,10 @@ export function BoundaryMapCanvas({
   const CANVAS_FALLBACK = 384;
   const ELEMENT_WIDTH = 192;
   const ELEMENT_HEIGHT = 80;
+  const shiftArrowsLabel = `${t("keyboard.keyNames.shift")}+←↑→↓`;
+  const spaceEnterLabel = `${t("keyboard.keyNames.space")}/${t("keyboard.keyNames.enter")}`;
+  const deleteBackspaceLabel = `${t("keyboard.keyNames.delete")}/${t("keyboard.keyNames.backspace")}`;
+  const ctrlEnterLabel = `${t("keyboard.keyNames.ctrl")}+${t("keyboard.keyNames.enter")}`;
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -109,6 +113,26 @@ export function BoundaryMapCanvas({
     const maxY = Math.max(0, canvasHeight - ELEMENT_HEIGHT);
     setCursorX((prev) => Math.min(prev, maxX));
     setCursorY((prev) => Math.min(prev, maxY));
+  }, [canvasSize.width, canvasSize.height, CANVAS_FALLBACK, ELEMENT_WIDTH, ELEMENT_HEIGHT]);
+
+  useEffect(() => {
+    const canvasWidth = canvasSize.width || CANVAS_FALLBACK;
+    const canvasHeight = canvasSize.height || CANVAS_FALLBACK;
+    const maxX = Math.max(0, canvasWidth - ELEMENT_WIDTH);
+    const maxY = Math.max(0, canvasHeight - ELEMENT_HEIGHT);
+    setPlacedElements((prev) => {
+      let changed = false;
+      const next = prev.map((element) => {
+        const clampedX = Math.max(0, Math.min(element.x, maxX));
+        const clampedY = Math.max(0, Math.min(element.y, maxY));
+        if (clampedX !== element.x || clampedY !== element.y) {
+          changed = true;
+          return { ...element, x: clampedX, y: clampedY };
+        }
+        return element;
+      });
+      return changed ? next : prev;
+    });
   }, [canvasSize.width, canvasSize.height, CANVAS_FALLBACK, ELEMENT_WIDTH, ELEMENT_HEIGHT]);
 
   const handleElementClick = useCallback((elementId: string) => {
@@ -328,13 +352,13 @@ export function BoundaryMapCanvas({
               <h4 className="font-semibold text-sm mb-2">{t("boundaryMap.keyboard.title")}</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-muted-foreground">
                 <div><kbd className="px-1 py-0.5 bg-background rounded border">↑↓</kbd> {t("boundaryMap.keyboard.navigatePalette")}</div>
-                <div><kbd className="px-1 py-0.5 bg-background rounded border">Enter</kbd> {t("boundaryMap.keyboard.enterCanvas")}</div>
+                <div><kbd className="px-1 py-0.5 bg-background rounded border">{t("keyboard.keyNames.enter")}</kbd> {t("boundaryMap.keyboard.enterCanvas")}</div>
                 <div><kbd className="px-1 py-0.5 bg-background rounded border">←↑→↓</kbd> {t("boundaryMap.keyboard.moveCursor")}</div>
-                <div><kbd className="px-1 py-0.5 bg-background rounded border">Shift+←↑→↓</kbd> {t("boundaryMap.keyboard.fineTune")}</div>
-                <div><kbd className="px-1 py-0.5 bg-background rounded border">Space/Enter</kbd> {t("boundaryMap.keyboard.placeElement")}</div>
-                <div><kbd className="px-1 py-0.5 bg-background rounded border">Del/Backspace</kbd> {t("boundaryMap.keyboard.removeElement")}</div>
-                <div><kbd className="px-1 py-0.5 bg-background rounded border">Tab</kbd> {t("boundaryMap.keyboard.switchMode")}</div>
-                <div><kbd className="px-1 py-0.5 bg-background rounded border">Ctrl+Enter</kbd> {t("boundaryMap.keyboard.save")}</div>
+                <div><kbd className="px-1 py-0.5 bg-background rounded border">{shiftArrowsLabel}</kbd> {t("boundaryMap.keyboard.fineTune")}</div>
+                <div><kbd className="px-1 py-0.5 bg-background rounded border">{spaceEnterLabel}</kbd> {t("boundaryMap.keyboard.placeElement")}</div>
+                <div><kbd className="px-1 py-0.5 bg-background rounded border">{deleteBackspaceLabel}</kbd> {t("boundaryMap.keyboard.removeElement")}</div>
+                <div><kbd className="px-1 py-0.5 bg-background rounded border">{t("keyboard.keyNames.tab")}</kbd> {t("boundaryMap.keyboard.switchMode")}</div>
+                <div><kbd className="px-1 py-0.5 bg-background rounded border">{ctrlEnterLabel}</kbd> {t("boundaryMap.keyboard.save")}</div>
                 <div><kbd className="px-1 py-0.5 bg-background rounded border">?</kbd> {t("boundaryMap.keyboard.toggleHelp")}</div>
               </div>
             </div>

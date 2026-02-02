@@ -64,6 +64,20 @@ import { MemoryConnectionsPractice } from "@/components/MemoryConnectionsPractic
 import fixturesData from "@shared/scenarios/health-coach/fixtures.json";
 
 const FIXTURES: Fixture[] = fixturesData as Fixture[];
+const FIXTURE_I18N_MAP: Record<string, { nameKey: string; descriptionKey: string }> = {
+  "fixture-normal": {
+    nameKey: "healthCoach.fixtures.normalDay.name",
+    descriptionKey: "healthCoach.fixtures.normalDay.description",
+  },
+  "fixture-borderline": {
+    nameKey: "healthCoach.fixtures.borderlineActivity.name",
+    descriptionKey: "healthCoach.fixtures.borderlineActivity.description",
+  },
+  "fixture-noisy": {
+    nameKey: "healthCoach.fixtures.noisySensors.name",
+    descriptionKey: "healthCoach.fixtures.noisySensors.description",
+  },
+};
 
 type FeedbackItem = {
   type: "correct" | "incorrect" | "hint" | "confusion";
@@ -225,6 +239,22 @@ export default function LearningPage() {
   // Check if bridge stages are complete (needed for Phase 3 accessibility)
   const bridgeStagesComplete = phaseCompletion["circuitBridge"] && phaseCompletion["memoryConnectionsPractice"];
 
+  // Hydrate phase completion from server progress (never regress local completion)
+  useEffect(() => {
+    if (!progress?.phaseCompletion) return;
+    setPhaseCompletion((prev) => {
+      let changed = false;
+      const next = { ...prev };
+      Object.entries(progress.phaseCompletion).forEach(([key, value]) => {
+        if (value && !next[key]) {
+          next[key] = true;
+          changed = true;
+        }
+      });
+      return changed ? next : prev;
+    });
+  }, [progress]);
+
   // Persist phase completion to localStorage
   useEffect(() => {
     Object.entries(phaseCompletion).forEach(([key, completed]) => {
@@ -243,6 +273,12 @@ export default function LearningPage() {
   const [showFeedback, setShowFeedback] = useState(false);
   const [feedbackData, setFeedbackData] = useState<ClassificationFeedbackData | null>(null);
   const [classifications, setClassifications] = useState<ClassificationSubmission[]>([]);
+
+  useEffect(() => {
+    if (currentStage !== 1 && showFeedback) {
+      setShowFeedback(false);
+    }
+  }, [currentStage, showFeedback]);
 
   // Phase 2: Boundary Mapping
   const [boundaryElements, setBoundaryElements] = useState<BoundaryElement[]>([]);
@@ -328,6 +364,12 @@ export default function LearningPage() {
         confidence,
       });
 
+      const translateMaybe = (value?: string) => {
+        if (!value) return "";
+        const translated = t(value);
+        return translated !== value ? translated : value;
+      };
+
       const evaluations = response?.evaluations || [];
       const correctAnswers: Record<string, boolean> = evaluations.length > 0
         ? evaluations.reduce((acc: Record<string, boolean>, item: any) => {
@@ -344,12 +386,44 @@ export default function LearningPage() {
         return "incorrect";
       };
 
-      const feedbackItems: FeedbackItem[] = (response?.feedback ?? []).map((item: any) => ({
-        type: normalizeFeedbackType(item.type),
-        title: item.title,
-        message: item.message,
-        itemName: item.itemId ? itemNameById.get(item.itemId) : undefined,
-      }));
+      const feedbackItemsFromEvaluations: FeedbackItem[] = evaluations
+        .filter((item: any) => !item.isCorrect)
+        .map((item: any) => {
+          const explanation = translateMaybe(item.explanationKey);
+          const processLabel = item.correctProcess ? t(`processes.${item.correctProcess}`) : "";
+          const message = item.correctProcess
+            ? t("classification.feedback.incorrect", { process: processLabel, explanation })
+            : explanation || t("classification.feedback.unknownItem");
+          return {
+            type: "incorrect",
+            title: t("classification.feedback.reviewTitle"),
+            message,
+            itemName: item.itemId ? itemNameById.get(item.itemId) : undefined,
+          };
+        });
+
+      const feedbackItemsFromResponse: FeedbackItem[] = (response?.feedback ?? []).map((item: any) => {
+        const title = item.titleKey ? t(item.titleKey) : translateMaybe(item.title);
+        const explanation = item.messageParams?.explanationKey
+          ? translateMaybe(item.messageParams.explanationKey)
+          : undefined;
+        const processLabel = item.messageParams?.process
+          ? t(`processes.${item.messageParams.process}`)
+          : undefined;
+        const message = item.messageKey
+          ? t(item.messageKey, { process: processLabel, explanation })
+          : translateMaybe(item.message);
+        return {
+          type: normalizeFeedbackType(item.type),
+          title,
+          message,
+          itemName: item.itemId ? itemNameById.get(item.itemId) : undefined,
+        };
+      });
+
+      const feedbackItems = feedbackItemsFromEvaluations.length > 0
+        ? feedbackItemsFromEvaluations
+        : feedbackItemsFromResponse;
 
       setFeedbackData({
         accuracy: response?.accuracy ?? accuracyFallback,
@@ -601,26 +675,23 @@ export default function LearningPage() {
       // Run the pipeline
       const result = await runPipeline(pipeline, ctx);
 
-      // Helper function to translate log entry data
-      const translateLogData = (data: any) => {
-        const translatedData = { ...data };
-        
-        // Translate action field if it's a translation key
-        if (typeof data.action === 'string' && data.action.startsWith('healthCoach.')) {
-          translatedData.action = t(data.action);
+      // Helper function to translate log entry data (deeply)
+      const translateLogData = (data: any): any => {
+        if (typeof data === "string") {
+          const translated = t(data);
+          return translated !== data ? translated : data;
         }
-        
-        // Translate message field if it's a translation key
-        if (typeof data.message === 'string' && data.message.startsWith('healthCoach.')) {
-          translatedData.message = t(data.message);
+        if (Array.isArray(data)) {
+          return data.map((item) => translateLogData(item));
         }
-        
-        // Translate error field if it's a translation key
-        if (typeof data.error === 'string' && data.error.startsWith('healthCoach.')) {
-          translatedData.error = t(data.error);
+        if (data && typeof data === "object") {
+          const result: Record<string, unknown> = {};
+          Object.entries(data).forEach(([key, value]) => {
+            result[key] = translateLogData(value);
+          });
+          return result;
         }
-        
-        return translatedData;
+        return data;
       };
 
       // Convert runtime log to simulation steps
@@ -649,6 +720,21 @@ export default function LearningPage() {
     );
   };
 
+  const getFixtureName = (fixture: Fixture) => {
+    const entry = FIXTURE_I18N_MAP[fixture.id];
+    if (!entry) return fixture.name;
+    const translated = t(entry.nameKey);
+    return translated !== entry.nameKey ? translated : fixture.name;
+  };
+
+  const getFixtureDescription = (fixture?: Fixture) => {
+    if (!fixture) return "";
+    const entry = FIXTURE_I18N_MAP[fixture.id];
+    if (!entry) return fixture.description;
+    const translated = t(entry.descriptionKey);
+    return translated !== entry.descriptionKey ? translated : fixture.description;
+  };
+
   const pipelineComplete = Object.values(selectedBlocks).every((block) => block !== null);
 
   const assessmentScores = progress?.assessmentScores;
@@ -659,7 +745,7 @@ export default function LearningPage() {
     circuitCorrectness: assessmentScores?.circuitCorrectness ?? 0,
     calibration: assessmentScores?.calibration ?? feedbackData?.calibration ?? 0,
   };
-  const classificationAccuracy = feedbackData?.accuracy ?? 0;
+  const classificationAccuracy = feedbackData?.accuracy ?? assessmentScores?.classificationAccuracy ?? 0;
   const classificationMastered = classificationAccuracy >= 80;
 
   return (
@@ -1064,13 +1150,13 @@ export default function LearningPage() {
                         <SelectContent>
                           {FIXTURES.map((fixture) => (
                             <SelectItem key={fixture.id} value={fixture.id}>
-                              {fixture.name}
+                              {getFixtureName(fixture)}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
                       <p className="text-xs text-muted-foreground mt-1">
-                        {FIXTURES.find(f => f.id === selectedFixture)?.description}
+                        {getFixtureDescription(FIXTURES.find(f => f.id === selectedFixture))}
                       </p>
                     </div>
                     <Button
@@ -1210,6 +1296,8 @@ export default function LearningPage() {
           isOpen={showFeedback}
           onClose={() => setShowFeedback(false)}
           accuracy={feedbackData?.accuracy || 0}
+          explanationQuality={feedbackData?.explanationQuality}
+          calibration={feedbackData?.calibration}
           feedback={feedbackData?.feedback || []}
         />
       )}

@@ -2,6 +2,7 @@ import { Component, ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
+import i18n from "@/lib/i18n";
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -46,38 +47,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
   render() {
     if (this.state.hasError) {
-      let locale = "en";
-      try {
-        locale = localStorage.getItem("i18nextLng") || "en";
-      } catch (e) {
-        // Fallback to English if localStorage unavailable or consent denied
-      }
-      
-      const translations = {
-        en: {
-          title: "Something went wrong",
-          description: "We apologize for the inconvenience. An unexpected error occurred while loading the application.",
-          technicalDetails: "Technical details",
-          returnHome: "Return to Home",
-          retry: "Reload Page"
-        },
-        ru: {
-          title: "Что-то пошло не так",
-          description: "Приносим извинения за неудобства. Произошла непредвиденная ошибка при загрузке приложения.",
-          technicalDetails: "Технические детали",
-          returnHome: "Вернуться на главную",
-          retry: "Перезагрузить страницу"
-        },
-        lv: {
-          title: "Radās kļūda",
-          description: "Atvainojamies par sagādātajām neērtībām. Ielādējot lietotni, radās neparedzēta kļūda.",
-          technicalDetails: "Tehniskie dati",
-          returnHome: "Atgriezties uz sākumu",
-          retry: "Pārlādēt lapu"
-        }
-      };
-
-      const t = translations[locale as keyof typeof translations] || translations.en;
+      const t = (key: string) => i18n.t(key);
 
       return (
         <div className="min-h-screen flex items-center justify-center p-4 bg-background">
@@ -86,16 +56,16 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               <div className="flex justify-center mb-2">
                 <AlertCircle className="w-12 h-12 text-destructive" aria-hidden="true" />
               </div>
-              <CardTitle className="text-2xl">{t.title}</CardTitle>
+              <CardTitle className="text-2xl">{t("errorBoundary.title")}</CardTitle>
               <CardDescription className="text-base">
-                {t.description}
+                {t("errorBoundary.description")}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {import.meta.env.DEV && this.state.error && (
                 <details className="text-sm">
                   <summary className="cursor-pointer font-semibold mb-2 text-muted-foreground">
-                    {t.technicalDetails}
+                    {t("errorBoundary.technicalDetails")}
                   </summary>
                   <pre className="mt-2 p-4 bg-muted rounded-md overflow-auto text-xs">
                     <code>
@@ -111,14 +81,14 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                 onClick={this.handleReset}
                 data-testid="button-error-home"
               >
-                {t.returnHome}
+                {t("errorBoundary.returnHome")}
               </Button>
               <Button 
                 variant="outline"
                 onClick={() => window.location.reload()}
                 data-testid="button-error-reload"
               >
-                {t.retry}
+                {t("errorBoundary.retry")}
               </Button>
             </CardFooter>
           </Card>

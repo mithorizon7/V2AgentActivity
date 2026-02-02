@@ -56,9 +56,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return {
           itemId: submission.itemId,
           isCorrect: classificationResult.isCorrect,
-          classificationFeedback: classificationResult.feedback,
+          correctProcess: classificationResult.correctProcess,
+          explanationKey: classificationResult.explanationKey,
           explanationScore: explanationResult.score,
-          explanationFeedback: explanationResult.feedback,
+          explanationFeedbackKey: explanationResult.feedbackKey,
         };
       });
 
@@ -104,8 +105,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
           .filter((e) => !e.isCorrect)
           .map((e) => ({
             type: "incorrect",
-            title: "Review this classification",
-            message: e.classificationFeedback,
+            titleKey: "classification.feedback.reviewTitle",
+            messageKey: "classification.feedback.incorrect",
+            messageParams: {
+              process: e.correctProcess,
+              explanationKey: e.explanationKey,
+            },
             itemId: e.itemId,
           })),
       });

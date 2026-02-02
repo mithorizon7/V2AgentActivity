@@ -9,6 +9,7 @@ import {
   type BoundaryConnection,
   type SimulationStep,
   type FailureMode,
+  type AgentProcess,
 } from "@shared/schema";
 import { getClassificationAnswer } from "@shared/classificationData";
 import { randomUUID } from "crypto";
@@ -22,8 +23,8 @@ export interface IStorage {
   saveProgress(progress: InsertProgress): Promise<LearnerProgress>;
   updateProgress(sessionId: string, updates: Partial<LearnerProgress>): Promise<LearnerProgress | undefined>;
   
-  evaluateClassification(submission: ClassificationInput): { isCorrect: boolean; feedback: string };
-  evaluateExplanation(explanation: string): { score: number; feedback: string };
+  evaluateClassification(submission: ClassificationInput): { isCorrect: boolean; correctProcess: AgentProcess | null; explanationKey: string };
+  evaluateExplanation(explanation: string): { score: number; feedbackKey: string };
   calculateCalibration(confidence: number, accuracy: number): number;
 }
 
@@ -87,28 +88,24 @@ export class MemStorage implements IStorage {
     return updated;
   }
 
-  evaluateClassification(submission: ClassificationInput): { isCorrect: boolean; feedback: string } {
+  evaluateClassification(submission: ClassificationInput): { isCorrect: boolean; correctProcess: AgentProcess | null; explanationKey: string } {
     const correctAnswer = getClassificationAnswer(submission.itemId);
     
     if (!correctAnswer) {
-      return { isCorrect: false, feedback: "Unknown item" };
+      return { isCorrect: false, correctProcess: null, explanationKey: "classificationFeedback.unknownItem" };
     }
 
     const isCorrect = correctAnswer.correctProcess === submission.selectedProcess;
     
-    const feedback = isCorrect
-      ? `Correct! ${correctAnswer.explanation}.`
-      : `This actually belongs to ${correctAnswer.correctProcess}. ${correctAnswer.explanation}.`;
-
-    return { isCorrect, feedback };
+    return { isCorrect, correctProcess: correctAnswer.correctProcess, explanationKey: correctAnswer.explanationKey };
   }
 
-  evaluateExplanation(explanation: string): { score: number; feedback: string } {
+  evaluateExplanation(explanation: string): { score: number; feedbackKey: string } {
     // Handle null, undefined, or empty explanations
     if (!explanation || typeof explanation !== 'string') {
       return {
         score: 0,
-        feedback: "No explanation provided. Please explain your reasoning."
+        feedbackKey: "explanationFeedback.missing"
       };
     }
 
@@ -116,7 +113,7 @@ export class MemStorage implements IStorage {
     if (trimmed.length === 0) {
       return {
         score: 0,
-        feedback: "Explanation is empty. Please provide your reasoning."
+        feedbackKey: "explanationFeedback.empty"
       };
     }
 
@@ -129,20 +126,20 @@ export class MemStorage implements IStorage {
 
     if (wordCount < 10) {
       score = 30;
-      feedback = "Your explanation is too brief. Try to provide more detail about why this item belongs in this process category.";
+      feedback = "explanationFeedback.tooBrief";
     } else if (wordCount < 20) {
       score = hasKeyTerms ? 60 : 50;
       feedback = hasKeyTerms
-        ? "Good start! Consider adding specific examples or connecting to the process's core function."
-        : "Try to explain the reasoning behind your classification using connecting words like 'because' or 'since'.";
+        ? "explanationFeedback.goodStart"
+        : "explanationFeedback.useConnectors";
     } else {
       score = (hasKeyTerms ? 25 : 15) + (hasSpecifics ? 25 : 15) + (wordCount > 30 ? 10 : 0) + 50;
       feedback = score >= 80
-        ? "Excellent explanation! You've clearly connected the item to the process's core function."
-        : "Good explanation. You could strengthen it by being more specific about how this relates to the process.";
+        ? "explanationFeedback.excellent"
+        : "explanationFeedback.goodButSpecific";
     }
 
-    return { score: Math.min(score, 100), feedback };
+    return { score: Math.min(score, 100), feedbackKey: feedback };
   }
 
   calculateCalibration(confidence: number, accuracy: number): number {

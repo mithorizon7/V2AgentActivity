@@ -77,6 +77,7 @@ export function CircuitBuilder({
   const [selectedPaletteIndex, setSelectedPaletteIndex] = useState(0);
   const [announcement, setAnnouncement] = useState("");
   const [showInstructions, setShowInstructions] = useState(true);
+  const ctrlEnterLabel = `${t("keyboard.keyNames.ctrl")}+${t("keyboard.keyNames.enter")}`;
 
   const BLOCK_PALETTE: BlockPaletteItem[] = [
     { process: "perception" },
@@ -259,11 +260,11 @@ export function CircuitBuilder({
               <h4 className="font-semibold text-sm mb-2">{t("circuit.keyboard.title")}</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-muted-foreground">
                 <div><kbd className="px-1 py-0.5 bg-background rounded border">↑↓</kbd> {t("circuit.keyboard.navigatePalette")}</div>
-                <div><kbd className="px-1 py-0.5 bg-background rounded border">Enter</kbd> {t("circuit.keyboard.addNode")}</div>
+                <div><kbd className="px-1 py-0.5 bg-background rounded border">{t("keyboard.keyNames.enter")}</kbd> {t("circuit.keyboard.addNode")}</div>
                 <div><kbd className="px-1 py-0.5 bg-background rounded border">←↑→↓</kbd> {t("circuit.keyboard.moveNode")}</div>
-                <div><kbd className="px-1 py-0.5 bg-background rounded border">Del</kbd> {t("circuit.keyboard.removeNode")}</div>
-                <div><kbd className="px-1 py-0.5 bg-background rounded border">Esc</kbd> {t("circuit.keyboard.clearSelection")}</div>
-                <div><kbd className="px-1 py-0.5 bg-background rounded border">Ctrl+Enter</kbd> {t("circuit.keyboard.save")}</div>
+                <div><kbd className="px-1 py-0.5 bg-background rounded border">{t("keyboard.keyNames.delete")}</kbd> {t("circuit.keyboard.removeNode")}</div>
+                <div><kbd className="px-1 py-0.5 bg-background rounded border">{t("keyboard.keyNames.escape")}</kbd> {t("circuit.keyboard.clearSelection")}</div>
+                <div><kbd className="px-1 py-0.5 bg-background rounded border">{ctrlEnterLabel}</kbd> {t("circuit.keyboard.save")}</div>
                 <div><kbd className="px-1 py-0.5 bg-background rounded border">?</kbd> {t("circuit.keyboard.toggleHelp")}</div>
               </div>
             </div>

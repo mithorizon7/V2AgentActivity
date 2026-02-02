@@ -28,6 +28,133 @@ export function SimulationTracer({
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
+  const getProcessLabel = (process: string) => {
+    const key = `processes.${process}`;
+    return t(key);
+  };
+
+  const getStepLabel = (stepId: string, block: Block | null) => {
+    const normalized = stepId.toUpperCase();
+    if (normalized.startsWith("START_") || normalized.startsWith("END_") || normalized.startsWith("ERROR_")) {
+      const statusKey = normalized.startsWith("START_")
+        ? "simulation.stepStatus.start"
+        : normalized.startsWith("END_")
+          ? "simulation.stepStatus.end"
+          : "simulation.stepStatus.error";
+      const process = normalized.replace(/^(START|END|ERROR)_/, "").toLowerCase();
+      return t("simulation.stepStatus.format", {
+        status: t(statusKey),
+        process: getProcessLabel(process),
+      });
+    }
+
+    if (normalized.startsWith("FAILURE_INJECTED_")) {
+      const failureKey = normalized.replace("FAILURE_INJECTED_", "").toLowerCase();
+      const failureMap: Record<string, string> = {
+        noisy_input: "noisyInput",
+        missing_tool: "missingTool",
+        stale_memory: "staleMemory",
+      };
+      const failureId = failureMap[failureKey];
+      if (failureId) {
+        return t("simulation.failureInjected", {
+          failure: t(`failures.modes.${failureId}.name`),
+        });
+      }
+    }
+
+    if (block?.label) {
+      return t(block.label);
+    }
+
+    return stepId;
+  };
+
+  const getDataLabel = (key: string) => {
+    const healthKey = `healthCoach.dataLabels.${key}`;
+    const simKey = `simulation.dataLabels.${key}`;
+    if (t(healthKey) !== healthKey) return t(healthKey);
+    if (t(simKey) !== simKey) return t(simKey);
+    return t("simulation.dataLabels.unknown");
+  };
+
+  const formatValue = (value: unknown, key?: string): string => {
+    if (value === null || value === undefined) {
+      return t("common.none");
+    }
+    if (typeof value === "boolean") {
+      return value ? t("common.yes") : t("common.no");
+    }
+    if (typeof value === "number") {
+      return String(value);
+    }
+    if (typeof value === "string") {
+      if (t(value) !== value) {
+        return t(value);
+      }
+      if (key) {
+        const byField = `simulation.dataValues.${key}.${value}`;
+        if (t(byField) !== byField) {
+          return t(byField);
+        }
+      }
+      const byValue = `simulation.dataValues.${value}`;
+      if (t(byValue) !== byValue) {
+        return t(byValue);
+      }
+      if (key === "error") {
+        return t("simulation.errors.generic");
+      }
+      return value;
+    }
+    if (Array.isArray(value)) {
+      return value.map((item) => formatValue(item, key)).join(", ");
+    }
+    if (typeof value === "object") {
+      const entries = Object.entries(value as Record<string, unknown>);
+      if (entries.length === 0) {
+        return t("common.none");
+      }
+      return entries
+        .map(([childKey, childValue]) => `${getDataLabel(childKey)}: ${formatValue(childValue, childKey)}`)
+        .join(" • ");
+    }
+    return String(value);
+  };
+
+  const renderDataGrid = (data: unknown) => {
+    if (!data || typeof data !== "object") {
+      return <span className="text-muted-foreground">{t("common.none")}</span>;
+    }
+    const entries = Object.entries(data as Record<string, unknown>);
+    if (entries.length === 0) {
+      return <span className="text-muted-foreground">{t("common.none")}</span>;
+    }
+    return (
+      <div className="space-y-1">
+        {entries.map(([key, value]) => (
+          <div key={key} className="flex items-start justify-between gap-2">
+            <span className="text-muted-foreground">{getDataLabel(key)}</span>
+            <span className="font-mono text-right break-words">{formatValue(value, key)}</span>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  const getStepSummary = (data: unknown) => {
+    if (!data || typeof data !== "object") return null;
+    const record = data as Record<string, unknown>;
+    const candidates = ["action", "error", "message", "description"];
+    for (const key of candidates) {
+      const value = record[key];
+      if (typeof value === "string") {
+        return formatValue(value, key);
+      }
+    }
+    return null;
+  };
+
   const getBlockFromStepId = (stepId: string): Block | null => {
     if (!selectedBlocks) return null;
     // stepId is like "START_PERCEPTION", "END_REASONING", "ERROR_EXECUTION"
@@ -91,7 +218,14 @@ export function SimulationTracer({
         <Card className="p-6 space-y-4">
           <div className="mb-3 p-3 bg-muted/30 rounded-md flex items-center gap-2 text-xs text-muted-foreground">
             <KeyboardIcon className="w-4 h-4" />
-            <span><kbd className="px-1 py-0.5 bg-background rounded border">Space</kbd> Play/Pause • <kbd className="px-1 py-0.5 bg-background rounded border">N</kbd> Next • <kbd className="px-1 py-0.5 bg-background rounded border">R</kbd> Reset</span>
+            <span>
+              <kbd className="px-1 py-0.5 bg-background rounded border">{t("keyboard.keyNames.space")}</kbd>{" "}
+              {t("simulation.keyboard.playPause")} •{" "}
+              <kbd className="px-1 py-0.5 bg-background rounded border">N</kbd>{" "}
+              {t("simulation.keyboard.next")} •{" "}
+              <kbd className="px-1 py-0.5 bg-background rounded border">R</kbd>{" "}
+              {t("simulation.keyboard.reset")}
+            </span>
           </div>
           <div className="flex items-center justify-between">
             <h3 className="font-semibold text-lg">{t("simulation.execution")}</h3>
@@ -112,10 +246,16 @@ export function SimulationTracer({
                 onClick={handleNext}
                 disabled={currentStepIndex >= steps.length - 1}
                 data-testid="button-next-step"
+                aria-label={t("simulation.controls.nextStep")}
               >
                 <SkipForward className="w-4 h-4" />
               </Button>
-              <Button variant="outline" onClick={handleReset} data-testid="button-reset">
+              <Button
+                variant="outline"
+                onClick={handleReset}
+                data-testid="button-reset"
+                aria-label={t("simulation.controls.resetStep")}
+              >
                 <RotateCcw className="w-4 h-4" />
               </Button>
             </div>
@@ -147,9 +287,9 @@ export function SimulationTracer({
                       <div className="flex-1 space-y-2">
                         <div className="flex items-center gap-2 flex-wrap">
                           <Badge variant="outline" className="font-mono">
-                            {t("simulation.step")} {index + 1}
+                            {t("simulation.step", { number: index + 1 })}
                           </Badge>
-                          <span className="font-medium text-sm">{step.blockId}</span>
+                          <span className="font-medium text-sm">{getStepLabel(step.blockId, block)}</span>
                           {step.status === "success" && (
                             <CheckCircle2 className="w-4 h-4 text-green-600" />
                           )}
@@ -160,8 +300,10 @@ export function SimulationTracer({
                             <Clock className="w-4 h-4 text-amber-600" />
                           )}
                         </div>
-                        {step.message && (
-                          <p className="text-sm text-muted-foreground">{step.message}</p>
+                        {getStepSummary(step.output) && (
+                          <p className="text-sm text-muted-foreground">
+                            {getStepSummary(step.output)}
+                          </p>
                         )}
                         
                         {/* Rail taps: show which supporting systems this step used */}
@@ -185,11 +327,11 @@ export function SimulationTracer({
                         <div className="grid grid-cols-2 gap-2 text-xs">
                           <div className="p-2 bg-muted/50 rounded">
                             <div className="font-semibold mb-1">{t("simulation.input")}:</div>
-                            <div className="font-mono">{JSON.stringify(step.input)}</div>
+                            {renderDataGrid(step.input)}
                           </div>
                           <div className="p-2 bg-muted/50 rounded">
                             <div className="font-semibold mb-1">{t("simulation.output")}:</div>
-                            <div className="font-mono">{JSON.stringify(step.output)}</div>
+                            {renderDataGrid(step.output)}
                           </div>
                         </div>
                       </div>
@@ -223,8 +365,14 @@ export function SimulationTracer({
                   <div className="text-muted-foreground">
                     [{new Date(step.timestamp).toLocaleTimeString()}]
                   </div>
-                  <div className="font-semibold">{step.blockId}</div>
-                  {step.message && <div className="mt-1">{step.message}</div>}
+                  <div className="font-semibold">
+                    {getStepLabel(step.blockId, getBlockFromStepId(step.blockId))}
+                  </div>
+                  {getStepSummary(step.output) && (
+                    <div className="mt-1 text-muted-foreground">
+                      {getStepSummary(step.output)}
+                    </div>
+                  )}
                 </div>
               ))
             )}

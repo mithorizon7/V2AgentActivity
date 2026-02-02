@@ -12,7 +12,7 @@ export async function runPipeline(
     if (!block) {
       current.log.push({
         step: `ERROR_${process.toUpperCase()}`,
-        data: { error: 'No block selected for this process' },
+        data: { error: 'simulation.errors.noBlockSelected' },
         timestamp: Date.now(),
       });
       current.success = false;
@@ -38,11 +38,17 @@ export async function runPipeline(
         timestamp: Date.now(),
       });
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'simulation.errors.unknown';
+      const errorKey =
+        typeof errorMessage === 'string' &&
+        (errorMessage.startsWith('healthCoach.') || errorMessage.startsWith('simulation.'))
+          ? errorMessage
+          : 'simulation.errors.generic';
       current.log.push({
         step: `ERROR_${process.toUpperCase()}`,
         data: { 
           blockId: block.id,
-          error: error instanceof Error ? error.message : 'Unknown error',
+          error: errorKey,
         },
         timestamp: Date.now(),
       });
@@ -89,9 +95,9 @@ export function applyFailures(
       step: 'FAILURE_INJECTED_NOISY_INPUT',
       data: { 
         type: 'noisyInput', 
-        description: 'Deterministic sensor corruption applied',
-        hrNoise: '±15 BPM alternating pattern',
-        stepsNoise: '-800 steps',
+        description: 'simulation.failures.noisyInput.description',
+        hrNoise: 'simulation.failures.noisyInput.hrNoise',
+        stepsNoise: 'simulation.failures.noisyInput.stepsNoise',
       },
       timestamp: Date.now(),
     });
@@ -101,7 +107,7 @@ export function applyFailures(
     delete ctx.tools[failures.missingTool];
     ctx.log.push({
       step: 'FAILURE_INJECTED_MISSING_TOOL',
-      data: { type: 'missingTool', tool: failures.missingTool },
+      data: { type: 'missingTool', tool: failures.missingTool, description: 'simulation.failures.missingTool.description' },
       timestamp: Date.now(),
     });
   }
@@ -110,7 +116,7 @@ export function applyFailures(
     ctx.state = {};
     ctx.log.push({
       step: 'FAILURE_INJECTED_STALE_MEMORY',
-      data: { type: 'staleMemory', description: 'Cleared all memory state' },
+      data: { type: 'staleMemory', description: 'simulation.failures.staleMemory.description' },
       timestamp: Date.now(),
     });
   }

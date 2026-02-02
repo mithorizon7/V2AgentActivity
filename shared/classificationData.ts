@@ -27,81 +27,81 @@ export const CLASSIFICATION_ITEMS_DATA: ClassificationItemData[] = [
   { id: "format_response", correctProcess: "execution", feedbackKey: "formatResponse" },
 ];
 
-export const CLASSIFICATION_FEEDBACK: Record<string, { correctProcess: AgentProcess; explanation: string }> = {
+export const CLASSIFICATION_FEEDBACK: Record<string, { correctProcess: AgentProcess; explanationKey: string }> = {
   save_preferences: {
     correctProcess: "learning",
-    explanation: "Saving preferences stores information for future use - a core Memory/Learning function"
+    explanationKey: "classificationFeedback.save_preferences"
   },
   update_rule: {
     correctProcess: "learning",
-    explanation: "Updating rules based on feedback is how agents learn and adapt over time"
+    explanationKey: "classificationFeedback.update_rule"
   },
   store_conversation: {
     correctProcess: "learning",
-    explanation: "Storing conversation summaries builds the agent's memory for future context"
+    explanationKey: "classificationFeedback.store_conversation"
   },
   send_message: {
     correctProcess: "interaction",
-    explanation: "Sending messages to users is how agents interact with the outside world"
+    explanationKey: "classificationFeedback.send_message"
   },
   call_external: {
     correctProcess: "interaction",
-    explanation: "Calling external services (APIs, tools) is how agents connect with outside systems"
+    explanationKey: "classificationFeedback.call_external"
   },
   fetch_live_data: {
     correctProcess: "interaction",
-    explanation: "Fetching live data requires connecting to external sources - a Connections function"
+    explanationKey: "classificationFeedback.fetch_live_data"
   },
   parse_message: {
     correctProcess: "perception",
-    explanation: "Parsing messages turns raw input into structured data - the first step in understanding"
+    explanationKey: "classificationFeedback.parse_message"
   },
   gather_state: {
     correctProcess: "perception",
-    explanation: "Gathering system state is how agents read and collect information about their environment"
+    explanationKey: "classificationFeedback.gather_state"
   },
   assemble_context: {
     correctProcess: "perception",
-    explanation: "Assembling context organizes available information for use - core Perception work"
+    explanationKey: "classificationFeedback.assemble_context"
   },
   detect_progress: {
     correctProcess: "perception",
-    explanation: "Detecting progress signals means reading status information from the environment"
+    explanationKey: "classificationFeedback.detect_progress"
   },
   interpret_request: {
     correctProcess: "reasoning",
-    explanation: "Interpreting what users want requires understanding meaning - core Reasoning work"
+    explanationKey: "classificationFeedback.interpret_request"
   },
   recall_facts: {
     correctProcess: "reasoning",
-    explanation: "Recalling facts to understand situations uses stored knowledge during Reasoning"
+    explanationKey: "classificationFeedback.recall_facts"
   },
   apply_rules: {
     correctProcess: "reasoning",
-    explanation: "Applying rules and policies is how agents use logic to make sense of data"
+    explanationKey: "classificationFeedback.apply_rules"
   },
   choose_best: {
     correctProcess: "planning",
-    explanation: "Choosing the best approach among options is a Planning decision"
+    explanationKey: "classificationFeedback.choose_best"
   },
   decide_sequence: {
     correctProcess: "planning",
-    explanation: "Deciding action order and sequence is core Planning work"
+    explanationKey: "classificationFeedback.decide_sequence"
   },
   clarify_goal: {
     correctProcess: "planning",
-    explanation: "Clarifying goals sets the direction for what to achieve - a Planning function"
+    explanationKey: "classificationFeedback.clarify_goal"
   },
   create_artifact: {
     correctProcess: "execution",
-    explanation: "Creating artifacts (files, records, events) is taking action - Execution"
+    explanationKey: "classificationFeedback.create_artifact"
   },
   format_response: {
     correctProcess: "execution",
-    explanation: "Formatting the final response for delivery is the last Execution step"
+    explanationKey: "classificationFeedback.format_response"
   },
 };
 
-export function getClassificationAnswer(itemId: string): { correctProcess: AgentProcess; explanation: string } | undefined {
+export function getClassificationAnswer(itemId: string): { correctProcess: AgentProcess; explanationKey: string } | undefined {
   return CLASSIFICATION_FEEDBACK[itemId];
 }

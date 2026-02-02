@@ -8,13 +8,22 @@ const LEARNING_STORAGE_KEYS = [
   'classification_unsorted_v1',
   'classification_sorted_v1', 
   'classification_explanations_v1',
+  'classification_confidence_v1',
   'phase1_guided_unsorted_v1',
   'phase1_guided_sorted_v1',
   'phase1_guided_explanations_v1',
   'phase1_guided_attempts_v1',
+  'currentStage',
   'primerComplete',
   'workedExampleComplete',
   'guidedPracticeComplete',
+  'circuitBridgeComplete',
+  'memoryConnectionsPracticeComplete',
+  'phase1Complete',
+  'phase2Complete',
+  'phase3Complete',
+  'phase4Complete',
+  'phase5Complete',
 ];
 
 export type ConsentStatus = 'pending' | 'granted' | 'denied';

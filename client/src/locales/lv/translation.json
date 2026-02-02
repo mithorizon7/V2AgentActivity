@@ -8,7 +8,10 @@
     "close": "Aizvērt",
     "back": "Atpakaļ",
     "loading": "Ielādē...",
-    "error": "Radās kļūda"
+    "error": "Radās kļūda",
+    "yes": "Jā",
+    "no": "Nē",
+    "none": "Nav"
   },
   "bridge": {
     "title": "No vides uz apstrādi",
@@ -146,6 +149,13 @@
     "title": "404 Lapa Nav Atrasta",
     "message": "Vai aizmirsāt pievienot lapu maršrutētājam?"
   },
+  "errorBoundary": {
+    "title": "Kaut kas nogāja greizi",
+    "description": "Atvainojamies par neērtībām. Lietotnes ielādes laikā notika negaidīta kļūda.",
+    "technicalDetails": "Tehniskā informācija",
+    "returnHome": "Atgriezties sākumā",
+    "retry": "Pārlādēt lapu"
+  },
   "navigation": {
     "backToHome": "Uz sākumu",
     "previousPhase": "Iepriekšējais posms",
@@ -154,6 +164,19 @@
     "phaseNavigation": "Posmu navigācija"
   },
   "ui": {
+    "common": {
+      "close": "Aizvērt"
+    },
+    "breadcrumb": {
+      "label": "Navigācijas ceļš",
+      "more": "Vairāk"
+    },
+    "carousel": {
+      "roleDescription": "karuselis",
+      "slideDescription": "slaids",
+      "previousSlide": "Iepriekšējais slaids",
+      "nextSlide": "Nākamais slaids"
+    },
     "sidebar": {
       "title": "Sānu josla",
       "description": "Rāda mobilo sānu joslu.",
@@ -545,6 +568,11 @@
     "correct": "Pareizi!",
     "incorrectClassification": "Ne gluži pareizi",
     "incorrectFeedback": "Padomājiet par galveno darbību: vai tas ir lasīšana, sapratne, izvēle, izpilde, atcerēšanās vai rīku izmantošana?",
+    "feedback": {
+      "reviewTitle": "Pārskatiet šo klasifikāciju",
+      "incorrect": "Patiesībā tas pieder pie {{process}}. {{explanation}}",
+      "unknownItem": "Šo vienumu neizdevās atrast. Lūdzu, mēģiniet vēlreiz."
+    },
     "hintButton": "Saņemt padomu par {{item}}",
     "hintTitle": "Padoms",
     "hints": {
@@ -638,6 +666,36 @@
     "create_artifact": "Rezultāta ģenerēšana vai izvades radīšana ir galīgā darbība. Kurš solis ko izdara?",
     "format_response": "Galīgā rezultāta sagatavošana piegādei ir pēdējā darbība. Kurš solis rada rezultātus?"
   },
+  "classificationFeedback": {
+    "save_preferences": "Priekšrocību saglabāšana uzkrāj informāciju nākotnei — tas ir Atmiņas/Mācīšanās pamatuzdevums.",
+    "update_rule": "Noteikumu atjaunināšana, balstoties uz atgriezenisko saiti, ir veids, kā aģenti mācās un pielāgojas.",
+    "store_conversation": "Sarunas kopsavilkumu glabāšana veido aģenta atmiņu nākotnes kontekstam.",
+    "send_message": "Ziņojumu sūtīšana lietotājiem ir veids, kā aģenti mijiedarbojas ar ārējo pasauli.",
+    "call_external": "Ārējo pakalpojumu (API, rīku) izsaukšana savieno aģentu ar ārējām sistēmām.",
+    "fetch_live_data": "Dzīvu datu iegūšana prasa savienoties ar ārējiem avotiem — tā ir Savienojumu funkcija.",
+    "parse_message": "Ziņojumu parsēšana pārvērš neapstrādātu ievadi strukturētos datos — pirmais sapratnes solis.",
+    "gather_state": "Sistēmas stāvokļa nolasīšana ir veids, kā aģents lasa un savāc informāciju par vidi.",
+    "assemble_context": "Konteksta apkopošana sakārto pieejamo informāciju izmantošanai — būtiska Uztveres darbība.",
+    "detect_progress": "Progresa signālu noteikšana nozīmē nolasīt statusa informāciju no vides.",
+    "interpret_request": "Lietotāja vajadzību interpretēšana prasa saprast nozīmi — Izpratnes kodols.",
+    "recall_facts": "Faktu atsaukšana situācijas izpratnei izmanto saglabātās zināšanas Izpratnes laikā.",
+    "apply_rules": "Noteikumu un politiku piemērošana ir veids, kā aģents loģiski izprot datus.",
+    "choose_best": "Labākās pieejas izvēle no iespējām ir Plānošanas lēmums.",
+    "decide_sequence": "Darbību secības noteikšana ir Plānošanas pamatdarbs.",
+    "clarify_goal": "Mērķu precizēšana nosaka virzienu, ko sasniegt — Plānošanas funkcija.",
+    "create_artifact": "Artefaktu (failu, ierakstu, notikumu) veidošana ir darbības veikšana — Izpilde.",
+    "format_response": "Galīgās atbildes noformēšana piegādei ir pēdējais Izpildes solis.",
+    "unknownItem": "Šo vienumu neizdevās atrast. Lūdzu, mēģiniet vēlreiz."
+  },
+  "explanationFeedback": {
+    "missing": "Skaidrojums nav sniegts. Lūdzu, paskaidrojiet savu domāšanu.",
+    "empty": "Skaidrojums ir tukšs. Lūdzu, norādiet savu pamatojumu.",
+    "tooBrief": "Jūsu skaidrojums ir pārāk īss. Pamēģiniet detalizētāk paskaidrot, kāpēc šis vienums pieder šai procesa kategorijai.",
+    "goodStart": "Labs sākums! Apsveriet iespēju pievienot konkrētus piemērus vai sasaistīt ar procesa pamatfunkciju.",
+    "useConnectors": "Pamēģiniet izskaidrot savu klasifikāciju, lietojot sasaistes vārdus, piemēram, «tāpēc» vai «jo».",
+    "excellent": "Lielisks skaidrojums! Jūs skaidri sasaistījāt vienumu ar procesa pamatfunkciju.",
+    "goodButSpecific": "Labs skaidrojums. To var pastiprināt, kļūstot konkrētākam par to, kā tas attiecas uz procesu."
+  },
   "feedback": {
     "title": "Atgriezeniskā saite un rezultāti",
     "accuracy": "Klasifikācijas precizitāte",
@@ -673,25 +731,25 @@
       "description": "Demonstrējiet izpratni par 4+2 modeli",
       "questions": {
         "q1": {
-          "question": "1. jautājums: Aģenta cikls",
-          "prompt": "Kāda ir pareizā 4-soļu aģenta cikla secība?",
-          "answers": ["Uztvere → Plānošana → Izpratne → Izpilde", "Uztvere → Izpratne → Plānošana → Izpilde", "Izpratne → Uztvere → Plānošana → Izpilde", "Plānošana → Uztvere → Izpratne → Izpilde"],
+          "question": "Kura darbība pieder pie cikla (run loop) pretstatā sliedēm (rails)?",
+          "prompt": "'Call Calendar API' pieder pie:",
+          "answers": ["Izpildes cikla", "Savienojumu sliedes", "Atmiņas sliedes", "Abām sliedēm"],
           "correct": 1,
-          "explanation": "Pareizā secība: Uztvere (lasīt) → Izpratne (saprast) → Plānošana (izvēlēties) → Izpilde (darīt)"
+          "explanation": "Ārējo rīku izsaukumi pieder pie Savienojumu sliedes (Rīki), nevis pie izpildes cikla."
         },
         "q2": {
-          "question": "2. jautājums: Palīgsistēmas",
-          "prompt": "Kas atšķir Atmiņu un Rīkus no četriem galvenajiem soļiem?",
-          "answers": ["Tie darbojas lēnāk", "Tie ir mazāk svarīgi", "Tie ir pieejami jebkuram solim jebkurā laikā", "Tie darbojas tikai starp soļiem"],
+          "question": "Kurš solis izpildes ciklā izvēlas darbību?",
+          "prompt": "Darbību izvēlas solis:",
+          "answers": ["Uztvere", "Izpratne", "Plānošana", "Izpilde"],
           "correct": 2,
-          "explanation": "Atmiņa un Rīki ir palīgsistēmas, pieejamas jebkuram no 4 soļiem jebkurā brīdī"
+          "explanation": "Plānošana izvēlas, kuru darbību veikt pēc izpratnes."
         },
         "q3": {
-          "question": "3. jautājums: Praktisks pielietojums",
-          "prompt": "Aģents atceras lietotāja preferences turpmākām mijiedarbībām. Vai tā ir Atmiņas operācija?",
-          "answers": ["Jā, tā ir Atmiņas sistēmas izmantošana", "Nē, tā ir daļa no Plānošanas soļa"],
-          "correct": 0,
-          "explanation": "Pareizi! Informācijas saglabāšana vēlākai izmantošanai ir Atmiņas sistēmas funkcija, nevis atsevišķs cikla solis"
+          "question": "Kur tiek glabāta paraduma sērija?",
+          "prompt": "Paraduma sērija tiek glabāta:",
+          "answers": ["Izpildes ciklā", "Mācīšanās (Atmiņa)", "Savienojumi (Cilvēki un rīki)", "Izpilde"],
+          "correct": 1,
+          "explanation": "Sērijas tiek glabātas Atmiņā/Mācīšanās sistēmā, nevis cikla solī."
         }
       },
       "submit": "Iesniegt atbildes",
@@ -873,6 +931,106 @@
     "step": "Solis {{number}}",
     "input": "Ievade",
     "output": "Izvade",
+    "keyboard": {
+      "playPause": "Palaist/pauzēt",
+      "next": "Nākamais solis",
+      "reset": "Atiestatīt"
+    },
+    "controls": {
+      "nextStep": "Nākamais solis",
+      "resetStep": "Atiestatīt uz sākumu"
+    },
+    "stepStatus": {
+      "start": "Sākums",
+      "end": "Beigas",
+      "error": "Kļūda",
+      "format": "{{status}}: {{process}}"
+    },
+    "failureInjected": "Ievadīta kļūme: {{failure}}",
+    "dataLabels": {
+      "action": "Darbība",
+      "rawSteps": "Neapstrādātie soļi",
+      "rawHeartRate": "Neapstrādāts pulss",
+      "rawHeartRateSamples": "Neapstrādāto pulsa paraugu skaits",
+      "steps": "Soļi",
+      "heartRate": "Pulss",
+      "heartRateAvg": "Vidējais pulss",
+      "originalSamples": "Sākotnējie paraugi",
+      "hrAvg": "Vidējais pulss",
+      "activeToday": "Šodien aktīvs",
+      "elevatedHR": "Paaugstināts pulss",
+      "activityLevel": "Aktivitātes līmenis",
+      "recommendation": "Ieteikums",
+      "plan": "Plāns",
+      "message": "Ziņojums",
+      "safetyWarning": "Drošības brīdinājums",
+      "result": "Rezultāts",
+      "notificationSent": "Paziņojums nosūtīts",
+      "notificationType": "Paziņojuma veids",
+      "previousStreak": "Iepriekšējā sērija",
+      "newStreak": "Jaunā sērija",
+      "streak": "Sērija",
+      "streakUpdated": "Sērija atjaunināta",
+      "blockId": "Bloka ID",
+      "blockLabel": "Bloks",
+      "state": "Stāvoklis",
+      "success": "Veiksme",
+      "error": "Kļūda",
+      "type": "Tips",
+      "description": "Apraksts",
+      "hrNoise": "Pulsa troksnis",
+      "stepsNoise": "Soļu svārstības",
+      "tool": "Rīks",
+      "date": "Datums",
+      "sent": "Nosūtīts",
+      "unknown": "Nezināms"
+    },
+    "dataValues": {
+      "activityLevel": {
+        "high": "Augsts",
+        "low": "Zems",
+        "excellent": "Lielisks",
+        "good": "Labs",
+        "moderate": "Vidējs"
+      },
+      "recommendation": {
+        "maintain": "Saglabāt",
+        "increase": "Palielināt",
+        "urgent_increase": "Steidzami palielināt"
+      },
+      "tool": {
+        "sendNotification": "Sūtīt paziņojumu"
+      },
+      "congratulate": "Apsveikt",
+      "nudge": "Pamudināt",
+      "rest": "Atpūsties",
+      "light_activity": "Vieglas aktivitātes",
+      "encourage": "Iedrošināt",
+      "maintain": "Saglabāt",
+      "increase": "Palielināt",
+      "urgent_increase": "Steidzami palielināt",
+      "noisyInput": "Trokšņaini dati",
+      "missingTool": "Trūkstošs rīks",
+      "staleMemory": "Novecojusi atmiņa"
+    },
+    "errors": {
+      "noBlockSelected": "Šim solim nav izvēlēts bloks",
+      "unknown": "Nezināma kļūda",
+      "generic": "Notika negaidīta kļūda"
+    },
+    "failures": {
+      "noisyInput": {
+        "description": "Ievadīti trokšņaini dati",
+        "hrNoise": "Pievienots ±15 BPM pulsa troksnis",
+        "stepsNoise": "Soļu skaits samazināts par 800"
+      },
+      "missingTool": {
+        "description": "Paziņojumu rīks nav pieejams"
+      },
+      "staleMemory": {
+        "description": "Atmiņa notīrīta pirms izpildes"
+      }
+    },
     "metrics": {
       "result": "Rezultāts",
       "steps": "Izpildīti soļi",
@@ -1060,9 +1218,13 @@
     "keyNames": {
       "tab": "Tab",
       "shiftTab": "Shift+Tab",
+      "shift": "Shift",
+      "ctrl": "Ctrl",
       "space": "Atstarpe",
       "enter": "Enter",
       "escape": "Escape",
+      "delete": "Delete",
+      "backspace": "Backspace",
       "arrowUp": "Bultiņa Augšup",
       "arrowDown": "Bultiņa Lejup",
       "arrowLeft": "Bultiņa Pa Kreisi",

@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { AgentProcess, ClassificationItem, ClassificationSubmission } from "@shared/schema";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,7 @@ type DraggableItemProps = {
   isCorrect?: boolean;
   seedPrompts: string[];
   hint?: string;
+  disabled?: boolean;
 };
 
 function DraggableItem({
@@ -30,11 +31,13 @@ function DraggableItem({
   isCorrect,
   seedPrompts,
   hint,
+  disabled = false,
 }: DraggableItemProps) {
   const { t } = useTranslation();
   const [selectedPrompt, setSelectedPrompt] = useState("");
 
   const handlePromptClick = (prompt: string) => {
+    if (disabled || showFeedback) return;
     setSelectedPrompt(prompt);
     onExplanationChange(item.id, prompt);
   };
@@ -43,9 +46,10 @@ function DraggableItem({
     <Card
       className={cn(
         "p-3 cursor-move hover-elevate active-elevate-2",
+        (disabled || showFeedback) && "cursor-not-allowed opacity-90",
         showFeedback && (isCorrect ? "border-green-500" : "border-destructive")
       )}
-      draggable
+      draggable={!disabled && !showFeedback}
       onDragStart={() => onDragStart(item)}
       data-testid={`card-item-${item.id}`}
     >
@@ -55,6 +59,7 @@ function DraggableItem({
         value={explanation}
         onChange={(e) => onExplanationChange(item.id, e.target.value)}
         className="text-sm min-h-20"
+        disabled={disabled || showFeedback}
         data-testid={`input-explanation-${item.id}`}
       />
       {/* Seed prompts */}
@@ -66,6 +71,7 @@ function DraggableItem({
             size="sm"
             className="text-xs h-auto py-1"
             onClick={() => handlePromptClick(prompt)}
+            disabled={disabled || showFeedback}
             data-testid={`button-seed-${item.id}-${idx}`}
           >
             {prompt}
@@ -165,6 +171,7 @@ function ProcessColumn({
             isCorrect={correctAnswers?.[item.id]}
             seedPrompts={seedPrompts}
             hint={hints[item.id]}
+            disabled={showFeedback}
           />
         ))}
       </div>
@@ -184,8 +191,11 @@ export function Phase1Guided({ items, onComplete, onBack }: Phase1GuidedProps) {
   const storage = safeLocalStorage(hasConsent);
   
   // Filter items for just Perception vs Execution
-  const guidedItems = items.filter(
-    item => item.correctProcess === "perception" || item.correctProcess === "execution"
+  const guidedItems = useMemo(
+    () => items.filter(
+      item => item.correctProcess === "perception" || item.correctProcess === "execution"
+    ),
+    [items]
   );
   
   const [unsortedItems, setUnsortedItems] = useState<ClassificationItem[]>(() => {
@@ -247,6 +257,26 @@ export function Phase1Guided({ items, onComplete, onBack }: Phase1GuidedProps) {
   const [hints, setHints] = useState<Record<string, string>>({});
   const [showFeedback, setShowFeedback] = useState(false);
   const [correctAnswers, setCorrectAnswers] = useState<Record<string, boolean>>({});
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  // Reconcile stored item text with current language items
+  useEffect(() => {
+    const itemById = new Map(guidedItems.map((item) => [item.id, item]));
+    setUnsortedItems((prev) =>
+      prev
+        .map((item) => itemById.get(item.id) ?? item)
+        .filter((item): item is ClassificationItem => Boolean(item))
+    );
+    setItemsByProcess((prev) => {
+      const next = { ...prev };
+      Object.keys(next).forEach((process) => {
+        next[process as AgentProcess] = next[process as AgentProcess]
+          .map((item) => itemById.get(item.id) ?? item)
+          .filter((item): item is ClassificationItem => Boolean(item));
+      });
+      return next;
+    });
+  }, [guidedItems]);
 
   useEffect(() => {
     storage.setItem("phase1_guided_unsorted_v1", JSON.stringify(unsortedItems));
@@ -265,10 +295,13 @@ export function Phase1Guided({ items, onComplete, onBack }: Phase1GuidedProps) {
   }, [attempts, hasConsent]);
 
   const handleDragStart = useCallback((item: ClassificationItem) => {
+    if (showFeedback) return;
     setDraggedItem(item);
-  }, []);
+    if (submitError) setSubmitError(null);
+  }, [showFeedback, submitError]);
 
   const handleDrop = useCallback((targetProcess: AgentProcess) => {
+    if (showFeedback) return;
     if (!draggedItem) return;
 
     setUnsortedItems((prev) => prev.filter((i) => i.id !== draggedItem.id));
@@ -285,11 +318,14 @@ export function Phase1Guided({ items, onComplete, onBack }: Phase1GuidedProps) {
     });
 
     setDraggedItem(null);
-  }, [draggedItem]);
+    if (submitError) setSubmitError(null);
+  }, [draggedItem, showFeedback, submitError]);
 
   const handleExplanationChange = useCallback((itemId: string, explanation: string) => {
+    if (showFeedback) return;
     setExplanations((prev) => ({ ...prev, [itemId]: explanation }));
-  }, []);
+    if (submitError) setSubmitError(null);
+  }, [showFeedback, submitError]);
 
   const handleScramble = useCallback(() => {
     const allItems = [
@@ -310,7 +346,13 @@ export function Phase1Guided({ items, onComplete, onBack }: Phase1GuidedProps) {
     });
     setShowFeedback(false);
     setHints({});
-  }, [unsortedItems, itemsByProcess]);
+    setSubmitError(null);
+  }, [unsortedItems, itemsByProcess, submitError]);
+
+  const handleRetry = () => {
+    setShowFeedback(false);
+    setSubmitError(null);
+  };
 
   const getSeedPrompts = (process: AgentProcess): string[] => {
     const prompts = {
@@ -333,16 +375,17 @@ export function Phase1Guided({ items, onComplete, onBack }: Phase1GuidedProps) {
     
     // Check all items are sorted
     if (sortedItems.length !== guidedItems.length) {
-      alert(t("guided.sortAllItems"));
+      setSubmitError(t("guided.sortAllItems"));
       return;
     }
 
     // Check all explanations present
     const missingExplanations = sortedItems.some(item => !explanations[item.id]?.trim());
     if (missingExplanations) {
-      alert(t("classification.explanationRequired"));
+      setSubmitError(t("classification.explanationRequired"));
       return;
     }
+    setSubmitError(null);
 
     // Check answers and track attempts
     const newCorrectAnswers: Record<string, boolean> = {};
@@ -379,6 +422,11 @@ export function Phase1Guided({ items, onComplete, onBack }: Phase1GuidedProps) {
     }
   };
 
+  const allCorrect =
+    showFeedback &&
+    Object.keys(correctAnswers).length === guidedItems.length &&
+    Object.values(correctAnswers).every(Boolean);
+
   return (
     <div className="space-y-6">
       <div>
@@ -407,17 +455,37 @@ export function Phase1Guided({ items, onComplete, onBack }: Phase1GuidedProps) {
             variant="outline"
             onClick={handleScramble}
             data-testid="button-scramble-guided"
+            disabled={showFeedback}
           >
             {t("classification.scramble")}
           </Button>
+          {showFeedback && !allCorrect && (
+            <Button
+              variant="outline"
+              onClick={handleRetry}
+              data-testid="button-retry-guided"
+            >
+              {t("classification.tryAgain")}
+            </Button>
+          )}
           <Button
             onClick={handleSubmit}
             data-testid="button-submit-guided"
+            disabled={showFeedback}
           >
             {t("guided.checkAnswers")}
           </Button>
         </div>
       </div>
+
+      {submitError && (
+        <Alert className="border-amber-500 bg-amber-50 dark:bg-amber-950/20">
+          <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+          <AlertDescription className="text-sm text-amber-700 dark:text-amber-300">
+            {submitError}
+          </AlertDescription>
+        </Alert>
+      )}
 
       {/* 2-bin layout: Perception vs Execution */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -467,6 +535,7 @@ export function Phase1Guided({ items, onComplete, onBack }: Phase1GuidedProps) {
                 showFeedback={false}
                 seedPrompts={getSeedPrompts(item.correctProcess)}
                 hint={hints[item.id]}
+                disabled={showFeedback}
               />
             ))}
           </div>

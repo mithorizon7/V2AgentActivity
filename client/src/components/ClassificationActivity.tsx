@@ -30,6 +30,7 @@ type DraggableItemProps = {
   showExplanation?: boolean;
   isGrabbed?: boolean;
   isFocused?: boolean;
+  disabled?: boolean;
   onKeyboardGrab?: (item: ClassificationItem) => void;
   onFocus?: () => void;
   onKeyDown?: (e: React.KeyboardEvent, item: ClassificationItem) => void;
@@ -46,6 +47,7 @@ function DraggableItem({
   showExplanation = false,
   isGrabbed = false,
   isFocused = false,
+  disabled = false,
   onKeyboardGrab,
   onFocus,
   onKeyDown,
@@ -63,6 +65,7 @@ function DraggableItem({
   const hintText = t(`classificationHints.${item.id}`);
 
   const handleClick = (e: React.MouseEvent | React.TouchEvent) => {
+    if (disabled || showFeedback) return;
     if ('touches' in e || window.matchMedia('(pointer: coarse)').matches) {
       e.preventDefault();
       onTouchSelect(item);
@@ -72,7 +75,7 @@ function DraggableItem({
   return (
     <div
       ref={itemRef}
-      draggable
+      draggable={!disabled && !showFeedback}
       onDragStart={() => onDragStart(item)}
       onClick={handleClick}
       onKeyDown={(e) => onKeyDown?.(e, item)}
@@ -80,6 +83,7 @@ function DraggableItem({
       tabIndex={0}
       role="button"
       aria-pressed={isGrabbed}
+      aria-disabled={disabled || showFeedback}
       aria-label={
         isGrabbed 
           ? t("classification.accessibility.card.labelGrabbed", { 
@@ -97,6 +101,7 @@ function DraggableItem({
       className={cn(
         "flex items-start gap-2 p-4 min-h-[44px] rounded-md border-2 cursor-move transition-all hover-elevate active-elevate-2",
         "bg-card focus:outline-none touch-manipulation select-none",
+        (disabled || showFeedback) && "cursor-not-allowed opacity-90",
         isFocused && "ring-2 ring-primary ring-offset-2",
         isGrabbed && "border-dashed border-primary shadow-lg scale-105 bg-primary/5",
         showFeedback && isCorrect === true && "border-green-500 bg-green-50 dark:bg-green-950",
@@ -113,6 +118,7 @@ function DraggableItem({
             value={explanation}
             onChange={(e) => onExplanationChange?.(item.id, e.target.value)}
             className="text-sm min-h-20"
+            disabled={disabled || showFeedback}
             aria-label={t("classification.accessibility.card.explanationLabel", { item: item.text })}
             data-testid={`input-explanation-${item.id}`}
           />
@@ -213,6 +219,7 @@ function ProcessColumn({
   const litmusId = litmusTest ? `litmus-${process}` : undefined;
 
   const handleTouchDrop = () => {
+    if (showFeedback) return;
     if (grabbedItem && window.matchMedia('(pointer: coarse)').matches) {
       onTouchDrop(process);
     }
@@ -282,6 +289,7 @@ function ProcessColumn({
               isFocused={focusedItem?.id === item.id}
               onKeyDown={onItemKeyDown}
               onFocus={() => onItemFocus?.(item)}
+              disabled={showFeedback}
             />
           ))
         )}
@@ -378,7 +386,9 @@ export function ClassificationActivity({
     const saved = storage.getItem("classification_confidence_v1");
     if (saved) {
       const parsed = Number(saved);
-      if (!Number.isNaN(parsed)) return parsed;
+      if (!Number.isNaN(parsed)) {
+        return Math.min(100, Math.max(0, parsed));
+      }
     }
     return 50;
   });
@@ -394,6 +404,35 @@ export function ClassificationActivity({
     }
     return {};
   });
+
+  useEffect(() => {
+    if (showFeedback) {
+      setDraggedItem(null);
+      setGrabbedItem(null);
+      setFocusedProcess(null);
+    }
+  }, [showFeedback]);
+
+  // Reconcile stored item text with current language items (without changing placement)
+  useEffect(() => {
+    const itemById = new Map(items.map((item) => [item.id, item]));
+    setUnsortedItems((prev) =>
+      prev
+        .map((item) => itemById.get(item.id) ?? item)
+        .filter((item): item is ClassificationItem => Boolean(item))
+    );
+    setItemsByProcess((prev) => {
+      const next = { ...prev };
+      Object.keys(next).forEach((process) => {
+        next[process as AgentProcess] = next[process as AgentProcess]
+          .map((item) => itemById.get(item.id) ?? item)
+          .filter((item): item is ClassificationItem => Boolean(item));
+      });
+      return next;
+    });
+    setFocusedItem((prev) => (prev ? itemById.get(prev.id) ?? prev : prev));
+    setGrabbedItem((prev) => (prev ? itemById.get(prev.id) ?? prev : prev));
+  }, [items]);
 
   const handleExplanationChange = useCallback((itemId: string, explanation: string) => {
     setExplanations((prev) => ({ ...prev, [itemId]: explanation }));
@@ -445,10 +484,12 @@ export function ClassificationActivity({
   }, [confidence, hasConsent]);
 
   const handleDragStart = useCallback((item: ClassificationItem) => {
+    if (showFeedback) return;
     setDraggedItem(item);
-  }, []);
+  }, [showFeedback]);
 
   const handleDrop = useCallback((targetProcess: AgentProcess) => {
+    if (showFeedback) return;
     if (!draggedItem) return;
 
     // Remove from unsorted tray if coming from there
@@ -468,9 +509,10 @@ export function ClassificationActivity({
 
     setSubmitError(null);
     setDraggedItem(null);
-  }, [draggedItem]);
+  }, [draggedItem, showFeedback]);
 
   const handleScramble = useCallback(() => {
+    if (showFeedback) return;
     // Return ALL items to unsorted tray, shuffled
     const allItems = [
       ...unsortedItems,
@@ -490,9 +532,10 @@ export function ClassificationActivity({
     
     setSubmitError(null);
     if (onScramble) onScramble();
-  }, [unsortedItems, itemsByProcess, onScramble]);
+  }, [unsortedItems, itemsByProcess, onScramble, showFeedback]);
 
   const handleSubmit = () => {
+    if (showFeedback) return;
     const totalPlaced = Object.values(itemsByProcess).reduce((sum, processItems) => sum + processItems.length, 0);
     if (totalPlaced !== items.length) {
       setSubmitError(t("classification.sortAllItems"));
@@ -528,6 +571,7 @@ export function ClassificationActivity({
   };
 
   const handleKeyboardGrab = (item: ClassificationItem) => {
+    if (showFeedback) return;
     if (!grabbedItem) {
       setGrabbedItem(item);
       setFocusedItem(item);
@@ -550,6 +594,7 @@ export function ClassificationActivity({
   };
 
   const handleKeyboardDrop = (targetProcess: AgentProcess) => {
+    if (showFeedback) return;
     if (!grabbedItem) return;
 
     // Remove from unsorted tray if coming from there
@@ -578,6 +623,7 @@ export function ClassificationActivity({
   };
 
   const handleItemKeyDown = (e: React.KeyboardEvent, item: ClassificationItem) => {
+    if (showFeedback) return;
     // Get all items in the current container (unsorted or specific process)
     let containerItems: ClassificationItem[] = [];
     let isInUnsorted = unsortedItems.some(i => i.id === item.id);
@@ -696,6 +742,7 @@ export function ClassificationActivity({
             onClick={handleScramble}
             data-testid="button-scramble"
             className="w-full sm:w-auto min-h-[44px]"
+            disabled={showFeedback}
           >
             {t("classification.scramble")}
           </Button>
@@ -703,6 +750,7 @@ export function ClassificationActivity({
             onClick={handleSubmit}
             data-testid="button-solve"
             className="w-full sm:w-auto min-h-[44px]"
+            disabled={showFeedback}
           >
             {t("classification.submitCheck")}
           </Button>
@@ -798,6 +846,7 @@ export function ClassificationActivity({
                 isFocused={focusedItem?.id === item.id}
                 onKeyDown={handleItemKeyDown}
                 onFocus={() => setFocusedItem(item)}
+                disabled={showFeedback}
               />
             ))}
           </div>

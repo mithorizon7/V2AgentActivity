@@ -8,7 +8,10 @@
     "close": "Close",
     "back": "Back",
     "loading": "Loading...",
-    "error": "An error occurred"
+    "error": "An error occurred",
+    "yes": "Yes",
+    "no": "No",
+    "none": "None"
   },
   "bridge": {
     "title": "From Environment to Processing",
@@ -146,6 +149,13 @@
     "title": "404 Page Not Found",
     "message": "Did you forget to add the page to the router?"
   },
+  "errorBoundary": {
+    "title": "Something went wrong",
+    "description": "We apologize for the inconvenience. An unexpected error occurred while loading the application.",
+    "technicalDetails": "Technical details",
+    "returnHome": "Return to Home",
+    "retry": "Reload Page"
+  },
   "navigation": {
     "backToHome": "Back to Home",
     "previousPhase": "Previous Phase",
@@ -154,6 +164,19 @@
     "phaseNavigation": "Phase navigation"
   },
   "ui": {
+    "common": {
+      "close": "Close"
+    },
+    "breadcrumb": {
+      "label": "Breadcrumb",
+      "more": "More"
+    },
+    "carousel": {
+      "roleDescription": "carousel",
+      "slideDescription": "slide",
+      "previousSlide": "Previous slide",
+      "nextSlide": "Next slide"
+    },
     "sidebar": {
       "title": "Sidebar",
       "description": "Displays the mobile sidebar.",
@@ -473,6 +496,11 @@
     "correct": "Correct!",
     "incorrectClassification": "Not quite right",
     "incorrectFeedback": "Think about the core action: Is it reading, understanding, choosing, doing, remembering, or using tools?",
+    "feedback": {
+      "reviewTitle": "Review this classification",
+      "incorrect": "This actually belongs to {{process}}. {{explanation}}",
+      "unknownItem": "We couldn't find this item. Please try again."
+    },
     "hintButton": "Get a hint for {{item}}",
     "hintTitle": "Hint",
     "hints": {
@@ -565,6 +593,36 @@
     "clarify_goal": "Defining what you're trying to achieve sets the direction. Which step decides objectives?",
     "create_artifact": "Generating output or producing results is the final action. Which step does things?",
     "format_response": "Preparing the final output for delivery is the last action. Which step produces results?"
+  },
+  "classificationFeedback": {
+    "save_preferences": "Saving preferences stores information for future use - a core Memory/Learning function.",
+    "update_rule": "Updating rules based on feedback is how agents learn and adapt over time.",
+    "store_conversation": "Storing conversation summaries builds the agent's memory for future context.",
+    "send_message": "Sending messages to users is how agents interact with the outside world.",
+    "call_external": "Calling external services (APIs, tools) is how agents connect with outside systems.",
+    "fetch_live_data": "Fetching live data requires connecting to external sources - a Connections function.",
+    "parse_message": "Parsing messages turns raw input into structured data - the first step in understanding.",
+    "gather_state": "Gathering system state is how agents read and collect information about their environment.",
+    "assemble_context": "Assembling context organizes available information for use - core Perception work.",
+    "detect_progress": "Detecting progress signals means reading status information from the environment.",
+    "interpret_request": "Interpreting what users want requires understanding meaning - core Reasoning work.",
+    "recall_facts": "Recalling facts to understand situations uses stored knowledge during Reasoning.",
+    "apply_rules": "Applying rules and policies is how agents use logic to make sense of data.",
+    "choose_best": "Choosing the best approach among options is a Planning decision.",
+    "decide_sequence": "Deciding action order and sequence is core Planning work.",
+    "clarify_goal": "Clarifying goals sets the direction for what to achieve - a Planning function.",
+    "create_artifact": "Creating artifacts (files, records, events) is taking action - Execution.",
+    "format_response": "Formatting the final response for delivery is the last Execution step.",
+    "unknownItem": "We couldn't identify that item. Please try again."
+  },
+  "explanationFeedback": {
+    "missing": "No explanation provided. Please explain your reasoning.",
+    "empty": "Explanation is empty. Please provide your reasoning.",
+    "tooBrief": "Your explanation is too brief. Try to provide more detail about why this item belongs in this process category.",
+    "goodStart": "Good start! Consider adding specific examples or connecting to the process's core function.",
+    "useConnectors": "Try to explain the reasoning behind your classification using connecting words like 'because' or 'since'.",
+    "excellent": "Excellent explanation! You've clearly connected the item to the process's core function.",
+    "goodButSpecific": "Good explanation. You could strengthen it by being more specific about how this relates to the process."
   },
   "feedback": {
     "title": "Feedback & Results",
@@ -744,9 +802,109 @@
     "noLogs": "Nothing yet — click Run Demo to start",
     "buildCircuitFirst": "First, build your agent in Phase 3",
     "testScenario": "Test Data",
-    "step": "Step",
+    "step": "Step {{number}}",
     "input": "What came in",
     "output": "What came out",
+    "keyboard": {
+      "playPause": "Play/Pause",
+      "next": "Next step",
+      "reset": "Reset"
+    },
+    "controls": {
+      "nextStep": "Next step",
+      "resetStep": "Reset to start"
+    },
+    "stepStatus": {
+      "start": "Start",
+      "end": "End",
+      "error": "Error",
+      "format": "{{status}}: {{process}}"
+    },
+    "failureInjected": "Failure injected: {{failure}}",
+    "dataLabels": {
+      "action": "Action",
+      "rawSteps": "Raw steps",
+      "rawHeartRate": "Raw heart rate",
+      "rawHeartRateSamples": "Raw heart rate samples",
+      "steps": "Steps",
+      "heartRate": "Heart rate",
+      "heartRateAvg": "Average heart rate",
+      "originalSamples": "Original samples",
+      "hrAvg": "Average heart rate",
+      "activeToday": "Active today",
+      "elevatedHR": "Elevated heart rate",
+      "activityLevel": "Activity level",
+      "recommendation": "Recommendation",
+      "plan": "Plan",
+      "message": "Message",
+      "safetyWarning": "Safety warning",
+      "result": "Result",
+      "notificationSent": "Notification sent",
+      "notificationType": "Notification type",
+      "previousStreak": "Previous streak",
+      "newStreak": "New streak",
+      "streak": "Streak",
+      "streakUpdated": "Streak updated",
+      "blockId": "Block ID",
+      "blockLabel": "Block",
+      "state": "State",
+      "success": "Success",
+      "error": "Error",
+      "type": "Type",
+      "description": "Description",
+      "hrNoise": "Heart rate noise",
+      "stepsNoise": "Step noise",
+      "tool": "Tool",
+      "date": "Date",
+      "sent": "Sent",
+      "unknown": "Unknown"
+    },
+    "dataValues": {
+      "activityLevel": {
+        "high": "High",
+        "low": "Low",
+        "excellent": "Excellent",
+        "good": "Good",
+        "moderate": "Moderate"
+      },
+      "recommendation": {
+        "maintain": "Maintain",
+        "increase": "Increase",
+        "urgent_increase": "Increase urgently"
+      },
+      "tool": {
+        "sendNotification": "Send notification"
+      },
+      "congratulate": "Congratulate",
+      "nudge": "Nudge",
+      "rest": "Rest",
+      "light_activity": "Light activity",
+      "encourage": "Encourage",
+      "maintain": "Maintain",
+      "increase": "Increase",
+      "urgent_increase": "Increase urgently",
+      "noisyInput": "Noisy input",
+      "missingTool": "Missing tool",
+      "staleMemory": "Stale memory"
+    },
+    "errors": {
+      "noBlockSelected": "No block selected for this step",
+      "unknown": "Unknown error",
+      "generic": "An unexpected error occurred"
+    },
+    "failures": {
+      "noisyInput": {
+        "description": "Injected noisy input",
+        "hrNoise": "Added ±15 BPM heart rate noise",
+        "stepsNoise": "Reduced steps by 800"
+      },
+      "missingTool": {
+        "description": "Notification tool unavailable"
+      },
+      "staleMemory": {
+        "description": "Memory cleared before execution"
+      }
+    },
     "metrics": {
       "result": "Result",
       "steps": "Steps",
@@ -812,19 +970,29 @@
           "question": "Which activity belongs to the run loop vs the rails?",
           "prompt": "'Call Calendar API' belongs to:",
           "answers": ["Run Loop", "Connections Rail", "Memory Rail", "Both Rails"],
-          "correct": 1
+          "correct": 1,
+          "explanation": "Calls to external tools belong to the Connections rail (Tools), not the run loop."
         },
         "q2": {
           "question": "Which step in the run loop chooses the action?",
+          "prompt": "The step that chooses the action is:",
           "answers": ["Perception", "Reasoning", "Planning", "Execution"],
-          "correct": 2
+          "correct": 2,
+          "explanation": "Planning chooses which action to take after reasoning."
         },
         "q3": {
           "question": "Where is the habit streak stored?",
+          "prompt": "The habit streak is stored in:",
           "answers": ["In the run loop", "Learning (Memory)", "Connections (People & Tools)", "Execution"],
-          "correct": 1
+          "correct": 1,
+          "explanation": "Streaks are stored in Memory/Learning, not as a run-loop step."
         }
-      }
+      },
+      "submit": "Submit answers",
+      "allCorrect": "Great job! All answers are correct.",
+      "someIncorrect": "Some answers need review.",
+      "reviewAndTryAgain": "Review the answers and try again.",
+      "completeJourney": "Complete the learning journey."
     }
   },
   "processes": {
@@ -900,6 +1068,9 @@
     "tipLabel": "Tip"
   },
   "healthCoach": {
+    "scenarioName": "Health Coach Scenario",
+    "agentName": "Health Coach Agent",
+    "description": "An AI coach analyzes daily activity and provides personalized guidance",
     "fixtures": {
       "normalDay": {
         "name": "Normal Active Day",
@@ -912,6 +1083,30 @@
       "noisySensors": {
         "name": "Noisy Sensors",
         "description": "Data with measurement errors—tests robustness"
+      }
+    },
+    "dataLabels": {
+      "heartRate": "Heart rate",
+      "steps": "Steps",
+      "avgHeartRate": "Average heart rate",
+      "stepGoal": "Step goal"
+    },
+    "testData": {
+      "default": {
+        "name": "Typical day",
+        "description": "Typical activity and health metrics"
+      },
+      "elevated": {
+        "name": "Elevated heart rate",
+        "description": "Higher heart rate requires caution"
+      },
+      "borderline": {
+        "name": "Near the goal",
+        "description": "Almost reached the step goal"
+      },
+      "excellent": {
+        "name": "Excellent metrics",
+        "description": "Activity goal exceeded"
       }
     },
     "blocks": {
@@ -1023,9 +1218,13 @@
     "keyNames": {
       "tab": "Tab",
       "shiftTab": "Shift+Tab",
+      "shift": "Shift",
+      "ctrl": "Ctrl",
       "space": "Space",
       "enter": "Enter",
       "escape": "Escape",
+      "delete": "Delete",
+      "backspace": "Backspace",
       "arrowUp": "Arrow Up",
       "arrowDown": "Arrow Down",
       "arrowLeft": "Arrow Left",
