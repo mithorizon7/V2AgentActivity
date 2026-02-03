@@ -774,7 +774,7 @@ export default function LearningPage() {
         setCurrentStage(id as LearningStage);
       }} />}
 
-      <div id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <div id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 pt-16 sm:pt-14 pb-6 sm:pb-8">
         {currentStage === 'primer' && (
           <Primer onComplete={handlePrimerComplete} />
         )}
