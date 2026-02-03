@@ -10,6 +10,15 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { getProcessColor } from "@/lib/processColors";
 import { cn } from "@/lib/utils";
 import { GripVertical, Check, X, Info, AlertCircle } from "lucide-react";
@@ -18,6 +27,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { useTranslation } from "react-i18next";
 import { useConsent, safeLocalStorage } from "@/hooks/useConsent";
 import { ConfidenceSlider } from "@/components/ConfidenceSlider";
+
+const EXPLANATION_PROMPT_KEY = "classification_explanation_prompt_v1";
 
 type DraggableItemProps = {
   item: ClassificationItem;
@@ -381,6 +392,8 @@ export function ClassificationActivity({
   
   const [draggedItem, setDraggedItem] = useState<ClassificationItem | null>(null);
   const hasWarnedRef = useRef(false);
+  const explanationPromptSeenRef = useRef(false);
+  const [explanationPromptOpen, setExplanationPromptOpen] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [confidence, setConfidence] = useState<number>(() => {
     const saved = storage.getItem("classification_confidence_v1");
@@ -534,6 +547,14 @@ export function ClassificationActivity({
     if (onScramble) onScramble();
   }, [unsortedItems, itemsByProcess, onScramble, showFeedback]);
 
+  const hasShownExplanationPrompt = () =>
+    explanationPromptSeenRef.current || storage.getItem(EXPLANATION_PROMPT_KEY) === "1";
+
+  const markExplanationPromptSeen = () => {
+    explanationPromptSeenRef.current = true;
+    storage.setItem(EXPLANATION_PROMPT_KEY, "1");
+  };
+
   const handleSubmit = () => {
     if (showFeedback) return;
     const totalPlaced = Object.values(itemsByProcess).reduce((sum, processItems) => sum + processItems.length, 0);
@@ -545,8 +566,10 @@ export function ClassificationActivity({
     const missingExplanation = Object.values(itemsByProcess).some((processItems) =>
       processItems.some((item) => !explanations[item.id]?.trim())
     );
-    if (missingExplanation) {
-      setSubmitError(t("classification.explanationRequired"));
+    if (missingExplanation && !hasShownExplanationPrompt()) {
+      setSubmitError(null);
+      setExplanationPromptOpen(true);
+      markExplanationPromptSeen();
       return;
     }
 
@@ -771,6 +794,20 @@ export function ClassificationActivity({
           </AlertDescription>
         </Alert>
       )}
+
+      <AlertDialog open={explanationPromptOpen} onOpenChange={setExplanationPromptOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("classification.explanationSuggestedTitle")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("classification.explanationSuggestedBody")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction>{t("classification.explanationSuggestedCta")}</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Drop Zones - 6 process categories */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">

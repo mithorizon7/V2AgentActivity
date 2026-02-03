@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useMemo } from "react";
+import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { AgentProcess, ClassificationItem, ClassificationSubmission } from "@shared/schema";
 import { Button } from "@/components/ui/button";
@@ -6,9 +6,20 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Brain, Wrench, AlertCircle, CheckCircle2, ArrowLeft, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useConsent, safeLocalStorage } from "@/hooks/useConsent";
+
+const EXPLANATION_PROMPT_KEY = "phase1_guided_explanation_prompt_v1";
 
 type DraggableItemProps = {
   item: ClassificationItem;
@@ -230,6 +241,8 @@ export function Phase1Guided({ items, onComplete, onBack }: Phase1GuidedProps) {
   });
   
   const [draggedItem, setDraggedItem] = useState<ClassificationItem | null>(null);
+  const explanationPromptSeenRef = useRef(false);
+  const [explanationPromptOpen, setExplanationPromptOpen] = useState(false);
   const [explanations, setExplanations] = useState<Record<string, string>>(() => {
     const saved = storage.getItem("phase1_guided_explanations_v1");
     if (saved) {
@@ -370,6 +383,14 @@ export function Phase1Guided({ items, onComplete, onBack }: Phase1GuidedProps) {
     return prompts[process as keyof typeof prompts] || [];
   };
 
+  const hasShownExplanationPrompt = () =>
+    explanationPromptSeenRef.current || storage.getItem(EXPLANATION_PROMPT_KEY) === "1";
+
+  const markExplanationPromptSeen = () => {
+    explanationPromptSeenRef.current = true;
+    storage.setItem(EXPLANATION_PROMPT_KEY, "1");
+  };
+
   const handleSubmit = () => {
     const sortedItems = [...itemsByProcess.perception, ...itemsByProcess.execution];
     
@@ -381,8 +402,10 @@ export function Phase1Guided({ items, onComplete, onBack }: Phase1GuidedProps) {
 
     // Check all explanations present
     const missingExplanations = sortedItems.some(item => !explanations[item.id]?.trim());
-    if (missingExplanations) {
-      setSubmitError(t("classification.explanationRequired"));
+    if (missingExplanations && !hasShownExplanationPrompt()) {
+      setSubmitError(null);
+      setExplanationPromptOpen(true);
+      markExplanationPromptSeen();
       return;
     }
     setSubmitError(null);
@@ -443,7 +466,7 @@ export function Phase1Guided({ items, onComplete, onBack }: Phase1GuidedProps) {
               data-testid="button-back-to-examples"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              {t("workedExample.title")}
+              {t("guided.backToWorkedExample", { page: t("workedExample.title") })}
             </Button>
           )}
           <p className="text-sm text-muted-foreground">
@@ -486,6 +509,20 @@ export function Phase1Guided({ items, onComplete, onBack }: Phase1GuidedProps) {
           </AlertDescription>
         </Alert>
       )}
+
+      <AlertDialog open={explanationPromptOpen} onOpenChange={setExplanationPromptOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("classification.explanationSuggestedTitle")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("classification.explanationSuggestedBody")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction>{t("classification.explanationSuggestedCta")}</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* 2-bin layout: Perception vs Execution */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

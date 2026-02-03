@@ -207,7 +207,7 @@ export const classifyRequestSchema = z.object({
   submissions: z.array(z.object({
     itemId: z.string().min(1),
     selectedProcess: z.enum(agentProcesses),
-    explanation: z.string().min(1, "Explanation is required"),
+    explanation: z.string(),
   })).min(1, "At least one submission is required"),
   confidence: z.number().min(0).max(100),
 });
