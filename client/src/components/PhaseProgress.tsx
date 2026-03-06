@@ -8,6 +8,7 @@ export type Phase = {
   completed: boolean;
   current: boolean;
   canProceed?: boolean; // Optional: controls connector line, defaults to `completed`
+  enabled?: boolean;
 };
 
 type PhaseProgressProps = {
@@ -23,16 +24,22 @@ export function PhaseProgress({ phases, onPhaseClick }: PhaseProgressProps) {
       <div className="max-w-7xl mx-auto px-3 sm:px-6 py-3 sm:py-4">
         <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto scrollbar-hide">
           {phases.map((phase, index) => {
-            const isClickable = onPhaseClick;
+            const isClickable = Boolean(onPhaseClick) && (phase.enabled ?? true);
             
             return (
               <div key={phase.id} className="flex items-center flex-shrink-0">
                 <button
-                  onClick={() => isClickable && onPhaseClick(phase.id)}
+                  onClick={() => {
+                    if (isClickable) {
+                      onPhaseClick?.(phase.id);
+                    }
+                  }}
+                  disabled={!isClickable}
                   data-testid={`phase-step-${phase.id}`}
                   className={cn(
                     "flex items-center gap-2 sm:gap-3 transition-all min-h-[44px] min-w-[44px] sm:min-h-[auto] sm:min-w-0",
-                    isClickable && "cursor-pointer hover-elevate active-elevate-2"
+                    isClickable && "cursor-pointer hover-elevate active-elevate-2",
+                    !isClickable && "cursor-not-allowed opacity-70"
                   )}
                   aria-label={t("phaseProgress.phaseLabel", { id: phase.id, name: phase.name })}
                   aria-current={phase.current ? "step" : undefined}

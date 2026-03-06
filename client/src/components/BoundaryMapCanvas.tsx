@@ -35,12 +35,14 @@ const AVAILABLE_ELEMENTS: DraggableElement[] = [
 
 type BoundaryMapCanvasProps = {
   onSave: (elements: BoundaryElement[], connections: BoundaryConnection[]) => void;
+  onChange?: (elements: BoundaryElement[], connections: BoundaryConnection[]) => void;
   initialElements?: BoundaryElement[];
   initialConnections?: BoundaryConnection[];
 };
 
 export function BoundaryMapCanvas({
   onSave,
+  onChange,
   initialElements = [],
   initialConnections = [],
 }: BoundaryMapCanvasProps) {
@@ -169,6 +171,10 @@ export function BoundaryMapCanvas({
   const handleSave = () => {
     onSave(placedElements, connections);
   };
+
+  useEffect(() => {
+    onChange?.(placedElements, connections);
+  }, [placedElements, connections, onChange]);
 
   const announce = useCallback((message: string) => {
     setAnnouncement(message);

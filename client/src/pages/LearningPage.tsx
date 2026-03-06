@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
 import { PhaseProgress, Phase } from "@/components/PhaseProgress";
@@ -23,6 +23,7 @@ import { HighContrastToggle } from "@/components/HighContrastToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import MITOpenLearningLogo from "@assets/Open-Learning-logo-revised copy_1762811060793.png";
 import {
   Select,
@@ -78,6 +79,47 @@ const FIXTURE_I18N_MAP: Record<string, { nameKey: string; descriptionKey: string
     descriptionKey: "healthCoach.fixtures.noisySensors.description",
   },
 };
+
+const MIN_BOUNDARY_ELEMENTS = 3;
+const MIN_BOUNDARY_CONNECTIONS = 4;
+const REQUIRED_BOUNDARY_PROCESSES: AgentProcess[] = ["perception", "reasoning", "planning", "execution"];
+
+type BoundaryRequirementStatus = {
+  hasMinimumElements: boolean;
+  hasMinimumConnections: boolean;
+  missingCoreProcesses: AgentProcess[];
+  hasSensorToPerception: boolean;
+  hasExecutionToExternalAction: boolean;
+};
+
+function evaluateBoundaryRequirements(
+  elements: BoundaryElement[],
+  connections: BoundaryConnection[]
+): BoundaryRequirementStatus {
+  const connectedProcesses = new Set(connections.map((connection) => connection.process));
+  const missingCoreProcesses = REQUIRED_BOUNDARY_PROCESSES.filter((process) => !connectedProcesses.has(process));
+
+  const hasSensorToPerception = connections.some((connection) => {
+    const element = elements.find((candidate) => candidate.id === connection.elementId);
+    return element?.type === "sensor" && connection.process === "perception";
+  });
+
+  const hasExecutionToExternalAction = connections.some((connection) => {
+    const element = elements.find((candidate) => candidate.id === connection.elementId);
+    return (
+      connection.process === "execution" &&
+      (element?.type === "ui" || element?.type === "log" || element?.type === "api")
+    );
+  });
+
+  return {
+    hasMinimumElements: elements.length >= MIN_BOUNDARY_ELEMENTS,
+    hasMinimumConnections: connections.length >= MIN_BOUNDARY_CONNECTIONS,
+    missingCoreProcesses,
+    hasSensorToPerception,
+    hasExecutionToExternalAction,
+  };
+}
 
 type FeedbackItem = {
   type: "correct" | "incorrect" | "hint" | "confusion";
@@ -301,6 +343,24 @@ export default function LearningPage() {
   const [executionContext, setExecutionContext] = useState<RuntimeCtx | null>(null);
   const [isRunning, setIsRunning] = useState(false);
   const [runCount, setRunCount] = useState(0);
+  const [hasRunWithFailure, setHasRunWithFailure] = useState(false);
+
+  const canNavigateToPhase = useCallback((phaseId: number): boolean => {
+    if (phaseId === 1) return true;
+    if (phaseId === 2) {
+      return phaseCompletion["1"] || currentStage === 2 || isBridgeStage(currentStage);
+    }
+    if (phaseId === 3) {
+      return (phaseCompletion["2"] && bridgeStagesComplete) || currentStage === 3;
+    }
+    if (phaseId === 4) {
+      return phaseCompletion["3"] || currentStage === 4;
+    }
+    if (phaseId === 5) {
+      return phaseCompletion["4"] || currentStage === 5;
+    }
+    return false;
+  }, [phaseCompletion, currentStage, bridgeStagesComplete]);
 
   const phases: Phase[] = [
     {
@@ -308,6 +368,7 @@ export default function LearningPage() {
       name: t("phases.phase1"),
       completed: phaseCompletion["1"],
       current: currentStage === 1,
+      enabled: canNavigateToPhase(1),
     },
     {
       id: 2,
@@ -317,24 +378,28 @@ export default function LearningPage() {
       completed: phaseCompletion["2"],
       canProceed: bridgeStagesComplete,
       current: currentStage === 2 || isBridgeStage(currentStage),
+      enabled: canNavigateToPhase(2),
     },
     {
       id: 3,
       name: t("phases.phase3"),
       completed: phaseCompletion["3"],
       current: currentStage === 3,
+      enabled: canNavigateToPhase(3),
     },
     {
       id: 4,
       name: t("phases.phase4"),
       completed: phaseCompletion["4"],
       current: currentStage === 4,
+      enabled: canNavigateToPhase(4),
     },
     {
       id: 5,
       name: t("phases.phase5"),
       completed: phaseCompletion["5"],
       current: currentStage === 5,
+      enabled: canNavigateToPhase(5),
     },
   ];
 
@@ -492,7 +557,7 @@ export default function LearningPage() {
   };
 
   useEffect(() => {
-    if (currentStage === 5 && !phaseCompletion["5"]) {
+    if (currentStage === 5 && phaseCompletion["4"] && !phaseCompletion["5"]) {
       markPhaseComplete(5);
     }
   }, [currentStage, phaseCompletion, markPhaseComplete]);
@@ -527,53 +592,40 @@ export default function LearningPage() {
     setBoundaryElements(elements);
     setBoundaryConnections(connections);
 
-    // Validation: Require minimum mapping effort
-    const MIN_ELEMENTS = 3;
-    const MIN_CONNECTIONS = 4; // At least one per core process
-    
-    if (elements.length < MIN_ELEMENTS) {
-      setBoundaryMapFeedback(t("boundaryMap.feedback.needMoreElements", { count: MIN_ELEMENTS }));
-      return;
-    }
+    const boundaryStatus = evaluateBoundaryRequirements(elements, connections);
 
-    if (connections.length < MIN_CONNECTIONS) {
-      setBoundaryMapFeedback(t("boundaryMap.feedback.needMoreConnections", { count: MIN_CONNECTIONS }));
-      return;
-    }
-
-    // Check if at least perception, reasoning, planning, and execution have connections
-    const connectedProcesses = new Set(connections.map(c => c.process));
-    const requiredProcesses: AgentProcess[] = ["perception", "reasoning", "planning", "execution"];
-    const missingProcesses = requiredProcesses.filter(p => !connectedProcesses.has(p));
-
-    if (missingProcesses.length > 0) {
+    if (!boundaryStatus.hasMinimumElements) {
       setBoundaryMapFeedback(
-        t("boundaryMap.feedback.missingProcesses", { 
-          processes: missingProcesses.join(", ") 
+        t("boundaryMap.feedback.needMoreElements", { count: MIN_BOUNDARY_ELEMENTS })
+      );
+      return;
+    }
+
+    if (!boundaryStatus.hasMinimumConnections) {
+      setBoundaryMapFeedback(
+        t("boundaryMap.feedback.needMoreConnections", { count: MIN_BOUNDARY_CONNECTIONS })
+      );
+      return;
+    }
+
+    if (boundaryStatus.missingCoreProcesses.length > 0) {
+      const translatedProcesses = boundaryStatus.missingCoreProcesses
+        .map((process) => t(`processes.${process}`))
+        .join(", ");
+      setBoundaryMapFeedback(
+        t("boundaryMap.feedback.missingProcesses", {
+          processes: translatedProcesses,
         })
       );
       return;
     }
 
-    // New validation: Check for required element type → process connections (4+2 framework)
-    // Sensor → Perception: Sensors provide input data that must be perceived
-    const hasSensorToPerception = connections.some(conn => {
-      const element = elements.find(e => e.id === conn.elementId);
-      return element?.type === "sensor" && conn.process === "perception";
-    });
-
-    if (!hasSensorToPerception) {
+    if (!boundaryStatus.hasSensorToPerception) {
       setBoundaryMapFeedback(t("boundaryMap.feedback.needSensorToPerception"));
       return;
     }
 
-    // Execution → Tool/UI/API: Execution requires tools, APIs, or UI to interact with the world
-    const hasExecutionToToolOrUI = connections.some(conn => {
-      const element = elements.find(e => e.id === conn.elementId);
-      return conn.process === "execution" && (element?.type === "ui" || element?.type === "log" || element?.type === "api");
-    });
-
-    if (!hasExecutionToToolOrUI) {
+    if (!boundaryStatus.hasExecutionToExternalAction) {
       setBoundaryMapFeedback(t("boundaryMap.feedback.needExecutionToTool"));
       return;
     }
@@ -597,6 +649,14 @@ export default function LearningPage() {
       markPhaseComplete(2);
     }
   };
+
+  const handleBoundaryMapChange = useCallback((elements: BoundaryElement[], connections: BoundaryConnection[]) => {
+    setBoundaryElements(elements);
+    setBoundaryConnections(connections);
+    if (boundaryMapFeedback) {
+      setBoundaryMapFeedback(null);
+    }
+  }, [boundaryMapFeedback]);
 
   const handleBlockSelect = (process: Process, block: Block) => {
     setSelectedBlocks((prev) => ({ ...prev, [process]: block }));
@@ -669,6 +729,10 @@ export default function LearningPage() {
         missingTool: failureModes.find((f) => f.id === "missing-tool")?.enabled ? "sendNotification" : undefined,
         staleMemory: failureModes.find((f) => f.id === "stale-memory")?.enabled,
       };
+      const hasActiveFailure =
+        Boolean(activeFailures.noisyInput) ||
+        Boolean(activeFailures.missingTool) ||
+        Boolean(activeFailures.staleMemory);
 
       ctx = applyFailures(ctx, activeFailures);
 
@@ -708,6 +772,9 @@ export default function LearningPage() {
       setSimulationSteps(steps);
       setExecutionContext(result);
       setHasRunOnce(true);
+      if (hasActiveFailure) {
+        setHasRunWithFailure(true);
+      }
       setRunCount((prev) => prev + 1);
     } finally {
       setIsRunning(false);
@@ -747,6 +814,146 @@ export default function LearningPage() {
   };
   const classificationAccuracy = feedbackData?.accuracy ?? assessmentScores?.classificationAccuracy ?? 0;
   const classificationMastered = classificationAccuracy >= 80;
+  const primerComplete = storage.getItem("primerComplete") === "true" || currentStage !== "primer";
+  const firstSimulationRunComplete = hasRunOnce || phaseCompletion["4"];
+  const phase4ReadyToComplete = hasRunOnce || phaseCompletion["4"];
+
+  const boundaryChecklistStatus = useMemo(
+    () => evaluateBoundaryRequirements(boundaryElements, boundaryConnections),
+    [boundaryElements, boundaryConnections]
+  );
+
+  const currentStageLabel = useMemo(() => {
+    switch (currentStage) {
+      case "primer":
+        return t("primer.title");
+      case "workedExample":
+        return t("workedExample.title");
+      case "guidedPractice":
+        return t("guided.title");
+      case "circuitBridge":
+        return t("bridge.title");
+      case "memoryConnectionsPractice":
+        return t("memoryPractice.title");
+      default:
+        return t(`phases.phase${currentStage}`);
+    }
+  }, [currentStage, t]);
+
+  const currentStageObjective = useMemo(() => {
+    switch (currentStage) {
+      case "primer":
+        return t("primer.subtitle");
+      case "workedExample":
+        return t("workedExample.subtitle");
+      case "guidedPractice":
+        return t("guided.description");
+      case 1:
+        return t("classification.independentDescription");
+      case 2:
+        return t("boundaryMap.description");
+      case "circuitBridge":
+        return t("bridge.subtitle");
+      case "memoryConnectionsPractice":
+        return t("memoryPractice.subtitle");
+      case 3:
+        return t("circuit.description");
+      case 4:
+        return t("simulation.description");
+      case 5:
+      default:
+        return t("assessment.description");
+    }
+  }, [currentStage, t]);
+
+  const recommendedNextAction = useMemo(() => {
+    switch (currentStage) {
+      case "primer":
+        return t("primer.continueToDemo");
+      case "workedExample":
+        return t("workedExample.readyToSummarize");
+      case "guidedPractice":
+        return t("guided.checkAnswers");
+      case 1:
+        return showFeedback ? t("classification.continueToPhase2") : t("classification.submitCheck");
+      case 2:
+        return phaseCompletion["2"] ? t("navigation.nextPhase") : t("boundaryMap.saveMap");
+      case "circuitBridge":
+        return t("bridge.seeConnection");
+      case "memoryConnectionsPractice":
+        return t("common.continue");
+      case 3:
+        return phaseCompletion["3"] ? t("navigation.nextPhase") : t("circuit.testYourAgent");
+      case 4:
+        return phase4ReadyToComplete ? t("simulation.completePhase") : t("simulation.runDemo");
+      case 5:
+      default:
+        return t("navigation.backToHome");
+    }
+  }, [currentStage, showFeedback, phaseCompletion, phase4ReadyToComplete, t]);
+
+  const journeySteps = useMemo(
+    () => [
+      { id: "primer", label: t("primer.title"), complete: primerComplete },
+      { id: "phase1", label: t("phases.phase1"), complete: phaseCompletion["1"] },
+      { id: "phase2", label: t("phases.phase2"), complete: phaseCompletion["2"] },
+      { id: "phase3", label: t("phases.phase3"), complete: phaseCompletion["3"] },
+      { id: "first-run", label: t("simulation.runDemo"), complete: firstSimulationRunComplete },
+    ],
+    [t, primerComplete, phaseCompletion, firstSimulationRunComplete]
+  );
+
+  const journeyCompletedCount = journeySteps.filter((step) => step.complete).length;
+  const journeyProgress = Math.round((journeyCompletedCount / journeySteps.length) * 100);
+
+  const boundaryChecklistRows = useMemo(
+    () => [
+      {
+        id: "elements",
+        complete: boundaryChecklistStatus.hasMinimumElements,
+        label: t("boundaryMap.feedback.needMoreElements", { count: MIN_BOUNDARY_ELEMENTS }),
+      },
+      {
+        id: "connections",
+        complete: boundaryChecklistStatus.hasMinimumConnections,
+        label: t("boundaryMap.feedback.needMoreConnections", { count: MIN_BOUNDARY_CONNECTIONS }),
+      },
+      {
+        id: "core-processes",
+        complete: boundaryChecklistStatus.missingCoreProcesses.length === 0,
+        label: t("boundaryMap.feedback.missingProcesses", {
+          processes: REQUIRED_BOUNDARY_PROCESSES.map((process) => t(`processes.${process}`)).join(", "),
+        }),
+      },
+      {
+        id: "sensor-perception",
+        complete: boundaryChecklistStatus.hasSensorToPerception,
+        label: t("boundaryMap.feedback.needSensorToPerception"),
+      },
+      {
+        id: "execution-external",
+        complete: boundaryChecklistStatus.hasExecutionToExternalAction,
+        label: t("boundaryMap.feedback.needExecutionToTool"),
+      },
+    ],
+    [boundaryChecklistStatus, t]
+  );
+
+  const boundaryChecklistCompletionPercent = Math.round(
+    (boundaryChecklistRows.filter((row) => row.complete).length / boundaryChecklistRows.length) * 100
+  );
+
+  const simulationChecklistRows = useMemo(
+    () => [
+      { id: "first-run", complete: hasRunOnce, label: t("simulation.runDemo") },
+      { id: "failure-run", complete: hasRunWithFailure, label: t("failureInjection.title") },
+    ],
+    [hasRunOnce, hasRunWithFailure, t]
+  );
+
+  const simulationChecklistCompletionPercent = Math.round(
+    (simulationChecklistRows.filter((row) => row.complete).length / simulationChecklistRows.length) * 100
+  );
 
   return (
     <div className="min-h-screen bg-background">
@@ -767,14 +974,56 @@ export default function LearningPage() {
         <HighContrastToggle />
       </div>
       {isMainPhase(currentStage) && <PhaseProgress phases={phases} onPhaseClick={(id) => {
-        // Gate Phase 3: requires bridge stages complete
-        if (id === 3 && !bridgeStagesComplete) {
-          return; // Silently ignore - UI should show connector as incomplete
+        if (!canNavigateToPhase(id)) {
+          return;
         }
         setCurrentStage(id as LearningStage);
       }} />}
 
       <div id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 pt-16 sm:pt-14 pb-6 sm:pb-8">
+        <Card className="p-4 sm:p-6 mb-6 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h2 className="text-lg sm:text-xl font-semibold">{currentStageLabel}</h2>
+                <span className="text-xs px-2 py-0.5 rounded bg-primary/10 text-primary font-medium">
+                  {journeyProgress}%
+                </span>
+              </div>
+              <p className="text-sm text-muted-foreground leading-relaxed max-w-3xl">
+                {currentStageObjective}
+              </p>
+              <p className="text-sm">
+                <span className="font-medium">{t("navigation.nextPhase")}:</span> {recommendedNextAction}
+              </p>
+            </div>
+
+            <div className="w-full lg:max-w-sm space-y-3">
+              <div className="flex items-center justify-between text-xs text-muted-foreground">
+                <span>{t("assessment.overallProgress")}</span>
+                <span>{journeyCompletedCount}/{journeySteps.length}</span>
+              </div>
+              <Progress value={journeyProgress} className="h-2" />
+              <div className="space-y-1.5">
+                {journeySteps.map((step) => (
+                  <div key={step.id} className="flex items-start gap-2 text-xs sm:text-sm">
+                    <div
+                      className={cn(
+                        "mt-1 h-2.5 w-2.5 rounded-full flex-shrink-0",
+                        step.complete ? "bg-green-600" : "bg-muted-foreground/30"
+                      )}
+                      aria-hidden="true"
+                    />
+                    <span className={step.complete ? "text-foreground" : "text-muted-foreground"}>
+                      {step.label}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </Card>
+
         {currentStage === 'primer' && (
           <Primer onComplete={handlePrimerComplete} />
         )}
@@ -1035,8 +1284,33 @@ export default function LearningPage() {
               </div>
             </div>
 
+            <Card className="p-5 border-2 border-primary/20" data-testid="card-boundary-requirements">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between gap-3">
+                  <h3 className="font-semibold">{t("boundaryMap.completeRequirements")}</h3>
+                  <span className="text-sm text-muted-foreground">{boundaryChecklistCompletionPercent}%</span>
+                </div>
+                <Progress value={boundaryChecklistCompletionPercent} className="h-2" />
+                <div className="space-y-2">
+                  {boundaryChecklistRows.map((row) => (
+                    <div key={row.id} className="flex items-start gap-2">
+                      {row.complete ? (
+                        <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      ) : (
+                        <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+                      )}
+                      <p className={cn("text-sm", row.complete ? "text-foreground" : "text-muted-foreground")}>
+                        {row.label}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Card>
+
             <BoundaryMapCanvas 
               onSave={handleBoundaryMapSave}
+              onChange={handleBoundaryMapChange}
               initialElements={boundaryElements}
               initialConnections={boundaryConnections}
             />
@@ -1061,8 +1335,8 @@ export default function LearningPage() {
 
             <PhaseNavigation
               onPrevious={navigateToPreviousStage}
-              onNext={!boundaryMapFeedback ? navigateToNextStage : undefined}
-              showNext={!boundaryMapFeedback}
+              onNext={phaseCompletion["2"] ? navigateToNextStage : undefined}
+              showNext={phaseCompletion["2"]}
             />
           </div>
         )}
@@ -1122,8 +1396,8 @@ export default function LearningPage() {
 
             <PhaseNavigation
               onPrevious={navigateToPreviousStage}
-              onNext={pipelineComplete ? navigateToNextStage : undefined}
-              showNext={pipelineComplete}
+              onNext={phaseCompletion["3"] ? navigateToNextStage : undefined}
+              showNext={phaseCompletion["3"]}
             />
           </div>
         )}
@@ -1205,7 +1479,6 @@ export default function LearningPage() {
                   onReset={() => {
                     setSimulationSteps([]);
                     setExecutionContext(null);
-                    setHasRunOnce(false);
                   }}
                   isRunning={isRunning}
                 />
@@ -1225,16 +1498,50 @@ export default function LearningPage() {
               </div>
             </div>
 
+            <Card className="p-6 border-primary/20 bg-primary/5">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between gap-3">
+                  <h3 className="font-semibold">{t("guidedCoach.badge")}</h3>
+                  <span className="text-sm text-muted-foreground">{simulationChecklistCompletionPercent}%</span>
+                </div>
+                <Progress value={simulationChecklistCompletionPercent} className="h-2" />
+                <div className="space-y-2">
+                  {simulationChecklistRows.map((row) => (
+                    <div key={row.id} className="flex items-start gap-2">
+                      {row.complete ? (
+                        <CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      ) : (
+                        <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+                      )}
+                      <p className={cn("text-sm", row.complete ? "text-foreground" : "text-muted-foreground")}>
+                        {row.label}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Card>
+
             <Card className="p-6">
-              <Button onClick={handlePhaseComplete} data-testid="button-complete-simulation">
+              <Button
+                onClick={handlePhaseComplete}
+                data-testid="button-complete-simulation"
+                disabled={!phase4ReadyToComplete}
+              >
                 {t("simulation.completePhase")}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
+              {!phase4ReadyToComplete && (
+                <p className="text-sm text-muted-foreground mt-3">
+                  {t("simulation.noLogs")}
+                </p>
+              )}
             </Card>
 
             <PhaseNavigation
               onPrevious={navigateToPreviousStage}
-              onNext={navigateToNextStage}
+              onNext={phase4ReadyToComplete ? navigateToNextStage : undefined}
+              showNext={phase4ReadyToComplete}
             />
           </div>
         )}
