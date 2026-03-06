@@ -21,7 +21,7 @@ export function useSession() {
 
   const createSession = useMutation({
     mutationFn: async () => {
-      const response = await apiRequest('GET', '/api/session/create');
+      const response = await apiRequest('POST', '/api/session/create');
       return await response.json() as { sessionId: string; progress: LearnerProgress };
     },
     onSuccess: (data: { sessionId: string; progress: LearnerProgress }) => {

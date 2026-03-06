@@ -483,6 +483,7 @@
     "dragItemsHere": "Drop capabilities here",
     "scramble": "Reset All",
     "submitCheck": "Check My Answers",
+    "sortAllItems": "Please sort all items before checking — try your best guess!",
     "explainPlaceholder": "Why does this belong here? (Tip: Mention what ACTION this performs)",
     "explanationRequired": "Please explain each choice — this helps you understand WHY, not just memorize WHERE",
     "explanationSuggestedTitle": "Quick tip",

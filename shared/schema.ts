@@ -19,6 +19,11 @@ export type User = typeof users.$inferSelect;
 
 export const agentProcesses = ["learning", "interaction", "perception", "reasoning", "planning", "execution"] as const;
 export type AgentProcess = typeof agentProcesses[number];
+export const sessionIdSchema = z
+  .string()
+  .min(8)
+  .max(128)
+  .regex(/^[a-zA-Z0-9_-]+$/, "Invalid session ID format");
 
 // Zod schema for AgentProcess validation
 export const agentProcessSchema = z.enum(agentProcesses);
@@ -203,7 +208,7 @@ export const failureModeSchema = z.object({
 
 // API request schemas
 export const classifyRequestSchema = z.object({
-  sessionId: z.string().min(1, "Session ID is required"),
+  sessionId: sessionIdSchema,
   submissions: z.array(z.object({
     itemId: z.string().min(1),
     selectedProcess: z.enum(agentProcesses),
@@ -213,19 +218,19 @@ export const classifyRequestSchema = z.object({
 });
 
 export const boundaryMapRequestSchema = z.object({
-  sessionId: z.string().min(1),
+  sessionId: sessionIdSchema,
   elements: z.array(boundaryElementSchema),
   connections: z.array(boundaryConnectionSchema),
 });
 
 export const circuitRequestSchema = z.object({
-  sessionId: z.string().min(1),
+  sessionId: sessionIdSchema,
   blocks: z.array(circuitBlockSchema),
   connections: z.array(circuitConnectionSchema),
 });
 
 export const simulateRequestSchema = z.object({
-  sessionId: z.string().min(1),
+  sessionId: sessionIdSchema,
   blockIds: z.object({
     perception: z.string().min(1),
     reasoning: z.string().min(1),
@@ -241,7 +246,7 @@ export const simulateRequestSchema = z.object({
 });
 
 export const insertProgressSchema = z.object({
-  sessionId: z.string(),
+  sessionId: sessionIdSchema,
   currentPhase: z.number().min(0).max(5),
   phaseCompletion: z.record(z.boolean()),
   classifications: z.array(z.object({

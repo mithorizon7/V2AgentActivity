@@ -555,6 +555,7 @@
     "dragItemsHere": "Novietojiet spējas šeit",
     "scramble": "Atiestatīt visu",
     "submitCheck": "Pārbaudīt atbildes",
+    "sortAllItems": "Lūdzu, sašķirojiet visus elementus pirms pārbaudes",
     "explainPlaceholder": "Kāpēc tas pieder šeit? (Padoms: Norādiet, kāda DARBĪBA tiek veikta)",
     "explanationRequired": "Lūdzu, paskaidrojiet katru izvēli — tas palīdz saprast KĀPĒC, nevis tikai atcerēties KUR",
     "explanationSuggestedTitle": "Ātrs padoms",

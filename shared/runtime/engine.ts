@@ -27,6 +27,12 @@ export async function runPipeline(
 
     try {
       current = await block.run(current);
+
+      // Blocks may signal failure without throwing (for controlled error handling).
+      // In that case, stop immediately and avoid emitting a misleading END_* success step.
+      if (current.success === false) {
+        return current;
+      }
       
       current.log.push({
         step: `END_${process.toUpperCase()}`,

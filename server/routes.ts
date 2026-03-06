@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { 
@@ -7,12 +7,80 @@ import {
   boundaryMapRequestSchema,
   circuitRequestSchema,
   simulateRequestSchema,
+  type BoundaryElement,
+  type BoundaryConnection,
+  type CircuitBlock,
+  type CircuitConnection,
 } from "@shared/schema";
 import { z } from "zod";
 import { runPipeline, applyFailures, createInitialContext } from "../shared/runtime/engine";
-import { Block, Process, RuntimeCtx, FailureConfig } from "../shared/runtime/types";
+import { Block, Process, FailureConfig, Fixture } from "../shared/runtime/types";
 import { ALL_BLOCKS } from "../shared/scenarios/health-coach/blocks";
 import fixturesData from "../shared/scenarios/health-coach/fixtures.json";
+import { randomUUID } from "crypto";
+
+const sessionIdParamSchema = z.object({
+  sessionId: z
+    .string()
+    .min(8)
+    .max(128)
+    .regex(/^[a-zA-Z0-9_-]+$/),
+});
+
+const FIXTURES: Fixture[] = fixturesData as Fixture[];
+
+function findDuplicateIds(ids: string[]): string[] {
+  const seen = new Set<string>();
+  const duplicates = new Set<string>();
+
+  ids.forEach((id) => {
+    if (seen.has(id)) {
+      duplicates.add(id);
+      return;
+    }
+    seen.add(id);
+  });
+
+  return Array.from(duplicates);
+}
+
+function validateBoundaryMapGraph(elements: BoundaryElement[], connections: BoundaryConnection[]) {
+  const duplicateElementIds = findDuplicateIds(elements.map((element) => element.id));
+  const duplicateConnectionIds = findDuplicateIds(connections.map((connection) => connection.id));
+  const validElementIds = new Set(elements.map((element) => element.id));
+  const danglingConnectionElementIds = Array.from(
+    new Set(
+      connections
+        .filter((connection) => !validElementIds.has(connection.elementId))
+        .map((connection) => connection.elementId)
+    )
+  );
+
+  return {
+    duplicateElementIds,
+    duplicateConnectionIds,
+    danglingConnectionElementIds,
+  };
+}
+
+function validateCircuitGraph(blocks: CircuitBlock[], connections: CircuitConnection[]) {
+  const duplicateBlockIds = findDuplicateIds(blocks.map((block) => block.id));
+  const duplicateConnectionIds = findDuplicateIds(connections.map((connection) => connection.id));
+  const validBlockIds = new Set(blocks.map((block) => block.id));
+  const danglingConnectionIds = connections
+    .filter((connection) => !validBlockIds.has(connection.from) || !validBlockIds.has(connection.to))
+    .map((connection) => connection.id);
+  const selfLoopConnectionIds = connections
+    .filter((connection) => connection.from === connection.to)
+    .map((connection) => connection.id);
+
+  return {
+    duplicateBlockIds,
+    duplicateConnectionIds,
+    danglingConnectionIds,
+    selfLoopConnectionIds,
+  };
+}
 
 export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/progress", async (req, res) => {
@@ -31,7 +99,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/progress/:sessionId", async (req, res) => {
     try {
-      const { sessionId } = req.params;
+      const { sessionId } = sessionIdParamSchema.parse(req.params);
       const progress = await storage.getProgress(sessionId);
       
       if (!progress) {
@@ -40,6 +108,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.json(progress);
     } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Invalid session ID" });
+      }
       res.status(500).json({ error: "Failed to retrieve progress" });
     }
   });
@@ -132,6 +203,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: "Session not found" });
       }
 
+      const graphValidation = validateBoundaryMapGraph(elements, connections);
+      if (
+        graphValidation.duplicateElementIds.length > 0 ||
+        graphValidation.duplicateConnectionIds.length > 0 ||
+        graphValidation.danglingConnectionElementIds.length > 0
+      ) {
+        return res.status(400).json({
+          error: "Invalid boundary map graph",
+          details: graphValidation,
+        });
+      }
+
       const completenessScore = Math.min(
         (elements.length / 4) * 50 + (connections.length / 6) * 50,
         100
@@ -165,6 +248,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const progress = await storage.getProgress(sessionId);
       if (!progress) {
         return res.status(404).json({ error: "Session not found" });
+      }
+
+      const graphValidation = validateCircuitGraph(blocks, connections);
+      if (
+        graphValidation.duplicateBlockIds.length > 0 ||
+        graphValidation.duplicateConnectionIds.length > 0 ||
+        graphValidation.danglingConnectionIds.length > 0 ||
+        graphValidation.selfLoopConnectionIds.length > 0
+      ) {
+        return res.status(400).json({
+          error: "Invalid circuit graph",
+          details: graphValidation,
+        });
       }
 
       const hasPerception = blocks.some((b) => b.type === "perception");
@@ -203,20 +299,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validated = simulateRequestSchema.parse(req.body);
       const { sessionId, blockIds, fixtureId, failureConfig = {} } = validated;
 
+      const progress = await storage.getProgress(sessionId);
+      if (!progress) {
+        return res.status(404).json({ error: "Session not found" });
+      }
+
       // Create block registry for easy lookup
       const blockRegistry = new Map<string, Block>();
       ALL_BLOCKS.forEach(block => blockRegistry.set(block.id, block));
 
       // Build pipeline from block IDs
-      const pipeline: Record<Process, Block> = {
+      const selectedBlocks: Record<Process, Block | undefined> = {
         perception: blockRegistry.get(blockIds.perception),
         reasoning: blockRegistry.get(blockIds.reasoning),
         planning: blockRegistry.get(blockIds.planning),
         execution: blockRegistry.get(blockIds.execution),
-      } as Record<Process, Block>;
+      };
 
       // Verify all blocks were found
-      const missingBlocks = Object.entries(pipeline)
+      const missingBlocks = Object.entries(selectedBlocks)
         .filter(([_, block]) => !block)
         .map(([process]) => process);
       
@@ -227,8 +328,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
+      const mismatchedBlocks = (Object.entries(selectedBlocks) as Array<[Process, Block]>)
+        .filter(([process, block]) => block.kind !== process)
+        .map(([process, block]) => ({
+          process,
+          blockId: block.id,
+          blockKind: block.kind,
+        }));
+
+      if (mismatchedBlocks.length > 0) {
+        return res.status(400).json({
+          error: "Block IDs do not match required process slots",
+          mismatchedBlocks,
+        });
+      }
+
+      const pipeline: Record<Process, Block> = {
+        perception: selectedBlocks.perception as Block,
+        reasoning: selectedBlocks.reasoning as Block,
+        planning: selectedBlocks.planning as Block,
+        execution: selectedBlocks.execution as Block,
+      };
+
       // Get fixture data
-      const fixture = fixturesData.find((f: any) => f.id === fixtureId);
+      const fixture = FIXTURES.find((candidate) => candidate.id === fixtureId);
       if (!fixture) {
         return res.status(400).json({ error: "Invalid fixture ID" });
       }
@@ -262,12 +385,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }));
 
       // Save to storage
-      const progress = await storage.getProgress(sessionId);
-      if (progress) {
-        await storage.updateProgress(sessionId, {
-          simulationResults: steps,
-        });
-      }
+      await storage.updateProgress(sessionId, {
+        simulationResults: steps,
+      });
 
       res.json({ 
         steps,
@@ -283,9 +403,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/session/create", async (req, res) => {
+  const createSessionHandler = async (_req: Request, res: Response) => {
     try {
-      const sessionId = `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      const sessionId = `session-${randomUUID()}`;
       
       const initialProgress = await storage.saveProgress({
         sessionId,
@@ -308,11 +428,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         },
       });
 
+      res.setHeader("Cache-Control", "no-store");
       res.json({ sessionId, progress: initialProgress });
     } catch (error) {
       res.status(500).json({ error: "Failed to create session" });
     }
-  });
+  };
+
+  app.post("/api/session/create", async (req, res) => createSessionHandler(req, res));
+  app.get("/api/session/create", async (req, res) => createSessionHandler(req, res));
 
   const httpServer = createServer(app);
   return httpServer;
