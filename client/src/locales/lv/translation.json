@@ -137,11 +137,26 @@
       "title": "Veidošana",
       "description": "Izstrādājiet un pārbaudiet pats savu aģentu ar 4+2 modeli, izvērtējiet tā darbību un iemācieties atpazīt tipiskās problēmas"
     },
+    "firstVisit": {
+      "badge": "Piemērots pirmajai reizei",
+      "title": "Kas notiks pēc sākšanas",
+      "description": "Jums nav jāmin secība. Kurss ved soli pa solim no pamata idejām līdz aģenta veidošanai un testēšanai.",
+      "step1Title": "Apgūstiet modeli",
+      "step1Description": "Sāciet ar īsu ievadu par 4 soļu ciklu un 2 palīgsistēmām.",
+      "step2Title": "Praktizējiet ar palīdzību",
+      "step2Description": "Vispirms apskatiet paraugus, tad izmēģiniet vadītu praksi, un tikai pēc tam pilno klasifikāciju.",
+      "step3Title": "Izveidojiet un pārbaudiet",
+      "step3Description": "Kartējiet aģenta vidi, izvēlieties tā iekšējos blokus un palaidiet to uz drošiem paraugu datiem.",
+      "step4Title": "Pārskatiet un atgriezieties",
+      "step4Description": "Noslēdziet ar rezultātu paneli un, ja vajag, atgriezieties pie jebkuras pabeigtas daļas.",
+      "footnote": "Programmēšana nav vajadzīga. Pie pabeigtajām sadaļām var atgriezties jebkurā brīdī."
+    },
     "ready": {
       "title": "Vai esat gatavs sākt?",
-      "badge": "5 interaktīvi posmi",
+      "badge": "Vadīts mācību ceļš",
       "description": "Šis kurss jums iemācīs MI aģentu darbības principus, sadalot tos vienkāršos elementos. Jūs uzzināsiet, ka aģenti darbojas četru soļu ciklā: nolasa ievades datus (Uztvere), saprot to nozīmi (Izpratne), pieņem lēmumus (Plānošana) un veic darbības (Izpilde). Procesā tie izmanto divas palīgsistēmas: Atmiņu pieredzes saglabāšanai un Rīkus mijiedarbībai ar ārpasauli. Jūs izveidosiet vienkāršu aģentu, izsekosiet tā darbībai soli pa solim un iemācīsieties atpazīt biežākās kļūdas. Programmēšanas prasmes nav vajadzīgas.",
-      "startButton": "Sākt mācības"
+      "note": "Sāciet šeit. Katrā ekrānā būs skaidri redzams, ko darīt tālāk.",
+      "startButton": "Sākt ar ievadu"
     },
     "methodology": "Balstīts uz kognitīvās meistarības, aktīvās atcerēšanās un metakognitīvās kalibrēšanas principiem maksimālai mācību efektivitātei"
   },
@@ -162,6 +177,81 @@
     "nextPhase": "Nākamais posms",
     "goHome": "Uz sākumlapu",
     "phaseNavigation": "Posmu navigācija"
+  },
+  "learningGuide": {
+    "badge": "Ko darīt tagad",
+    "followInOrder": "Ejiet cauri kursam secībā. Pabeigtie soļi paliek pieejami.",
+    "doNow": "Dariet tagad",
+    "doneWhen": "Varat doties tālāk, kad",
+    "nextAction": "Nākamā darbība",
+    "jumpToTask": "Pāriet uz uzdevumu",
+    "revisitNote": "Ja apjūkat, atgriezieties pie šī bloka. Tas vienmēr parāda nākamo noderīgo soli.",
+    "pathTitle": "Jūsu ceļš cauri kursam",
+    "complete": "Gatavs",
+    "current": "Tagad",
+    "upNext": "Tālāk",
+    "stages": {
+      "primer": {
+        "step1": "Apgūstiet 4 soļu darba ciklu un 2 palīgsistēmas.",
+        "step2": "Apskatiet, kā veselības trenera piemērs iziet cauri ciklam.",
+        "step3": "Atbildiet uz īsajiem jautājumiem, lai pārbaudītu, vai modelis ir skaidrs.",
+        "doneWhen": "Jūs varat izskaidrot katra soļa nozīmi un esat pabeidzis īso pārbaudi."
+      },
+      "workedExample": {
+        "step1": "Skatiet piemērus pa vienai kartītei.",
+        "step2": "Pirms atbildes atvēršanas miniet, kuram procesam tas pieder.",
+        "step3": "Salīdziniet savu domāšanu ar eksperta skaidrojumu.",
+        "doneWhen": "Jūs esat izgājis piemērus un redzat, kāpēc atbilst tieši šis process."
+      },
+      "guidedPractice": {
+        "step1": "Sašķirojiet vienkāršotās kartītes divās procesu grupās.",
+        "step2": "Ja nezināt, ko rakstīt, izmantojiet sākuma uzvednes.",
+        "step3": "Pārbaudiet darbu, lai atvērtu pilno aktivitāti.",
+        "doneWhen": "Jūs esat pārbaudījis vadīto praksi un sasniedzis patstāvīgo klasifikāciju."
+      },
+      "classification": {
+        "step1": "Sašķirojiet visas kartītes 6 procesu zonās.",
+        "step2": "Kad iespējams, pievienojiet katrai kartītei īsu skaidrojumu.",
+        "step3": "Nospiediet atbilžu pārbaudi un izlasiet atgriezenisko saiti.",
+        "doneWhen": "Jūs esat pārbaudījis darbu un izlēmis, vai mēģināt vēlreiz vai iet tālāk."
+      },
+      "boundaryMap": {
+        "step1": "Pievienojiet ārējās daļas, ar kurām aģents saskaras.",
+        "step2": "Savienojiet tās ar galvenajiem procesiem, līdz kontrolsaraksts kļūst zaļš.",
+        "step3": "Saglabājiet karti, lai virzītos tālāk.",
+        "doneWhen": "Kontrolsaraksts ir pabeigts un karte ir saglabāta."
+      },
+      "circuitBridge": {
+        "step1": "Salīdziniet robežu karti ar aģenta iekšējo cauruļvadu.",
+        "step2": "Pievērsiet uzmanību, kā ārējās ievades kļūst par iekšējiem apstrādes soļiem.",
+        "step3": "Turpiniet, kad šī saikne ir skaidra.",
+        "doneWhen": "Jūs varat izskaidrot atšķirību starp aģenta vidi un tā iekšējo cauruļvadu."
+      },
+      "memoryConnectionsPractice": {
+        "step1": "Izlemiet, kuri uzdevumi izmanto Atmiņu un kuri Savienojumus.",
+        "step2": "Pēc piemēriem atšķiriet saglabātas zināšanas no ārējiem rīkiem.",
+        "step3": "Turpiniet, kad atšķirība šķiet pārliecinoša.",
+        "doneWhen": "Jūs saprotat, kad aģents kaut ko atceras un kad tas izmanto ārēju resursu."
+      },
+      "circuit": {
+        "step1": "Izvēlieties vienu bloku katram no 4 cauruļvada soļiem.",
+        "step2": "Ja vēlaties vienkāršāku pirmo versiju, izmantojiet trenera paneli.",
+        "step3": "Saglabājiet cauruļvadu, lai atvērtu simulācijas posmu.",
+        "doneWhen": "Visiem 4 soļiem ir bloks, un jūsu aģents ir saglabāts."
+      },
+      "simulation": {
+        "step1": "Izvēlieties scenāriju un palaidiet aģentu vienu reizi normālā režīmā.",
+        "step2": "Izlasiet soli pa solim izsekojumu, lai redzētu, kas notika.",
+        "step3": "Ieslēdziet vienu kļūmi un palaidiet vēlreiz, lai salīdzinātu uzvedību.",
+        "doneWhen": "Jūs esat palaidis simulāciju un izpētījis vismaz vienu kļūmes režīmu."
+      },
+      "assessment": {
+        "step1": "Pārskatiet rezultātus klasifikācijā, kartēšanā, veidošanā un testēšanā.",
+        "step2": "Ja vēlaties uzlabot vienu jomu, atveriet jebkuru iepriekšējo posmu.",
+        "step3": "Atgriezieties sākumā, kad esat pabeidzis.",
+        "doneWhen": "Jūs zināt, ko saprotat labi un pie kā atgrieztos nākamreiz."
+      }
+    }
   },
   "ui": {
     "common": {

@@ -67,6 +67,61 @@ export default function HomePage() {
           </Card>
         </div>
 
+        <Card className="p-8 mb-12 border-primary/20 bg-gradient-to-br from-primary/5 via-background to-amber-50/40 dark:to-background">
+          <div className="space-y-6">
+            <div className="space-y-3 max-w-3xl">
+              <Badge variant="secondary">{t("homePage.firstVisit.badge")}</Badge>
+              <div>
+                <h2 className="text-2xl font-bold">{t("homePage.firstVisit.title")}</h2>
+                <p className="text-muted-foreground mt-2 leading-relaxed">
+                  {t("homePage.firstVisit.description")}
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+              {[
+                {
+                  step: "1",
+                  title: t("homePage.firstVisit.step1Title"),
+                  description: t("homePage.firstVisit.step1Description"),
+                },
+                {
+                  step: "2",
+                  title: t("homePage.firstVisit.step2Title"),
+                  description: t("homePage.firstVisit.step2Description"),
+                },
+                {
+                  step: "3",
+                  title: t("homePage.firstVisit.step3Title"),
+                  description: t("homePage.firstVisit.step3Description"),
+                },
+                {
+                  step: "4",
+                  title: t("homePage.firstVisit.step4Title"),
+                  description: t("homePage.firstVisit.step4Description"),
+                },
+              ].map((item) => (
+                <div key={item.step} className="rounded-xl border bg-background/80 p-5 space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-semibold">
+                      {item.step}
+                    </div>
+                    <h3 className="font-semibold leading-tight">{item.title}</h3>
+                  </div>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {item.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <p className="text-sm text-muted-foreground">
+              {t("homePage.firstVisit.footnote")}
+            </p>
+          </div>
+        </Card>
+
         <Card className="p-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="space-y-2 flex-1">
@@ -76,6 +131,9 @@ export default function HomePage() {
               </div>
               <p className="text-muted-foreground">
                 {t("homePage.ready.description")}
+              </p>
+              <p className="text-sm font-medium text-primary">
+                {t("homePage.ready.note")}
               </p>
             </div>
             <Button

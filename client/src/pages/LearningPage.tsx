@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
 import { PhaseProgress, Phase } from "@/components/PhaseProgress";
@@ -23,6 +23,7 @@ import { HighContrastToggle } from "@/components/HighContrastToggle";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import MITOpenLearningLogo from "@assets/Open-Learning-logo-revised copy_1762811060793.png";
 import {
@@ -83,6 +84,60 @@ const FIXTURE_I18N_MAP: Record<string, { nameKey: string; descriptionKey: string
 const MIN_BOUNDARY_ELEMENTS = 3;
 const MIN_BOUNDARY_CONNECTIONS = 4;
 const REQUIRED_BOUNDARY_PROCESSES: AgentProcess[] = ["perception", "reasoning", "planning", "execution"];
+const COURSE_STAGE_ORDER: LearningStage[] = [
+  "primer",
+  "workedExample",
+  "guidedPractice",
+  1,
+  2,
+  "circuitBridge",
+  "memoryConnectionsPractice",
+  3,
+  4,
+  5,
+];
+
+type GuideStageKey =
+  | "primer"
+  | "workedExample"
+  | "guidedPractice"
+  | "classification"
+  | "boundaryMap"
+  | "circuitBridge"
+  | "memoryConnectionsPractice"
+  | "circuit"
+  | "simulation"
+  | "assessment";
+
+function getGuideStageKey(stage: LearningStage): GuideStageKey {
+  switch (stage) {
+    case "primer":
+      return "primer";
+    case "workedExample":
+      return "workedExample";
+    case "guidedPractice":
+      return "guidedPractice";
+    case 1:
+      return "classification";
+    case 2:
+      return "boundaryMap";
+    case "circuitBridge":
+      return "circuitBridge";
+    case "memoryConnectionsPractice":
+      return "memoryConnectionsPractice";
+    case 3:
+      return "circuit";
+    case 4:
+      return "simulation";
+    case 5:
+    default:
+      return "assessment";
+  }
+}
+
+function isPastStage(currentStage: LearningStage, targetStage: LearningStage): boolean {
+  return COURSE_STAGE_ORDER.indexOf(currentStage) > COURSE_STAGE_ORDER.indexOf(targetStage);
+}
 
 type BoundaryRequirementStatus = {
   hasMinimumElements: boolean;
@@ -238,6 +293,17 @@ export default function LearningPage() {
     if (savedGuided !== "true") return 'guidedPractice';
     return 1;
   });
+  const stageTaskRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+  const registerStageTaskRef = (stageKey: string) => (node: HTMLDivElement | null) => {
+    stageTaskRefs.current[stageKey] = node;
+  };
+
+  const scrollToCurrentTask = useCallback(() => {
+    const target = stageTaskRefs.current[String(currentStage)];
+    if (!target) return;
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [currentStage]);
 
   // Persist stage changes to localStorage
   useEffect(() => {
@@ -814,8 +880,14 @@ export default function LearningPage() {
   };
   const classificationAccuracy = feedbackData?.accuracy ?? assessmentScores?.classificationAccuracy ?? 0;
   const classificationMastered = classificationAccuracy >= 80;
-  const primerComplete = storage.getItem("primerComplete") === "true" || currentStage !== "primer";
-  const firstSimulationRunComplete = hasRunOnce || phaseCompletion["4"];
+  const primerComplete = storage.getItem("primerComplete") === "true" || isPastStage(currentStage, "primer");
+  const workedExampleComplete =
+    storage.getItem("workedExampleComplete") === "true" || isPastStage(currentStage, "workedExample");
+  const guidedPracticeComplete =
+    storage.getItem("guidedPracticeComplete") === "true" || isPastStage(currentStage, "guidedPractice");
+  const circuitBridgeComplete = phaseCompletion["circuitBridge"] || isPastStage(currentStage, "circuitBridge");
+  const memoryConnectionsPracticeComplete =
+    phaseCompletion["memoryConnectionsPractice"] || isPastStage(currentStage, "memoryConnectionsPractice");
   const phase4ReadyToComplete = hasRunOnce || phaseCompletion["4"];
 
   const boundaryChecklistStatus = useMemo(
@@ -866,6 +938,8 @@ export default function LearningPage() {
     }
   }, [currentStage, t]);
 
+  const currentStageGuideKey = useMemo(() => getGuideStageKey(currentStage), [currentStage]);
+
   const recommendedNextAction = useMemo(() => {
     switch (currentStage) {
       case "primer":
@@ -892,19 +966,61 @@ export default function LearningPage() {
     }
   }, [currentStage, showFeedback, phaseCompletion, phase4ReadyToComplete, t]);
 
-  const journeySteps = useMemo(
-    () => [
-      { id: "primer", label: t("primer.title"), complete: primerComplete },
-      { id: "phase1", label: t("phases.phase1"), complete: phaseCompletion["1"] },
-      { id: "phase2", label: t("phases.phase2"), complete: phaseCompletion["2"] },
-      { id: "phase3", label: t("phases.phase3"), complete: phaseCompletion["3"] },
-      { id: "first-run", label: t("simulation.runDemo"), complete: firstSimulationRunComplete },
-    ],
-    [t, primerComplete, phaseCompletion, firstSimulationRunComplete]
+  const currentStageGuide = useMemo(
+    () => ({
+      steps: [1, 2, 3].map((stepNumber) => t(`learningGuide.stages.${currentStageGuideKey}.step${stepNumber}`)),
+      doneWhen: t(`learningGuide.stages.${currentStageGuideKey}.doneWhen`),
+    }),
+    [currentStageGuideKey, t]
   );
 
-  const journeyCompletedCount = journeySteps.filter((step) => step.complete).length;
-  const journeyProgress = Math.round((journeyCompletedCount / journeySteps.length) * 100);
+  const courseSteps = useMemo(
+    () => [
+      { id: "primer", label: t("primer.title"), complete: primerComplete, current: currentStage === "primer" },
+      {
+        id: "workedExample",
+        label: t("workedExample.title"),
+        complete: workedExampleComplete,
+        current: currentStage === "workedExample",
+      },
+      {
+        id: "guidedPractice",
+        label: t("guided.title"),
+        complete: guidedPracticeComplete,
+        current: currentStage === "guidedPractice",
+      },
+      { id: "phase1", label: t("phases.phase1"), complete: phaseCompletion["1"], current: currentStage === 1 },
+      { id: "phase2", label: t("phases.phase2"), complete: phaseCompletion["2"], current: currentStage === 2 },
+      {
+        id: "circuitBridge",
+        label: t("bridge.title"),
+        complete: circuitBridgeComplete,
+        current: currentStage === "circuitBridge",
+      },
+      {
+        id: "memoryConnectionsPractice",
+        label: t("memoryPractice.title"),
+        complete: memoryConnectionsPracticeComplete,
+        current: currentStage === "memoryConnectionsPractice",
+      },
+      { id: "phase3", label: t("phases.phase3"), complete: phaseCompletion["3"], current: currentStage === 3 },
+      { id: "phase4", label: t("phases.phase4"), complete: phaseCompletion["4"], current: currentStage === 4 },
+      { id: "phase5", label: t("phases.phase5"), complete: phaseCompletion["5"], current: currentStage === 5 },
+    ],
+    [
+      t,
+      currentStage,
+      primerComplete,
+      workedExampleComplete,
+      guidedPracticeComplete,
+      phaseCompletion,
+      circuitBridgeComplete,
+      memoryConnectionsPracticeComplete,
+    ]
+  );
+
+  const courseCompletedCount = courseSteps.filter((step) => step.complete).length;
+  const courseProgress = Math.round((courseCompletedCount / courseSteps.length) * 100);
 
   const boundaryChecklistRows = useMemo(
     () => [
@@ -982,41 +1098,103 @@ export default function LearningPage() {
 
       <div id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 pt-16 sm:pt-14 pb-6 sm:pb-8">
         <Card className="p-4 sm:p-6 mb-6 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
-          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-            <div className="space-y-2">
+          <div className="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(300px,0.8fr)]">
+            <div className="space-y-5">
               <div className="flex items-center gap-2 flex-wrap">
-                <h2 className="text-lg sm:text-xl font-semibold">{currentStageLabel}</h2>
-                <span className="text-xs px-2 py-0.5 rounded bg-primary/10 text-primary font-medium">
-                  {journeyProgress}%
-                </span>
+                <Badge variant="secondary">{t("learningGuide.badge")}</Badge>
+                <span className="text-xs text-muted-foreground">{t("learningGuide.followInOrder")}</span>
               </div>
-              <p className="text-sm text-muted-foreground leading-relaxed max-w-3xl">
-                {currentStageObjective}
-              </p>
-              <p className="text-sm">
-                <span className="font-medium">{t("navigation.nextPhase")}:</span> {recommendedNextAction}
-              </p>
+
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h2 className="text-lg sm:text-xl font-semibold">{currentStageLabel}</h2>
+                  <span className="text-xs px-2 py-0.5 rounded bg-primary/10 text-primary font-medium">
+                    {courseProgress}%
+                  </span>
+                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed max-w-3xl">
+                  {currentStageObjective}
+                </p>
+              </div>
+
+              <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(240px,0.72fr)]">
+                <div className="rounded-xl border bg-background/80 p-4 space-y-3">
+                  <h3 className="font-semibold">{t("learningGuide.doNow")}</h3>
+                  <ol className="space-y-2">
+                    {currentStageGuide.steps.map((step, index) => (
+                      <li key={`${currentStageGuideKey}-${index}`} className="flex items-start gap-3 text-sm">
+                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-primary text-xs font-semibold flex-shrink-0 mt-0.5">
+                          {index + 1}
+                        </div>
+                        <span className="leading-relaxed">{step}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+
+                <div className="rounded-xl border bg-background/80 p-4 space-y-3">
+                  <h3 className="font-semibold">{t("learningGuide.doneWhen")}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {currentStageGuide.doneWhen}
+                  </p>
+                  <p className="text-sm">
+                    <span className="font-medium">{t("learningGuide.nextAction")}:</span> {recommendedNextAction}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                <Button onClick={scrollToCurrentTask} data-testid="button-jump-to-task">
+                  {t("learningGuide.jumpToTask")}
+                </Button>
+                <p className="text-sm text-muted-foreground">
+                  {t("learningGuide.revisitNote")}
+                </p>
+              </div>
             </div>
 
-            <div className="w-full lg:max-w-sm space-y-3">
-              <div className="flex items-center justify-between text-xs text-muted-foreground">
-                <span>{t("assessment.overallProgress")}</span>
-                <span>{journeyCompletedCount}/{journeySteps.length}</span>
+            <div className="space-y-3 rounded-xl border bg-background/80 p-4">
+              <div className="flex items-center justify-between gap-3 text-sm">
+                <h3 className="font-semibold">{t("learningGuide.pathTitle")}</h3>
+                <span className="text-muted-foreground">{courseCompletedCount}/{courseSteps.length}</span>
               </div>
-              <Progress value={journeyProgress} className="h-2" />
-              <div className="space-y-1.5">
-                {journeySteps.map((step) => (
-                  <div key={step.id} className="flex items-start gap-2 text-xs sm:text-sm">
+              <Progress value={courseProgress} className="h-2" />
+              <div className="space-y-2">
+                {courseSteps.map((step) => (
+                  <div
+                    key={step.id}
+                    className={cn(
+                      "flex items-start justify-between gap-3 rounded-lg border px-3 py-2 text-sm",
+                      step.current && "border-primary/40 bg-primary/5",
+                      !step.current && "border-border/60"
+                    )}
+                  >
+                    <div className="flex items-start gap-2 min-w-0">
+                      <div
+                        className={cn(
+                          "mt-1 h-2.5 w-2.5 rounded-full flex-shrink-0",
+                          step.complete ? "bg-green-600" : step.current ? "bg-primary" : "bg-muted-foreground/30"
+                        )}
+                        aria-hidden="true"
+                      />
+                      <span className={cn("leading-relaxed", step.complete || step.current ? "text-foreground" : "text-muted-foreground")}>
+                        {step.label}
+                      </span>
+                    </div>
                     <div
                       className={cn(
-                        "mt-1 h-2.5 w-2.5 rounded-full flex-shrink-0",
-                        step.complete ? "bg-green-600" : "bg-muted-foreground/30"
+                        "text-[11px] font-medium px-2 py-0.5 rounded-full flex-shrink-0",
+                        step.complete && "bg-green-100 text-green-700 dark:bg-green-950/40 dark:text-green-300",
+                        step.current && !step.complete && "bg-primary/10 text-primary",
+                        !step.complete && !step.current && "bg-muted text-muted-foreground"
                       )}
-                      aria-hidden="true"
-                    />
-                    <span className={step.complete ? "text-foreground" : "text-muted-foreground"}>
-                      {step.label}
-                    </span>
+                    >
+                      {step.complete
+                        ? t("learningGuide.complete")
+                        : step.current
+                          ? t("learningGuide.current")
+                          : t("learningGuide.upNext")}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -1025,44 +1203,54 @@ export default function LearningPage() {
         </Card>
 
         {currentStage === 'primer' && (
-          <Primer onComplete={handlePrimerComplete} />
+          <div ref={registerStageTaskRef("primer")}>
+            <Primer onComplete={handlePrimerComplete} />
+          </div>
         )}
 
         {currentStage === 'workedExample' && (
-          <WorkedExample 
-            onComplete={handleWorkedExampleComplete} 
-            onBack={navigateToPreviousStage}
-          />
+          <div ref={registerStageTaskRef("workedExample")}>
+            <WorkedExample 
+              onComplete={handleWorkedExampleComplete} 
+              onBack={navigateToPreviousStage}
+            />
+          </div>
         )}
 
         {currentStage === 'guidedPractice' && (
-          <Phase1Guided 
-            items={CLASSIFICATION_ITEMS} 
-            onComplete={handleGuidedPracticeComplete}
-            onBack={navigateToPreviousStage}
-          />
+          <div ref={registerStageTaskRef("guidedPractice")}>
+            <Phase1Guided 
+              items={CLASSIFICATION_ITEMS} 
+              onComplete={handleGuidedPracticeComplete}
+              onBack={navigateToPreviousStage}
+            />
+          </div>
         )}
 
         {currentStage === 'circuitBridge' && (
-          <CircuitBridge
-            onComplete={() => {
-              markPhaseComplete('circuitBridge');
-              setCurrentStage('memoryConnectionsPractice');
-            }}
-            onBack={navigateToPreviousStage}
-            isAlreadyComplete={phaseCompletion['circuitBridge']}
-          />
+          <div ref={registerStageTaskRef("circuitBridge")}>
+            <CircuitBridge
+              onComplete={() => {
+                markPhaseComplete('circuitBridge');
+                setCurrentStage('memoryConnectionsPractice');
+              }}
+              onBack={navigateToPreviousStage}
+              isAlreadyComplete={phaseCompletion['circuitBridge']}
+            />
+          </div>
         )}
 
         {currentStage === 'memoryConnectionsPractice' && (
-          <MemoryConnectionsPractice
-            onComplete={() => {
-              markPhaseComplete('memoryConnectionsPractice');
-              setCurrentStage(3);
-            }}
-            onBack={navigateToPreviousStage}
-            isAlreadyComplete={phaseCompletion['memoryConnectionsPractice']}
-          />
+          <div ref={registerStageTaskRef("memoryConnectionsPractice")}>
+            <MemoryConnectionsPractice
+              onComplete={() => {
+                markPhaseComplete('memoryConnectionsPractice');
+                setCurrentStage(3);
+              }}
+              onBack={navigateToPreviousStage}
+              isAlreadyComplete={phaseCompletion['memoryConnectionsPractice']}
+            />
+          </div>
         )}
 
         {currentStage === 1 && (
@@ -1074,12 +1262,14 @@ export default function LearningPage() {
               </p>
             </div>
 
-            <ClassificationActivity
-              items={CLASSIFICATION_ITEMS}
-              onSubmit={handleClassificationSubmit}
-              showFeedback={showFeedback}
-              correctAnswers={feedbackData?.correctAnswers}
-            />
+            <div ref={registerStageTaskRef("1")}>
+              <ClassificationActivity
+                items={CLASSIFICATION_ITEMS}
+                onSubmit={handleClassificationSubmit}
+                showFeedback={showFeedback}
+                correctAnswers={feedbackData?.correctAnswers}
+              />
+            </div>
 
             {showFeedback && (
               <Card className="p-6">
@@ -1308,12 +1498,14 @@ export default function LearningPage() {
               </div>
             </Card>
 
-            <BoundaryMapCanvas 
-              onSave={handleBoundaryMapSave}
-              onChange={handleBoundaryMapChange}
-              initialElements={boundaryElements}
-              initialConnections={boundaryConnections}
-            />
+            <div ref={registerStageTaskRef("2")}>
+              <BoundaryMapCanvas 
+                onSave={handleBoundaryMapSave}
+                onChange={handleBoundaryMapChange}
+                initialElements={boundaryElements}
+                initialConnections={boundaryConnections}
+              />
+            </div>
 
             {boundaryMapFeedback && (
               <Card className="p-4 border-amber-500 bg-amber-50 dark:bg-amber-950/20">
@@ -1352,14 +1544,16 @@ export default function LearningPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2 space-y-6">
-                <FixedPipelineBuilder
-                  perceptionBlocks={PERCEPTION_BLOCKS}
-                  reasoningBlocks={REASONING_BLOCKS}
-                  planningBlocks={PLANNING_BLOCKS}
-                  executionBlocks={EXECUTION_BLOCKS}
-                  selectedBlocks={selectedBlocks}
-                  onBlockSelect={handleBlockSelect}
-                />
+                <div ref={registerStageTaskRef("3")}>
+                  <FixedPipelineBuilder
+                    perceptionBlocks={PERCEPTION_BLOCKS}
+                    reasoningBlocks={REASONING_BLOCKS}
+                    planningBlocks={PLANNING_BLOCKS}
+                    executionBlocks={EXECUTION_BLOCKS}
+                    selectedBlocks={selectedBlocks}
+                    onBlockSelect={handleBlockSelect}
+                  />
+                </div>
               </div>
 
               <div>
@@ -1413,64 +1607,66 @@ export default function LearningPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2 space-y-6">
-                <Card className="p-6 space-y-4">
-                  <div className="flex items-center gap-4">
-                    <div className="flex-1">
-                      <label className="text-sm font-medium mb-2 block">{t("simulation.testScenario")}</label>
-                      <Select value={selectedFixture} onValueChange={setSelectedFixture}>
-                        <SelectTrigger data-testid="fixture-selector">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {FIXTURES.map((fixture) => (
-                            <SelectItem key={fixture.id} value={fixture.id}>
-                              {getFixtureName(fixture)}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {getFixtureDescription(FIXTURES.find(f => f.id === selectedFixture))}
-                      </p>
+                <div ref={registerStageTaskRef("4")}>
+                  <Card className="p-6 space-y-4">
+                    <div className="flex items-center gap-4">
+                      <div className="flex-1">
+                        <label className="text-sm font-medium mb-2 block">{t("simulation.testScenario")}</label>
+                        <Select value={selectedFixture} onValueChange={setSelectedFixture}>
+                          <SelectTrigger data-testid="fixture-selector">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {FIXTURES.map((fixture) => (
+                              <SelectItem key={fixture.id} value={fixture.id}>
+                                {getFixtureName(fixture)}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {getFixtureDescription(FIXTURES.find(f => f.id === selectedFixture))}
+                        </p>
+                      </div>
+                      <Button
+                        size="lg"
+                        onClick={handleSimulationRun}
+                        disabled={!pipelineComplete || isRunning}
+                        data-testid="button-run-simulation"
+                        className="mt-6"
+                      >
+                        <Play className="w-4 h-4 mr-2" />
+                        {hasRunOnce ? t("simulation.runAgain") : t("simulation.runDemo")}
+                      </Button>
                     </div>
-                    <Button
-                      size="lg"
-                      onClick={handleSimulationRun}
-                      disabled={!pipelineComplete || isRunning}
-                      data-testid="button-run-simulation"
-                      className="mt-6"
-                    >
-                      <Play className="w-4 h-4 mr-2" />
-                      {hasRunOnce ? t("simulation.runAgain") : t("simulation.runDemo")}
-                    </Button>
-                  </div>
 
-                  {executionContext && (
-                    <div className="grid grid-cols-3 gap-4 pt-4 border-t">
-                      <div className="p-3 rounded-md bg-muted/50">
-                        <div className="text-xs text-muted-foreground mb-1">{t("simulation.metrics.result")}</div>
-                        <div className={cn(
-                          "text-base font-semibold",
-                          executionContext.success ? "text-green-600" : "text-red-600"
-                        )}>
-                          {executionContext.success ? t("simulation.metrics.success") : t("simulation.metrics.failed")}
+                    {executionContext && (
+                      <div className="grid grid-cols-3 gap-4 pt-4 border-t">
+                        <div className="p-3 rounded-md bg-muted/50">
+                          <div className="text-xs text-muted-foreground mb-1">{t("simulation.metrics.result")}</div>
+                          <div className={cn(
+                            "text-base font-semibold",
+                            executionContext.success ? "text-green-600" : "text-red-600"
+                          )}>
+                            {executionContext.success ? t("simulation.metrics.success") : t("simulation.metrics.failed")}
+                          </div>
+                        </div>
+                        <div className="p-3 rounded-md bg-muted/50">
+                          <div className="text-xs text-muted-foreground mb-1">{t("simulation.metrics.steps")}</div>
+                          <div className="text-base font-semibold">
+                            {Math.floor(simulationSteps.length / 2)}
+                          </div>
+                        </div>
+                        <div className="p-3 rounded-md bg-muted/50">
+                          <div className="text-xs text-muted-foreground mb-1">{t("simulation.metrics.toolCalls")}</div>
+                          <div className="text-base font-semibold">
+                            {executionContext.log.filter((l) => l.step.includes("EXECUTION")).length}
+                          </div>
                         </div>
                       </div>
-                      <div className="p-3 rounded-md bg-muted/50">
-                        <div className="text-xs text-muted-foreground mb-1">{t("simulation.metrics.steps")}</div>
-                        <div className="text-base font-semibold">
-                          {Math.floor(simulationSteps.length / 2)}
-                        </div>
-                      </div>
-                      <div className="p-3 rounded-md bg-muted/50">
-                        <div className="text-xs text-muted-foreground mb-1">{t("simulation.metrics.toolCalls")}</div>
-                        <div className="text-base font-semibold">
-                          {executionContext.log.filter((l) => l.step.includes("EXECUTION")).length}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </Card>
+                    )}
+                  </Card>
+                </div>
 
                 <SimulationTracer
                   steps={simulationSteps}
@@ -1555,14 +1751,16 @@ export default function LearningPage() {
               </p>
             </div>
 
-            <AssessmentDashboard
-              metrics={assessmentMetrics}
-              phaseCompletion={phaseCompletion}
-              onImproveExplanations={() => {
-                setShowFeedback(false);
-                setCurrentStage(1);
-              }}
-            />
+            <div ref={registerStageTaskRef("5")}>
+              <AssessmentDashboard
+                metrics={assessmentMetrics}
+                phaseCompletion={phaseCompletion}
+                onImproveExplanations={() => {
+                  setShowFeedback(false);
+                  setCurrentStage(1);
+                }}
+              />
+            </div>
 
             <PhaseNavigation
               onPrevious={navigateToPreviousStage}

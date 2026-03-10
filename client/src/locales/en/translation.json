@@ -137,11 +137,26 @@
       "title": "Build",
       "description": "Design and test your own agent using the 4+2 framework, evaluate its performance, and learn to identify common failure patterns"
     },
+    "firstVisit": {
+      "badge": "Best for first-time learners",
+      "title": "What will happen when you start",
+      "description": "You do not need to guess the order. The course guides you step by step from core ideas to building and testing an agent.",
+      "step1Title": "Learn the model",
+      "step1Description": "Start with a short primer on the 4-step loop and the 2 supporting systems.",
+      "step2Title": "Practice with guidance",
+      "step2Description": "See worked examples and try guided practice before doing the full classification on your own.",
+      "step3Title": "Build and test",
+      "step3Description": "Map the agent's world, choose its internal blocks, and run it on safe sample data.",
+      "step4Title": "Review and revisit",
+      "step4Description": "Finish with a dashboard of what you understood and jump back to any completed part.",
+      "footnote": "No coding required. Finished sections stay available if you want to go back."
+    },
     "ready": {
       "title": "Ready to Begin?",
-      "badge": "5 Interactive Phases",
+      "badge": "Guided learning path",
       "description": "This is designed to teach you how AI agents work by breaking them down into simple parts. You'll learn that agents follow a 4-step process: they read incoming information (Perception), figure out what it means (Reasoning), decide what to do (Planning), and then do it (Execution). Along the way, they use two support systems: Memory to remember past experiences, and Tools to take actions in the world. You'll build your own simple agent, watch it run step-by-step, and learn to spot common problems when things go wrong. No coding required.",
-      "startButton": "Start Learning"
+      "note": "Start here. Each screen will tell you exactly what to do next.",
+      "startButton": "Start with the Primer"
     },
     "methodology": "Designed with cognitive apprenticeship, retrieval practice, and metacognitive calibration to maximize learning outcomes"
   },
@@ -162,6 +177,81 @@
     "nextPhase": "Next Phase",
     "goHome": "Go to Home",
     "phaseNavigation": "Phase navigation"
+  },
+  "learningGuide": {
+    "badge": "What to do now",
+    "followInOrder": "Follow the course in order. Completed steps stay available.",
+    "doNow": "Do this now",
+    "doneWhen": "You are ready to move on when",
+    "nextAction": "Next action",
+    "jumpToTask": "Take me to the task",
+    "revisitNote": "If you get lost, come back to this guide box. It always shows the next useful move.",
+    "pathTitle": "Your path through the course",
+    "complete": "Done",
+    "current": "Now",
+    "upNext": "Up next",
+    "stages": {
+      "primer": {
+        "step1": "Learn the 4-step run loop and the 2 supporting systems.",
+        "step2": "Watch the health coach example move through the loop.",
+        "step3": "Answer the quick checks to confirm the model makes sense.",
+        "doneWhen": "You can explain what each stage does and you have finished the quick checks."
+      },
+      "workedExample": {
+        "step1": "Read one example card at a time.",
+        "step2": "Guess which process it belongs to before revealing the answer.",
+        "step3": "Compare your reasoning with the expert explanation.",
+        "doneWhen": "You have worked through the examples and can see why the correct process fits."
+      },
+      "guidedPractice": {
+        "step1": "Sort the simplified cards into the two process groups.",
+        "step2": "Use the starter prompts if you are unsure what to write.",
+        "step3": "Check your work to unlock the full activity.",
+        "doneWhen": "You have checked the guided practice and reached the independent classification stage."
+      },
+      "classification": {
+        "step1": "Sort every card into one of the 6 process areas.",
+        "step2": "Add a short explanation for each card when you can.",
+        "step3": "Click Check My Answers and review the feedback.",
+        "doneWhen": "You have checked your work and decided whether to retry or continue."
+      },
+      "boundaryMap": {
+        "step1": "Add the outside parts your agent touches.",
+        "step2": "Connect them to the core processes until the checklist turns green.",
+        "step3": "Save the map to move forward.",
+        "doneWhen": "The checklist is complete and your map has been saved."
+      },
+      "circuitBridge": {
+        "step1": "Compare the boundary map with the internal agent pipeline.",
+        "step2": "Look for how outside inputs become inside processing steps.",
+        "step3": "Continue once that connection feels clear.",
+        "doneWhen": "You can describe the difference between the agent's environment and its internal pipeline."
+      },
+      "memoryConnectionsPractice": {
+        "step1": "Decide which tasks use Memory and which use Connections.",
+        "step2": "Use the examples to tell apart stored knowledge from outside tools.",
+        "step3": "Continue when the distinction feels clear.",
+        "doneWhen": "You can tell when an agent is remembering something versus reaching outside itself."
+      },
+      "circuit": {
+        "step1": "Choose one block for each of the 4 pipeline stages.",
+        "step2": "Use the coach panel if you want a simpler first build.",
+        "step3": "Save the pipeline to open the simulation stage.",
+        "doneWhen": "All 4 stages have a block and your agent is saved."
+      },
+      "simulation": {
+        "step1": "Pick a test scenario and run the agent once with normal settings.",
+        "step2": "Read the step-by-step trace to see what happened.",
+        "step3": "Turn on a failure and run it again to compare behavior.",
+        "doneWhen": "You have run the simulation and explored at least one failure mode."
+      },
+      "assessment": {
+        "step1": "Review your scores across classification, mapping, building, and testing.",
+        "step2": "Reopen any earlier stage if you want to improve one area.",
+        "step3": "Return home when you are finished.",
+        "doneWhen": "You know which parts you understand well and which part you would revisit next."
+      }
+    }
   },
   "ui": {
     "common": {
