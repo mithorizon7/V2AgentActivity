@@ -7,6 +7,7 @@ import { BoundaryElement, BoundaryConnection, AgentProcess } from "@shared/schem
 import { getProcessColor } from "@/lib/processColors";
 import { Database, Wifi, Activity, Monitor, FileText, Trash2, Keyboard } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { createClientId } from "@/lib/clientIds";
 
 const ELEMENT_ICONS = {
   api: Wifi,
@@ -33,6 +34,45 @@ const AVAILABLE_ELEMENTS: DraggableElement[] = [
   { id: "chat-interface", labelKey: "boundaryMap.elements.chatInterface", type: "ui" },
 ];
 
+function areBoundaryElementsEqual(left: BoundaryElement[], right: BoundaryElement[]) {
+  return (
+    left.length === right.length &&
+    left.every((element, index) => {
+      const other = right[index];
+      return (
+        other &&
+        element.id === other.id &&
+        element.label === other.label &&
+        element.type === other.type &&
+        element.x === other.x &&
+        element.y === other.y
+      );
+    })
+  );
+}
+
+function areBoundaryConnectionsEqual(left: BoundaryConnection[], right: BoundaryConnection[]) {
+  return (
+    left.length === right.length &&
+    left.every((connection, index) => {
+      const other = right[index];
+      return (
+        other &&
+        connection.id === other.id &&
+        connection.elementId === other.elementId &&
+        connection.process === other.process &&
+        connection.label === other.label
+      );
+    })
+  );
+}
+
+function findElementDefinition(elementId: string) {
+  return AVAILABLE_ELEMENTS.find(
+    (candidate) => elementId === candidate.id || elementId.startsWith(`${candidate.id}-`),
+  );
+}
+
 type BoundaryMapCanvasProps = {
   onSave: (elements: BoundaryElement[], connections: BoundaryConnection[]) => void;
   onChange?: (elements: BoundaryElement[], connections: BoundaryConnection[]) => void;
@@ -50,7 +90,6 @@ export function BoundaryMapCanvas({
   const [placedElements, setPlacedElements] = useState<BoundaryElement[]>(initialElements);
   const [connections, setConnections] = useState<BoundaryConnection[]>(initialConnections);
   const [selectedElement, setSelectedElement] = useState<string | null>(null);
-  const [selectedProcess, setSelectedProcess] = useState<AgentProcess | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   
   const [cursorX, setCursorX] = useState(0);
@@ -69,6 +108,43 @@ export function BoundaryMapCanvas({
   const deleteBackspaceLabel = `${t("keyboard.keyNames.delete")}/${t("keyboard.keyNames.backspace")}`;
   const ctrlEnterLabel = `${t("keyboard.keyNames.ctrl")}+${t("keyboard.keyNames.enter")}`;
 
+  const localizeElements = useCallback((elements: BoundaryElement[]) => {
+    return elements.map((element) => {
+      const definition = findElementDefinition(element.id);
+      if (!definition) {
+        return element;
+      }
+
+      const localizedLabel = t(definition.labelKey);
+      return element.label === localizedLabel
+        ? element
+        : { ...element, label: localizedLabel };
+    });
+  }, [t]);
+
+  const createBoundaryElement = useCallback((element: DraggableElement, x: number, y: number): BoundaryElement => {
+    return {
+      id: createClientId(element.id),
+      label: t(element.labelKey),
+      type: element.type,
+      x,
+      y,
+    };
+  }, [t]);
+
+  useEffect(() => {
+    const localizedElements = localizeElements(initialElements);
+    setPlacedElements((prev) => (
+      areBoundaryElementsEqual(prev, localizedElements) ? prev : localizedElements
+    ));
+  }, [initialElements, localizeElements]);
+
+  useEffect(() => {
+    setConnections((prev) => (
+      areBoundaryConnectionsEqual(prev, initialConnections) ? prev : initialConnections
+    ));
+  }, [initialConnections]);
+
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     const elementData = e.dataTransfer.getData("element");
@@ -83,16 +159,9 @@ export function BoundaryMapCanvas({
     const clampedX = Math.max(0, Math.min(x, maxX));
     const clampedY = Math.max(0, Math.min(y, maxY));
 
-    const newElement: BoundaryElement = {
-      id: `${element.id}-${Date.now()}`,
-      label: t(element.labelKey),
-      type: element.type,
-      x: clampedX,
-      y: clampedY,
-    };
-
+    const newElement = createBoundaryElement(element, clampedX, clampedY);
     setPlacedElements((prev) => [...prev, newElement]);
-  }, [t, canvasSize.width, canvasSize.height, ELEMENT_WIDTH, ELEMENT_HEIGHT, CANVAS_FALLBACK]);
+  }, [canvasSize.width, canvasSize.height, ELEMENT_WIDTH, ELEMENT_HEIGHT, CANVAS_FALLBACK, createBoundaryElement]);
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -137,6 +206,17 @@ export function BoundaryMapCanvas({
     });
   }, [canvasSize.width, canvasSize.height, CANVAS_FALLBACK, ELEMENT_WIDTH, ELEMENT_HEIGHT]);
 
+  useEffect(() => {
+    if (!selectedElement) {
+      return;
+    }
+
+    const elementStillExists = placedElements.some((element) => element.id === selectedElement);
+    if (!elementStillExists) {
+      setSelectedElement(null);
+    }
+  }, [placedElements, selectedElement]);
+
   const handleElementClick = useCallback((elementId: string) => {
     setSelectedElement(elementId);
   }, []);
@@ -152,7 +232,7 @@ export function BoundaryMapCanvas({
       setConnections((prev) => prev.filter((c) => c.id !== existingConnection.id));
     } else {
       const newConnection: BoundaryConnection = {
-        id: `${selectedElement}-${process}-${Date.now()}`,
+        id: createClientId(`boundary-connection-${process}`),
         elementId: selectedElement,
         process,
       };
@@ -192,17 +272,11 @@ export function BoundaryMapCanvas({
     const clampedX = Math.max(0, Math.min(cursorX, maxX));
     const clampedY = Math.max(0, Math.min(cursorY, maxY));
 
-    const newElement: BoundaryElement = {
-      id: `${element.id}-${Date.now()}`,
-      label: t(element.labelKey),
-      type: element.type,
-      x: clampedX,
-      y: clampedY,
-    };
+    const newElement = createBoundaryElement(element, clampedX, clampedY);
 
     setPlacedElements((prev) => [...prev, newElement]);
     announce(t("boundaryMap.keyboard.elementPlaced", { element: newElement.label, x: clampedX, y: clampedY }));
-  }, [selectedPaletteIndex, cursorX, cursorY, t, announce, canvasSize.width, canvasSize.height, ELEMENT_WIDTH, ELEMENT_HEIGHT, CANVAS_FALLBACK]);
+  }, [selectedPaletteIndex, cursorX, cursorY, announce, canvasSize.width, canvasSize.height, ELEMENT_WIDTH, ELEMENT_HEIGHT, CANVAS_FALLBACK, createBoundaryElement, t]);
 
   const removeSelectedElement = useCallback(() => {
     if (!selectedElement) return;

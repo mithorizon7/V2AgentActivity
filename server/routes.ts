@@ -1,12 +1,13 @@
 import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
+import { SessionCapacityError } from "./storage";
+import { storage } from "./storageProvider";
 import { 
-  insertProgressSchema,
   classifyRequestSchema,
   boundaryMapRequestSchema,
   circuitRequestSchema,
   simulateRequestSchema,
+  sessionIdSchema,
   type BoundaryElement,
   type BoundaryConnection,
   type CircuitBlock,
@@ -18,13 +19,10 @@ import { Block, Process, FailureConfig, Fixture } from "../shared/runtime/types"
 import { ALL_BLOCKS } from "../shared/scenarios/health-coach/blocks";
 import fixturesData from "../shared/scenarios/health-coach/fixtures.json";
 import { randomUUID } from "crypto";
+import { rateLimit } from "./security";
 
 const sessionIdParamSchema = z.object({
-  sessionId: z
-    .string()
-    .min(8)
-    .max(128)
-    .regex(/^[a-zA-Z0-9_-]+$/),
+  sessionId: sessionIdSchema,
 });
 
 const FIXTURES: Fixture[] = fixturesData as Fixture[];
@@ -83,23 +81,17 @@ function validateCircuitGraph(blocks: CircuitBlock[], connections: CircuitConnec
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  app.post("/api/progress", async (req, res) => {
-    try {
-      const validated = insertProgressSchema.parse(req.body);
-      const progress = await storage.saveProgress(validated);
-      res.json(progress);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        res.status(400).json({ error: "Invalid request data", details: error.errors });
-      } else {
-        res.status(500).json({ error: "Failed to save progress" });
-      }
-    }
+  // Progress is updated only by the validated activity routes, never by a full-record upsert.
+  app.post("/api/progress", (_req, res) => {
+    res.setHeader("Allow", "GET");
+    res.status(405).json({ error: "Use the activity endpoints to update progress" });
   });
 
-  app.get("/api/progress/:sessionId", async (req, res) => {
+  app.get("/api/progress", async (req, res) => {
     try {
-      const { sessionId } = sessionIdParamSchema.parse(req.params);
+      const { sessionId } = sessionIdParamSchema.parse({
+        sessionId: req.get("Authorization")?.match(/^Bearer (\S+)$/)?.[1],
+      });
       const progress = await storage.getProgress(sessionId);
       
       if (!progress) {
@@ -109,7 +101,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(progress);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ error: "Invalid session ID" });
+        return res.status(401).json({ error: "Valid session bearer token required" });
       }
       res.status(500).json({ error: "Failed to retrieve progress" });
     }
@@ -119,6 +111,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validated = classifyRequestSchema.parse(req.body);
       const { submissions, confidence, sessionId } = validated;
+      if (findDuplicateIds(submissions.map((submission) => submission.itemId)).length ||
+          submissions.some((submission) => storage.evaluateClassification(submission).correctProcess === null)) {
+        return res.status(400).json({ error: "Unknown or duplicate classification items" });
+      }
 
       const evaluations = submissions.map((submission) => {
         const classificationResult = storage.evaluateClassification(submission);
@@ -156,17 +152,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         };
       });
 
-      await storage.updateProgress(sessionId, {
+      const updated = await storage.updateProgress(sessionId, {
         classifications: submissionsWithCorrectness,
         confidenceLevel: confidence,
         assessmentScores: {
-          ...progress.assessmentScores,
           classificationAccuracy: accuracy,
           explanationQuality: avgExplanationScore,
           calibration,
         },
       });
 
+      if (!updated) return res.status(404).json({ error: "Session not found" });
       res.json({
         accuracy,
         explanationQuality: avgExplanationScore,
@@ -223,11 +219,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const updated = await storage.updateProgress(sessionId, {
         boundaryMap: { elements, connections },
         assessmentScores: {
-          ...progress.assessmentScores,
           boundaryMapCompleteness: completenessScore,
         },
       });
 
+      if (!updated) return res.status(404).json({ error: "Session not found" });
       res.json({
         completeness: completenessScore,
         progress: updated,
@@ -277,11 +273,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const updated = await storage.updateProgress(sessionId, {
         circuit: { blocks, connections },
         assessmentScores: {
-          ...progress.assessmentScores,
           circuitCorrectness: correctnessScore,
         },
       });
 
+      if (!updated) return res.status(404).json({ error: "Session not found" });
       res.json({
         correctness: correctnessScore,
         progress: updated,
@@ -376,7 +372,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Transform log into simulation steps
       const steps = result.log.map((logEntry, index) => ({
         id: `step-${index}`,
-        blockId: logEntry.data?.blockId || 'system',
+        blockId: logEntry.step,
         timestamp: logEntry.timestamp,
         input: index > 0 ? result.log[index - 1].data : fixture.input,
         output: logEntry.data,
@@ -385,10 +381,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }));
 
       // Save to storage
-      await storage.updateProgress(sessionId, {
+      const updated = await storage.updateProgress(sessionId, {
         simulationResults: steps,
       });
 
+      if (!updated) return res.status(404).json({ error: "Session not found" });
       res.json({ 
         steps,
         success: result.success,
@@ -398,7 +395,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: "Invalid request data", details: error.errors });
       }
-      console.error('Simulation error:', error);
+      console.error('Simulation request failed');
       res.status(500).json({ error: "Failed to run simulation" });
     }
   });
@@ -431,12 +428,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.setHeader("Cache-Control", "no-store");
       res.json({ sessionId, progress: initialProgress });
     } catch (error) {
+      if (error instanceof SessionCapacityError) {
+        res.setHeader("Retry-After", "60");
+        return res.status(503).json({ error: "Session capacity reached. Please try again later." });
+      }
       res.status(500).json({ error: "Failed to create session" });
     }
   };
 
-  app.post("/api/session/create", async (req, res) => createSessionHandler(req, res));
-  app.get("/api/session/create", async (req, res) => createSessionHandler(req, res));
+  app.post("/api/session/create", rateLimit(120), async (req, res) => createSessionHandler(req, res));
+  app.get("/api/session/create", (_req, res) => {
+    res.setHeader("Allow", "POST");
+    res.status(405).json({ error: "Use POST to create a session" });
+  });
 
   const httpServer = createServer(app);
   return httpServer;

@@ -1,0 +1,9 @@
+.runtime/
+.security-evidence/
+/generated-artifacts/
+.agents/
+.git/
+.env
+.env.*
+*.pem
+*.key

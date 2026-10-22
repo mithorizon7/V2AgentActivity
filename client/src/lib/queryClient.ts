@@ -14,7 +14,7 @@ export async function apiRequest(
 ): Promise<Response> {
   const res = await fetch(url, {
     method,
-    headers: data ? { "Content-Type": "application/json" } : {},
+    headers: { "X-Requested-With": "AgentLearning", ...(data ? { "Content-Type": "application/json" } : {}) },
     body: data ? JSON.stringify(data) : undefined,
     credentials: "include",
   });
@@ -29,8 +29,10 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    const res = await fetch(queryKey.join("/") as string, {
+    const isProgressRequest = queryKey[0] === "/api/progress";
+    const res = await fetch(isProgressRequest ? "/api/progress" : queryKey.join("/") as string, {
       credentials: "include",
+      headers: isProgressRequest ? { Authorization: `Bearer ${queryKey[1]}` } : {},
     });
 
     if (unauthorizedBehavior === "returnNull" && res.status === 401) {
@@ -52,6 +54,11 @@ export const queryClient = new QueryClient({
     },
     mutations: {
       retry: false,
+      onError: (error) => {
+        if (error instanceof Error && error.message.startsWith("404:") && error.message.includes("Session not found")) {
+          void queryClient.invalidateQueries({ queryKey: ["/api/progress"] });
+        }
+      },
     },
   },
 });

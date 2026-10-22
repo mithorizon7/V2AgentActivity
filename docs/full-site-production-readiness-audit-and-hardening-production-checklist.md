@@ -2,9 +2,11 @@
 
 Source of truth checklist for a large/intense task.
 
+Historical March audit. Current security evidence and outstanding deployment gates are in [the October 22 security audit](security-audit-2026-10-22.md); March sign-off is not production verification for that later audit.
+
 ## Metadata
 - Created: 2026-03-06T15:42:37
-- Last Updated: 2026-03-06T15:55:03-0500
+- Last Updated: 2026-03-10T13:31:00-0400
 - Workspace: /Users/davedxn/Downloads/V2AgentActivity
 - Checklist Doc: /Users/davedxn/Downloads/V2AgentActivity/docs/full-site-production-readiness-audit-and-hardening-production-checklist.md
 
@@ -60,6 +62,26 @@ Source of truth checklist for a large/intense task.
   - Evidence: i18n key integrity scan reported missing key in `client/src/components/ClassificationActivity.tsx`.
   - Owner: codex
   - Linked Fix: P-007
+- [x] F-008 [status:verified] [P1] [confidence:0.96] Persisted session IDs became invalid after server restarts because client storage outlived in-memory server progress, leaving learners stuck on repeated `404 Progress not found`.
+  - Evidence: `useSession` restored `agentLearningSessionId` from localStorage, but server progress lives in `MemStorage`; there was no recovery path on `/api/progress/:sessionId` 404.
+  - Owner: codex
+  - Linked Fix: P-008
+- [x] F-009 [status:verified] [P2] [confidence:0.95] Persisted classification/guided exercise state could drift into duplicates, missing cards, stale items, and stale explanation/attempt metadata across locale/content changes.
+  - Evidence: restore logic only remapped item text by ID; it did not normalize placement or prune invalid records.
+  - Owner: codex
+  - Linked Fix: P-009
+- [x] F-010 [status:verified] [P2] [confidence:0.92] Boundary map and circuit builder used `Date.now()` for client-generated graph IDs, which could collide during rapid interactions and trip new duplicate-ID validation.
+  - Evidence: `BoundaryMapCanvas.tsx` and `CircuitBuilder.tsx` created element/connection/node IDs from timestamp strings only.
+  - Owner: codex
+  - Linked Fix: P-010
+- [x] F-011 [status:verified] [P2] [confidence:0.94] Client progress hydration was incomplete: boundary maps/circuits/simulation state were not restored reliably, and simulation bypassed the validated API/persistence path.
+  - Evidence: `LearningPage.tsx` hydrated only `phaseCompletion`; boundary map component snapshotted initial props once; page ran simulation locally while `useSimulation` had drifted away from server contract.
+  - Owner: codex
+  - Linked Fix: P-011
+- [x] F-012 [status:verified] [P3] [confidence:0.91] Several translated UI labels did not refresh after language change, especially failure mode labels and persisted boundary/circuit labels.
+  - Evidence: translated strings were stored in component state once and not re-derived on locale updates.
+  - Owner: codex
+  - Linked Fix: P-012
 
 ## Fix Log
 - [x] P-001 [status:verified] Removed unsupported `reusePort`, added API 404 fallback, and hardened express baseline/security headers and parser limits.
@@ -83,18 +105,37 @@ Source of truth checklist for a large/intense task.
 - [x] P-007 [status:verified] Added missing `classification.sortAllItems` translations across EN/RU/LV.
   - Addresses: F-007
   - Evidence: Locale files updated; i18n integrity scan now reports `missing_i18n_keys=0`.
+- [x] P-008 [status:verified] Added stale-session recovery that clears invalid persisted learner state, recreates a fresh session after `404 Progress not found`, and persists active sessions once consent is granted.
+  - Addresses: F-008
+  - Evidence: `client/src/hooks/useSession.ts` now detects missing-progress 404s, clears persisted state keys, removes invalid session IDs, and re-establishes the session cleanly.
+- [x] P-009 [status:verified] Added shared normalization/pruning for classification and guided practice restore paths, plus unbiased shuffle/reset behavior.
+  - Addresses: F-009
+  - Evidence: `client/src/lib/classificationState.ts`, `ClassificationActivity.tsx`, and `Phase1Guided.tsx` now de-duplicate placements, restore missing cards, drop stale items, and prune stale explanation/attempt metadata.
+- [x] P-010 [status:verified] Replaced timestamp-only graph/node IDs with UUID-backed client IDs for boundary maps and circuit nodes.
+  - Addresses: F-010
+  - Evidence: `client/src/lib/clientIds.ts`, `BoundaryMapCanvas.tsx`, and `CircuitBuilder.tsx` now use `crypto.randomUUID()` with safe fallback instead of `Date.now()`-only IDs.
+- [x] P-011 [status:verified] Restored server-backed learner progress into the client once per session and aligned simulation with the validated `/api/simulate` contract.
+  - Addresses: F-011
+  - Evidence: `LearningPage.tsx` now hydrates boundary maps/circuit selections/simulation history from progress, `useSimulation.ts` matches server payloads, and `server/routes.ts` emits simulation steps in the shape the UI expects.
+- [x] P-012 [status:verified] Made localized labels reactive for failure modes, boundary elements, and circuit nodes when the active language changes.
+  - Addresses: F-012
+  - Evidence: `LearningPage.tsx`, `BoundaryMapCanvas.tsx`, and `CircuitBuilder.tsx` now re-derive stored labels from translation keys on locale changes.
 
 ## Validation Log
 - [x] V-001 [status:verified] `npm run check`
-  - Evidence: 2026-03-06 15:54 EST passed (`tsc` clean on final code state).
+  - Evidence: 2026-03-10 13:27 EDT passed (`tsc` clean on final code state).
 - [x] V-002 [status:verified] `npm run build`
-  - Evidence: 2026-03-06 15:54 EST passed (Vite/esbuild succeeded; known non-blocking warnings: PostCSS `from` warning and large chunk warning).
+  - Evidence: 2026-03-10 13:27 EDT passed (Vite/esbuild succeeded; known non-blocking warnings: PostCSS `from` warning and large chunk warning).
 - [x] V-003 [status:verified] `npm audit --omit=dev --audit-level=moderate`
   - Evidence: 2026-03-06 15:50 EST passed (`found 0 vulnerabilities` in production dependency set).
 - [x] V-004 [status:verified] API smoke matrix (`tsx server/index.ts` + `curl` checks for create/progress/simulate/boundary/circuit edge paths)
   - Evidence: 2026-03-06 15:52 EST passed (`simulate_missing_session_status=404`, kind mismatch `400`, missing-tool run `success=false` with no `END_EXECUTION`, dangling graph submissions `400`).
 - [x] V-005 [status:verified] Localization integrity scan (extracted `t()/i18n.t()` keys vs EN keyset)
   - Evidence: 2026-03-06 15:54 EST passed (`missing_i18n_keys=0` after locale patch).
+- [x] V-006 [status:verified] Targeted API smoke for rebuilt simulation/session path (`node dist/index.js` + `curl` create/simulate)
+  - Evidence: 2026-03-10 11:18 EDT passed (`steps_count=12`, `first_step=START_PERCEPTION`, `last_step=END_EXECUTION`, `success=true` for valid session-backed simulate request).
+- [x] V-007 [status:verified] Checklist integrity validation
+  - Evidence: 2026-03-10 11:17 EDT passed (`validate_checklist.py ... --require-signoff` => `Warnings: 0`, `Errors: 0`).
 
 ## Residual Risks
 - [x] R-001 [status:accepted_risk] Dev dependency vulnerabilities remain in full `npm audit` output and require major-version upgrades (not production runtime path).
@@ -116,3 +157,6 @@ Source of truth checklist for a large/intense task.
 - 2026-03-06T15:52:00-0500: Deep audit findings reproduced; simulation/session/graph integrity and runtime log correctness fixes implemented.
 - 2026-03-06T15:54:00-0500: Localization key-gap fixed and final validation suite rerun on final code state.
 - 2026-03-06T15:55:03-0500: Gates reviewed, residual risks documented, checklist finalized for sign-off.
+- 2026-03-10T13:18:00-0400: Client hardening pass reopened for stale-session recovery, persisted-state normalization, graph ID robustness, and locale-reactive labels.
+- 2026-03-10T13:27:00-0400: Simulation path aligned to `/api/simulate`, server-backed progress hydration restored, and full `check`/`build` suite rerun on final code state.
+- 2026-03-10T13:31:00-0400: Checklist updated with second-pass findings/fixes and re-signed for production readiness with prior residual risks unchanged.

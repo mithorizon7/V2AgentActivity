@@ -1,12 +1,10 @@
 import express, { type Express } from "express";
 import fs from "fs";
 import path from "path";
-import { createServer as createViteServer, createLogger } from "vite";
 import { type Server } from "http";
-import viteConfig from "../vite.config";
 import { nanoid } from "nanoid";
+import { allowedDevelopmentHost } from "./security";
 
-const viteLogger = createLogger();
 
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
@@ -20,15 +18,24 @@ export function log(message: string, source = "express") {
 }
 
 export async function setupVite(app: Express, server: Server) {
+  server.prependListener("upgrade", (req, socket) => {
+    let allowedOrigin = false;
+    try {
+      allowedOrigin = !!req.headers.origin && allowedDevelopmentHost(new URL(req.headers.origin).host);
+    } catch { /* Invalid origins cannot upgrade to the development socket. */ }
+    if (!allowedDevelopmentHost(req.headers.host) || !allowedOrigin) socket.destroy();
+  });
+  const { createServer: createViteServer, createLogger } = await import("vite");
+  const viteLogger = createLogger();
   const serverOptions = {
     middlewareMode: true,
     hmr: { server },
-    allowedHosts: true as const,
+    allowedHosts: [process.env.REPLIT_DOMAINS, process.env.DEV_ALLOWED_HOSTS]
+      .flatMap((hosts) => hosts?.split(",").map((host) => host.trim()).filter(Boolean) ?? []),
   };
 
   const vite = await createViteServer({
-    ...viteConfig,
-    configFile: false,
+    configFile: path.resolve(import.meta.dirname, "..", "vite.config.ts"),
     customLogger: {
       ...viteLogger,
       error: (msg, options) => {
