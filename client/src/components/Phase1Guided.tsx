@@ -18,6 +18,12 @@ import {
 import { Brain, Wrench, AlertCircle, CheckCircle2, ArrowLeft, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useConsent, safeLocalStorage } from "@/hooks/useConsent";
+import {
+  createEmptyProcessBuckets,
+  normalizeClassificationPlacement,
+  pruneItemRecord,
+  shuffleItems,
+} from "@/lib/classificationState";
 
 const EXPLANATION_PROMPT_KEY = "phase1_guided_explanation_prompt_v1";
 
@@ -199,7 +205,7 @@ type Phase1GuidedProps = {
 export function Phase1Guided({ items, onComplete, onBack }: Phase1GuidedProps) {
   const { t } = useTranslation();
   const { hasConsent } = useConsent();
-  const storage = safeLocalStorage(hasConsent);
+  const storage = useMemo(() => safeLocalStorage(hasConsent), [hasConsent]);
   
   // Filter items for just Perception vs Execution
   const guidedItems = useMemo(
@@ -218,7 +224,7 @@ export function Phase1Guided({ items, onComplete, onBack }: Phase1GuidedProps) {
         console.warn("Failed to restore guided unsorted items");
       }
     }
-    return [...guidedItems].sort(() => Math.random() - 0.5);
+    return shuffleItems(guidedItems);
   });
   
   const [itemsByProcess, setItemsByProcess] = useState<Record<AgentProcess, ClassificationItem[]>>(() => {
@@ -230,14 +236,7 @@ export function Phase1Guided({ items, onComplete, onBack }: Phase1GuidedProps) {
         console.warn("Failed to restore guided sorted items");
       }
     }
-    return {
-      learning: [],
-      interaction: [],
-      perception: [],
-      reasoning: [],
-      planning: [],
-      execution: [],
-    };
+    return createEmptyProcessBuckets();
   });
   
   const [draggedItem, setDraggedItem] = useState<ClassificationItem | null>(null);
@@ -275,37 +274,40 @@ export function Phase1Guided({ items, onComplete, onBack }: Phase1GuidedProps) {
   // Reconcile stored item text with current language items
   useEffect(() => {
     const itemById = new Map(guidedItems.map((item) => [item.id, item]));
-    setUnsortedItems((prev) =>
-      prev
-        .map((item) => itemById.get(item.id) ?? item)
-        .filter((item): item is ClassificationItem => Boolean(item))
-    );
-    setItemsByProcess((prev) => {
-      const next = { ...prev };
-      Object.keys(next).forEach((process) => {
-        next[process as AgentProcess] = next[process as AgentProcess]
-          .map((item) => itemById.get(item.id) ?? item)
-          .filter((item): item is ClassificationItem => Boolean(item));
-      });
-      return next;
+    const normalized = normalizeClassificationPlacement({
+      items: guidedItems,
+      unsortedItems,
+      itemsByProcess,
+      activeProcesses: ["perception", "execution"],
     });
+
+    if (normalized.didChange) {
+      setUnsortedItems(normalized.unsortedItems);
+      setItemsByProcess(normalized.itemsByProcess);
+    }
+
+    setExplanations((prev) => pruneItemRecord(prev, guidedItems));
+    setAttempts((prev) => pruneItemRecord(prev, guidedItems));
+    setHints((prev) => pruneItemRecord(prev, guidedItems));
+    setCorrectAnswers((prev) => pruneItemRecord(prev, guidedItems));
+    setDraggedItem((prev) => (prev ? itemById.get(prev.id) ?? null : prev));
   }, [guidedItems]);
 
   useEffect(() => {
     storage.setItem("phase1_guided_unsorted_v1", JSON.stringify(unsortedItems));
-  }, [unsortedItems, hasConsent]);
+  }, [storage, unsortedItems]);
 
   useEffect(() => {
     storage.setItem("phase1_guided_sorted_v1", JSON.stringify(itemsByProcess));
-  }, [itemsByProcess, hasConsent]);
+  }, [itemsByProcess, storage]);
 
   useEffect(() => {
     storage.setItem("phase1_guided_explanations_v1", JSON.stringify(explanations));
-  }, [explanations, hasConsent]);
+  }, [explanations, storage]);
 
   useEffect(() => {
     storage.setItem("phase1_guided_attempts_v1", JSON.stringify(attempts));
-  }, [attempts, hasConsent]);
+  }, [attempts, storage]);
 
   const handleDragStart = useCallback((item: ClassificationItem) => {
     if (showFeedback) return;
@@ -341,26 +343,15 @@ export function Phase1Guided({ items, onComplete, onBack }: Phase1GuidedProps) {
   }, [showFeedback, submitError]);
 
   const handleScramble = useCallback(() => {
-    const allItems = [
-      ...unsortedItems,
-      ...Object.values(itemsByProcess).flat()
-    ].filter(item => item.correctProcess === "perception" || item.correctProcess === "execution");
-    
-    const shuffled = [...allItems].sort(() => Math.random() - 0.5);
-    
-    setUnsortedItems(shuffled);
-    setItemsByProcess({
-      learning: [],
-      interaction: [],
-      perception: [],
-      reasoning: [],
-      planning: [],
-      execution: [],
-    });
+    setUnsortedItems(shuffleItems(guidedItems));
+    setItemsByProcess(createEmptyProcessBuckets());
+    setCorrectAnswers({});
+    setAttempts({});
+    setDraggedItem(null);
     setShowFeedback(false);
     setHints({});
     setSubmitError(null);
-  }, [unsortedItems, itemsByProcess, submitError]);
+  }, [guidedItems]);
 
   const handleRetry = () => {
     setShowFeedback(false);

@@ -7,6 +7,8 @@ import { useConsent, safeLocalStorage } from "@/hooks/useConsent";
 import { useClassification } from "@/hooks/useClassification";
 import { useBoundaryMap } from "@/hooks/useBoundaryMap";
 import { useCircuitBuilder } from "@/hooks/useCircuitBuilder";
+import { useSimulation } from "@/hooks/useSimulation";
+import { useToast } from "@/hooks/use-toast";
 import { Primer } from "@/components/Primer";
 import { WorkedExample } from "@/components/WorkedExample";
 import { Phase1Guided } from "@/components/Phase1Guided";
@@ -44,9 +46,9 @@ import {
 } from "@shared/schema";
 import { ArrowRight, ArrowLeft, CheckCircle2, Play, Sparkles, Home, Box, MapPin, Lightbulb, AlertTriangle } from "lucide-react";
 import { Block, Process, RuntimeCtx, Fixture, FailureConfig } from "@shared/runtime/types";
-import { runPipeline, applyFailures, createInitialContext } from "@shared/runtime/engine";
 import { cn } from "@/lib/utils";
 import {
+  ALL_BLOCKS,
   PERCEPTION_BLOCKS,
   REASONING_BLOCKS,
   PLANNING_BLOCKS,
@@ -244,9 +246,10 @@ function PhaseNavigation({
 
 export default function LearningPage() {
   const { t } = useTranslation();
+  const { toast } = useToast();
   const [, setLocation] = useLocation();
   const { hasConsent } = useConsent();
-  const storage = safeLocalStorage(hasConsent);
+  const storage = useMemo(() => safeLocalStorage(hasConsent), [hasConsent]);
 
   // Build classification items from shared data with translated text
   const CLASSIFICATION_ITEMS: ClassificationItem[] = useMemo(() => 
@@ -261,6 +264,7 @@ export default function LearningPage() {
   const classificationMutation = useClassification(sessionId);
   const boundaryMapMutation = useBoundaryMap(sessionId);
   const circuitBuilderMutation = useCircuitBuilder(sessionId);
+  const simulationMutation = useSimulation(sessionId);
   
   // Current learning stage - either a pre-phase stage, bridge stage, or main phase number
   // Persist both pre-phase/bridge completion and current stage for full state restoration
@@ -294,6 +298,11 @@ export default function LearningPage() {
     return 1;
   });
   const stageTaskRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const hydratedServerProgressRef = useRef<string | null>(null);
+  const blockRegistry = useMemo(
+    () => new Map(ALL_BLOCKS.map((block) => [block.id, block])),
+    [],
+  );
 
   const registerStageTaskRef = (stageKey: string) => (node: HTMLDivElement | null) => {
     stageTaskRefs.current[stageKey] = node;
@@ -310,7 +319,7 @@ export default function LearningPage() {
     storage.setItem("currentStage", String(currentStage));
   }, [currentStage, storage]);
 
-  const FAILURE_MODES: FailureMode[] = [
+  const failureModeDefinitions = useMemo<FailureMode[]>(() => [
     {
       id: "noisy-input",
       name: t("failures.modes.noisyInput.name"),
@@ -332,7 +341,7 @@ export default function LearningPage() {
       enabled: false,
       affectedProcess: "reasoning",
     },
-  ];
+  ], [t]);
   // Phase and bridge stage completion state - persisted to localStorage
   const [phaseCompletion, setPhaseCompletion] = useState<Record<string, boolean>>(() => ({
     "1": storage.getItem("phase1Complete") === "true",
@@ -411,6 +420,50 @@ export default function LearningPage() {
   const [runCount, setRunCount] = useState(0);
   const [hasRunWithFailure, setHasRunWithFailure] = useState(false);
 
+  useEffect(() => {
+    hydratedServerProgressRef.current = null;
+  }, [sessionId]);
+
+  useEffect(() => {
+    if (!progress || !sessionId || hydratedServerProgressRef.current === sessionId) {
+      return;
+    }
+
+    if (progress.boundaryMap) {
+      setBoundaryElements(progress.boundaryMap.elements);
+      setBoundaryConnections(progress.boundaryMap.connections);
+    }
+
+    if (progress.circuit?.blocks?.length) {
+      setSelectedBlocks((prev) => {
+        let changed = false;
+        const next = { ...prev };
+
+        (["perception", "reasoning", "planning", "execution"] as Process[]).forEach((process) => {
+          const savedBlock = progress.circuit?.blocks.find((block) => block.type === process);
+          if (!savedBlock) {
+            return;
+          }
+
+          const restoredBlock = blockRegistry.get(savedBlock.id);
+          if (restoredBlock && next[process]?.id !== restoredBlock.id) {
+            next[process] = restoredBlock;
+            changed = true;
+          }
+        });
+
+        return changed ? next : prev;
+      });
+    }
+
+    if (progress.simulationResults?.length) {
+      setSimulationSteps(progress.simulationResults);
+      setHasRunOnce(true);
+    }
+
+    hydratedServerProgressRef.current = sessionId;
+  }, [blockRegistry, progress, sessionId]);
+
   const canNavigateToPhase = useCallback((phaseId: number): boolean => {
     if (phaseId === 1) return true;
     if (phaseId === 2) {
@@ -469,12 +522,32 @@ export default function LearningPage() {
     },
   ];
 
-  // Initialize failure modes with translations
+  // Keep translated labels in sync while preserving learner-enabled toggles.
   useEffect(() => {
-    if (failureModes.length === 0) {
-      setFailureModes(FAILURE_MODES);
-    }
-  }, [FAILURE_MODES, failureModes.length]);
+    setFailureModes((prev) => {
+      const previousEnabled = new Map(prev.map((mode) => [mode.id, mode.enabled]));
+      const next = failureModeDefinitions.map((mode) => ({
+        ...mode,
+        enabled: previousEnabled.get(mode.id) ?? mode.enabled,
+      }));
+
+      const changed =
+        prev.length !== next.length ||
+        prev.some((mode, index) => {
+          const other = next[index];
+          return (
+            !other ||
+            mode.id !== other.id ||
+            mode.name !== other.name ||
+            mode.description !== other.description ||
+            mode.enabled !== other.enabled ||
+            mode.affectedProcess !== other.affectedProcess
+          );
+        });
+
+      return changed ? next : prev;
+    });
+  }, [failureModeDefinitions]);
 
   const handleClassificationSubmit = async (submissions: ClassificationSubmission[], confidence: number) => {
     setClassifications(submissions);
@@ -651,10 +724,11 @@ export default function LearningPage() {
     }
   };
 
-  const handleBoundaryMapSave = (
+  const handleBoundaryMapSave = async (
     elements: BoundaryElement[],
     connections: BoundaryConnection[]
   ) => {
+    if (boundaryMapMutation.isPending) return;
     setBoundaryElements(elements);
     setBoundaryConnections(connections);
 
@@ -700,11 +774,14 @@ export default function LearningPage() {
     setBoundaryMapFeedback(null);
     
     // Persist to server
-    if (sessionId) {
-      boundaryMapMutation.mutate({
+    try {
+      await boundaryMapMutation.mutateAsync({
         elements,
         connections,
       });
+    } catch {
+      toast({ title: t("common.error"), description: t("simulation.errors.generic"), variant: "destructive" });
+      return;
     }
     
     // Mark phase 2 as complete, but only auto-advance if not already completed
@@ -728,7 +805,8 @@ export default function LearningPage() {
     setSelectedBlocks((prev) => ({ ...prev, [process]: block }));
   };
 
-  const handleCircuitComplete = () => {
+  const handleCircuitComplete = async () => {
+    if (circuitBuilderMutation.isPending) return;
     const orderedProcesses: Process[] = ["perception", "reasoning", "planning", "execution"];
     const blocks = orderedProcesses.map((process, index) => {
       const block = selectedBlocks[process];
@@ -742,7 +820,7 @@ export default function LearningPage() {
         inputs: [],
         outputs: [],
       };
-    }).filter(Boolean);
+    }).filter((block): block is NonNullable<typeof block> => Boolean(block));
 
     const connections = orderedProcesses.slice(0, -1).map((process, index) => {
       const fromBlock = selectedBlocks[process];
@@ -754,11 +832,15 @@ export default function LearningPage() {
       };
     });
 
-    if (blocks.length === orderedProcesses.length) {
-      circuitBuilderMutation.mutate({
+    if (blocks.length !== orderedProcesses.length) return;
+    try {
+      await circuitBuilderMutation.mutateAsync({
         blocks,
         connections,
       });
+    } catch {
+      toast({ title: t("common.error"), description: t("simulation.errors.generic"), variant: "destructive" });
+      return;
     }
 
     // Only auto-advance if phase 3 is not already completed
@@ -774,20 +856,18 @@ export default function LearningPage() {
     
     // Check if all blocks are selected
     const allSelected = Object.values(pipeline).every((block) => block !== null);
-    if (!allSelected) {
+    if (!allSelected || !sessionId || isRunning) {
       return;
     }
 
     setIsRunning(true);
     setSimulationSteps([]);
+    setExecutionContext(null);
 
     try {
       // Get selected fixture
       const fixture = FIXTURES.find((f) => f.id === selectedFixture);
       if (!fixture) return;
-
-      // Create initial context
-      let ctx = createInitialContext(fixture.input);
 
       // Apply failures if any are enabled
       const activeFailures: FailureConfig = {
@@ -799,11 +879,6 @@ export default function LearningPage() {
         Boolean(activeFailures.noisyInput) ||
         Boolean(activeFailures.missingTool) ||
         Boolean(activeFailures.staleMemory);
-
-      ctx = applyFailures(ctx, activeFailures);
-
-      // Run the pipeline
-      const result = await runPipeline(pipeline, ctx);
 
       // Helper function to translate log entry data (deeply)
       const translateLogData = (data: any): any => {
@@ -824,24 +899,43 @@ export default function LearningPage() {
         return data;
       };
 
-      // Convert runtime log to simulation steps
-      const steps: SimulationStep[] = result.log.map((logEntry, index) => ({
-        id: `step-${index}`,
-        blockId: logEntry.step,
-        timestamp: logEntry.timestamp,
-        input: index > 0 ? result.log[index - 1]?.data : fixture.input,
-        output: logEntry.data,
-        status: logEntry.step.startsWith("ERROR") ? "error" : "success",
-        message: JSON.stringify(translateLogData(logEntry.data), null, 2),
+      const response = await simulationMutation.mutateAsync({
+        blockIds: {
+          perception: pipeline.perception.id,
+          reasoning: pipeline.reasoning.id,
+          planning: pipeline.planning.id,
+          execution: pipeline.execution.id,
+        },
+        fixtureId: selectedFixture,
+        failureConfig: activeFailures,
+      });
+
+      const steps: SimulationStep[] = response.steps.map((step) => ({
+        ...step,
+        message: step.output
+          ? JSON.stringify(translateLogData(step.output), null, 2)
+          : step.message,
       }));
 
       setSimulationSteps(steps);
-      setExecutionContext(result);
+      setExecutionContext({
+        input: fixture.input,
+        state: response.finalState ?? {},
+        tools: {},
+        log: steps.map((step) => ({
+          step: step.blockId,
+          data: step.output,
+          timestamp: step.timestamp,
+        })),
+        success: response.success,
+      });
       setHasRunOnce(true);
       if (hasActiveFailure) {
         setHasRunWithFailure(true);
       }
       setRunCount((prev) => prev + 1);
+    } catch {
+      toast({ title: t("common.error"), description: t("simulation.errors.generic"), variant: "destructive" });
     } finally {
       setIsRunning(false);
     }

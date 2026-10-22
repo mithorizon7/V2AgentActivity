@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { 
   AgentProcess, 
   ClassificationItem, 
@@ -27,6 +27,12 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { useTranslation } from "react-i18next";
 import { useConsent, safeLocalStorage } from "@/hooks/useConsent";
 import { ConfidenceSlider } from "@/components/ConfidenceSlider";
+import {
+  createEmptyProcessBuckets,
+  normalizeClassificationPlacement,
+  pruneItemRecord,
+  shuffleItems,
+} from "@/lib/classificationState";
 
 const EXPLANATION_PROMPT_KEY = "classification_explanation_prompt_v1";
 
@@ -326,7 +332,7 @@ export function ClassificationActivity({
 }: ClassificationActivityProps) {
   const { t } = useTranslation();
   const { hasConsent } = useConsent();
-  const storage = safeLocalStorage(hasConsent);
+  const storage = useMemo(() => safeLocalStorage(hasConsent), [hasConsent]);
   
   // Keyboard navigation state
   const [grabbedItem, setGrabbedItem] = useState<ClassificationItem | null>(null);
@@ -357,7 +363,7 @@ export function ClassificationActivity({
         storage.removeItem("classification_unsorted_v1");
       }
     }
-    return [...items].sort(() => Math.random() - 0.5);
+    return shuffleItems(items);
   });
   
   const [itemsByProcess, setItemsByProcess] = useState<Record<AgentProcess, ClassificationItem[]>>(() => {
@@ -380,18 +386,10 @@ export function ClassificationActivity({
     }
     
     // Start with EMPTY bins - no pre-sorting!
-    return {
-      learning: [],
-      interaction: [],
-      perception: [],
-      reasoning: [],
-      planning: [],
-      execution: [],
-    };
+    return createEmptyProcessBuckets();
   });
   
   const [draggedItem, setDraggedItem] = useState<ClassificationItem | null>(null);
-  const hasWarnedRef = useRef(false);
   const explanationPromptSeenRef = useRef(false);
   const [explanationPromptOpen, setExplanationPromptOpen] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -429,22 +427,31 @@ export function ClassificationActivity({
   // Reconcile stored item text with current language items (without changing placement)
   useEffect(() => {
     const itemById = new Map(items.map((item) => [item.id, item]));
-    setUnsortedItems((prev) =>
-      prev
-        .map((item) => itemById.get(item.id) ?? item)
-        .filter((item): item is ClassificationItem => Boolean(item))
-    );
-    setItemsByProcess((prev) => {
-      const next = { ...prev };
-      Object.keys(next).forEach((process) => {
-        next[process as AgentProcess] = next[process as AgentProcess]
-          .map((item) => itemById.get(item.id) ?? item)
-          .filter((item): item is ClassificationItem => Boolean(item));
-      });
-      return next;
+    const normalized = normalizeClassificationPlacement({
+      items,
+      unsortedItems,
+      itemsByProcess,
     });
-    setFocusedItem((prev) => (prev ? itemById.get(prev.id) ?? prev : prev));
-    setGrabbedItem((prev) => (prev ? itemById.get(prev.id) ?? prev : prev));
+    const allVisibleItems = [
+      ...normalized.unsortedItems,
+      ...Object.values(normalized.itemsByProcess).flat(),
+    ];
+    const fallbackFocusItem = allVisibleItems[0] ?? null;
+
+    if (normalized.didChange) {
+      setUnsortedItems(normalized.unsortedItems);
+      setItemsByProcess(normalized.itemsByProcess);
+    }
+
+    setExplanations((prev) => pruneItemRecord(prev, items));
+    setFocusedItem((prev) => {
+      if (!prev) {
+        return fallbackFocusItem;
+      }
+
+      return itemById.get(prev.id) ?? fallbackFocusItem;
+    });
+    setGrabbedItem((prev) => (prev ? itemById.get(prev.id) ?? null : prev));
   }, [items]);
 
   const handleExplanationChange = useCallback((itemId: string, explanation: string) => {
@@ -454,27 +461,6 @@ export function ClassificationActivity({
     }
   }, [submitError]);
 
-  // Dev guard: warn if cards are in correct bins before user interaction
-  // Only warn once on initial render to catch hardcoded pre-sorting bugs
-  // Suppressed for legitimate localStorage restoration regardless of consent status
-  useEffect(() => {
-    if (import.meta.env.DEV && !hasWarnedRef.current) {
-      const hasSavedState = storage.getItem("classification_sorted_v1");
-      const autoPlaced: string[] = [];
-      Object.entries(itemsByProcess).forEach(([process, processItems]) => {
-        processItems.forEach(item => {
-          if (item.correctProcess === process) {
-            autoPlaced.push(`${item.id} → ${process}`);
-          }
-        });
-      });
-      if (autoPlaced.length > 0 && !showFeedback && !hasSavedState) {
-        console.warn("⚠️ PRE-SORTED BUG:", autoPlaced);
-      }
-      hasWarnedRef.current = true;
-    }
-  }, []);
-
   const getLitmusTest = (process: AgentProcess): string => {
     return t(`processes.litmusTests.${process}`);
   };
@@ -482,19 +468,19 @@ export function ClassificationActivity({
   // Persist to localStorage whenever state changes (if consent granted)
   useEffect(() => {
     storage.setItem("classification_unsorted_v1", JSON.stringify(unsortedItems));
-  }, [unsortedItems, hasConsent]);
+  }, [storage, unsortedItems]);
 
   useEffect(() => {
     storage.setItem("classification_sorted_v1", JSON.stringify(itemsByProcess));
-  }, [itemsByProcess, hasConsent]);
+  }, [itemsByProcess, storage]);
 
   useEffect(() => {
     storage.setItem("classification_explanations_v1", JSON.stringify(explanations));
-  }, [explanations, hasConsent]);
+  }, [explanations, storage]);
 
   useEffect(() => {
     storage.setItem("classification_confidence_v1", String(confidence));
-  }, [confidence, hasConsent]);
+  }, [confidence, storage]);
 
   const handleDragStart = useCallback((item: ClassificationItem) => {
     if (showFeedback) return;
@@ -526,26 +512,14 @@ export function ClassificationActivity({
 
   const handleScramble = useCallback(() => {
     if (showFeedback) return;
-    // Return ALL items to unsorted tray, shuffled
-    const allItems = [
-      ...unsortedItems,
-      ...Object.values(itemsByProcess).flat()
-    ];
-    const shuffled = [...allItems].sort(() => Math.random() - 0.5);
-    
-    setUnsortedItems(shuffled);
-    setItemsByProcess({
-      learning: [],
-      interaction: [],
-      perception: [],
-      reasoning: [],
-      planning: [],
-      execution: [],
-    });
-    
+    setUnsortedItems(shuffleItems(items));
+    setItemsByProcess(createEmptyProcessBuckets());
+    setDraggedItem(null);
+    setGrabbedItem(null);
+    setFocusedProcess(null);
     setSubmitError(null);
     if (onScramble) onScramble();
-  }, [unsortedItems, itemsByProcess, onScramble, showFeedback]);
+  }, [items, onScramble, showFeedback]);
 
   const hasShownExplanationPrompt = () =>
     explanationPromptSeenRef.current || storage.getItem(EXPLANATION_PROMPT_KEY) === "1";

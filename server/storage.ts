@@ -14,6 +14,12 @@ import {
 import { getClassificationAnswer } from "@shared/classificationData";
 import { randomUUID } from "crypto";
 
+export type ProgressUpdates = Omit<Partial<LearnerProgress>, "sessionId" | "createdAt" | "updatedAt" | "assessmentScores"> & {
+  assessmentScores?: Partial<LearnerProgress["assessmentScores"]>;
+};
+
+export class SessionCapacityError extends Error {}
+
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
@@ -21,7 +27,7 @@ export interface IStorage {
   
   getProgress(sessionId: string): Promise<LearnerProgress | undefined>;
   saveProgress(progress: InsertProgress): Promise<LearnerProgress>;
-  updateProgress(sessionId: string, updates: Partial<LearnerProgress>): Promise<LearnerProgress | undefined>;
+  updateProgress(sessionId: string, updates: ProgressUpdates): Promise<LearnerProgress | undefined>;
   
   evaluateClassification(submission: ClassificationInput): { isCorrect: boolean; correctProcess: AgentProcess | null; explanationKey: string };
   evaluateExplanation(explanation: string): { score: number; feedbackKey: string };
@@ -31,6 +37,8 @@ export interface IStorage {
 export class MemStorage implements IStorage {
   private users: Map<string, User>;
   private progressData: Map<string, LearnerProgress>;
+  private readonly sessionTtlMs = 24 * 60 * 60 * 1000;
+  private readonly maxSessions = 2048;
 
   constructor() {
     this.users = new Map();
@@ -54,11 +62,26 @@ export class MemStorage implements IStorage {
     return user;
   }
 
+  private activeProgress(sessionId: string): LearnerProgress | undefined {
+    const progress = this.progressData.get(sessionId);
+    if (progress && Date.now() - progress.updatedAt.getTime() >= this.sessionTtlMs) {
+      this.progressData.delete(sessionId);
+      return undefined;
+    }
+    return progress;
+  }
+
   async getProgress(sessionId: string): Promise<LearnerProgress | undefined> {
-    return this.progressData.get(sessionId);
+    return this.activeProgress(sessionId);
   }
 
   async saveProgress(progress: InsertProgress): Promise<LearnerProgress> {
+    for (const [id, entry] of this.progressData) {
+      if (Date.now() - entry.updatedAt.getTime() >= this.sessionTtlMs) this.progressData.delete(id);
+    }
+    if (!this.progressData.has(progress.sessionId) && this.progressData.size >= this.maxSessions) {
+      throw new SessionCapacityError("Session capacity reached");
+    }
     const existingProgress = this.progressData.get(progress.sessionId);
     
     const newProgress: LearnerProgress = {
@@ -73,14 +96,15 @@ export class MemStorage implements IStorage {
 
   async updateProgress(
     sessionId: string,
-    updates: Partial<LearnerProgress>
+    updates: ProgressUpdates
   ): Promise<LearnerProgress | undefined> {
-    const existing = this.progressData.get(sessionId);
+    const existing = this.activeProgress(sessionId);
     if (!existing) return undefined;
 
     const updated: LearnerProgress = {
       ...existing,
       ...updates,
+      assessmentScores: { ...existing.assessmentScores, ...updates.assessmentScores },
       updatedAt: new Date(),
     };
 
@@ -147,5 +171,3 @@ export class MemStorage implements IStorage {
     return Math.max(0, 100 - error);
   }
 }
-
-export const storage = new MemStorage();

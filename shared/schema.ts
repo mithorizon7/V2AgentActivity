@@ -1,6 +1,5 @@
 import { sql } from "drizzle-orm";
 import { pgTable, text, varchar, integer, jsonb, timestamp, boolean } from "drizzle-orm/pg-core";
-import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
 export const users = pgTable("users", {
@@ -9,9 +8,9 @@ export const users = pgTable("users", {
   password: text("password").notNull(),
 });
 
-export const insertUserSchema = createInsertSchema(users).pick({
-  username: true,
-  password: true,
+export const insertUserSchema = z.object({
+  username: z.string(),
+  password: z.string(),
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -158,34 +157,34 @@ export type FeedbackMessage = {
 
 // Zod schemas for API request validation
 export const boundaryElementSchema = z.object({
-  id: z.string(),
-  label: z.string(),
+  id: z.string().min(1).max(128),
+  label: z.string().max(300),
   type: z.enum(["api", "memory", "sensor", "ui", "log"]),
-  x: z.number(),
-  y: z.number(),
+  x: z.number().finite().min(0).max(100_000),
+  y: z.number().finite().min(0).max(100_000),
 });
 
 export const boundaryConnectionSchema = z.object({
-  id: z.string(),
-  elementId: z.string(),
+  id: z.string().min(1).max(128),
+  elementId: z.string().min(1).max(128),
   process: z.enum(agentProcesses),
-  label: z.string().optional(),
+  label: z.string().max(300).optional(),
 });
 
 export const circuitBlockSchema = z.object({
-  id: z.string(),
+  id: z.string().min(1).max(128),
   type: z.enum(agentProcesses),
-  label: z.string(),
-  x: z.number(),
-  y: z.number(),
-  inputs: z.array(z.string()),
-  outputs: z.array(z.string()),
+  label: z.string().max(300),
+  x: z.number().finite().min(-100_000).max(100_000),
+  y: z.number().finite().min(-100_000).max(100_000),
+  inputs: z.array(z.string().max(128)).max(64),
+  outputs: z.array(z.string().max(128)).max(64),
 });
 
 export const circuitConnectionSchema = z.object({
-  id: z.string(),
-  from: z.string(),
-  to: z.string(),
+  id: z.string().min(1).max(128),
+  from: z.string().min(1).max(128),
+  to: z.string().min(1).max(128),
 });
 
 export const simulationStepSchema = z.object({
@@ -210,37 +209,37 @@ export const failureModeSchema = z.object({
 export const classifyRequestSchema = z.object({
   sessionId: sessionIdSchema,
   submissions: z.array(z.object({
-    itemId: z.string().min(1),
+    itemId: z.string().min(1).max(128),
     selectedProcess: z.enum(agentProcesses),
-    explanation: z.string(),
-  })).min(1, "At least one submission is required"),
+    explanation: z.string().max(4000),
+  })).min(1, "At least one submission is required").max(64),
   confidence: z.number().min(0).max(100),
 });
 
 export const boundaryMapRequestSchema = z.object({
   sessionId: sessionIdSchema,
-  elements: z.array(boundaryElementSchema),
-  connections: z.array(boundaryConnectionSchema),
+  elements: z.array(boundaryElementSchema).max(64),
+  connections: z.array(boundaryConnectionSchema).max(384),
 });
 
 export const circuitRequestSchema = z.object({
   sessionId: sessionIdSchema,
-  blocks: z.array(circuitBlockSchema),
-  connections: z.array(circuitConnectionSchema),
+  blocks: z.array(circuitBlockSchema).max(64),
+  connections: z.array(circuitConnectionSchema).max(384),
 });
 
 export const simulateRequestSchema = z.object({
   sessionId: sessionIdSchema,
   blockIds: z.object({
-    perception: z.string().min(1),
-    reasoning: z.string().min(1),
-    planning: z.string().min(1),
-    execution: z.string().min(1),
+    perception: z.string().min(1).max(128),
+    reasoning: z.string().min(1).max(128),
+    planning: z.string().min(1).max(128),
+    execution: z.string().min(1).max(128),
   }),
-  fixtureId: z.string().min(1),
+  fixtureId: z.string().min(1).max(128),
   failureConfig: z.object({
     noisyInput: z.boolean().optional(),
-    missingTool: z.string().optional(),
+    missingTool: z.enum(["sendNotification", "readSteps", "readHeartRate"]).optional(),
     staleMemory: z.boolean().optional(),
   }).optional(),
 });

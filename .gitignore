@@ -4,3 +4,11 @@ dist
 server/public
 vite.config.ts.*
 *.tar.gz
+.env
+.env.*
+!.env.example
+.runtime/
+.security-evidence/
+*.pem
+*.key
+.playwright-cli/

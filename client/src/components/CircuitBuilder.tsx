@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { AgentProcess } from "@shared/schema";
 import { getProcessColor } from "@/lib/processColors";
 import { cn } from "@/lib/utils";
+import { createClientId } from "@/lib/clientIds";
 import {
   Brain,
   Plug,
@@ -79,6 +80,22 @@ export function CircuitBuilder({
   const [showInstructions, setShowInstructions] = useState(true);
   const ctrlEnterLabel = `${t("keyboard.keyNames.ctrl")}+${t("keyboard.keyNames.enter")}`;
 
+  const createPaletteNode = useCallback((item: BlockPaletteItem, position: { x: number; y: number }): Node => {
+    const nodeId = createClientId(item.process);
+
+    return {
+      id: nodeId,
+      type: "processNode",
+      position,
+      data: {
+        id: nodeId,
+        process: item.process,
+        label: t(`circuit.blocks.${item.process}.label`),
+        description: t(`circuit.blocks.${item.process}.description`),
+      },
+    };
+  }, [t]);
+
   const BLOCK_PALETTE: BlockPaletteItem[] = [
     { process: "perception" },
     { process: "learning" },
@@ -87,6 +104,38 @@ export function CircuitBuilder({
     { process: "execution" },
     { process: "interaction" },
   ];
+
+  useEffect(() => {
+    setNodes(initialNodes);
+  }, [initialNodes]);
+
+  useEffect(() => {
+    setEdges(initialEdges);
+  }, [initialEdges]);
+
+  useEffect(() => {
+    setNodes((prev) => prev.map((node) => {
+      const process = node.data?.process as AgentProcess | undefined;
+      if (!process) {
+        return node;
+      }
+
+      const nextLabel = t(`circuit.blocks.${process}.label`);
+      const nextDescription = t(`circuit.blocks.${process}.description`);
+      if (node.data?.label === nextLabel && node.data?.description === nextDescription) {
+        return node;
+      }
+
+      return {
+        ...node,
+        data: {
+          ...node.data,
+          label: nextLabel,
+          description: nextDescription,
+        },
+      };
+    }));
+  }, [t]);
 
   const onConnect = useCallback(
     (params: Connection) => setEdges((eds) => addEdge(params, eds)),
@@ -111,27 +160,15 @@ export function CircuitBuilder({
       if (!data) return;
 
       const item: { process: AgentProcess; label: string; description: string } = JSON.parse(data);
-      const nodeId = `${item.process}-${Date.now()}`;
       const position = {
         x: event.clientX - 350,
         y: event.clientY - 200,
       };
 
-      const newNode: Node = {
-        id: nodeId,
-        type: "processNode",
-        position,
-        data: {
-          id: nodeId,
-          process: item.process,
-          label: item.label,
-          description: item.description,
-        },
-      };
-
+      const newNode = createPaletteNode(item, position);
       setNodes((nds) => [...nds, newNode]);
     },
-    []
+    [createPaletteNode]
   );
 
   const handleClear = () => {
@@ -152,24 +189,13 @@ export function CircuitBuilder({
     const item = BLOCK_PALETTE[selectedPaletteIndex];
     if (!item) return;
 
-    const nodeId = `${item.process}-${Date.now()}`;
     const position = { x: 100 + nodes.length * 50, y: 100 + nodes.length * 30 };
-    const newNode: Node = {
-      id: nodeId,
-      type: "processNode",
-      position,
-      data: {
-        id: nodeId,
-        process: item.process,
-        label: t(`circuit.blocks.${item.process}.label`),
-        description: t(`circuit.blocks.${item.process}.description`),
-      },
-    };
+    const newNode = createPaletteNode(item, position);
 
     setNodes((nds) => [...nds, newNode]);
     setSelectedNodeId(newNode.id);
     announce(t("circuit.keyboard.nodeAdded", { process: item.process }));
-  }, [selectedPaletteIndex, BLOCK_PALETTE, nodes.length, t, announce]);
+  }, [selectedPaletteIndex, BLOCK_PALETTE, nodes.length, createPaletteNode, t, announce]);
 
   const deleteSelectedNode = useCallback(() => {
     if (!selectedNodeId) return;
@@ -302,19 +328,8 @@ export function CircuitBuilder({
                 onClick={() => {
                   setSelectedPaletteIndex(index);
                   if (window.matchMedia('(pointer: coarse)').matches) {
-                    const nodeId = `${item.process}-${Date.now()}`;
                     const position = { x: 100 + nodes.length * 50, y: 100 + nodes.length * 30 };
-                    const newNode: Node = {
-                      id: nodeId,
-                      type: "processNode",
-                      position,
-                      data: {
-                        id: nodeId,
-                        process: item.process,
-                        label: t(`circuit.blocks.${item.process}.label`),
-                        description: t(`circuit.blocks.${item.process}.description`),
-                      },
-                    };
+                    const newNode = createPaletteNode(item, position);
                     setNodes((nds) => [...nds, newNode]);
                     announce(t("circuit.keyboard.nodeAdded", { process: item.process }));
                   }
