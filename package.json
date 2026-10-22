@@ -7,12 +7,14 @@
     "node": ">=24.22.1 <25"
   },
   "scripts": {
-    "dev": "node scripts/check-runtime.mjs && NODE_ENV=development tsx server/index.ts",
-    "build": "node scripts/check-runtime.mjs && vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
-    "start": "node scripts/check-runtime.mjs && NODE_ENV=production node dist/index.js",
+    "dev": "sh scripts/with-runtime.sh npm run dev:app",
+    "dev:app": "node scripts/check-runtime.mjs && NODE_ENV=development tsx server/index.ts",
+    "build": "sh scripts/with-runtime.sh npm run build:app",
+    "build:app": "node scripts/check-runtime.mjs && vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist && mkdir -p dist/node-runtime && cp \"$(node -p process.execPath)\" dist/node-runtime/node",
+    "start": "sh scripts/start-production.sh",
     "check": "tsc",
-    "test:security": "node --import tsx --test tests/security.test.mjs tests/storage.test.ts",
-    "test:postgres": "node --import tsx --test tests/postgres.test.ts",
+    "test:security": "node --import tsx --test tests/security.test.mjs tests/storage.test.ts tests/platform.test.ts tests/sessionRetry.test.ts",
+    "test:postgres": "node --import tsx --test tests/postgres.test.ts tests/postgresRestart.test.ts",
     "db:push": "drizzle-kit push"
   },
   "dependencies": {

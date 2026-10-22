@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, integer, jsonb, timestamp, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, integer, jsonb, timestamp, boolean, index } from "drizzle-orm/pg-core";
 import { z } from "zod";
 
 export const users = pgTable("users", {
@@ -7,6 +7,17 @@ export const users = pgTable("users", {
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
 });
+
+// Anonymous session capabilities are hashed before storage. Keep the table in
+// the schema source so Replit can promote it during Publish, not app startup.
+export const agentLearningSessions = pgTable("agent_learning_sessions", {
+  sessionKey: text("session_key").primaryKey(),
+  data: jsonb("data").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [
+  index("agent_learning_sessions_updated_idx").on(table.updatedAt),
+]);
 
 export const insertUserSchema = z.object({
   username: z.string(),

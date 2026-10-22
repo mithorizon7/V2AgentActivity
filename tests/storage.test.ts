@@ -26,6 +26,12 @@ test("remote database connections enforce TLS certificate verification", () => {
     assert.equal(new URL(options.connectionString!).searchParams.has("sslmode"), false);
   }
   assert.equal(databaseOptions("postgresql://localhost/learning").ssl, false);
+  assert.deepEqual(databaseOptions("postgresql://helium.example/learning").ssl, { rejectUnauthorized: true });
+  if (process.env.REPL_ID) {
+    assert.equal(databaseOptions("postgresql://helium/learning").ssl, false);
+  } else {
+    assert.deepEqual(databaseOptions("postgresql://helium/learning").ssl, { rejectUnauthorized: true });
+  }
   assert.throws(() => databaseOptions("https://database.example/learning"));
 });
 

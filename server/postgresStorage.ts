@@ -9,7 +9,10 @@ const keyFor = (sessionId: string) => createHash("sha256").update(sessionId).dig
 export function databaseOptions(connectionString: string): pg.PoolConfig {
   const url = new URL(connectionString);
   if (!["postgres:", "postgresql:"].includes(url.protocol)) throw new Error("PostgreSQL URL required");
-  const local = ["localhost", "127.0.0.1", "[::1]"].includes(url.hostname);
+  // Helium is Replit's platform-local PostgreSQL sidecar, not a remote TLS
+  // service. Limit that exception to the exact hostname inside Replit.
+  const local = ["localhost", "127.0.0.1", "[::1]"].includes(url.hostname)
+    || (Boolean(process.env.REPL_ID) && url.hostname === "helium");
   // pg connection-string SSL options must not override certificate verification.
   for (const option of ["sslmode", "ssl", "sslcert", "sslkey", "sslrootcert"]) url.searchParams.delete(option);
   return {
@@ -29,13 +32,9 @@ export class PostgresStorage extends MemStorage {
   }
 
   async initialize() {
-    await this.pool.query(`CREATE TABLE IF NOT EXISTS agent_learning_sessions (
-      session_key text PRIMARY KEY,
-      data jsonb NOT NULL,
-      created_at timestamptz NOT NULL DEFAULT now(),
-      updated_at timestamptz NOT NULL DEFAULT now()
-    )`);
-    await this.pool.query("CREATE INDEX IF NOT EXISTS agent_learning_sessions_updated_idx ON agent_learning_sessions (updated_at)");
+    // Schema is prepared in development and promoted by Replit's Publish flow.
+    // Fail closed if the deployed schema/database is unavailable; never run DDL here.
+    await this.pool.query("SELECT session_key, data, created_at, updated_at FROM agent_learning_sessions LIMIT 0");
     await this.pool.query("DELETE FROM agent_learning_sessions WHERE updated_at <= now() - interval '24 hours'");
   }
 

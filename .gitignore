@@ -9,6 +9,7 @@ vite.config.ts.*
 !.env.example
 .runtime/
 .security-evidence/
+/generated-artifacts/
 *.pem
 *.key
 .playwright-cli/

@@ -28,8 +28,10 @@ Baseline: March 6 and March 10 audit records; existing uncommitted fixes preserv
 ## Authorized Completion
 
 - [ ] Q-006 [status:in_progress] Complete approved shared-runtime updates, commit/push, live CI and branch protection.
-- [ ] Q-007 [status:in_progress] Use Replit to synchronize the reviewed release, connect existing PostgreSQL storage and verify the published app.
-- [ ] Q-008 [status:in_progress] Verify database concurrency/restart behavior and browser-level learner flows after final edits.
+- [ ] Q-007 [status:blocked] Publish and verify the matching Replit app after production database billing approval.
+  - Owner: user approval, then application maintainer. The production database must be provisioned through Publishing, without copying development/test data. No live publish has been performed.
+- [x] Q-008 [status:verified] Verify development database concurrency/restart behavior and local browser recovery.
+  - Evidence: Replit reported 26 security/storage/platform/retry tests and two real-database tests passed on candidate 21ee6d580cc4e19847e7f168bf6a554d1d5209a1; local review independently passed 26 tests. Hosted behavior remains gated separately.
 
 The user authorized completion and explicitly requested working with Replit. The repository homepage identified `AgentFoundation` at `https://replit.com/@mithorizon7/AgentFoundation`, Repl `ea6b4183-b003-4ed6-9ca7-381a605a832d`, serving `https://HorizonAgentBuilder.replit.app`. Replit confirmed the Git remote and learning features. Its checkout was at `fce07c88a82903184627703dc359956223601bfc`, behind GitHub main with a content-empty publication commit. Its workspace used Node 20.20.0 and per-process MemStorage despite DATABASE_URL being configured in development and production. The read-only Replit inspection auto-added a Python module; preserve unrelated changes when synchronizing. No secret value was requested.
 
@@ -259,13 +261,17 @@ For Homebrew's externally managed Python, use its supported package upgrade path
 
 - [x] R-001 [status:accepted_risk] Upstream braces advisory remains high in build dependencies; no patched version exists (registry/advisory rechecked during completion). Owner: build maintainer. It is absent from the production-only install and receives only repository-controlled build globs. CI runs with read-only permissions and no persisted checkout credential; untrusted dependency changes require review. Do not claim a zero-vulnerability full tree. A major Tailwind/browser-support migration is not bundled into this security release solely to remove a build-only advisory.
 - [ ] R-002 [status:blocked] Deployed environment and historical incident exposure remain unverified. Owner: project operator. Close with confirmed app identity, read access and version/digest/log evidence, including the October 17 onward window and cloud/gateway records.
-- [ ] R-003 [status:blocked] Shared pip/Node and device trust updates require device-owner action. Close with installed-version and effective-store checks after approved changes.
+- [x] R-003 [status:accepted_risk] Shared Node and active pip repaired and their effective bundles checked. macOS 26.7.1 is offered by Software Update and requires restart; it was not installed or restarted during active work. Safari 27.0 and Xcode command-line tools 27.0 are also offered. Device-wide OS/browser and unrelated environments remain device-owner scope, not claimed repaired.
 - [x] R-004 [status:verified] Main requires pull requests and strict `validate` checks, enforced for admins; force pushes/deletion blocked. CI defaults read-only and cannot approve reviews. Dependency alerts and automated fixes enabled. Initial release CI 39830887909 passed; final candidate will be checked before merge.
 - [ ] R-005 [status:blocked] Volatile per-process storage with configured autoscaling prevents a durable production-resume claim. Close with an approved persistence/routing decision and cross-instance/restart validation.
 
 Confidence is high in the reproduced local weaknesses, dependency versions and tested remediations. Confidence in production remediation and historical compromise coverage is limited by the explicit access gaps. No claim of complete safety or exhaustive vulnerability discovery is made.
 
 ## Change Log
+
+- Replit integration: independently verified the 28,914-byte source patch SHA-256 `36f795ca3c08860e9017195396066e1a8866384cb123ce241a0ae5aeefff9327`. Reviewed and applied runtime packaging, declared session schema, startup schema validation without DDL, exact Replit-local Helium transport exception, and added platform/retry/process-restart tests. Excluded unrequested agent-memory files. Replit OAuth lacked workflow scope; no scope was expanded. Source is published through the already-authorized local Git access instead.
+- Runtime bootstrap: Linux x64 Node archive hash independently matches official SHASUMS256. Hardened downloads with HTTPS-only redirects, retries, verified temporary files and atomic cache promotion. A simulated interrupted download confirmed no corrupt cache or temporary file was retained. Deployment exclusions now cover agent state, Git metadata, environment files, keys and private evidence.
+- Production database: contrary to the earlier secret-presence metadata, Replit's SQL service reports no production database. The Publishing UI confirms its creation checkbox is off. Explicit approval for usage-based database billing was requested before enabling it; the existing live deployment is still unchanged. [Provider database workflow](https://docs.replit.com/features/data-and-storage/development-and-production).
 
 - Browser completion pass: English consent, primer entry and demo navigation worked; mobile width 390px had no horizontal overflow and no unexpected alerts. A simulated 503 on session creation displayed the translated retry control; removing the outage and retrying restored the session without reloading/resetting the page. The expected injected 503 is not an unexplained browser error. Clean production-only installation passed 12 built-server checks with zero production advisories.
 
