@@ -1297,6 +1297,8 @@
     }
   },
   "consent": {
+    "sessionUnavailable": "Neizdevās izveidot savienojumu ar jūsu mācību sesiju. Varat turpināt lasīt, bet pirms uzdevuma saglabāšanas atjaunojiet savienojumu.",
+    "retrySession": "Mēģināt savienoties vēlreiz",
     "title": "Jūsu progresa saglabāšana",
     "description": "Ar jūsu atļauju šī pārlūkprogramma var atcerēties, kur apstājāties. Uzdevumu atbildes un vērtējumi tiek nosūtīti uz mūsu serveri, lai sniegtu atgriezenisko saiti. Servera sesija beidzas 24 stundas pēc pēdējās saglabāšanas.",
     "whatWeStore": "Ko saglabāsim šajā pārlūkprogrammā:",

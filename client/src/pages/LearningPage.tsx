@@ -260,7 +260,7 @@ export default function LearningPage() {
     })),
   [t]);
   
-  const { sessionId, progress, isLoading: sessionLoading } = useSession();
+  const { sessionId, progress, isLoading: sessionLoading, hasSessionError, retrySession } = useSession();
   const classificationMutation = useClassification(sessionId);
   const boundaryMapMutation = useBoundaryMap(sessionId);
   const circuitBuilderMutation = useCircuitBuilder(sessionId);
@@ -1191,6 +1191,14 @@ export default function LearningPage() {
       }} />}
 
       <div id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 pt-16 sm:pt-14 pb-6 sm:pb-8">
+        {hasSessionError && (
+          <div role="alert" className="mb-6 flex flex-wrap items-center gap-3 rounded-md border border-destructive p-4">
+            <p className="flex-1 min-w-0">{t("consent.sessionUnavailable")}</p>
+            <Button onClick={retrySession} disabled={sessionLoading} data-testid="button-retry-session">
+              {t("consent.retrySession")}
+            </Button>
+          </div>
+        )}
         <Card className="p-4 sm:p-6 mb-6 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
           <div className="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(300px,0.8fr)]">
             <div className="space-y-5">

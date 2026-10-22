@@ -1297,6 +1297,8 @@
     }
   },
   "consent": {
+    "sessionUnavailable": "We could not connect to your learning session. You can keep reading, but please reconnect before saving an exercise.",
+    "retrySession": "Try Connecting Again",
     "title": "Save Your Learning Progress?",
     "description": "With your permission, this browser can remember your place. Exercise answers and scores are sent to our server for feedback. Server sessions expire after 24 hours without a save.",
     "whatWeStore": "What we'll save locally:",

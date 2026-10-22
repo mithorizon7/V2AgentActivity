@@ -56,6 +56,7 @@ export function useSession() {
     data: progress,
     error: progressError,
     isLoading,
+    refetch,
   } = useQuery<LearnerProgress, Error>({
     queryKey: ['/api/progress', sessionId],
     enabled: !!sessionId,
@@ -106,5 +107,7 @@ export function useSession() {
     sessionId,
     progress,
     isLoading: isLoading || createSession.isPending || isRecoveringStaleSession,
+    hasSessionError: Boolean((!sessionId && createSession.error) || (progressError && !isMissingProgressError(progressError))),
+    retrySession: () => sessionId ? void refetch() : createSession.mutate(),
   };
 }
