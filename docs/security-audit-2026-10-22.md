@@ -21,13 +21,15 @@ Baseline: March 6 and March 10 audit records; existing uncommitted fixes preserv
 
 - [ ] G-001 [status:in_progress] Finish authorized release, deployment and final evidence.
 - [x] G-002 [status:verified] Remaining deployment and account actions have explicit owners and verification steps below.
-- [ ] G-003 [status:in_progress] Rerun checks after database-backed persistence and release edits.
+- [x] G-003 [status:verified] Final source checks passed after database-backed persistence and release edits.
+  - Evidence: local 26-test security/storage/platform/retry pass; final GitHub run 39836103885 passed typecheck/build, all security tests, isolated schema preparation, both PostgreSQL suites and production audit. Only documentation changes follow this source validation.
 - [ ] G-004 [status:blocked] Verify deployed runtimes, provider infrastructure and deployment history before production sign-off.
   - Owner: application maintainer and Replit; verify AgentFoundation deployment and provider evidence.
 
 ## Authorized Completion
 
-- [ ] Q-006 [status:in_progress] Complete approved shared-runtime updates, commit/push, live CI and branch protection.
+- [x] Q-006 [status:verified] Complete approved shared-runtime updates, commit/push, live CI and branch protection.
+  - Evidence: reviewed integration b9644d9070eaf89ce59dec5024f3213784c15482 pushed to PR #1; required CI 39836103885 passed. Branch protections and dependency alert settings were read back as enabled.
 - [ ] Q-007 [status:blocked] Publish and verify the matching Replit app after production database billing approval.
   - Owner: user approval, then application maintainer. The production database must be provisioned through Publishing, without copying development/test data. No live publish has been performed.
 - [x] Q-008 [status:verified] Verify development database concurrency/restart behavior and local browser recovery.
@@ -263,11 +265,13 @@ For Homebrew's externally managed Python, use its supported package upgrade path
 - [ ] R-002 [status:blocked] Deployed environment and historical incident exposure remain unverified. Owner: project operator. Close with confirmed app identity, read access and version/digest/log evidence, including the October 17 onward window and cloud/gateway records.
 - [x] R-003 [status:accepted_risk] Shared Node and active pip repaired and their effective bundles checked. macOS 26.7.1 is offered by Software Update and requires restart; it was not installed or restarted during active work. Safari 27.0 and Xcode command-line tools 27.0 are also offered. Device-wide OS/browser and unrelated environments remain device-owner scope, not claimed repaired.
 - [x] R-004 [status:verified] Main requires pull requests and strict `validate` checks, enforced for admins; force pushes/deletion blocked. CI defaults read-only and cannot approve reviews. Dependency alerts and automated fixes enabled. Initial release CI 39830887909 passed; final candidate will be checked before merge.
-- [ ] R-005 [status:blocked] Volatile per-process storage with configured autoscaling prevents a durable production-resume claim. Close with an approved persistence/routing decision and cross-instance/restart validation.
+- [ ] R-005 [status:blocked] The unchanged live app still uses volatile per-process storage. The reviewed PostgreSQL implementation passed real cross-process concurrency, exit/reconnect and expiry tests in Replit and CI; production provisioning, publish and hosted verification await database billing approval.
 
 Confidence is high in the reproduced local weaknesses, dependency versions and tested remediations. Confidence in production remediation and historical compromise coverage is limited by the explicit access gaps. No claim of complete safety or exhaustive vulnerability discovery is made.
 
 ## Change Log
+
+- Final integration source b9644d9070eaf89ce59dec5024f3213784c15482 passed [required GitHub CI](https://github.com/mithorizon7/V2AgentActivity/actions/runs/39836103885), including the declared-schema migration on isolated PostgreSQL and both database suites. The protected release PR is ready to merge without bypassing checks. No production rollout is claimed while billing approval is pending.
 
 - Replit integration: independently verified the 28,914-byte source patch SHA-256 `36f795ca3c08860e9017195396066e1a8866384cb123ce241a0ae5aeefff9327`. Reviewed and applied runtime packaging, declared session schema, startup schema validation without DDL, exact Replit-local Helium transport exception, and added platform/retry/process-restart tests. Excluded unrequested agent-memory files. Replit OAuth lacked workflow scope; no scope was expanded. Source is published through the already-authorized local Git access instead.
 - Runtime bootstrap: Linux x64 Node archive hash independently matches official SHASUMS256. Hardened downloads with HTTPS-only redirects, retries, verified temporary files and atomic cache promotion. A simulated interrupted download confirmed no corrupt cache or temporary file was retained. Deployment exclusions now cover agent state, Git metadata, environment files, keys and private evidence.
