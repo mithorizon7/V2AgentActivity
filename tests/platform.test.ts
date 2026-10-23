@@ -1,12 +1,18 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { mkdtemp, mkdir, copyFile, writeFile, rm, readdir, access } from "node:fs/promises";
+import { mkdtemp, mkdir, copyFile, writeFile, rm, readdir, access, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { PostgresStorage } from "../server/postgresStorage";
 
 const overrides = ["NODE_OPTIONS", "NODE_PATH", "NODE_EXTRA_CA_CERTS", "NODE_USE_SYSTEM_CA", "NODE_TLS_REJECT_UNAUTHORIZED", "SSL_CERT_FILE", "SSL_CERT_DIR", "OPENSSL_CONF", "OPENSSL_CONF_INCLUDE", "OPENSSL_MODULES", "OPENSSL_ENGINES"];
+
+test("deployment starts the packaged runtime without a host Node launcher", async () => {
+  const deployment = (await readFile(".replit", "utf8")).split("[deployment]")[1]?.split(/\n\[/)[0];
+  assert(deployment);
+  assert.match(deployment, /^run = \["sh", "scripts\/start-production.sh"\]$/m);
+});
 
 test("production build/start clear inherited runtime overrides", async (t) => {
   const root = await mkdtemp(join(tmpdir(), "learning-runtime-env-"));

@@ -24,7 +24,7 @@ Baseline: March 6 and March 10 audit records; existing uncommitted fixes preserv
 - [x] Q-001 [status:verified] Inspect package metadata and compromise indicators before executing project code.
   - Evidence: isolated system Python `-I -S` static inspection, 635 lock entries, 695 installed manifests; no inspected LiteLLM indicators or non-npm artifact sources. Historical exposure not excluded.
 - [x] Q-002 [status:verified] Refresh primary advisories; establish delivery and infrastructure coverage and gaps below.
-- [x] Q-003 [status:verified] Correct locally repairable application and dependency weaknesses; retain the unresolved upstream advisory explicitly.
+- [x] Q-003 [status:verified] Correct locally repairable application and dependency weaknesses; retain dated upstream advisory evidence, including its October 23 withdrawal.
 - [x] Q-004 [status:verified] Validate final changes under a verified patched runtime; rescan resolved dependencies.
 - [x] Q-005 [status:verified] Document applicability, deployment steps, incident-response actions, and gaps.
 
@@ -33,7 +33,7 @@ Baseline: March 6 and March 10 audit records; existing uncommitted fixes preserv
 - [ ] G-001 [status:in_progress] Finish authorized release, deployment and final evidence.
 - [ ] G-002 [status:in_progress] Resolve the mobile follow-up finding and retain explicit owners for provider evidence gaps.
 - [ ] G-003 [status:in_progress] Rerun final source checks after the October 23 mobile follow-up edits.
-  - Evidence: local 26-test security/storage/platform/retry pass; final GitHub run 39836103885 passed typecheck/build, all security tests, isolated schema preparation, both PostgreSQL suites and production audit. Only documentation changes follow this source validation.
+  - Evidence: October 23 final source passed local typecheck/build and all 32 tests serially, without relaxed assertions or deadlines. This includes direct-shell deployment launch and environment sanitization fixtures. Required CI and actual Replit production-entry build are pending; earlier source runs do not close this gate.
 - [ ] G-004 [status:blocked] Verify deployed runtimes, provider infrastructure and deployment history before production sign-off.
   - Owner: application maintainer and Replit; verify AgentFoundation deployment and provider evidence.
 
@@ -41,8 +41,8 @@ Baseline: March 6 and March 10 audit records; existing uncommitted fixes preserv
 
 - [x] Q-006 [status:verified] Complete approved shared-runtime updates, commit/push, live CI and branch protection.
   - Evidence: reviewed integration b9644d9070eaf89ce59dec5024f3213784c15482 pushed to PR #1; required CI 39836103885 passed. Branch protections and dependency alert settings were read back as enabled.
-- [ ] Q-007 [status:in_progress] Publish and verify the matching Replit app after production database billing approval.
-  - Evidence: October 23 user instruction authorized finishing and deploying after the billing gate was explained. Enabled Create production database with development-data copying OFF in existing public Autoscale settings. Coordinated publish started at approximately 18:31 UTC; hosted verification remains pending.
+- [x] Q-007 [status:verified] Publish and perform bounded verification of the initial Replit security release after production database approval.
+  - Evidence: October 23 publish succeeded at 18:33:26 UTC with production DB creation enabled and development-data copying OFF. Schema, served artifact, eight hosted API checks and browser primer/locale/reload checks passed. Cross-deployment persistence and the newly discovered mobile/runtime follow-up remain tracked in Q-009 and R-005.
 - [x] Q-008 [status:verified] Verify development database concurrency/restart behavior and local browser recovery.
   - Evidence: Replit reported 26 security/storage/platform/retry tests and two real-database tests passed on candidate 21ee6d580cc4e19847e7f168bf6a554d1d5209a1; local review independently passed 26 tests. Hosted behavior remains gated separately.
 - [ ] Q-009 [status:in_progress] Validate and publish localized mobile corrections and deterministic production runtime safeguards through a protected follow-up PR.
@@ -57,7 +57,7 @@ The user authorized completion and explicitly requested working with Replit. The
 
 ## Prior Work Reused
 
-March API session existence, block-kind alignment, graph reference checks, request size limits, and UUID creation remain present by source inspection. Existing client hydration/localization changes remain uncommitted and are preserved. Prior onboarding and translation redesign is out of this security pass. March dependency/audit results and production claims are not current evidence.
+March API session existence, block-kind alignment, graph reference checks, request size limits, and UUID creation remain present by source inspection. Previously uncommitted client hydration/localization work was preserved and included in the protected release. The October 23 follow-up corrects observed responsive/accessibility defects without redesigning lessons. March dependency/audit results and production claims are not current evidence.
 
 ## Findings Log
 
@@ -130,7 +130,7 @@ No accessible deployment/cloud/gateway logs established LiteLLM historical expos
 - [ ] P-005 [status:in_progress] Pin production runtime provenance and sanitize inherited loader/trust settings.
   - Addresses: F-005. Evidence: production-only pinned bootstrap mode, build/start environment sanitization, isolated shell-fixture tests and non-sensitive startup runtime telemetry. No TLS certificate verification is disabled.
 
-All application remediations below are verified locally, with deployment pending. Severity describes the issue; exposure is assessed separately.
+The table preserves the original October 22 remediation assessment; subsequent deployment, database and advisory updates are recorded in Current Release Status and the validation/change logs. Severity describes the issue; exposure is assessed separately.
 
 | Priority / advisory | Affected asset / original version | Exposure and evidence | Remediation / status / owner |
 | --- | --- | --- | --- |
@@ -144,7 +144,7 @@ All application remediations below are verified locally, with deployment pending
 | P2: unbounded resource consumption | Session map, graph arrays, explanations, request lifetime | Anonymous callers could retain unlimited sessions or oversized aggregate data | Bounded arrays/text/coordinates; 128 KiB body ceiling; compressed API bodies rejected; rate limits; 24h idle session expiry; 2,048-session capacity; HTTP timeouts. Tests cover refusal without evicting active learners |
 | P2: request/error controls | State-changing GET, form submissions, parser errors | Browser-triggered writes and excessive parser details | POST-only creation; custom same-origin request header; cross-site writes denied; generic errors; production CSP/HSTS and security headers. Local fix |
 | P2: CI control gap | Remote main unprotected, zero rulesets/runs | No evidence of compromise; no enforced gate on sensitive source changes | Read-only workflow and pinned official actions prepared locally; Dependabot config added. Operator must enable protection and verify first CI run |
-| High unresolved: CVE-2026-93687 | `braces` 3.0.3 through Tailwind 3.4.19 | Fixed project content globs only; no HTTP-to-glob input path found; upstream has no patch | Full audit retains five high entries (`braces`, `chokidar`, `fast-glob`, `micromatch`, `tailwindcss`). Compile-only animation plugin moved to dev so these are absent from production-only install. Build maintainer: monitor upstream or separately validate a Tailwind 4 migration. [Advisory](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm) |
+| Withdrawn: CVE-2026-93687 | `braces` 3.0.3 through Tailwind 3.4.19 | October 22 audit reported five high build-chain entries; repository-controlled globs only | GitHub withdrew the advisory October 23 as not practically exploitable. Refreshed full and production audits are zero; no forced Tailwind migration was used. [Advisory](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm) |
 | Shared-tool trust compromise risk | Initially pip 24.2 with compromised G3 root | After approved Homebrew upgrade, active pip is 26.2.2 and its actual bundle has zero compromised G3 roots | Shared installation repaired through its package manager; other environments and device-wide stores are not implied repaired. [Python guidance](https://discuss.python.org/t/information-for-python-users-regarding-emudhra-emsign-ca-certificate-security-incident/109576) |
 
 Compatible updates also resolved the current npm findings for Babel, body-parser, brace-expansion, browserslist, lodash, nanoid, path-to-regexp, picomatch, PostCSS, postcss-selector-parser, qs, source-map-js, yaml and old esbuild loader copies. The existing lockfile was retained and updated; no forced audit fix or blanket major migration was used. Vite and ORM changes were specifically required by applicable advisories.
@@ -219,8 +219,8 @@ Request limits are per process, using socket IP and bounded limiter state. Behin
   - Evidence: 2026-10-22 PASS, `node:http` smoke, preserving the Host header. Initial fetch-based Host probe was inconclusive because fetch can rewrite Host; it is not used as proof of a post-upgrade Vite flaw.
 - [x] V-008 [status:verified] Initial hosted security release passes bounded application checks and schema verification.
   - Evidence: 2026-10-23 PASS, eight hosted API checks in the protected verification report; production catalogs confirm table/index/types; browser primer/locale/reload checks passed. Replit reported early health-check refusals/500s through 18:33:35 UTC, followed by public 200 and passing API requests. No cause was exposed; a successful homepage alone is not proof that every instance is error-free.
-- [ ] V-009 [status:in_progress] Final mobile follow-up typecheck/build, 27-test suite, all-locale viewport checks, required CI and hosted retest.
-  - Evidence: 2026-10-23 PASS initial 27-test suite after navigation edit; final footer edit resets affected build/browser checks. A sandbox-blocked socket test was rerun with permission and passed; the failure was not hidden.
+- [ ] V-009 [status:in_progress] Final mobile/runtime follow-up typecheck/build, 32-test suite, all-locale viewport checks, required CI and hosted retest.
+  - Evidence: 2026-10-23 PASS final typecheck/build and all 32 local tests serially. Homepage and guided-practice matrices pass all three locales at 320/390/768px; examples/synthesis also pass narrow-width checks. Mobile home control has a localized accessible name. One sandbox-blocked socket run and one parallel run with child-process deadline failures were rerun successfully with permission/serial scheduling; assertions and deadlines were not relaxed. Required final CI, clean Replit production-entry build and hosted retest remain pending.
 
 Use a trusted Node 24.22.1+ 24.x runtime first; no global tools were replaced by this audit.
 
@@ -236,7 +236,7 @@ npm audit --omit=dev --audit-level=low
 npm audit
 ```
 
-The final full audit is expected to exit nonzero while the five build-tool entries remain. Do not disable or falsify that result. npm 11.19.1 / Node 24.22.1 / OpenSSL 3.5.9 were used. A CycloneDX SBOM was generated with `npm sbom --sbom-format cyclonedx --package-lock-only`. Private audit evidence includes exact package versions and advisory URLs. The `.npmrc` disables lifecycle scripts; native/optional esbuild artifacts worked from published platform packages without running installers.
+The October 22 full audit exited nonzero with five build-chain entries; October 23 full and production audits both return zero after the advisory withdrawal. No result was disabled or falsified. npm 11.19.1 / Node 24.22.1 / OpenSSL 3.5.9 were used. A CycloneDX SBOM was generated with `npm sbom --sbom-format cyclonedx --package-lock-only`. The `.npmrc` disables lifecycle scripts; native/optional esbuild artifacts worked from published platform packages without running installers. Temporary October 22 raw reports are no longer assumed retained; see the evidence-retention note above.
 
 The suite launches a temporary local server; do not point this rate/capacity test suite at production. A second clean installation with `npm ci --omit=dev --ignore-scripts` ran the built API tests without Vite or braces installed. Production CSP, cache/response headers, request guards, graph validation, simulation persistence and error status, rate limiting, and sensitive-log exclusion were exercised. Storage tests cover expiry and capacity refusal. Type/build and final test counts are recorded below after the last source edit. PostCSS `from` and main-chunk-size warnings persist; those warnings are not classified as newly demonstrated vulnerabilities.
 
@@ -291,7 +291,7 @@ For Homebrew's externally managed Python, use its supported package upgrade path
 ## Residual Risks
 
 - [x] R-001 [status:verified] The previously retained braces advisory was withdrawn October 23 as not practically exploitable. Both refreshed npm audits report zero vulnerabilities. Owner: build maintainer, continue normal dependency monitoring. Historical five-entry results are retained as dated evidence, not concealed or represented as current. [Advisory withdrawal](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm).
-- [ ] R-002 [status:blocked] Deployed environment and historical incident exposure remain unverified. Owner: project operator. Close with confirmed app identity, read access and version/digest/log evidence, including the October 17 onward window and cloud/gateway records.
+- [ ] R-002 [status:blocked] Provider-internal infrastructure and historical incident exposure remain unverified. Owner: project operator and Replit. App identity, production schema, public artifact and live API behavior are confirmed. Remaining evidence is provider host/kernel/backports, edge HTTP/3, backup/network controls, October 17 onward cloud/gateway history and platform process/image attestation; do not infer these from repository scans.
 - [x] R-003 [status:accepted_risk] Shared Node and active pip repaired and their effective bundles checked. macOS 26.7.1 is offered by Software Update and requires restart; it was not installed or restarted during active work. Safari 27.0 and Xcode command-line tools 27.0 are also offered. Device-wide OS/browser and unrelated environments remain device-owner scope, not claimed repaired.
 - [x] R-004 [status:verified] Main requires pull requests and strict `validate` checks, enforced for admins; force pushes/deletion blocked. CI defaults read-only and cannot approve reviews. Dependency alerts and automated fixes enabled. Final source CI 39836103885 and premerge CI 39836466274 passed before protected merge. GitHub's alert index still reported premerge October 22 timestamps on October 23; exact resolved-tree audits are clean. No alerts were dismissed to conceal a mismatch.
 - [ ] R-005 [status:in_progress] Production now uses the provisioned database and hosted concurrent saves/rehydration pass. Real cross-process tests passed in Replit and CI. The hosted cross-deployment test remains open; an additional deployment solely for that test was blocked by safety review pending explicit approval. A separately discovered mobile fix is being validated for the requested follow-up release.
