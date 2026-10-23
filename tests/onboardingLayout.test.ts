@@ -7,11 +7,15 @@ import { build } from "esbuild";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 
-test("worked-example navigation stacks and permits translated labels to wrap", async () => {
+test("onboarding navigation and guided prompts permit translated labels to wrap", async () => {
   const output = resolve(`.security-evidence/onboarding-layout-${process.pid}.mjs`);
   await mkdir(resolve(".security-evidence"), { recursive: true });
   await build({
-    entryPoints: ["client/src/components/WorkedExample.tsx"],
+    stdin: {
+      contents: `export { WorkedExample } from './client/src/components/WorkedExample'; export { Phase1Guided } from './client/src/components/Phase1Guided';`,
+      resolveDir: process.cwd(),
+      loader: "ts",
+    },
     outfile: output,
     bundle: true,
     platform: "node",
@@ -21,15 +25,17 @@ test("worked-example navigation stacks and permits translated labels to wrap", a
     plugins: [{
       name: "locale-fixture",
       setup(builder) {
-        builder.onResolve({ filter: /^react-i18next$/ }, () => ({ path: "translation", namespace: "fixture" }));
-        builder.onLoad({ filter: /.*/, namespace: "fixture" }, () => ({
-          contents: `export const useTranslation = () => ({ t: key => key.split('.').reduce((value, part) => value?.[part], globalThis.__onboardingLocale) ?? key });`,
+        builder.onResolve({ filter: /^(react-i18next|@\/hooks\/useConsent)$/ }, ({ path }) => ({ path, namespace: "fixture" }));
+        builder.onLoad({ filter: /.*/, namespace: "fixture" }, ({ path }) => ({
+          contents: path === "react-i18next"
+            ? `export const useTranslation = () => ({ t: key => key.split('.').reduce((value, part) => value?.[part], globalThis.__onboardingLocale) ?? key });`
+            : `export const useConsent = () => ({ hasConsent: false }); export const safeLocalStorage = () => ({getItem: () => null, setItem() {}, removeItem() {}});`,
         }));
       },
     }],
   });
   try {
-    const { WorkedExample } = await import(pathToFileURL(output).href);
+    const { WorkedExample, Phase1Guided } = await import(pathToFileURL(output).href);
     for (const language of ["en", "ru", "lv"]) {
       const locale = JSON.parse(await readFile(`client/src/locales/${language}/translation.json`, "utf8"));
       (globalThis as any).__onboardingLocale = locale;
@@ -42,6 +48,16 @@ test("worked-example navigation stacks and permits translated labels to wrap", a
       }
       assert.match(markup, /flex flex-col gap-3 sm:flex-row sm:flex-wrap/);
       assert(markup.includes(locale.workedExample.next));
+      const guided = renderToStaticMarkup(React.createElement(Phase1Guided, {
+        items: [{ id: "layout-probe", text: "Synthetic layout probe", correctProcess: "perception" }],
+        onComplete() {}, onBack() {},
+      }));
+      for (let index = 0; index < 3; index++) {
+        const button = guided.match(new RegExp(`<button[^>]*data-testid="button-seed-layout-probe-${index}"[^>]*>`))?.[0];
+        assert(button, `${language}: missing guided seed ${index}`);
+        assert.match(button, /whitespace-normal/);
+        assert.match(button, /max-w-full/);
+      }
     }
   } finally {
     delete (globalThis as any).__onboardingLocale;

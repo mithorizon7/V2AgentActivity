@@ -86,7 +86,7 @@ function DraggableItem({
             key={idx}
             variant="outline"
             size="sm"
-            className="text-xs h-auto py-1"
+            className="max-w-full whitespace-normal text-left text-xs h-auto py-1"
             onClick={() => handlePromptClick(prompt)}
             disabled={disabled || showFeedback}
             data-testid={`button-seed-${item.id}-${idx}`}
