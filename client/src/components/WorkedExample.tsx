@@ -209,7 +209,7 @@ export function WorkedExample({ onComplete, onBack }: WorkedExampleProps) {
               </div>
             )}
 
-            <div className="flex justify-between items-center pt-4 border-t">
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between pt-4 border-t">
               <Button
                 onClick={() => {
                   setShowSynthesis(false);
@@ -217,23 +217,25 @@ export function WorkedExample({ onComplete, onBack }: WorkedExampleProps) {
                   setSynthesisError("");
                 }}
                 variant="outline"
+                className="h-auto min-w-0 whitespace-normal py-3"
                 data-testid="button-back-to-examples"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 {t("workedExample.backToExamples")}
               </Button>
-              <div className="flex gap-2">
+              <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
                 {!synthesisSubmitted && (
                   <Button
                     onClick={handleSynthesisSubmit}
                     size="lg"
                     variant="outline"
+                    className="h-auto min-w-0 whitespace-normal py-3"
                     data-testid="button-compare-expert"
                   >
                     {t("workedExample.synthesis.compare")}
                   </Button>
                 )}
-                <Button onClick={handleNext} size="lg" data-testid="button-complete-synthesis">
+                <Button onClick={handleNext} size="lg" className="h-auto min-w-0 whitespace-normal py-3" data-testid="button-complete-synthesis">
                   {t("workedExample.synthesis.continue")}
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
@@ -261,7 +263,7 @@ export function WorkedExample({ onComplete, onBack }: WorkedExampleProps) {
               <h3 className="text-sm font-semibold text-center">{t("workedExample.pipeline.title")}</h3>
               
               {/* Desktop: Horizontal stepper */}
-              <div className="hidden sm:flex items-center justify-center gap-2">
+              <div className="hidden sm:flex flex-wrap items-center justify-center gap-2">
                 {PIPELINE_PROCESSES.map((process, index) => (
                   <div key={process} className="flex items-center">
                     <div
@@ -354,7 +356,7 @@ export function WorkedExample({ onComplete, onBack }: WorkedExampleProps) {
                     key={process}
                     onClick={() => handleProcessGuess(process)}
                     className={cn(
-                      "p-4 rounded-lg border-2 text-left transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
+                      "min-w-0 break-words p-4 rounded-lg border-2 text-left transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
                       "hover-elevate active-elevate-2",
                       PROCESS_COLORS[process]
                     )}
@@ -447,11 +449,12 @@ export function WorkedExample({ onComplete, onBack }: WorkedExampleProps) {
           )}
 
           {/* Navigation */}
-          <div className="flex justify-between items-center pt-4 border-t">
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between pt-4 border-t">
             <Button
               onClick={handlePrevious}
               disabled={currentCardIndex === 0 && !onBack}
               variant="outline"
+              className="h-auto min-w-0 whitespace-normal py-3"
               data-testid="button-previous-example"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -462,6 +465,7 @@ export function WorkedExample({ onComplete, onBack }: WorkedExampleProps) {
               onClick={handleNext}
               disabled={!hasGuessed}
               size="lg"
+              className="h-auto min-w-0 whitespace-normal py-3"
               data-testid={isLastCard ? "button-start-synthesis" : "button-next-example"}
             >
               {isLastCard ? t("workedExample.readyToSummarize") : t("workedExample.next")}

@@ -214,11 +214,12 @@ function PhaseNavigation({
   return (
     <nav aria-label={t("navigation.phaseNavigation")} className="mt-6">
       <Card className="p-4">
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
           {showPrevious && onPrevious ? (
             <Button
               variant="outline"
               onClick={onPrevious}
+              className="h-auto max-w-full whitespace-normal py-2"
               data-testid="button-previous-phase"
               aria-label={previousLabel || t("navigation.previousPhase")}
             >
@@ -231,6 +232,7 @@ function PhaseNavigation({
           {showNext && onNext ? (
             <Button
               onClick={onNext}
+              className="h-auto max-w-full whitespace-normal py-2"
               data-testid="button-next-phase-bottom"
               aria-label={nextLabel || t("navigation.nextPhase")}
             >
@@ -1173,9 +1175,10 @@ export default function LearningPage() {
           size="sm"
           onClick={() => setLocation("/")}
           data-testid="button-back-home"
+          aria-label={t("navigation.backToHome")}
           className="min-h-[44px] sm:min-h-[36px]"
         >
-          <Home className="w-4 h-4 sm:mr-2" />
+          <Home className="w-4 h-4 sm:mr-2" aria-hidden="true" />
           <span className="hidden sm:inline">{t("navigation.backToHome")}</span>
         </Button>
       </div>
@@ -1876,7 +1879,7 @@ export default function LearningPage() {
         <footer className="mt-16 pt-6 border-t border-border/40 mb-6 relative">
           <div className="flex flex-col items-center gap-4">
             <img src={MITOpenLearningLogo} alt={t("accessibility.images.mitOpenLearning")} className="h-10 opacity-80" />
-            <div className="flex items-center gap-3">
+            <div className="flex max-w-full flex-wrap items-center justify-center gap-x-3 gap-y-1">
               <a 
                 href="https://accessibility.mit.edu" 
                 target="_blank" 
@@ -1891,7 +1894,7 @@ export default function LearningPage() {
             </div>
           </div>
           
-          <p className="absolute bottom-0 right-0 text-[10px] text-muted-foreground/60 text-right leading-tight">
+          <p className="mt-4 text-[10px] text-muted-foreground/60 text-center leading-tight sm:absolute sm:bottom-0 sm:right-0 sm:mt-0 sm:text-right">
             {t("footer.copyright")} {t("footer.orgName")}<br />
             {t("footer.institution")}, {t("footer.location")}
           </p>

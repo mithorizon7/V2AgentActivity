@@ -1,7 +1,21 @@
 # Security Audit: October 22, 2026
 
-Repository remediation and verification record. Production sign-off remains withheld where access or provider evidence is missing.
+Repository remediation and verification record, refreshed October 23. Application fixes are deployed and hosted verification is complete. Full infrastructure/incident sign-off remains withheld where provider evidence is missing.
 Baseline: March 6 and March 10 audit records; existing uncommitted fixes preserved on `codex/security-audit-2026-10-22`.
+
+## Current Release Status
+
+- PR #1 merged through the required checks to main `bc6f410cbb874b2fb6409ae2969151a68e4b587c` on October 22.
+- On October 23, Publishing created a separate production database and promoted schema without copying development/test data. Production catalogs confirm the session table, valid updated-at index and timestamp types.
+- Public release at `https://HorizonAgentBuilder.replit.app` succeeded at 18:33:26 UTC. Replit build ID `3971a52c-1fa9-40d1-a919-75bfe80412f3`; publication commit `28309396b4e793188263fd3a0f44cda6a0bf221c` preserves the reviewed application/configuration source.
+- Eight bounded hosted API checks passed using one owned synthetic session: restrictive headers, request guards, bearer-only reads, disabled upsert, input rejection, concurrent independent saves, simulation outcomes and progress rehydration. No capacity/rate stress tests ran against production.
+- Browser consent, primer completion, Russian/Latvian feedback and saved next-step restoration passed. Observed mobile navigation, prompt, footer and hero overflows were corrected and verified after the follow-up release.
+- October 23 production and full npm audits both report zero vulnerabilities. GitHub withdrew GHSA-vfj7-8cjw-p6xm today as not practically exploitable; the October 22 five-entry result below is historical, not the current scan.
+- The final fix release promoted at 19:17:23 UTC: build `0bbd3185-3ce8-48cc-bc38-56c430a8a22e`, prepared commit `c5ce2716f1fbd88491ede6859a013f86a35f678e`, publication commit `710ad9446572f2e8afc820de0735ddba5f6eb0d3`. Application/configuration source matches reviewed `98a7d32d313edb9dc746372bb79e5a6ea477aaa7` exactly.
+- The served final JavaScript SHA-256 is `fcc58a9c51025e5d3f865a1d7751b1963746c1ba6f0e2775d59045660d7ca933`, matching the prepared artifact. Actual new-process logs at 19:17:18.183 UTC report Node 24.22.1 / OpenSSL 3.5.9; the launcher directly invokes the sanitized shell script. This is actual application runtime evidence, not provider image/kernel attestation.
+- Pre-existing synthetic classifications, boundary map, circuit, all independent scores, simulation history and timestamps survived the real deployment byte-for-byte after JSON normalization. A fresh eight-check hosted smoke also passed. No test-only extra deployment was needed.
+- Final hosted homepage and worked-example matrices pass all three locales at actual 320/390/768px viewports; default browser warnings/errors are empty. Local guided-practice matrices and synthesis checks also pass. This is responsive-layout evidence, not a claim of full real-device/touch or long-duration load testing.
+- New protected evidence is in `/private/tmp/v2agent-release-2026-10-23` (0700; credential-bearing fixtures 0600). The prior temporary October 22 evidence directory was no longer present on October 23; committed summaries/CI remain available, but do not assume those temporary raw reports are retained.
 
 ## Scope
 
@@ -13,27 +27,30 @@ Baseline: March 6 and March 10 audit records; existing uncommitted fixes preserv
 - [x] Q-001 [status:verified] Inspect package metadata and compromise indicators before executing project code.
   - Evidence: isolated system Python `-I -S` static inspection, 635 lock entries, 695 installed manifests; no inspected LiteLLM indicators or non-npm artifact sources. Historical exposure not excluded.
 - [x] Q-002 [status:verified] Refresh primary advisories; establish delivery and infrastructure coverage and gaps below.
-- [x] Q-003 [status:verified] Correct locally repairable application and dependency weaknesses; retain the unresolved upstream advisory explicitly.
+- [x] Q-003 [status:verified] Correct locally repairable application and dependency weaknesses; retain dated upstream advisory evidence, including its October 23 withdrawal.
 - [x] Q-004 [status:verified] Validate final changes under a verified patched runtime; rescan resolved dependencies.
 - [x] Q-005 [status:verified] Document applicability, deployment steps, incident-response actions, and gaps.
 
 ## Sign-off Gate
 
-- [ ] G-001 [status:in_progress] Finish authorized release, deployment and final evidence.
-- [x] G-002 [status:verified] Remaining deployment and account actions have explicit owners and verification steps below.
-- [x] G-003 [status:verified] Final source checks passed after database-backed persistence and release edits.
-  - Evidence: local 26-test security/storage/platform/retry pass; final GitHub run 39836103885 passed typecheck/build, all security tests, isolated schema preparation, both PostgreSQL suites and production audit. Only documentation changes follow this source validation.
+- [x] G-001 [status:verified] Authorized application fixes are committed/pushed, deployed and verified with final evidence.
+  - Evidence: reviewed source 98a7d32 passed required CI 40009400356 and is published as build 0bbd3185-3ce8-48cc-bc38-56c430a8a22e. Hosted API, browser/layout, actual startup runtime and cross-deployment persistence results are recorded below. Full provider/incident sign-off remains separately blocked by G-004.
+- [x] G-002 [status:verified] Mobile/runtime findings are corrected and provider evidence gaps retain explicit owners.
+- [x] G-003 [status:verified] Final source checks passed after the October 23 mobile/runtime edits.
+  - Evidence: final source 98a7d32 passed local typecheck/build and all 32 tests. Required CI 40009400356 passed all 32 regressions, both PostgreSQL tests, schema preparation and production audit. Replit candidate c5ce2716f1fbd88491ede6859a013f86a35f678e matches reviewed application/configuration files exactly and passes all 32 tests; unchanged real-DB and actual clean production-entry build results remain valid. Only release documentation follows this validated source.
 - [ ] G-004 [status:blocked] Verify deployed runtimes, provider infrastructure and deployment history before production sign-off.
-  - Owner: application maintainer and Replit; verify AgentFoundation deployment and provider evidence.
+  - Owner: project operator and Replit. Application deployment/source, actual Node/OpenSSL startup versions, schema and persistence are now verified. Complete provider image/trust-environment attestation, kernel/backports, edge and historical incident evidence remain unavailable. Full-scope sign-off is intentionally withheld; normal checklist validation passes, but --require-signoff reports this single unchecked gate.
 
 ## Authorized Completion
 
 - [x] Q-006 [status:verified] Complete approved shared-runtime updates, commit/push, live CI and branch protection.
   - Evidence: reviewed integration b9644d9070eaf89ce59dec5024f3213784c15482 pushed to PR #1; required CI 39836103885 passed. Branch protections and dependency alert settings were read back as enabled.
-- [ ] Q-007 [status:blocked] Publish and verify the matching Replit app after production database billing approval.
-  - Owner: user approval, then application maintainer. The production database must be provisioned through Publishing, without copying development/test data. No live publish has been performed.
+- [x] Q-007 [status:verified] Publish and perform bounded verification of the initial Replit security release after production database approval.
+  - Evidence: October 23 publish succeeded at 18:33:26 UTC with production DB creation enabled and development-data copying OFF. Schema, served artifact, eight hosted API checks and browser primer/locale/reload checks passed. Cross-deployment persistence and the newly discovered mobile/runtime follow-up remain tracked in Q-009 and R-005.
 - [x] Q-008 [status:verified] Verify development database concurrency/restart behavior and local browser recovery.
   - Evidence: Replit reported 26 security/storage/platform/retry tests and two real-database tests passed on candidate 21ee6d580cc4e19847e7f168bf6a554d1d5209a1; local review independently passed 26 tests. Hosted behavior remains gated separately.
+- [x] Q-009 [status:verified] Validate and publish localized mobile corrections and deterministic production runtime safeguards through protected PR #13.
+  - Evidence: final source 98a7d32, required CI 40009400356, Replit prepared c5ce271 and published 710ad944. All 32 regressions, both database suites, actual clean production build, hosted runtime/artifact checks, fresh API smoke, layout matrices and persistence through the real release passed. Existing production data/schema and resource settings are preserved.
 
 The user authorized completion and explicitly requested working with Replit. The repository homepage identified `AgentFoundation` at `https://replit.com/@mithorizon7/AgentFoundation`, Repl `ea6b4183-b003-4ed6-9ca7-381a605a832d`, serving `https://HorizonAgentBuilder.replit.app`. Replit confirmed the Git remote and learning features. Its checkout was at `fce07c88a82903184627703dc359956223601bfc`, behind GitHub main with a content-empty publication commit. Its workspace used Node 20.20.0 and per-process MemStorage despite DATABASE_URL being configured in development and production. The read-only Replit inspection auto-added a Python module; preserve unrelated changes when synchronizing. No secret value was requested.
 
@@ -44,9 +61,19 @@ The user authorized completion and explicitly requested working with Replit. The
 
 ## Prior Work Reused
 
-March API session existence, block-kind alignment, graph reference checks, request size limits, and UUID creation remain present by source inspection. Existing client hydration/localization changes remain uncommitted and are preserved. Prior onboarding and translation redesign is out of this security pass. March dependency/audit results and production claims are not current evidence.
+March API session existence, block-kind alignment, graph reference checks, request size limits, and UUID creation remain present by source inspection. Previously uncommitted client hydration/localization work was preserved and included in the protected release. The October 23 follow-up corrects observed responsive/accessibility defects without redesigning lessons. March dependency/audit results and production claims are not current evidence.
 
 ## Findings Log
+
+- [x] F-004 [status:verified] [P2] [confidence:1.0] Localized mobile navigation, prompts, footer and hero overflow corrected.
+  - Evidence: October 23 hosted Latvian screen had document width 490px at viewport 390px; the Next example button extended to x=489.8. Apply stacked/wrapping navigation, including synthesis and adjacent guided-practice controls; verify all locales at narrow widths before the follow-up publish.
+  - Owner: application maintainer.
+  - Additional evidence: at 320px, the Russian footer extended to 323px. Navigation/synthesis controls now stack and wrap, long radio labels can break, guided controls wrap, and both footers wrap links with copyright kept in document flow on phones.
+  - Verification: final homepage and guided-practice matrices pass English/Russian/Latvian at 320/390/768px with document width equal to viewport width. Examples and synthesis pass narrow-width checks; the home icon has a localized accessible label. Follow-up hosted verification is tracked by Q-009.
+- [x] F-005 [status:verified] [P2] [confidence:1.0] Production runtime provenance and inherited trust selection are pinned explicitly.
+  - Evidence: Replit now supplies Nix Node 24.22.1 / OpenSSL 3.5.9, but the selected store path is unregistered, the public cache metadata lookup is 404, and no signed baseline was available. This is a provenance gap, not evidence of compromise. The local process has NODE_OPTIONS CA selection and SSL_CERT_DIR present; production metadata does not attest platform-injected settings.
+  - Owner: application maintainer. Require the existing checksum-pinned official archive for production builds and clear inherited loader/TLS overrides in production build/start scripts. Preserve strict database TLS; expose only non-sensitive runtime versions in private startup logs for hosted verification.
+  - Verification: Replit actual production-entry build packages official Node SHA-256 e32e2d16081cf644f88392934288086e7662529d0d43277c34f7aad2207cfafb, identical to the checksum-verified archive. Clean default trust equals 118 bundled roots with no emSign G3. Real child-process inspection confirms synthetic overrides absent and production-mode HTTP 200 with pruned dependencies. Deployment directly invokes the sanitized shell launcher, avoiding host Node/npm. No evidence of compromise was found in this provenance investigation.
 
 - [x] F-001 [status:verified] [P1] [confidence:1.0] Local Node 22.12.0 predates October fixes; `.replit` selects unsupported Node 20.
   - Evidence: binary path, `.replit`, Node October 21 advisory. Official Node 24.22.1 macOS arm64 archive hash verified before execution.
@@ -62,7 +89,7 @@ March API session existence, block-kind alignment, graph reference checks, reque
 
 - Railway connector: UNAUTHORIZED, reauthentication required. No Railway association with this project established.
 - Initial Replit title search did not match. Repository homepage resolution subsequently confirmed AgentFoundation and its published URL; AgenticPathway was an unrelated unpublished planning shell and was not modified.
-- Remote running runtime, trust stores, digests, database policies, build history, edge HTTP/3, host kernel and provider audit logs remain unverified.
+- Production database schema and release build are now verified as recorded above. Direct backend process attestation, provider base-image/kernel/backport state, edge HTTP/3, historical audit logs and database backup policies remain unverified.
 
 ## Urgent Results and Scope
 
@@ -76,14 +103,14 @@ Checks began October 22 at 16:45 UTC (12:45 EDT). Primary incident guidance was 
 
 | Asset | Current evidence | Remaining coverage |
 | --- | --- | --- |
-| Public GitHub repository | `mithorizon7/V2AgentActivity`; remote main still `f4512a5cb2fecc8745ffab5145317a19533555b6`; existing local work preserved | New changes are not on remote main |
-| Delivery configuration | Confirmed AgentFoundation / HorizonAgentBuilder, Replit autoscale; reviewed release selects Node 24 | Published runtime, base digest and OS package backports still need verification after rollout |
-| App | React 18 SPA, Express 4 JSON API, Zod validation; deterministic health-coach simulation | No LLM calls, gateway, arbitrary tool execution, webhooks, upload handlers or application SQL calls found in reachable code |
-| Data | Reviewed release uses PostgreSQL when configured and refuses implicit memory mode in production; database already provisioned in Replit | Live deployment persistence validation pending; managed database policies and backup evidence require provider/operator access |
+| Public GitHub repository | `mithorizon7/V2AgentActivity`; initial release PR #1, final fix source `98a7d32` in protected PR #13; required checks enforced | Release documentation follows validated source; no admin bypass or force push |
+| Delivery configuration | AgentFoundation / HorizonAgentBuilder, public Autoscale; verified official packaged runtime and actual Node 24.22.1 startup; October 23 final release succeeded | Complete provider image/trust-environment attestation, base digest and OS package backports remain unavailable |
+| App | React 18 SPA, Express 4 JSON API, Zod validation; deterministic health-coach simulation; parameterized PostgreSQL session queries | No LLM calls, gateway, arbitrary tool execution, webhooks or upload handlers found in reachable code |
+| Data | Separate production PostgreSQL provisioned October 23; schema confirmed; implicit production memory fallback refused; owned progress survives deployment | Managed backup/network policy evidence still requires provider access |
 | Sessions | Issued UUID bearer capabilities; browser persists ID only with consent; no account authentication | Possession of a session ID grants access. No separate tenant identity or login is claimed |
 | Build/install | npm lock v3; 558 unique resolved package/version pairs after fixes; registry-only artifact sources | Old persistent remote caches and installation records inaccessible |
-| Local host | macOS 26.6.2 / Darwin 25.6.0 arm64; shared pip metadata 24.2 | OS/background trust-update status and other apps require device-owner verification |
-| CI | First release CI run 39830887909 passed all steps including real PostgreSQL; main protection read back as active | Final retry-UI candidate must pass checks before merge; no admin bypass planned |
+| Local host | macOS 26.6.2 / Darwin 25.6.0 arm64; repaired active pip 26.2.2 and Node 24.22.1 verified October 22 | OS restart/update and unrelated environments remain device-owner scope |
+| CI | Final source run 39836103885 and premerge run 39836466274 passed, including real PostgreSQL; main protection active | Follow-up changes must pass the same required gate without bypass |
 | Other environments | No Dockerfile, devcontainer, GitLab CI, Bun/Python/Java/.NET workspace, worker or scheduled-job definition found | This does not exclude those technologies inside managed hosting or separate supporting services |
 
 ## Compromise Precheck and Secrets
@@ -92,7 +119,7 @@ Static inspection covered the root manifest, lockfile, 695 installed package man
 
 An initial redacted pattern scan inspected 1,384 historical blobs. Gitleaks 8.30.1 then scanned all local Git history and the working directory, returning zero findings. Its official release archive was verified against the GitHub release artifact digest `b40ab0ae55c505963e365f271a8d3846efbc170aa17f2607f13df610a9aeb6a5` before execution. An initial empty HTTP redirect download failed checksum verification and was not executed; the verified download followed HTTPS redirects.
 
-Protected evidence, pre-edit patch, redacted scanner reports, dependency history, npm/OSV results and SBOM are in `/private/tmp/v2agent-security-2026-10-22`, outside Git. Root permissions are 0700; report files are 0600. This directory is temporary: preserve it in approved incident storage if needed for a longer investigation. No private source or credentials were uploaded to a scanning service. npm and OSV received public package names/versions only.
+The October 22 pass placed protected evidence, pre-edit patch, redacted scanner reports, dependency history, npm/OSV results and SBOM in `/private/tmp/v2agent-security-2026-10-22`, outside Git (0700 directory, 0600 report files). That temporary directory was no longer present October 23; the committed summaries and CI are retained, but its raw reports are not claimed retained. Current release evidence is in the new directory recorded above. Preserve temporary evidence in approved incident storage if longer retention is required. No private source or credentials were uploaded to a scanning service. npm and OSV received public package names/versions only.
 
 No accessible deployment/cloud/gateway logs established LiteLLM historical exposure or absence. The requested PHP exploitation review from October 17, and IAM/CloudTrail, provider usage/billing, gateway-response, coding-agent-session and remote image-history reviews could not be completed. Log retention for those systems is unknown.
 
@@ -104,8 +131,12 @@ No accessible deployment/cloud/gateway logs established LiteLLM historical expos
   - Addresses: F-002. Evidence: built API regression tests for refused writes, bearer reads, duplicate/unknown classification IDs and graphs.
 - [x] P-003 [status:verified] Sanitize logs/errors; restrict request methods/origins/hosts/upgrades; bound request, rate and storage resources.
   - Addresses: F-003. Evidence: API, Host/CORS, storage expiry/capacity tests and sanitized-log assertions.
+- [x] P-004 [status:verified] Correct localized mobile navigation and footer overflow without changing learning behavior.
+  - Addresses: F-004. Evidence: targeted responsive classes, rendered all-locale regression test, 18-case homepage/guided layout matrix and narrow examples/synthesis checks after final edits.
+- [x] P-005 [status:verified] Pin production runtime provenance and sanitize inherited loader/trust settings.
+  - Addresses: F-005. Evidence: production-only pinned bootstrap, direct-shell launch, build/start sanitization, passing shell fixtures, verified official binary/trust contents, actual clean production-mode startup and sanitized telemetry. No TLS certificate verification is disabled.
 
-All application remediations below are verified locally, with deployment pending. Severity describes the issue; exposure is assessed separately.
+The table preserves the original October 22 remediation assessment; subsequent deployment, database and advisory updates are recorded in Current Release Status and the validation/change logs. Severity describes the issue; exposure is assessed separately.
 
 | Priority / advisory | Affected asset / original version | Exposure and evidence | Remediation / status / owner |
 | --- | --- | --- | --- |
@@ -119,7 +150,7 @@ All application remediations below are verified locally, with deployment pending
 | P2: unbounded resource consumption | Session map, graph arrays, explanations, request lifetime | Anonymous callers could retain unlimited sessions or oversized aggregate data | Bounded arrays/text/coordinates; 128 KiB body ceiling; compressed API bodies rejected; rate limits; 24h idle session expiry; 2,048-session capacity; HTTP timeouts. Tests cover refusal without evicting active learners |
 | P2: request/error controls | State-changing GET, form submissions, parser errors | Browser-triggered writes and excessive parser details | POST-only creation; custom same-origin request header; cross-site writes denied; generic errors; production CSP/HSTS and security headers. Local fix |
 | P2: CI control gap | Remote main unprotected, zero rulesets/runs | No evidence of compromise; no enforced gate on sensitive source changes | Read-only workflow and pinned official actions prepared locally; Dependabot config added. Operator must enable protection and verify first CI run |
-| High unresolved: CVE-2026-93687 | `braces` 3.0.3 through Tailwind 3.4.19 | Fixed project content globs only; no HTTP-to-glob input path found; upstream has no patch | Full audit retains five high entries (`braces`, `chokidar`, `fast-glob`, `micromatch`, `tailwindcss`). Compile-only animation plugin moved to dev so these are absent from production-only install. Build maintainer: monitor upstream or separately validate a Tailwind 4 migration. [Advisory](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm) |
+| Withdrawn: CVE-2026-93687 | `braces` 3.0.3 through Tailwind 3.4.19 | October 22 audit reported five high build-chain entries; repository-controlled globs only | GitHub withdrew the advisory October 23 as not practically exploitable. Refreshed full and production audits are zero; no forced Tailwind migration was used. [Advisory](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm) |
 | Shared-tool trust compromise risk | Initially pip 24.2 with compromised G3 root | After approved Homebrew upgrade, active pip is 26.2.2 and its actual bundle has zero compromised G3 roots | Shared installation repaired through its package manager; other environments and device-wide stores are not implied repaired. [Python guidance](https://discuss.python.org/t/information-for-python-users-regarding-emudhra-emsign-ca-certificate-security-incident/109576) |
 
 Compatible updates also resolved the current npm findings for Babel, body-parser, brace-expansion, browserslist, lodash, nanoid, path-to-regexp, picomatch, PostCSS, postcss-selector-parser, qs, source-map-js, yaml and old esbuild loader copies. The existing lockfile was retained and updated; no forced audit fix or blanket major migration was used. Vite and ORM changes were specifically required by applicable advisories.
@@ -192,8 +223,16 @@ Request limits are per process, using socket IP and bounded limiter state. Behin
   - Evidence: 2026-10-22 PASS, `SECURITY_TEST_APP_ROOT` targets private `production-install`; the test runner remains outside that installation.
 - [x] V-007 [status:verified] Development raw HTTP requests: approved Host 200, foreign Host 403, foreign Origin no CORS permission.
   - Evidence: 2026-10-22 PASS, `node:http` smoke, preserving the Host header. Initial fetch-based Host probe was inconclusive because fetch can rewrite Host; it is not used as proof of a post-upgrade Vite flaw.
+- [x] V-008 [status:verified] Initial hosted security release passes bounded application checks and schema verification.
+  - Evidence: 2026-10-23 PASS, eight hosted API checks in the protected verification report; production catalogs confirm table/index/types; browser primer/locale/reload checks passed. Replit reported early health-check refusals/500s through 18:33:35 UTC, followed by public 200 and passing API requests. No cause was exposed; a successful homepage alone is not proof that every instance is error-free.
+- [x] V-009 [status:verified] Final mobile/runtime typecheck/build, 32-test suite, all-locale viewport checks, required CI and hosted retest passed.
+  - Evidence: 2026-10-23 PASS final typecheck/build, all 32 local tests and required CI 40009400356 (32 regressions, two PostgreSQL suites, schema preparation and production audit). Replit confirms all 32 tests and unchanged clean production-entry build inputs/artifacts. Homepage/guided local matrices and homepage/example hosted matrices pass all locales at actual 320/390/768px; synthesis fits narrow widths. Mobile home control has a localized accessible name. One sandbox-blocked socket run and one parallel run with child-process deadline failures were rerun successfully with permission/serial scheduling; assertions and deadlines were not relaxed.
+- [x] V-010 [status:verified] Owned synthetic progress survives the real follow-up deployment and fresh hosted activity checks pass.
+  - Evidence: 2026-10-23 PASS protected verification-after.json compares all saved activity data/scores/history/timestamps to the pre-deployment record; final-smoke/verification-before.json records eight fresh hosted checks. Only owned synthetic sessions were read/written. No learner rows were queried, no capacity/rate load test ran, and no extra test-only deployment occurred.
+- [x] V-011 [status:verified] Hosted source/runtime identity and bounded readiness observation confirmed.
+  - Evidence: 2026-10-23 PASS build 0bbd3185-3ce8-48cc-bc38-56c430a8a22e promoted at 19:17:23 UTC, matching prepared JS/CSS and source. Actual startup log reports Node 24.22.1 / OpenSSL 3.5.9 at 19:17:18.183 UTC. Ten pre-promotion health-check errors ended at 19:17:17.986 UTC; none continued in the observed 19:17:24-19:19:09 UTC window. Public 200 and hosted API checks pass. Revision-filtered telemetry was unavailable; these logs cover the currently serving successful build, not a long-term availability guarantee.
 
-Use a trusted Node 24.22.1+ 24.x runtime first; no global tools were replaced by this audit.
+Use a trusted Node 24.22.1+ 24.x runtime first. Authorized shared-tool updates are recorded separately; these reproduction commands do not authorize unrelated global changes.
 
 ```sh
 nvm install
@@ -207,7 +246,7 @@ npm audit --omit=dev --audit-level=low
 npm audit
 ```
 
-The final full audit is expected to exit nonzero while the five build-tool entries remain. Do not disable or falsify that result. npm 11.19.1 / Node 24.22.1 / OpenSSL 3.5.9 were used. A CycloneDX SBOM was generated with `npm sbom --sbom-format cyclonedx --package-lock-only`. Private audit evidence includes exact package versions and advisory URLs. The `.npmrc` disables lifecycle scripts; native/optional esbuild artifacts worked from published platform packages without running installers.
+The October 22 full audit exited nonzero with five build-chain entries; October 23 full and production audits both return zero after the advisory withdrawal. No result was disabled or falsified. npm 11.19.1 / Node 24.22.1 / OpenSSL 3.5.9 were used. A CycloneDX SBOM was generated with `npm sbom --sbom-format cyclonedx --package-lock-only`. The `.npmrc` disables lifecycle scripts; native/optional esbuild artifacts worked from published platform packages without running installers. Temporary October 22 raw reports are no longer assumed retained; see the evidence-retention note above.
 
 The suite launches a temporary local server; do not point this rate/capacity test suite at production. A second clean installation with `npm ci --omit=dev --ignore-scripts` ran the built API tests without Vite or braces installed. Production CSP, cache/response headers, request guards, graph validation, simulation persistence and error status, rate limiting, and sensitive-log exclusion were exercised. Storage tests cover expiry and capacity refusal. Type/build and final test counts are recorded below after the last source edit. PostCSS `from` and main-chunk-size warnings persist; those warnings are not classified as newly demonstrated vulnerabilities.
 
@@ -223,13 +262,13 @@ curl --fail --proto '=https' -H 'Content-Type: application/json' --data-binary @
 
 ## Production / Delivery Checklist
 
-Owner: project operator, with hosting/database administrators for their assets. These steps are prepared, not performed.
+Owner: application maintainer, with hosting/database administrators for their assets. Current completion evidence is above; this is the repeatable release/rollback procedure, not a claim that provider-internal checks were completed.
 
 1. Identify the actual Replit app/service, public domain, repository source/ref, all environments, previews and active older deployments. Capture build/deployment IDs, running Node versions, base-image digests, effective CA overrides and OS/kernel/backport evidence. Reconnect Railway only if associated with this project; inspect environment names and credential identifiers without exporting values.
-2. Review this branch together with the preserved March edits. Merge/publish only after local review and the first GitHub CI run. In GitHub Settings > Rules > Rulesets, target main, require pull requests and the `validate` status check, block force pushes/deletion, and restrict bypass. This changes account policy and is not enabled automatically.
-3. Resolve the memory/autoscale decision above. Record exact provider limits, persistence/session routing and test a learner across instances and a restart. Do not declare saved progress durable from this implementation.
+2. Review preserved edits through a pull request and the strict `validate` check. Main now requires this gate, including for admins; force pushes/deletion are blocked. Do not bypass it.
+3. Use the separate production PostgreSQL database for Autoscale; never enable ephemeral production storage. Verify owned synthetic activity data across a fresh deployment, without copying development data or touching learner rows.
 4. Set build and runtime Node to 24.22.1+ on the 24 line, including package installation and CI action/runner runtimes. A Replit `nodejs-24` selector alone is not exact-version evidence. If the provider cannot supply the patch, prepare a verified pinned Node distribution/base before publishing; the project guard intentionally refuses older versions.
-5. Rebuild without old install/image-layer caches from this lock using `npm ci --ignore-scripts`; run checks/build/tests in the build stage, and ship `dist/` with production-only dependencies. Do not run `db:push`; no migration is required for these fixes.
+5. Rebuild with a clean locked installation and lifecycle scripts disabled, run checks/build/tests, and ship production-only dependencies with the packaged runtime. Let Publishing promote the declared session schema. Never run development/test schema pushes or destructive migrations against production; startup validates schema without DDL.
 6. Publish client and API together with operator approval. Existing API consumers must adopt `X-Requested-With: AgentLearning` on writes and `Authorization: Bearer <session ID>` on `GET /api/progress`; full progress upsert and GET session creation are intentionally removed. Tell open-browser users to reload. Review restart-related learner data loss before rollout.
 7. Verify actual running version/digest and effective trust stores in every environment after restart. Check the real HTTPS site's CSP/HSTS/no-store headers, no dev endpoints, one fresh anonymous learning flow, supported locales, and sanitized logs. Record deployment IDs and results in this report. Obtain provider evidence for HTTP3 termination and host kernel remediation, rather than inferring it from the app build.
 8. Monitor 4xx/429/503, capacity and startup failures. For rollback, retain the prior artifact/route configuration for review, but do not restore vulnerable runtimes/dependencies or re-enable arbitrary upsert/GET creation. If no verified safe rollback artifact exists, use the provider maintenance response while rolling forward to a corrected candidate. Preserve logs and learner-state evidence before any restart/traffic switch.
@@ -244,10 +283,10 @@ If LiteLLM exposure is established: preserve wheel/container hashes, UTC pull/in
 
 ## Separate Device / Account / Network Actions
 
-Owner: device/account/network administrators; no system-wide change was made.
+Owner: device/account/network administrators. Authorized shared Node/Homebrew Python updates were completed October 22; device-wide OS/browser updates and unrelated environments are separate remaining scope.
 
 - Shared pip 24.2: follow the Python guidance's verified direct-wheel bootstrap. The published pip 26.2.2 wheel hash is `fd7f4dfa8190e014013b9f08f3e973f4e4c26ffd179a204895533a7254813a70`. Inspect the target environment for compromise before starting it, verify the artifact through a trusted channel, then follow the vendor's exact command. Inventory and update each pip bundle/venv; standalone certifi does not repair pip's vendored CA set. uv and certifi, if used elsewhere, require their own fixes.
-- Update the shared Node installation and reopen shells/tools that retain the old path. Review OS Software Update, browser updates and Codex/other Electron runtimes against vendor advisories; macOS 26.6.2 is behind the listed 26.7.1 maintenance update. Do not treat an OS update as proof that bundled trust stores changed.
+- Shared Node now defaults to 24.22.1; reopen shells/tools that still retain the old path. Review OS Software Update, browser updates and Codex/other Electron runtimes against vendor advisories; macOS 26.6.2 is behind the listed 26.7.1 maintenance update. Do not treat an OS update as proof that bundled trust stores changed.
 - Obtain supporting GitLab/JDK, DNS resolver, network/security appliance and Linux provider inventory; apply vendor-specific branch/backport/firmware guidance and verify reboot/livepatch state. Do not apply blanket Bluetooth instructions or blanket Google token revocation without relevant evidence.
 - Verify coding-agent/MCP gateway routing and response logging configuration with the account administrator. No gateway is configured in this app, but external coding-session routing/history is not established by the repository. Redact credential values during review.
 
@@ -261,15 +300,17 @@ For Homebrew's externally managed Python, use its supported package upgrade path
 
 ## Residual Risks
 
-- [x] R-001 [status:accepted_risk] Upstream braces advisory remains high in build dependencies; no patched version exists (registry/advisory rechecked during completion). Owner: build maintainer. It is absent from the production-only install and receives only repository-controlled build globs. CI runs with read-only permissions and no persisted checkout credential; untrusted dependency changes require review. Do not claim a zero-vulnerability full tree. A major Tailwind/browser-support migration is not bundled into this security release solely to remove a build-only advisory.
-- [ ] R-002 [status:blocked] Deployed environment and historical incident exposure remain unverified. Owner: project operator. Close with confirmed app identity, read access and version/digest/log evidence, including the October 17 onward window and cloud/gateway records.
+- [x] R-001 [status:verified] The previously retained braces advisory was withdrawn October 23 as not practically exploitable. Both refreshed npm audits report zero vulnerabilities. Owner: build maintainer, continue normal dependency monitoring. Historical five-entry results are retained as dated evidence, not concealed or represented as current. [Advisory withdrawal](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm).
+- [ ] R-002 [status:blocked] Provider-internal infrastructure and historical incident exposure remain unverified. Owner: project operator and Replit. App identity, production schema, public artifact and live API behavior are confirmed. Remaining evidence is provider host/kernel/backports, edge HTTP/3, backup/network controls, October 17 onward cloud/gateway history and platform process/image attestation; do not infer these from repository scans.
 - [x] R-003 [status:accepted_risk] Shared Node and active pip repaired and their effective bundles checked. macOS 26.7.1 is offered by Software Update and requires restart; it was not installed or restarted during active work. Safari 27.0 and Xcode command-line tools 27.0 are also offered. Device-wide OS/browser and unrelated environments remain device-owner scope, not claimed repaired.
-- [x] R-004 [status:verified] Main requires pull requests and strict `validate` checks, enforced for admins; force pushes/deletion blocked. CI defaults read-only and cannot approve reviews. Dependency alerts and automated fixes enabled. Initial release CI 39830887909 passed; final candidate will be checked before merge.
-- [ ] R-005 [status:blocked] The unchanged live app still uses volatile per-process storage. The reviewed PostgreSQL implementation passed real cross-process concurrency, exit/reconnect and expiry tests in Replit and CI; production provisioning, publish and hosted verification await database billing approval.
+- [x] R-004 [status:verified] Main requires pull requests and strict `validate` checks, enforced for admins; force pushes/deletion blocked. CI defaults read-only and cannot approve reviews. Dependency alerts and automated fixes enabled. Final source CI 39836103885 and premerge CI 39836466274 passed before protected merge. GitHub's alert index still reported premerge October 22 timestamps on October 23; exact resolved-tree audits are clean. No alerts were dismissed to conceal a mismatch.
+- [x] R-005 [status:verified] Production database durability is verified across the real fixes deployment. Owned progress matches its exact prior record, concurrent independent saves and fresh rehydration pass, and real cross-process tests passed in Replit and CI. An extra deployment solely for testing was rejected and not bypassed; the separately authorized mobile/runtime fixes required a real release, which supplied the durability evidence without another deployment.
 
-Confidence is high in the reproduced local weaknesses, dependency versions and tested remediations. Confidence in production remediation and historical compromise coverage is limited by the explicit access gaps. No claim of complete safety or exhaustive vulnerability discovery is made.
+Confidence is high in the reproduced weaknesses and the bounded application release checks: tested source, dependency resolution, actual hosted runtime versions, artifact identity, activity behavior and cross-deployment durability. Provider-internal and historical compromise coverage remains limited by the explicit access gaps. No claim of complete safety, exhaustive discovery, long-term uptime or full real-device/load validation is made.
 
 ## Change Log
+
+- October 23 final release: required CI 40009400356 passed final source 98a7d32. Public build 0bbd3185-3ce8-48cc-bc38-56c430a8a22e promoted at 19:17:23 UTC with actual Node/OpenSSL telemetry, verified official packaged binary, clean runtime environment, unchanged production schema, matching client artifacts, successful owned cross-deployment persistence and fresh hosted security/activity checks. No application fix remains pending. Provider-wide and historical incident sign-off remains withheld, not represented as complete.
 
 - Final integration source b9644d9070eaf89ce59dec5024f3213784c15482 passed [required GitHub CI](https://github.com/mithorizon7/V2AgentActivity/actions/runs/39836103885), including the declared-schema migration on isolated PostgreSQL and both database suites. The protected release PR is ready to merge without bypassing checks. No production rollout is claimed while billing approval is pending.
 

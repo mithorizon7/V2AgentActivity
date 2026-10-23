@@ -1,107 +1,127 @@
-# AgentFoundation: unpublished security release candidate
+# AgentFoundation: security release and verification
 
-## Source and preservation
+## Source and Preservation
 
-The reviewed source is mithorizon7/V2AgentActivity,
-branch codex/security-audit-2026-10-22, commit
-9797ffe439491a2e90018a1aa88397371e8743d9.
-It is merged into the local main history without resetting publication commits
-or discarding the existing Python module. The application content, translations,
-health-coach scenarios, and protected runtime behavior match the reviewed source.
-The integration is prepared on codex/replit-security-integration for review.
-GitHub main is not modified, and no publish is performed.
-The updated review adds localized session-retry feedback and refreshed audit
-evidence. The previously validated Replit portability changes are retained.
+The canonical repository is `mithorizon7/V2AgentActivity`. PR #1 merged the
+reviewed security source through required CI to main
+`bc6f410cbb874b2fb6409ae2969151a68e4b587c` on October 22, 2026.
+Replit preserves its publication history and unrelated local state; retained
+local agent-memory files are excluded from deployment and were not copied into
+the canonical repository. Protected health-coach scenarios/runtime are unchanged.
 
-### Review delivery status
+The Replit GitHub OAuth connection could not push the security workflow change.
+No additional OAuth scope was granted and no workflow was dropped. The verified
+source-only patch was reviewed locally and pushed through existing authorized
+SSH access, then merged without bypassing the required check. The earlier patch
+download/push handoff is complete; do not repeat it or broaden OAuth permissions.
 
-The push to the requested GitHub integration branch was rejected because the
-current OAuth App lacks `workflow` scope for the retained security CI change.
-No branch was created remotely and no main ref was pushed. The local branch
-retains both the reviewed release and publication history. Do not drop the
-workflow or force-push to bypass this restriction.
+## Production Release
 
-A source-only patch is exported under
-generated-artifacts/replit-security-integration.patch (not committed).
-It is generated from the reviewed base 9797ffe439491a2e90018a1aa88397371e8743d9
-to this integration branch, and contains only tracked text changes, not runtime
-archives, binaries, credentials, generated test output, or private evidence.
-Download that single file from the Replit Files pane. In a clean clone:
+App: `AgentFoundation`, Repl `ea6b4183-b003-4ed6-9ca7-381a605a832d`.
+Public site: https://HorizonAgentBuilder.replit.app.
 
-```sh
-git switch -c codex/replit-security-integration 9797ffe439491a2e90018a1aa88397371e8743d9
-git apply --check /path/to/replit-security-integration.patch
-git apply --index /path/to/replit-security-integration.patch
-git diff --cached
-```
+On October 23, the user authorized finishing deployment after the production
+database billing gate was explained. Existing public Autoscale resource settings
+were preserved. Publishing created a separate production database with copying
+of development/test data OFF and successfully promoted the declared schema.
+Read-only production catalogs confirm `agent_learning_sessions`, its valid
+updated-at index, and both timestamp-with-time-zone columns. No learner rows
+were queried by that inspection.
 
-This patch recreates the candidate's tracked source tree for review, not its
-merge history. To preserve the exact history, grant the GitHub OAuth connection
-the required workflow permission and push the existing local branch as-is;
-do not reconstruct main from the patch.
+Initial security publication succeeded at 18:33:26 UTC:
 
-## Replit-specific adaptations
+- Replit build: `3971a52c-1fa9-40d1-a919-75bfe80412f3`.
+- Publication commit: `28309396b4e793188263fd3a0f44cda6a0bf221c`.
+- Served client SHA-256:
+  `050186330bde189a70a76dc86956ffdf2aa4ab8701ef55d71200fdfe7e489fe2`.
 
-- The platform Node 24 module actually supplies 24.13.0. Replit's nvm shim also
-  selects the major module rather than installing the requested patch.
-- Development/build bootstrap uses the official Linux x64 Node 24.22.1 archive,
-  verified against a source-pinned SHA-256 checksum before extraction/execution.
-  The production build copies its actual Node executable into dist; start uses
-  that packaged runtime. Unsupported architectures or verification failures stop.
-- Installation retains engine enforcement and disables lifecycle scripts. The
-  production build removes development dependencies after compilation.
-- The exact Replit-local Helium endpoint is permitted without TLS only inside
-  Replit. Remote hosts still require TLS with certificate verification, regardless
-  of connection-string SSL parameters.
-- The session table and expiry index are declared in the Drizzle schema and were
-  created additively in the existing development database. Startup validates the
-  schema and expires old records, but performs no DDL. Production schema changes
-  remain owned by Replit's Publish flow. CI prepares only its isolated test DB.
-- Missing database configuration or failed database initialization stops
-  production startup. No implicit memory fallback is used. The reviewed explicit
-  ephemeral-mode opt-in remains available to isolated security tests.
+Eight bounded hosted API checks passed using one owned synthetic session:
+security headers, request-method/origin guards, bearer-only private progress,
+disabled full-record upsert, rejected invalid input, concurrent activity saves,
+correct simulation success/failure status, and complete progress rehydration.
+No rate/capacity stress tests ran against production. English entry, Russian
+and Latvian primer feedback, completion and saved next-step restoration passed
+in a real browser.
 
-## Verified locally
+## Mobile Follow-up
 
-- Node 24.22.1, OpenSSL 3.5.9; the packaged executable passes the runtime gate.
-- Clean locked installation with lifecycle scripts disabled.
-- TypeScript check and production build passed.
-- Security/storage/platform/session-retry suite: 26 tests passed, none skipped.
-  The actual session hook is rendered with isolated service fixtures to verify
-  creation retry, progress refetch without clearing saved work, unchanged 404
-  recovery, healthy sessions, and privacy/retry wording in all three locales.
-- Real development PostgreSQL suite: 2 tests passed, none skipped. Checks include
-  independent pools, concurrent score merges, reconnection, hashed session keys,
-  expiry/non-revival, and persistence across real process exits with concurrent
-  separate-process writers. Tests delete only their own temporary session rows.
-- Separate clean production-only installation: 12 HTTP security tests passed,
-  without development tooling.
-- Production dependency audit: zero vulnerabilities.
-- Full dependency audit: five high-severity build-tool entries remain in the
-  reviewed Tailwind 3 chain (tailwindcss, chokidar, fast-glob, micromatch, braces).
-  This is not a clean full audit; no unrelated Tailwind major migration was made.
-- English, Russian, and Latvian consent wording all disclose browser persistence,
-  server processing of answers/scores, 24-hour inactivity expiry, and avoidance
-  of personal/sensitive information. These translations match the reviewed commit.
-- Development workflow runs successfully and the homepage/consent UI renders.
+Hosted mobile inspection found Latvian example navigation extending to 490px
+in a 390px viewport. A 320px check also found Russian footer overflow and long
+guided-practice prompt labels. PR #13 corrects these with wrapping/stacked
+controls and mobile copyright flow, preserving learning behavior and security.
+The rendered regression test covers all three locales. Final release evidence
+is recorded in the authoritative security audit checklist.
 
-## Production blocker and publish handoff
+The completed follow-up promoted October 23 at 19:17:23 UTC:
 
-The read-only production SQL service reports: "This project has no production
-database." Secret metadata nevertheless reports DATABASE_URL present; presence
-is not connection/schema verification. No credential values were retrieved or
-displayed. Production database availability is therefore NOT verified.
+- Reviewed source: `98a7d32d313edb9dc746372bb79e5a6ea477aaa7`.
+- Prepared commit: `c5ce2716f1fbd88491ede6859a013f86a35f678e`.
+- Publication: `710ad9446572f2e8afc820de0735ddba5f6eb0d3`.
+- Build: `0bbd3185-3ce8-48cc-bc38-56c430a8a22e`.
+- Served JavaScript SHA-256:
+  `fcc58a9c51025e5d3f865a1d7751b1963746c1ba6f0e2775d59045660d7ca933`.
 
-Before the coordinated publish, open the existing app's Publishing settings
-and enable "Create production database." Review promotion of the development
-session schema, but do not choose to copy current development data or replace
-production data with test data.
-If the expected schema/database is unavailable, this candidate fails closed.
+The actual process startup log confirms Node 24.22.1 / OpenSSL 3.5.9. Production
+session schema remains unchanged. All owned pre-release activity data, scores,
+history and timestamps survived the new deployment exactly; a fresh eight-check
+hosted smoke passed. Deployed homepage/example layouts fit all three locales at
+actual 320/390/768px widths. No browser warnings/errors were observed.
 
-The existing public Autoscale deployment is unchanged. Its runtime and source
-must not be inferred from this candidate. After the operator authorizes Publish,
-verify the actual hosted build/runtime, promoted schema, security headers,
-locales, and persistence through hosted instance changes before signing off.
+An extra deployment solely for restart testing was rejected by safety review,
+and explicit approval was requested. Do not bypass that rejection. The real
+mobile/runtime correction was a separately requested real fix release. Its
+traffic switch established persistence of the pre-existing owned synthetic
+progress without an additional test-only deployment. No rejection was bypassed.
 
-Build warnings remain for a PostCSS plugin missing its `from` option and the
-client bundle size; neither prevented the checked build.
+## Runtime and Storage Safeguards
+
+- Production always verifies the source-pinned official Linux x64 Node 24.22.1
+  archive, even if Replit provides a compliant host runtime. Replit's subsequent
+  Nix 24.22.1 update lacked independently verifiable store provenance; version
+  equality alone is not artifact equality. The build packages the verified
+  executable and production starts it. Development may use a compliant installed
+  runtime. Unsupported production architectures or checksum failures stop.
+- Production build/start clear inherited Node loaders, module paths, custom CA
+  selection, OpenSSL configuration paths and TLS bypass overrides. Database TLS
+  verification remains enforced. Private startup logs report only actual Node
+  and OpenSSL versions, never environment values or credentials.
+- Clean locked installations disable lifecycle scripts. Production builds prune
+  development dependencies. No application or database secret is embedded in
+  the client or published evidence.
+- Remote PostgreSQL connections require TLS and certificate verification;
+  connection-string parameters cannot disable it. The exact platform-local
+  Helium endpoint has a narrowly scoped Replit-only non-TLS exception.
+- Production refuses implicit in-memory fallback. Startup validates the existing
+  schema without DDL. Publishing owns production schema promotion; test schema
+  preparation targets isolated databases only.
+- Sessions use hashed bearer lookup, 24-hour inactivity expiry, bounded capacity
+  and connection pools, atomic independent-score merges and graceful shutdown.
+- Consent wording in English, Russian and Latvian discloses server processing,
+  local persistence and expiry. No account-based identity is claimed.
+
+## Evidence and Limits
+
+Final source CI 40009400356 passed typecheck/build, all 32 security/storage/
+platform/retry/layout tests, and two real-PostgreSQL cross-process/concurrency/
+expiry tests. The real clean Replit production build and runtime/trust checks
+also passed. Production
+and full npm audits refreshed October 23 both report zero vulnerabilities.
+GitHub withdrew GHSA-vfj7-8cjw-p6xm that day as not practically exploitable; the
+earlier five high build-only entries are historical, not suppressed findings.
+
+Public TLS certificate validation and served artifact identity are verified.
+Replit logs confirm the direct-shell start script and actual application process
+versions. The official packaged binary is independently identified by SHA-256
+`e32e2d16081cf644f88392934288086e7662529d0d43277c34f7aad2207cfafb`.
+This is not complete provider process/image attestation. Provider kernel/backport state, HTTP/3
+termination, historical incident logs, backup/network policies and platform-
+injected process settings remain explicit coverage gaps. Initial promotion logs
+included ten pre-promotion readiness failures ending before the process startup
+line; none continued in the observed 19:17:24-19:19:09 UTC window. Their internal
+cause was not exposed. This bounded observation does not guarantee long-term
+availability, real-device/touch behavior or load capacity. No universal safety
+claim is made.
+
+Build warnings remain for a PostCSS plugin missing its `from` option and client
+bundle size. These do not prevent the tested build and are not evidence of a
+new exploitable vulnerability.

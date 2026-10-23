@@ -80,6 +80,7 @@ app.use((req, res, next) => {
     host: "0.0.0.0",
   }, () => {
     const address = server.address();
+    log(`runtime Node ${process.versions.node}; OpenSSL ${process.versions.openssl}`);
     log(`serving on port ${typeof address === "object" && address ? address.port : port}`);
   });
   const shutdown = () => {

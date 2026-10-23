@@ -1,9 +1,9 @@
 #!/bin/sh
-# Replit's Node 24 module currently predates this release's security minimum.
-# Use a compliant installed runtime, or a checksum-pinned official Linux build.
+# Production requires the verified official build even if the host is patched.
+# Development may use a compliant installed runtime on other platforms.
 set -eu
 cd "$(dirname "$0")/.."
-if node scripts/check-runtime.mjs >/dev/null 2>&1; then
+if [ "${PINNED_NODE_RUNTIME:-0}" != 1 ] && node scripts/check-runtime.mjs >/dev/null 2>&1; then
   exec "$@"
 fi
 if [ "$(uname -s)" != Linux ] || [ "$(uname -m)" != x86_64 ]; then

@@ -25,10 +25,10 @@ export default function HomePage() {
       </div>
       <div id="main-content" className="max-w-7xl mx-auto px-6 py-12">
         <div className="text-center mb-12">
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <img src={ProgramLogo} alt={t("accessibility.images.platformLogo")} className="w-20 h-20" />
-            <h1 className="text-4xl font-bold">{t("homePage.title")}</h1>
-            <img src={ProgramLogo} alt={t("accessibility.images.platformLogo")} className="w-20 h-20 scale-x-[-1]" />
+          <div className="flex flex-col items-center justify-center gap-4 mb-4 sm:flex-row">
+            <img src={ProgramLogo} alt={t("accessibility.images.platformLogo")} className="w-16 h-16 shrink-0 sm:w-20 sm:h-20" />
+            <h1 className="min-w-0 break-words text-3xl font-bold sm:text-4xl">{t("homePage.title")}</h1>
+            <img src={ProgramLogo} alt="" aria-hidden="true" className="hidden w-20 h-20 shrink-0 scale-x-[-1] sm:block" />
           </div>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             {t("homePage.subtitle")}
@@ -151,7 +151,7 @@ export default function HomePage() {
         <footer className="mt-16 pt-6 border-t border-border/40 relative">
           <div className="flex flex-col items-center gap-4">
             <img src={MITOpenLearningLogo} alt={t("accessibility.images.mitOpenLearning")} className="h-10 opacity-80" />
-            <div className="flex items-center gap-3">
+            <div className="flex max-w-full flex-wrap items-center justify-center gap-x-3 gap-y-1">
               <a 
                 href="https://accessibility.mit.edu" 
                 target="_blank" 
@@ -166,7 +166,7 @@ export default function HomePage() {
             </div>
           </div>
           
-          <p className="absolute bottom-0 right-0 text-[10px] text-muted-foreground/60 text-right leading-tight">
+          <p className="mt-4 text-[10px] text-muted-foreground/60 text-center leading-tight sm:absolute sm:bottom-0 sm:right-0 sm:mt-0 sm:text-right">
             {t("footer.copyright")} {t("footer.orgName")}<br />
             {t("footer.institution")}, {t("footer.location")}
           </p>

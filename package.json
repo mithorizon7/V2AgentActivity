@@ -13,7 +13,7 @@
     "build:app": "node scripts/check-runtime.mjs && vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist && mkdir -p dist/node-runtime && cp \"$(node -p process.execPath)\" dist/node-runtime/node",
     "start": "sh scripts/start-production.sh",
     "check": "tsc",
-    "test:security": "node --import tsx --test tests/security.test.mjs tests/storage.test.ts tests/platform.test.ts tests/sessionRetry.test.ts",
+    "test:security": "node --import tsx --test tests/security.test.mjs tests/storage.test.ts tests/platform.test.ts tests/sessionRetry.test.ts tests/onboardingLayout.test.ts",
     "test:postgres": "node --import tsx --test tests/postgres.test.ts tests/postgresRestart.test.ts",
     "db:push": "drizzle-kit push"
   },

@@ -147,6 +147,7 @@ test("built production server enforces security boundaries", async (t) => {
     assert(Number(res.headers.get("retry-after")) > 0);
   });
   await t.test("logs exclude credentials and learner content", () => {
+    assert(logs.includes(`runtime Node ${process.versions.node}; OpenSSL ${process.versions.openssl}`));
     assert(!logs.includes(sessionId));
     assert.doesNotMatch(logs, /private-learner-marker|secret-marker|Authorization/);
   });

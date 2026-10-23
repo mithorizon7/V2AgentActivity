@@ -86,7 +86,7 @@ function DraggableItem({
             key={idx}
             variant="outline"
             size="sm"
-            className="text-xs h-auto py-1"
+            className="max-w-full whitespace-normal text-left text-xs h-auto py-1"
             onClick={() => handlePromptClick(prompt)}
             disabled={disabled || showFeedback}
             data-testid={`button-seed-${item.id}-${idx}`}
@@ -449,11 +449,12 @@ export function Phase1Guided({ items, onComplete, onBack }: Phase1GuidedProps) {
       </div>
 
       <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div className="flex items-center gap-2">
+        <div className="flex min-w-0 flex-col items-start gap-2 sm:flex-row sm:flex-wrap sm:items-center">
           {onBack && (
             <Button
               variant="outline"
               onClick={onBack}
+              className="h-auto max-w-full whitespace-normal py-2"
               data-testid="button-back-to-examples"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -464,7 +465,7 @@ export function Phase1Guided({ items, onComplete, onBack }: Phase1GuidedProps) {
             {t("guided.dragInstruction")}
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex max-w-full flex-wrap gap-2">
           <Button
             variant="outline"
             onClick={handleScramble}
