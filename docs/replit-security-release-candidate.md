@@ -52,11 +52,26 @@ controls and mobile copyright flow, preserving learning behavior and security.
 The rendered regression test covers all three locales. Final release evidence
 is recorded in the authoritative security audit checklist.
 
+The completed follow-up promoted October 23 at 19:17:23 UTC:
+
+- Reviewed source: `98a7d32d313edb9dc746372bb79e5a6ea477aaa7`.
+- Prepared commit: `c5ce2716f1fbd88491ede6859a013f86a35f678e`.
+- Publication: `710ad9446572f2e8afc820de0735ddba5f6eb0d3`.
+- Build: `0bbd3185-3ce8-48cc-bc38-56c430a8a22e`.
+- Served JavaScript SHA-256:
+  `fcc58a9c51025e5d3f865a1d7751b1963746c1ba6f0e2775d59045660d7ca933`.
+
+The actual process startup log confirms Node 24.22.1 / OpenSSL 3.5.9. Production
+session schema remains unchanged. All owned pre-release activity data, scores,
+history and timestamps survived the new deployment exactly; a fresh eight-check
+hosted smoke passed. Deployed homepage/example layouts fit all three locales at
+actual 320/390/768px widths. No browser warnings/errors were observed.
+
 An extra deployment solely for restart testing was rejected by safety review,
 and explicit approval was requested. Do not bypass that rejection. The real
-mobile correction is a separate requested fix; once authorized and released,
-its traffic switch can also establish whether the pre-existing owned synthetic
-progress survives a new revision, without an additional test-only deployment.
+mobile/runtime correction was a separately requested real fix release. Its
+traffic switch established persistence of the pre-existing owned synthetic
+progress without an additional test-only deployment. No rejection was bypassed.
 
 ## Runtime and Storage Safeguards
 
@@ -86,20 +101,26 @@ progress survives a new revision, without an additional test-only deployment.
 
 ## Evidence and Limits
 
-Final source CI covers typecheck/build, the security/storage/platform/retry/layout
-suite, and two real-PostgreSQL cross-process/concurrency/expiry suites. Production
+Final source CI 40009400356 passed typecheck/build, all 32 security/storage/
+platform/retry/layout tests, and two real-PostgreSQL cross-process/concurrency/
+expiry tests. The real clean Replit production build and runtime/trust checks
+also passed. Production
 and full npm audits refreshed October 23 both report zero vulnerabilities.
 GitHub withdrew GHSA-vfj7-8cjw-p6xm that day as not practically exploitable; the
 earlier five high build-only entries are historical, not suppressed findings.
 
 Public TLS certificate validation and served artifact identity are verified.
-Replit logs show the configured production start script was invoked; its
-packaged runtime was verified as Node 24.22.1 / OpenSSL 3.5.9. This is not direct
-backend process or image attestation. Provider kernel/backport state, HTTP/3
+Replit logs confirm the direct-shell start script and actual application process
+versions. The official packaged binary is independently identified by SHA-256
+`e32e2d16081cf644f88392934288086e7662529d0d43277c34f7aad2207cfafb`.
+This is not complete provider process/image attestation. Provider kernel/backport state, HTTP/3
 termination, historical incident logs, backup/network policies and platform-
 injected process settings remain explicit coverage gaps. Initial promotion logs
-included transient readiness failures before later passing hosted requests;
-their internal cause was not exposed. No universal safety claim is made.
+included ten pre-promotion readiness failures ending before the process startup
+line; none continued in the observed 19:17:24-19:19:09 UTC window. Their internal
+cause was not exposed. This bounded observation does not guarantee long-term
+availability, real-device/touch behavior or load capacity. No universal safety
+claim is made.
 
 Build warnings remain for a PostCSS plugin missing its `from` option and client
 bundle size. These do not prevent the tested build and are not evidence of a
