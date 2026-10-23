@@ -60,10 +60,16 @@ progress survives a new revision, without an additional test-only deployment.
 
 ## Runtime and Storage Safeguards
 
-- Replit's Node 24 module supplied 24.13.0, so the bootstrap verifies the official
-  Linux x64 Node 24.22.1 archive before extraction. The build packages its actual
-  validated executable; production starts that runtime and enforces the patch
-  minimum. Unsupported architectures or checksum failures stop.
+- Production always verifies the source-pinned official Linux x64 Node 24.22.1
+  archive, even if Replit provides a compliant host runtime. Replit's subsequent
+  Nix 24.22.1 update lacked independently verifiable store provenance; version
+  equality alone is not artifact equality. The build packages the verified
+  executable and production starts it. Development may use a compliant installed
+  runtime. Unsupported production architectures or checksum failures stop.
+- Production build/start clear inherited Node loaders, module paths, custom CA
+  selection, OpenSSL configuration paths and TLS bypass overrides. Database TLS
+  verification remains enforced. Private startup logs report only actual Node
+  and OpenSSL versions, never environment values or credentials.
 - Clean locked installations disable lifecycle scripts. Production builds prune
   development dependencies. No application or database secret is embedded in
   the client or published evidence.

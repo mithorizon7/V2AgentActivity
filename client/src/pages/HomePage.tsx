@@ -25,10 +25,10 @@ export default function HomePage() {
       </div>
       <div id="main-content" className="max-w-7xl mx-auto px-6 py-12">
         <div className="text-center mb-12">
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <img src={ProgramLogo} alt={t("accessibility.images.platformLogo")} className="w-20 h-20" />
-            <h1 className="text-4xl font-bold">{t("homePage.title")}</h1>
-            <img src={ProgramLogo} alt={t("accessibility.images.platformLogo")} className="w-20 h-20 scale-x-[-1]" />
+          <div className="flex flex-col items-center justify-center gap-4 mb-4 sm:flex-row">
+            <img src={ProgramLogo} alt={t("accessibility.images.platformLogo")} className="w-16 h-16 shrink-0 sm:w-20 sm:h-20" />
+            <h1 className="min-w-0 break-words text-3xl font-bold sm:text-4xl">{t("homePage.title")}</h1>
+            <img src={ProgramLogo} alt="" aria-hidden="true" className="hidden w-20 h-20 shrink-0 scale-x-[-1] sm:block" />
           </div>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             {t("homePage.subtitle")}

@@ -214,11 +214,12 @@ function PhaseNavigation({
   return (
     <nav aria-label={t("navigation.phaseNavigation")} className="mt-6">
       <Card className="p-4">
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
           {showPrevious && onPrevious ? (
             <Button
               variant="outline"
               onClick={onPrevious}
+              className="h-auto max-w-full whitespace-normal py-2"
               data-testid="button-previous-phase"
               aria-label={previousLabel || t("navigation.previousPhase")}
             >
@@ -231,6 +232,7 @@ function PhaseNavigation({
           {showNext && onNext ? (
             <Button
               onClick={onNext}
+              className="h-auto max-w-full whitespace-normal py-2"
               data-testid="button-next-phase-bottom"
               aria-label={nextLabel || t("navigation.nextPhase")}
             >
@@ -1173,9 +1175,10 @@ export default function LearningPage() {
           size="sm"
           onClick={() => setLocation("/")}
           data-testid="button-back-home"
+          aria-label={t("navigation.backToHome")}
           className="min-h-[44px] sm:min-h-[36px]"
         >
-          <Home className="w-4 h-4 sm:mr-2" />
+          <Home className="w-4 h-4 sm:mr-2" aria-hidden="true" />
           <span className="hidden sm:inline">{t("navigation.backToHome")}</span>
         </Button>
       </div>

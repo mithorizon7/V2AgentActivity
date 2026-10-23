@@ -45,7 +45,7 @@ Baseline: March 6 and March 10 audit records; existing uncommitted fixes preserv
   - Evidence: October 23 user instruction authorized finishing and deploying after the billing gate was explained. Enabled Create production database with development-data copying OFF in existing public Autoscale settings. Coordinated publish started at approximately 18:31 UTC; hosted verification remains pending.
 - [x] Q-008 [status:verified] Verify development database concurrency/restart behavior and local browser recovery.
   - Evidence: Replit reported 26 security/storage/platform/retry tests and two real-database tests passed on candidate 21ee6d580cc4e19847e7f168bf6a554d1d5209a1; local review independently passed 26 tests. Hosted behavior remains gated separately.
-- [ ] Q-009 [status:in_progress] Validate and publish the newly discovered localized mobile layout corrections through a protected follow-up PR.
+- [ ] Q-009 [status:in_progress] Validate and publish localized mobile corrections and deterministic production runtime safeguards through a protected follow-up PR.
   - Owner: application maintainer. Preserve the reviewed scenario/runtime and existing production database; rerun tests and browser geometry checks after the final edit.
 
 The user authorized completion and explicitly requested working with Replit. The repository homepage identified `AgentFoundation` at `https://replit.com/@mithorizon7/AgentFoundation`, Repl `ea6b4183-b003-4ed6-9ca7-381a605a832d`, serving `https://HorizonAgentBuilder.replit.app`. Replit confirmed the Git remote and learning features. Its checkout was at `fce07c88a82903184627703dc359956223601bfc`, behind GitHub main with a content-empty publication commit. Its workspace used Node 20.20.0 and per-process MemStorage despite DATABASE_URL being configured in development and production. The read-only Replit inspection auto-added a Python module; preserve unrelated changes when synchronizing. No secret value was requested.
@@ -65,6 +65,9 @@ March API session existence, block-kind alignment, graph reference checks, reque
   - Evidence: October 23 hosted Latvian screen had document width 490px at viewport 390px; the Next example button extended to x=489.8. Apply stacked/wrapping navigation, including synthesis and adjacent guided-practice controls; verify all locales at narrow widths before the follow-up publish.
   - Owner: application maintainer.
   - Additional evidence: at 320px, the Russian footer extended to 323px. Navigation/synthesis controls now stack and wrap, long radio labels can break, guided controls wrap, and both footers wrap links with copyright kept in document flow on phones.
+- [ ] F-005 [status:in_progress] [P2] [confidence:1.0] A compliant host Node update changed production runtime provenance and inherited trust selection.
+  - Evidence: Replit now supplies Nix Node 24.22.1 / OpenSSL 3.5.9, but the selected store path is unregistered, the public cache metadata lookup is 404, and no signed baseline was available. This is a provenance gap, not evidence of compromise. The local process has NODE_OPTIONS CA selection and SSL_CERT_DIR present; production metadata does not attest platform-injected settings.
+  - Owner: application maintainer. Require the existing checksum-pinned official archive for production builds and clear inherited loader/TLS overrides in production build/start scripts. Preserve strict database TLS; expose only non-sensitive runtime versions in private startup logs for hosted verification.
 
 - [x] F-001 [status:verified] [P1] [confidence:1.0] Local Node 22.12.0 predates October fixes; `.replit` selects unsupported Node 20.
   - Evidence: binary path, `.replit`, Node October 21 advisory. Official Node 24.22.1 macOS arm64 archive hash verified before execution.
@@ -124,6 +127,8 @@ No accessible deployment/cloud/gateway logs established LiteLLM historical expos
   - Addresses: F-003. Evidence: API, Host/CORS, storage expiry/capacity tests and sanitized-log assertions.
 - [ ] P-004 [status:in_progress] Correct localized mobile navigation and footer overflow without changing learning behavior.
   - Addresses: F-004. Evidence: targeted responsive classes and a rendered all-locale navigation regression test. Final browser/build verification pending.
+- [ ] P-005 [status:in_progress] Pin production runtime provenance and sanitize inherited loader/trust settings.
+  - Addresses: F-005. Evidence: production-only pinned bootstrap mode, build/start environment sanitization, isolated shell-fixture tests and non-sensitive startup runtime telemetry. No TLS certificate verification is disabled.
 
 All application remediations below are verified locally, with deployment pending. Severity describes the issue; exposure is assessed separately.
 
