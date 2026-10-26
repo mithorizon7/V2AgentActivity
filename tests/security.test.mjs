@@ -59,6 +59,16 @@ test("built production server enforces security boundaries", async (t) => {
   });
   let sessionId;
 
+  await t.test("readiness is generic, uncached and available without a learner session", async () => {
+    const res = await fetch(base + "/api/health");
+    assert.equal(res.status, 200);
+    assert.deepEqual(await res.json(), { status: "ok" });
+    assert.equal(res.headers.get("cache-control"), "no-store");
+    const head = await fetch(base + "/api/health", { method: "HEAD" });
+    assert.equal(head.status, 200);
+    assert.equal(await head.text(), "");
+  });
+
   await t.test("production page has restrictive headers and no dev tooling", async () => {
     const res = await fetch(base);
     assert.equal(res.status, 200);

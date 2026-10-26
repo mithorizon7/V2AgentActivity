@@ -1,6 +1,6 @@
 # Security Audit: October 22, 2026
 
-Repository remediation and verification record, refreshed October 23. Application fixes are deployed and hosted verification is complete. Full infrastructure/incident sign-off remains withheld where provider evidence is missing.
+Repository remediation and verification record, refreshed October 26. The October 23 application fixes are deployed; the operational closeout below is being verified separately. Full infrastructure/incident sign-off remains withheld where provider evidence is missing.
 Baseline: March 6 and March 10 audit records; existing uncommitted fixes preserved on `codex/security-audit-2026-10-22`.
 
 ## Current Release Status
@@ -16,6 +16,30 @@ Baseline: March 6 and March 10 audit records; existing uncommitted fixes preserv
 - Pre-existing synthetic classifications, boundary map, circuit, all independent scores, simulation history and timestamps survived the real deployment byte-for-byte after JSON normalization. A fresh eight-check hosted smoke also passed. No test-only extra deployment was needed.
 - Final hosted homepage and worked-example matrices pass all three locales at actual 320/390/768px viewports; default browser warnings/errors are empty. Local guided-practice matrices and synthesis checks also pass. This is responsive-layout evidence, not a claim of full real-device/touch or long-duration load testing.
 - New protected evidence is in `/private/tmp/v2agent-release-2026-10-23` (0700; credential-bearing fixtures 0600). The prior temporary October 22 evidence directory was no longer present on October 23; committed summaries/CI remain available, but do not assume those temporary raw reports are retained.
+
+## October 26 Operational Closeout
+
+The user authorized completing operational work and explicitly excluded human participation for now. Automated learner checks are not human usability validation, and human testing is not a required gate for this closeout. Preserve production learner data, existing hosting resources, protected curriculum/runtime directories and strict pull-request checks. Do not restore production, copy development data, create paid services or rotate credentials to obtain a green status.
+
+- [x] Q-010 [status:verified] Correlate production readiness errors with lifecycle and application-request evidence; address demonstrated application defects without hiding provider failures.
+  - Evidence: Replit's October 25 15:41 through October 26 15:41 UTC log window reports 147 probe-associated error records. The latest 100 contain 89 HTTP 500 and 11 connection-refused records. These are not counts of failed learner requests; revision attribution and request metrics were unavailable. Root cause and duration require further evidence.
+- [ ] Q-011 [status:in_progress] Verify native monitoring/notification controls and production recovery coverage without a destructive production restore.
+  - Evidence: Publishing settings show uptime email notifications and monitoring alerts disabled; an explicit notification approval request is outstanding. Production-database copying is OFF. Platform documentation is not account-specific recovery proof.
+- [ ] Q-012 [status:in_progress] Refresh automated learner flow, source validation and dependency checks; reconcile stale operational documentation and publish any necessary application fixes through protected review.
+- [ ] V-012 [status:in_progress] Run final automated validation after all operational code changes, including bounded hosted checks and source/artifact identification.
+  - Evidence: 2026-10-26 PASS local typecheck/build, all 37 security/storage/platform/retry/layout/readiness/schema tests and both refreshed npm audits (zero vulnerabilities). Required CI with real PostgreSQL and hosted evidence follow before closing this item.
+- [x] F-006 [status:verified] [P2] [confidence:1.0] Operational probes lack an explicit database-backed readiness endpoint and ready-state transition logs; bounded operational telemetry is now implemented and locally verified.
+  - Evidence: all 309 available production log records correlate the 147 errors to 15 startup-adjacent bursts (0.787-2.615 seconds); no explicit startup failure, database error, crash or separately identified learner-request failure was found. Sparse request metrics report three requests and zero response-5xx, with unspecified coverage. This does not demonstrate an availability defect or prove zero user impact. Existing root-page checks cannot detect a later database outage.
+  - Owner: application maintainer.
+- [x] P-006 [status:verified] Add bounded, coalesced, no-store readiness checks with generic 503 responses, database-schema verification without learner reads, shutdown refusal and sanitized transition/startup logs.
+  - Addresses: F-006. Evidence: server/readiness.ts, storageProvider.ts, index.ts and new readiness/HTTP regressions; final validation in V-012.
+- [x] F-007 [status:verified] [P1] [confidence:1.0] Refreshed October 26 npm audits initially reported Zod's collection-validation memory-exhaustion advisory in the production tree (two high entries, one underlying advisory); the patched tree is now clean.
+  - Evidence: GHSA-mrhx-c7xc-m3w5, reviewed/updated October 23, affects Zod below 4.6.6. Current lock resolves 3.25.76 and its unused zod-validation-error adapter. Existing 128 KiB body and collection bounds reduce exposure but do not replace a patched dependency. [Upstream advisory](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5).
+  - Owner: application maintainer.
+- [x] P-007 [status:verified] Upgrade to patched Zod 4, remove the unused legacy adapter, preserve sparse saved classifications and update error-issue handling.
+  - Addresses: F-007. Evidence: lock resolves Zod 4.6.7, unused legacy adapter removed; oversized constrained arrays now produce one length issue instead of accumulating item errors. Sparse-record and progress-schema compatibility tests pass; final validation in V-012.
+- [x] R-006 [status:accepted_risk] Human learner studies, actual touch devices and long-duration load tests are not performed in this closeout. Owner: product operator; revisit before a larger learner rollout. Automated browser checks only establish the specific tested behavior.
+- [x] R-007 [status:accepted_risk] Production recovery configuration is visible and enabled, but a restore drill is not verified. Owner: project operator and Replit; obtain an isolated restore target before any drill, and confirm the first daily snapshot after its scheduled run. October 26 UI readback confirms PITR ON with seven days of history and daily snapshots ON with seven-day retention; inventory currently says "No backups yet". Restore controls target production in place; the dialog was canceled without restoring anything. No provider-supported safe isolated clone/restore was exposed. Do not confuse configuration or a local synthetic exercise with a tested production restore.
 
 ## Scope
 
@@ -33,10 +57,10 @@ Baseline: March 6 and March 10 audit records; existing uncommitted fixes preserv
 
 ## Sign-off Gate
 
-- [x] G-001 [status:verified] Authorized application fixes are committed/pushed, deployed and verified with final evidence.
+- [ ] G-001 [status:in_progress] Authorized application fixes are committed/pushed, deployed and verified with final evidence.
   - Evidence: reviewed source 98a7d32 passed required CI 40009400356 and is published as build 0bbd3185-3ce8-48cc-bc38-56c430a8a22e. Hosted API, browser/layout, actual startup runtime and cross-deployment persistence results are recorded below. Full provider/incident sign-off remains separately blocked by G-004.
-- [x] G-002 [status:verified] Mobile/runtime findings are corrected and provider evidence gaps retain explicit owners.
-- [x] G-003 [status:verified] Final source checks passed after the October 23 mobile/runtime edits.
+- [ ] G-002 [status:in_progress] Application findings are corrected and provider evidence gaps retain explicit owners.
+- [ ] G-003 [status:in_progress] Final source checks passed after the October 26 readiness/validator edits.
   - Evidence: final source 98a7d32 passed local typecheck/build and all 32 tests. Required CI 40009400356 passed all 32 regressions, both PostgreSQL tests, schema preparation and production audit. Replit candidate c5ce2716f1fbd88491ede6859a013f86a35f678e matches reviewed application/configuration files exactly and passes all 32 tests; unchanged real-DB and actual clean production-entry build results remain valid. Only release documentation follows this validated source.
 - [ ] G-004 [status:blocked] Verify deployed runtimes, provider infrastructure and deployment history before production sign-off.
   - Owner: project operator and Replit. Application deployment/source, actual Node/OpenSSL startup versions, schema and persistence are now verified. Complete provider image/trust-environment attestation, kernel/backports, edge and historical incident evidence remain unavailable. Full-scope sign-off is intentionally withheld; normal checklist validation passes, but --require-signoff reports this single unchecked gate.
@@ -203,9 +227,9 @@ CISA's catalog web page returned 403, so the official JSON feed was retrieved in
 
 Manual route/schema/storage review and source searches covered authorization boundaries, JSON parsing, graph references, simulation block allowlists, static serving, outbound requests, command execution, HTML sinks, environment use and logging. Dynamic tests exercised the actual built HTTP server. No standalone Semgrep/container scanner was available; no container manifests or runtime/container inventory was available to scan. This is a coverage gap, not a clean container result.
 
-Classification, graph and simulation APIs require an issued session to mutate stored data. Anonymous UUID IDs are capabilities, not account identities. Learner-facing grades are educational feedback, not tamper-proof academic records. React escapes learner labels/explanations; the remaining HTML sinks use bundled, fixed translation content, with no user-controlled source identified. No shell execution, arbitrary URL fetch, upload/deserialization handler, admin endpoint or external webhook was found in reachable application code. Health-coach tools are fixed in-memory simulations. Auth/DB scaffold does not establish a live authentication or database/RLS implementation.
+Classification, graph and simulation APIs require an issued session to mutate stored data. Anonymous UUID IDs are capabilities, not account identities. Learner-facing grades are educational feedback, not tamper-proof academic records. React escapes learner labels/explanations; the remaining HTML sinks use bundled, fixed translation content, with no user-controlled source identified. No shell execution, arbitrary URL fetch, upload/deserialization handler, admin endpoint or external webhook was found in reachable application code. Health-coach tools are fixed in-memory simulations. The unused user/password scaffold is not a live account-authentication system. Actual anonymous progress uses parameterized PostgreSQL queries and hashed capability lookup; no RLS or separate tenant identity is claimed.
 
-Request limits are per process, using socket IP and bounded limiter state. Behind a shared proxy, users can share limits; horizontally scaled deployments require provider-edge limits and capacity monitoring. The session store remains volatile: restarts lose data, and Replit autoscaling may route a session to a different process. No durable/multi-instance production claim is made. Operator must choose a durable store or validate a single-instance teaching deployment before rollout.
+Request limits are per process, using socket IP and bounded limiter state. Behind a shared proxy, users can share limits; horizontally scaled deployments require provider-edge limits and capacity monitoring. Since the October 23 release, production progress uses the shared PostgreSQL database, with atomic independent-score updates and serialized session-capacity checks across instances. Real-process/redeployment durability is verified in R-005. In-memory mode is limited to development and explicitly opted-in local tests; production refuses an implicit fallback. Sessions expire after 24 hours of inactivity and capacity is 2,048 active sessions. These are intentional retention/capacity limits, not indefinite archival storage.
 
 ## Validation Log
 

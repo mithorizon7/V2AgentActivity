@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { MemStorage, SessionCapacityError } from "../server/storage";
-import type { InsertProgress } from "../shared/schema";
+import { classificationSortedSchema, insertProgressSchema, classifyRequestSchema, boundaryMapRequestSchema, circuitRequestSchema, type InsertProgress } from "../shared/schema";
 import { allowedDevelopmentHost } from "../server/security";
 import { databaseOptions } from "../server/postgresStorage";
 
@@ -17,6 +17,31 @@ test("development hosts reject unapproved domains and malformed authorities", ()
 const initialProgress = (id: string): InsertProgress => ({
   sessionId: `session-${id}`, currentPhase: 1, phaseCompletion: {}, classifications: [], confidenceLevel: 50,
   assessmentScores: { classificationAccuracy: 0, explanationQuality: 0, boundaryMapCompleteness: 0, circuitCorrectness: 0, calibration: 0 },
+});
+
+test("patched schemas preserve sparse saved work and phase-completion records", () => {
+  assert.deepEqual(classificationSortedSchema.parse({}), {});
+  assert.deepEqual(classificationSortedSchema.parse({ perception: [] }), { perception: [] });
+  assert.equal(classificationSortedSchema.safeParse({ unknown: [] }).success, false);
+  const progress = { ...initialProgress("schema"), phaseCompletion: { "1": true, circuitBridge: false } };
+  assert.deepEqual(insertProgressSchema.parse(progress), progress);
+  assert.equal(insertProgressSchema.safeParse({ ...progress, phaseCompletion: { "1": "true" } }).success, false);
+});
+
+test("oversized constrained collections fail before accumulating item errors", () => {
+  const sessionId = "session-oversized";
+  const checks = [
+    classifyRequestSchema.safeParse({ sessionId, confidence: 50, submissions: Array(65).fill(null) }),
+    boundaryMapRequestSchema.safeParse({ sessionId, elements: Array(65).fill(null), connections: [] }),
+    circuitRequestSchema.safeParse({ sessionId, blocks: Array(65).fill(null), connections: [] }),
+  ];
+  for (const result of checks) {
+    assert.equal(result.success, false);
+    if (!result.success) {
+      assert.equal(result.error.issues.length, 1);
+      assert.equal(result.error.issues[0].code, "too_big");
+    }
+  }
 });
 
 test("remote database connections enforce TLS certificate verification", () => {
