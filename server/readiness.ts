@@ -3,7 +3,7 @@ import type { RequestHandler } from "express";
 export function createReadinessHandler(
   check: () => Promise<void>,
   report: (ready: boolean) => void,
-  now: () => number = Date.now,
+  now: () => number = () => performance.now(),
 ) {
   let draining = false;
   let lastReady: boolean | undefined;
@@ -18,7 +18,7 @@ export function createReadinessHandler(
       expires = Infinity;
       pending = Promise.resolve().then(check).then(() => true, () => false).then((ready) => {
         expires = now() + 5000;
-        if (ready !== lastReady) {
+        if (!draining && ready !== lastReady) {
           lastReady = ready;
           report(ready);
         }
@@ -34,5 +34,11 @@ export function createReadinessHandler(
     }
   };
 
-  return { handler, drain: () => { draining = true; } };
+  return { handler, drain: () => {
+    draining = true;
+    if (lastReady !== false) {
+      lastReady = false;
+      report(false);
+    }
+  } };
 }
