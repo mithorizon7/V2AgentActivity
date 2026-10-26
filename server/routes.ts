@@ -183,7 +183,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ error: "Invalid request data", details: error.errors });
+        return res.status(400).json({ error: "Invalid request data", details: error.issues });
       }
       res.status(500).json({ error: "Failed to evaluate classifications" });
     }
@@ -230,7 +230,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ error: "Invalid request data", details: error.errors });
+        return res.status(400).json({ error: "Invalid request data", details: error.issues });
       }
       res.status(500).json({ error: "Failed to save boundary map" });
     }
@@ -284,7 +284,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ error: "Invalid request data", details: error.errors });
+        return res.status(400).json({ error: "Invalid request data", details: error.issues });
       }
       res.status(500).json({ error: "Failed to save circuit" });
     }
@@ -393,7 +393,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       if (error instanceof z.ZodError) {
-        return res.status(400).json({ error: "Invalid request data", details: error.errors });
+        return res.status(400).json({ error: "Invalid request data", details: error.issues });
       }
       console.error('Simulation request failed');
       res.status(500).json({ error: "Failed to run simulation" });

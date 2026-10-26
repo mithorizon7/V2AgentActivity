@@ -55,7 +55,7 @@ export const classificationItemSchema = z.object({
 
 // Zod schemas for localStorage state validation
 export const classificationUnsortedSchema = z.array(classificationItemSchema);
-export const classificationSortedSchema = z.record(
+export const classificationSortedSchema = z.partialRecord(
   z.enum(["learning", "interaction", "perception", "reasoning", "planning", "execution"]),
   z.array(classificationItemSchema)
 );
@@ -258,7 +258,7 @@ export const simulateRequestSchema = z.object({
 export const insertProgressSchema = z.object({
   sessionId: sessionIdSchema,
   currentPhase: z.number().min(0).max(5),
-  phaseCompletion: z.record(z.boolean()),
+  phaseCompletion: z.record(z.string(), z.boolean()),
   classifications: z.array(z.object({
     itemId: z.string(),
     selectedProcess: z.enum(agentProcesses),

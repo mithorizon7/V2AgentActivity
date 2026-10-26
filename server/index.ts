@@ -2,7 +2,8 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { securityHeaders, guardApiRequest, rateLimit, guardDevelopmentHost } from "./security";
-import { initializeStorage, closeStorage } from "./storageProvider";
+import { initializeStorage, closeStorage, checkStorageReadiness } from "./storageProvider";
+import { createReadinessHandler } from "./readiness";
 
 const [nodeMajor, nodeMinor, nodePatch] = process.versions.node.split(".").map(Number);
 if (nodeMajor !== 24 || nodeMinor < 22 || (nodeMinor === 22 && nodePatch < 1)) {
@@ -42,7 +43,12 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  const startedAt = Date.now();
   await initializeStorage();
+  const readiness = createReadinessHandler(checkStorageReadiness, (ready) => {
+    log(`readiness ${ready ? "ready" : "unavailable"}`);
+  });
+  app.get("/api/health", readiness.handler);
   const server = await registerRoutes(app);
   app.use("/api/*", (_req, res) => {
     res.status(404).json({ error: "Not found" });
@@ -82,8 +88,10 @@ app.use((req, res, next) => {
     const address = server.address();
     log(`runtime Node ${process.versions.node}; OpenSSL ${process.versions.openssl}`);
     log(`serving on port ${typeof address === "object" && address ? address.port : port}`);
+    log(`application ready after ${Date.now() - startedAt}ms`);
   });
   const shutdown = () => {
+    readiness.drain();
     const deadline = setTimeout(() => process.exit(1), 10_000);
     deadline.unref();
     server.close(() => {

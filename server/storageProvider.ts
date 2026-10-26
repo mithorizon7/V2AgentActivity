@@ -16,3 +16,10 @@ export async function initializeStorage() {
 export async function closeStorage() {
   if (storage instanceof PostgresStorage) await storage.pool.end();
 }
+
+export async function checkStorageReadiness() {
+  if (storage instanceof PostgresStorage) {
+    // Check the deployed schema without reading or modifying learner records.
+    await storage.pool.query("SELECT session_key, data, created_at, updated_at FROM agent_learning_sessions LIMIT 0");
+  }
+}
